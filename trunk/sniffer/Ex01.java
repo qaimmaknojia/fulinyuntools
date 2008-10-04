@@ -10,8 +10,17 @@ public class Ex01 {
 	public static void main(String[] args) throws Exception {
 		
 		NetworkInterface[] devices = JpcapCaptor.getDeviceList();
-		JpcapCaptor captor = JpcapCaptor.openDevice(devices[0], 65535, true, 20);
-//		captor.setFilter("src host 124.77.91.180 and dst host www.google.com", true);
+//		for (NetworkInterface ni : devices) {
+//			System.out.println(ni.datalink_description);
+//			System.out.println(ni.datalink_name);
+//			System.out.println(ni.description);
+//			System.out.println(ni.name);
+//			System.out.println(ni.toString());
+//			System.out.println("*******************************");
+//		}
+		JpcapCaptor captor = JpcapCaptor.openDevice(devices[1], 65535, true, 20);
+		captor.setFilter("src host 192.168.1.100", true);
+//		captor.setFilter("src host 192.168.1.100 and dst host www.126.com", true);
 //		captor.setFilter("host www.21cn.com", true);
 		captor.loopPacket(-1, new PacketPrinter());
 		captor.close();
