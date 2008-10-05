@@ -155,6 +155,7 @@ public class GetThunderLinks45ips {
 //				"E:\\dumpMd5.txt");
 //		getThunderLinks(hlmUrlPrefix, 1, 10, "E:\\hlmlinks1.lst", 3);
 //		getThunderLinks(hlmUrlPrefix, 10, 50, "E:\\hlmlinks2.lst", 3);
-		getThunderLinks(hlmUrlPrefix, 50, 100, "E:\\hlmlinks1.lst", 3);
+//		getThunderLinks(hlmUrlPrefix, 50, 100, "E:\\hlmlinks3.lst", 3);
+		getThunderLinks(hlmUrlPrefix, 100, 150, "E:\\hlmlinks4.lst", 3);
 	}
 }
