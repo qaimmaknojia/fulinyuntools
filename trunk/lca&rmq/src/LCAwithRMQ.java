@@ -92,26 +92,109 @@ public class LCAwithRMQ {
 
 	//sparse table
 	public static void rmqPreprocess(int[] array) {
-		rmqTable = new int[array.length][];
-		int ii;
-		for (ii = 0; (1 << ii) <= array.length; ii++) ;
-		for (int i = 0; i < array.length; i++) rmqTable[i] = new int[ii-1];
+		int ii = floorToPowerOf2(array.length);
+		ii++;
+		rmqTable = new int[array.length][ii];
 		for (int i = 0; i < array.length; i++) rmqTable[i][0] = i;
-		for (int i = 1; i < ii-1; i++) for (int j = 0; j < array.length; j++) {
+		for (int i = 1; i < ii; i++) for (int j = 0; j < array.length; j++) {
 			int k = j+(1<<(i-1));
 			if (k >= array.length) rmqTable[j][i] = rmqTable[j][i-1];
-			else rmqTable[j][i] = rmqTable[j][i-1] > rmqTable[k][i-1] 
+			else rmqTable[j][i] = array[rmqTable[j][i-1]] > array[rmqTable[k][i-1]] 
 			                              ? rmqTable[k][i-1] : rmqTable[j][i-1];
 		}
+//		for (int i = 0; i < rmqTable[0].length; i++) System.out.print("\t" + rmqTable[0][i]);
+//		System.out.println();
 	}
 	
 	public static int rmq(int[] array, int start, int end) {
 		int span = end-start;
 		int len = floorToPowerOf2(span);
-		return rmqTable[start][len] > rmqTable[end-(1<<len)][len] 
+		return array[rmqTable[start][len]] > array[rmqTable[end-(1<<len)][len]] 
 		                                   ? rmqTable[end-(1<<len)][len] : rmqTable[start][len];
 	}
 	
+	public static void testRmq() {
+		int n = 10000;
+		int m = 10000;
+		int[] array = new int[n];
+		for (int i = 0; i < n; i++) array[i] = i;
+		Random r = new Random();
+		r.setSeed(new Date().getTime());
+		for (int i = 0; i < n; i++) {
+			int j1 = r.nextInt(n);
+			int j2 = r.nextInt(n);
+			int t = array[j1];
+			array[j1] = array[j2];
+			array[j2] = t;
+		}
+		rmqPreprocess(array);
+		for (int i = 0; i < m; i++) {
+			int start = r.nextInt(n);
+			int end = r.nextInt(n);
+			if (start > end) {
+				int t = start;
+				start = end;
+				end = t;
+			}
+			if (start == end) end++;
+			int res = rmq(array, start, end);
+			int min = Integer.MAX_VALUE;
+			int pos = -1;
+			for (int k = start; k < end; k++) if (array[k] < min) {
+				min = array[k];
+				pos = k;
+			}
+			if (res != pos) {
+				System.out.println("error: " + start + "\t" + end);
+				for (int k = start; k < end; k++) {
+					System.out.print("\t" + array[k]);
+					if (k % 20 == 19) System.out.println();
+				}
+				System.out.println();
+				System.out.println("std: " + pos);
+				System.out.println("rmq: " + res);
+				System.exit(1);
+			}
+		}
+		
+	}
+
+	public static void testRmqEx() {
+		int n = 1000;
+		int[] array = new int[n];
+		for (int i = 0; i < n; i++) array[i] = i;
+		Random r = new Random();
+		for (int i = 0; i < n; i++) {
+			int j1 = r.nextInt(n);
+			int j2 = r.nextInt(n);
+			int t = array[j1];
+			array[j1] = array[j2];
+			array[j2] = t;
+		}
+		rmqPreprocess(array);
+		for (int i = 0; i < n; i++) for (int j = i+1; j < n; j++) {
+			int res = rmq(array, i, j);
+			int min = Integer.MAX_VALUE;
+			int pos = -1;
+			for (int k = i; k < j; k++) if (array[k] < min) {
+				min = array[k];
+				pos = k;
+			}
+			if (res != pos) {
+				System.out.println("error: " + i + "\t" + j);
+				for (int k = i; k < j; k++) {
+					System.out.print("\t" + array[k]);
+					if (k % 20 == 19) System.out.println();
+				}
+				System.out.println();
+				System.out.println("std: " + pos);
+				System.out.println("rmq: " + res);
+				System.exit(1);
+			}
+		}
+		
+	}
+
 	public static void testNaiveRmq() {
 		int n = 10000;
 		int m = 1000;
@@ -158,42 +241,6 @@ public class LCAwithRMQ {
 		
 	}
 	
-	public static void testRmqEx() {
-		int n = 1000;
-		int[] array = new int[n];
-		for (int i = 0; i < n; i++) array[i] = i;
-		Random r = new Random();
-		for (int i = 0; i < n; i++) {
-			int j1 = r.nextInt(n);
-			int j2 = r.nextInt(n);
-			int t = array[j1];
-			array[j1] = array[j2];
-			array[j2] = t;
-		}
-		rmqPreprocess(array);
-		for (int i = 0; i < n; i++) for (int j = i+1; j < n; j++) {
-			int res = rmq(array, i, j);
-			int min = Integer.MAX_VALUE;
-			int pos = -1;
-			for (int k = i; k < j; k++) if (array[k] < min) {
-				min = array[k];
-				pos = k;
-			}
-			if (res != pos) {
-				System.out.println("error: " + i + "\t" + j);
-				for (int k = i; k < j; k++) {
-					System.out.print("\t" + array[k]);
-					if (k % 20 == 19) System.out.println();
-				}
-				System.out.println();
-				System.out.println("std: " + pos);
-				System.out.println("rmq: " + res);
-				System.exit(1);
-			}
-		}
-		
-	}
-
 	public static void testNaiveRmqEx() {
 		int n = 1000;
 		int[] array = new int[n];
@@ -267,8 +314,11 @@ public class LCAwithRMQ {
 	
 	public static void main(String[] args) {
 //		testFloor2();
+//		testNaiveRmqEx();
 //		testNaiveRmq();
-		testRmqEx();
+//		testRmqEx();
+//		testRmq();
+		
 	}
 	
 	public static void naiveRmqPreprocess(int[] array) {
