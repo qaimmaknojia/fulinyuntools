@@ -2,13 +2,14 @@ import java.util.Date;
 import java.util.Random;
 
 
-public class LCAwithRMQ {
+public class RMQ {
 
 	public static int[][] naiveRmqTable;
 	public static int[][] rmqTable;
 	public static int[][][] pn1rmqTable;
 	public static int[] index;
 	public static int[] blockMinValue;
+	
 	public static void pn1rmqPreprocess(int[] array) {
 		int len = floorToPowerOf2(array.length);
 		int blockSize = (len>>1)+1;
@@ -338,10 +339,6 @@ public class LCAwithRMQ {
 	
 	public static int naiveRmq(int[] array, int start, int end) {
 		return naiveRmqTable[start][end];
-	}
-	
-	public static int lca(int[] tree, int u, int v) {
-		return -1;
 	}
 	
 }
