@@ -340,11 +340,7 @@ public class Processor {
 //		addId2missingNames("E:\\missingNamesUnique", "E:\\missingNamesWithId");
 //		getIdMatrix(linkFrom, idMap, idMatrix);
 //		getOutlinkNum(idMatrix, outlinkNum);
-		matrix = loadIdMatrix(idMatrix);
-		olinkNum = getOutlinkNum(outlinkNum);
-		nameMap = loadNameMap(idMap);
-		idMapMap = loadIdMap(idMap);
-		
+	
 		double[] pr = calculatePR(1.0, 5, matrix, olinkNum, new HashSet<Integer>(), 0.85);
 		String[] list = selectTop(pr, 20);
 		for (String s : list) System.out.println(s);
@@ -363,5 +359,16 @@ public class Processor {
 			}
 		}
 		br.close();
+	}
+	
+	static {
+		try {
+			matrix = loadIdMatrix(idMatrix);
+			olinkNum = getOutlinkNum(outlinkNum);
+			nameMap = loadNameMap(idMap);
+			idMapMap = loadIdMap(idMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
