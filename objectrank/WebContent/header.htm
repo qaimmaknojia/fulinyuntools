@@ -1,21 +1,20 @@
 <html>
 	<head>
-	<meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Navigation</title>
 	<script language=javascript>
 	function work() {
 		if (su.url.value.substring(0,7)!="http://") su.url.value="http://"+su.url.value;
-/*		parent.real.location=su.url.value;
+		parent.real.location=su.url.value;
 		parent.detail.document.location.href="about:blank";
-		parent.detail.document.bgColor="#FFee00";
+		parent.detail.document.bgColor="#ffee00";
 		parent.detail.document.write(
-"<body bgColor=#ccccee><table width=100% ><tr><td><img src=loading.gif></td><td>Loading...</td></tr></table></body>");
-*/
+		"<body bgColor=#ccccee><table width=100%><tr><td><img src=loading.gif></td><td>Loading...</td></tr></table></body>");
 	}
 	</script>
 	</head>
 	<body topmargin=0 leftmargin=0 bgColor=#ccccee>
-		<form id=su name=su action="Annotate" method=post target=real>
+		<form id=su name=su action="Annotate" method=post target=detail>
 		<table width=100%>
 		<tr><td colspan=2 align=center><b><font size=+1>Wiki Every Page</font></b></td></tr>
 		<tr><td colspan=2>URL of English Web Page:</td></tr>
@@ -25,7 +24,8 @@
 			<td width=*><input id=url name=url type=text style="width:100%" value=""></td>
 			<td width=10 align=right><input onClick="work();" type=submit value="GO"></td>
 		</tr>
-		</table>      
+		</table>
+		</form>
 	</body>  
 </html>
 

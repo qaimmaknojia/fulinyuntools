@@ -10,23 +10,97 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.TreeMap;
 
 public class Processor {
 
 	public static String linkFrom = "\\\\poseidon\\team\\Semantic Search\\data\\wikipedia data\\entityGraphLinkFrom";
 	public static int maxLine = 1200000;
 	public static String temp = "E:\\temp.txt";
+	public static String idMap = "E:\\users\\fulinyun\\objectrank\\info\\name2id.txt";
+	public static String idMatrix = "E:\\users\\fulinyun\\objectrank\\info\\idMatrix";
+	public static String outlinkNum = "E:\\users\\fulinyun\\objectrank\\info\\outlinkNum";
+	public static int numId = 1797355;
+	public static String[] nameMap;
+	public static int[][] matrix;
+	public static int[] olinkNum;
+	public static HashMap<String, Integer> idMapMap;
 	
 	// PR(A) = (1-d)b + d(PR(t1)/C(t1) + ... + PR(tn)/C(tn))
-	public static TreeMap<Integer, Double> calculatePR(double initialPR, int numIteration, 
-			String linkFromMatrix, String outlinkNum, HashSet<Integer> inPage) throws Exception {
-		
+	public static double[] calculatePR(double initialPR, int numIteration, 
+			int[][] matrix, int[] olinkNum, HashSet<Integer> inPage, double d) {
+		double[] pr = new double[olinkNum.length];
+		Arrays.fill(pr, initialPR);
+		for (int i = 0; i < numIteration; i++) {
+			System.out.println("begin iteration #" + (i+1) + "\t" + new Date().toString());
+			double[] pr1 = new double[pr.length];
+			Arrays.fill(pr1, 0.0);
+			for (int j = 0; j < matrix.length; j++) if (matrix[j] != null){
+				for (int k = 0; k < matrix[j].length; k++) pr1[j] += pr[matrix[j][k]]/olinkNum[matrix[j][k]];
+				pr1[j] *= d;
+				if (inPage.contains(j)) pr1[j] += 1-d;
+			}
+			System.arraycopy(pr1, 0, pr, 0, pr.length);
+		}
+		return pr;
 	}
 	
+	public static String[] selectTop(final double[] pr, int topNum) {
+		Integer[] ret = new Integer[pr.length];
+		for (int i = 0; i < ret.length; i++) ret[i] = i;
+		Arrays.sort(ret, new Comparator<Integer>() {
+			public int compare(Integer a, Integer b) {
+				if (pr[a] > pr[b]) return -1;
+				if (pr[a] < pr[b]) return 1;
+				return 0;
+			}
+		});
+		String[] retStr = new String[topNum];
+		for (int i = 0; i < topNum; i++) retStr[i] = nameMap[ret[i]];
+		return retStr;
+	}
+	
+	private static int[] getOutlinkNum(String outlinkNum2) throws Exception {
+		System.out.println("begin loading outlink num");
+		long length = new File(outlinkNum2).length();
+		FileChannel fc = new RandomAccessFile(outlinkNum2, "r").getChannel();
+		MappedByteBuffer content = fc.map(FileChannel.MapMode.READ_ONLY, 0, length);
+		int num = content.getInt();
+		int[] ret = new int[numId];
+		for (int i = 0; i < num; i++) {
+			int key = content.getInt();
+			int value = content.getInt();
+			ret[key] = value;
+		}
+		System.out.println(num + " entries read");
+		fc.close();
+		return ret;
+	}
+
+	private static int[][] loadIdMatrix(String linkFromMatrix) throws Exception {
+		System.out.println("begin loading id matrix");
+		long length = new File(linkFromMatrix).length();
+		FileChannel fc = new RandomAccessFile(linkFromMatrix, "r").getChannel();
+		MappedByteBuffer matrix = fc.map(FileChannel.MapMode.READ_ONLY, 0, length);
+		int num = matrix.getInt();
+		int[][] ret = new int[numId][];
+		for (int i = 0; i < num; i++) {
+			int key = matrix.getInt();
+			int numFrom = matrix.getInt();
+			ret[key] = new int[numFrom];
+			for (int j = 0; j < numFrom; j++) ret[key][j] = matrix.getInt();
+		}
+		System.out.println(num + " lines read");
+		fc.close();
+		return ret;
+	}
+
 	public static void getOutlinkNum(String linkFromMatrix, String outlinkNum) throws Exception {
+		System.out.println("begin reading linkFromMatrix");
 		long length = new File(linkFromMatrix).length();
 		FileChannel fc = new RandomAccessFile(linkFromMatrix, "r").getChannel();
 		MappedByteBuffer matrix = fc.map(FileChannel.MapMode.READ_ONLY, 0, length);
@@ -40,48 +114,105 @@ public class Processor {
 				if (!outlink.keySet().contains(id)) outlink.put(id, 1);
 				else outlink.put(id, outlink.get(id)+1);
 			}
+			if ((i+1)%100000 == 0) System.out.println(i+1);
 		}
 		fc.close();
+		System.out.println("begin writing outlinkNum");
 		DataOutputStream dos = new DataOutputStream(new FileOutputStream(outlinkNum));
-		dos.writeInt(num);
+		dos.writeInt(outlink.size());
+		int lineCount = 0;
 		for (Integer i : outlink.keySet()) {
 			dos.writeInt(i.intValue());
-			dos.write(outlink.get(i).intValue());
+			dos.writeInt(outlink.get(i).intValue());
+			lineCount++;
+			if (lineCount%100000 == 0) System.out.println(lineCount);
 		}
 		dos.close();
 	}
 	
 	public static void getIdMatrix(String input, String map, String output) throws Exception {
 		HashMap<String, Integer> idmap = loadIdMap(map);
+		System.out.println("begin getting id matrix");
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		DataOutputStream dos = new DataOutputStream(new FileOutputStream(output));
 		int lineCount = 0;
-		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			lineCount++;
-		}
+		for (String line = br.readLine(); line != null; line = br.readLine()) lineCount++;
 		br.close();
 		dos.writeInt(lineCount);
 		br = new BufferedReader(new FileReader(input));
 		for (int l = 0; l < lineCount; l++) {
 			String line = br.readLine();
-			String content = line.split("\\$\\$\\$")[0];
+			String content = line.substring(0, line.length()-3);
 			String[] part = content.split("\t");
-			dos.writeInt(idmap.get(part[0]));
+			try {
+				dos.writeInt(idmap.get(part[0]).intValue());
+			} catch (Exception e) {
+				System.out.println("******************");
+				System.out.println(part[0]);
+				System.out.println(idmap.get(part[0]));
+				System.out.println("******************");
+			}
 			dos.writeInt(part.length-1);
 			for (int i = 1; i < part.length; i++) dos.writeInt(idmap.get(part[i]));
+			if ((l+1)%100000 == 0) System.out.println(l+1);
 		}
+		System.out.println(lineCount + " lines read");
 		dos.close();
 		br.close();
 	}
 	
+	public static void getMissingNames(String nameMatrix, String map, String output) throws Exception {
+		HashMap<String, Integer> idmap = loadIdMap(map);
+		System.out.println("begin reading name matrix");
+		BufferedReader br = new BufferedReader(new FileReader(nameMatrix));
+		PrintWriter pw = new PrintWriter(new FileWriter(output));
+		int lineCount = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String content = line.substring(0, line.length()-3);
+			String[] part = content.split("\t");
+			for (String name : part) if (!idmap.keySet().contains(name)) pw.println(name);
+			lineCount++;
+			if (lineCount%100000 == 0) System.out.println(lineCount);
+		}
+		br.close();
+		pw.close();
+	}
+	
+	public static void uniqueMissingNames(String input, String output) throws Exception {
+		HashSet<String> nameSet = new HashSet<String>();
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		for (String line = br.readLine(); line != null; line = br.readLine()) nameSet.add(line);
+		br.close();
+		PrintWriter pw = new PrintWriter(new FileWriter(output));
+		for (String s : nameSet) pw.println(s);
+		pw.close();
+	}
+	
+	public static void addId2missingNames(String input, String output) throws Exception {
+		int startId = 1729528;
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		PrintWriter pw = new PrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			pw.println(line + "\t" + startId);
+			startId++;
+		}
+		br.close();
+		pw.close();
+	}
+	
 	private static HashMap<String, Integer> loadIdMap(String map) throws Exception {
+		System.out.println("begin loading id map");
 		HashMap<String, Integer> ret = new HashMap<String, Integer>();
 		BufferedReader br = new BufferedReader(new FileReader(map));
+		int lineCount = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] part = line.split("\t");
 			ret.put(part[0], Integer.parseInt(part[1]));
+			lineCount++;
+//			if (lineCount%100000 == 0) System.out.println(lineCount);
 		}
 		br.close();
+		System.out.println(lineCount + " entries loaded");
 		return ret;
 	}
 
@@ -104,7 +235,7 @@ public class Processor {
 		PrintWriter mapPw = new PrintWriter(new FileWriter(map, true));
 		for (int i = 0; i < startLine; i++) br.readLine();
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			String content = line.split("\\$\\$\\$")[0];
+			String content = line.substring(0, line.length()-3);
 			String[] part = content.split("\t");
 			for (String entity : part) if (!entityName.contains(entity) && !containedInFile(temp, entity)) {
 				PrintWriter pw = new PrintWriter(new FileWriter(temp, true));
@@ -131,9 +262,8 @@ public class Processor {
 	public static void addToMap(HashSet<String> entityName, String input, int maxLine) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		int lineCount = 0;
-		for (String line = br.readLine(); line != null && lineCount <= maxLine; line = br.readLine()) {
-			while (!line.endsWith("$$$")) line += br.readLine();
-			String content = line.split("\\$\\$\\$")[0];
+		for (String line = br.readLine(); line != null && lineCount < maxLine; line = br.readLine()) {
+			String content = line.substring(0, line.length()-3);
 			String[] part = content.split("\t");
 			for (String entity : part) entityName.add(entity);
 			lineCount++;
@@ -144,13 +274,82 @@ public class Processor {
 		br.close();
 	}
 	
+//	public static void getNameMatrix(String output) throws Exception {
+//		HashMap<Integer, String> nameMap = loadNameMap(idMap);
+//		System.out.println("begin loading id matrix");
+//		long length = new File(idMatrix).length();
+//		FileChannel fc = new RandomAccessFile(idMatrix, "r").getChannel();
+//		MappedByteBuffer matrix = fc.map(FileChannel.MapMode.READ_ONLY, 0, length);
+//		PrintWriter pw = new PrintWriter(new FileWriter(output));
+//		int num = matrix.getInt();
+//		for (int i = 0; i < num; i++) {
+//			int key = matrix.getInt();
+//			pw.print(nameMap.get(key));
+//			int numFrom = matrix.getInt();
+//			for (int j = 0; j < numFrom; j++) pw.print("\t" + nameMap.get(matrix.getInt()));
+//			pw.println("$$$");
+//		}
+//		System.out.println(num + " lines read");
+//		fc.close();
+//		pw.close();
+//	}
+	
+//	public static void compareFile(String f1, String f2) throws Exception {
+//		BufferedReader br1 = new BufferedReader(new FileReader(f1));
+//		BufferedReader br2 = new BufferedReader(new FileReader(f2));
+//		int lineCount = 1;
+//		for (String line1 = br1.readLine(), line2 = br2.readLine(); line1 != null && line2 != null;
+//			line1 = br1.readLine(), line2 = br2.readLine()) {
+//			if (!line1.equals(line2)) {
+//				System.out.println("line " + lineCount + " differ!");
+//				System.out.println(f1 + ":");
+//				System.out.println(line1);
+//				System.out.println(f2 + ":");
+//				System.out.println(line2);
+//			}
+//			lineCount++;
+//		}
+//		br1.close();
+//		br2.close();
+//	}
+	
+	private static String[] loadNameMap(String idMap2) throws Exception {
+		System.out.println("begin loading name map");
+		BufferedReader br = new BufferedReader(new FileReader(idMap2));
+		String[] ret = new String[numId];
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] part = line.split("\t");
+			ret[Integer.parseInt(part[1])] = part[0];
+		}
+		br.close();
+		System.out.println(ret.length + " entries read");
+		return ret;
+	}
+
+	public static HashSet<Integer> getInPageId(String[] names) {
+		HashSet<Integer> ret = new HashSet<Integer>();
+		for (String name : names) ret.add(idMapMap.get(name));
+		return ret;
+	}
+	
 	public static void main(String[] args) throws Exception {
-//		toID(linkFrom, linkTo, "E:\\users\\fulinyun\\objectrank\\info\\name2id.txt");
-//		System.out.println("link from");
 //		checkFile(linkFrom);
-//		System.out.println("link to");
-//		checkFile(linkTo);
-//		toID(linkFrom, "E:\\users\\fulinyun\\objectrank\\info\\name2id.txt");
+//		toID(linkFrom, idMap);
+//		getMissingNames(linkFrom, idMap, "E:\\missingNames");
+//		uniqueMissingNames("E:\\missingNames", "E:\\missingNamesUnique");
+//		addId2missingNames("E:\\missingNamesUnique", "E:\\missingNamesWithId");
+//		getIdMatrix(linkFrom, idMap, idMatrix);
+//		getOutlinkNum(idMatrix, outlinkNum);
+		matrix = loadIdMatrix(idMatrix);
+		olinkNum = getOutlinkNum(outlinkNum);
+		nameMap = loadNameMap(idMap);
+		idMapMap = loadIdMap(idMap);
+		
+		double[] pr = calculatePR(1.0, 5, matrix, olinkNum, new HashSet<Integer>(), 0.85);
+		String[] list = selectTop(pr, 20);
+		for (String s : list) System.out.println(s);
+//		getNameMatrix("E:\\nameMatrix.txt");
+//		compareFile("E:\\nameMatrix.txt", linkFrom);
 	}
 	
 	public static void checkFile(String input) throws Exception {
