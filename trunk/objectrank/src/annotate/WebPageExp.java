@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -91,6 +92,96 @@ public class WebPageExp {
 
 	}
 
+	public static String[] recognize(String url) {
+
+		WebPageExp exp = new WebPageExp();
+		Searcher searcher = null;
+		try {
+			searcher = new IndexSearcher(linkRecomIdxFold);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ArrayList<Annotation> ret = null;
+		try {
+			ret = exp.recognize(url, searcher);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		String[] retStr = new String[ret.size()];
+		for (int i = 0; i < retStr.length; i++) retStr[i] = ret.get(i).articleTitle;
+		return retStr;
+	}
+	
+	public ArrayList<Annotation> recognize(String url, Searcher searcher) throws Exception {
+		Parser parser = new Parser(url);
+		ArrayList<Annotation> ret = new ArrayList<Annotation>();
+		for (NodeIterator i = parser.elements(); i.hasMoreNodes(); ) 
+			ret.addAll(recognize(i.nextNode(), searcher));
+		return ret;
+	}
+	
+	public ArrayList<Annotation> recognize(Node node, Searcher searcher) throws Exception {
+		ArrayList<Annotation> ret = new ArrayList<Annotation>();
+		if (node instanceof TextNode) {
+			TextNode text = (TextNode) node;
+			ret.addAll(recognizeText(text.getText(), searcher));
+		} else if (node instanceof RemarkNode) {
+			
+		} else if (node instanceof TagNode) {
+			TagNode tag = (TagNode) node;
+			String tn = tag.getRawTagName();
+			if (tn.equalsIgnoreCase("title") || tn.equalsIgnoreCase("head")
+					|| tn.equalsIgnoreCase("script") || tn.equalsIgnoreCase("img")
+					|| tn.equalsIgnoreCase("a") || tn.startsWith("![")) {
+				
+			} else {
+				NodeList nl = tag.getChildren();
+				if (null != nl)
+					for (NodeIterator i = nl.elements(); i.hasMoreNodes();)
+						ret.addAll(recognize(i.nextNode(), searcher));
+			}
+		}
+		return ret;
+	}
+	
+	public ArrayList<Annotation> recognizeText(String text, Searcher searcher) throws Exception {
+		ArrayList<Annotation> ret = new ArrayList<Annotation>();
+		if (!containalnum(text)) return ret;
+		String[] terms = text.trim().split(" ");
+		boolean[] annotated = new boolean[terms.length];
+		Arrays.fill(annotated, false);
+		for (int i = maxPhraseLength; i >= 1; i--)
+			recognizeOneLength(terms, ret, annotated, i, searcher);
+		return ret;
+	}
+	
+	public void recognizeOneLength(String[] terms, ArrayList<Annotation> annotations,
+			boolean[] annotated, int len, Searcher searcher) throws Exception {
+		if (len > terms.length) return;
+		for (int i = 0; i <= terms.length - len; i++) {
+			if (annotated[i + len - 1]) {
+				for (i = i + len; i < annotated.length && annotated[i]; i++)
+					;
+				i--;
+				continue;
+			}
+			StringBuffer sb = new StringBuffer();
+			sb.append(terms[i]);
+			for (int j = 1; j < len; j++)
+				sb.append(" " + terms[i + j]);
+			//String query = sb.toString();/////////////
+			Annotation a = getAnnotation(sb.toString(), searcher);
+			if (a != null && !stopwords.contains(a.originalText)) {
+				a.start = i;
+				a.len = len;
+				for (int j = i; j < i + len; j++)
+					annotated[j] = true;
+				annotations.add(a);
+				i = i + len - 1;
+			}
+		}
+	}
+	
 	public void annotate(String fin, StringBuffer sb, Searcher searcher) throws Exception {
 		Parser parser = new Parser(fin);
 		for (NodeIterator i = parser.elements(); i.hasMoreNodes();)

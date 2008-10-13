@@ -3,10 +3,13 @@ package annotate;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import linkGraphProcess.Processor;
 
 /**
  * Servlet implementation class for Servlet: Annotate
@@ -53,13 +56,16 @@ import javax.servlet.http.HttpServletResponse;
 		System.out.println("total processing time: " + (end.getTime()-start.getTime()) + " milliseconds.");
 	*/
 		String str = (String)request.getParameter("url");
-		System.out.println("str = " + str);
+		System.out.println("url = " + str);
 		PrintWriter print = response.getWriter();
-		if (print == null) System.out.println("print is null!");
+//		if (print == null) System.out.println("print is null!");
 	//	print.println(str);
 	//WebPageExp.getStream1(str);
-		print.println(WebPageExp.getStream(str));
+		String[] recognizedNames = WebPageExp.recognize(str);
+		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
+		double[] pr = Processor.calculatePR(1.0, 5, Processor.matrix, Processor.olinkNum, inPage, 0.85);
+		String[] list = Processor.selectTop(pr, 20);
+		for (String s : list) print.println(s);
 		print.close();
-	
-	}   	  	    
+	}
 }
