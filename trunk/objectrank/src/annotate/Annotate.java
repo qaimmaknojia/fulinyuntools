@@ -63,9 +63,10 @@ import linkGraphProcess.Processor;
 	//WebPageExp.getStream1(str);
 		String[] recognizedNames = WebPageExp.recognize(str);
 		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
-		double[] pr = Processor.calculatePR(1.0, 5, Processor.matrix, Processor.olinkNum, inPage, 0.85);
-		String[] list = Processor.selectTop(pr, 20);
-		for (String s : list) print.println(s);
+		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
+		double[] pr = Processor.calculatePR(1.0, 12, Processor.matrix, Processor.olinkNum, inPage, 0.4);
+		String[] list = Processor.selectTop(pr, 10);
+		for (String s : list) print.println("<p>" + s + "</p>");
 		print.close();
 	}
 }
