@@ -1,0 +1,2023 @@
+Employment
+Minute
+Business
+2008
+Consumer
+Library
+Main
+Student
+Institute
+Alumni Association
+Future
+Global
+Springfield
+Policy
+Emergency
+Human Resources
+University of Illinois at Urbana-Champaign
+Safety
+Information Science
+About Us
+Classroom
+Parking
+Chancellor
+People
+Illinois
+Public
+Aviation
+Navigation
+Privacy
+Submit
+Campus
+Chicago
+Information
+Social
+University
+Medicine
+Continuing Education
+CITES
+Graduate College
+Engineering
+Engagement
+International
+Culture
+iteration number = 1 ; d = 0.6
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.6
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.6
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.6
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+Chicago
+iteration number = 14 ; d = 0.6
+United States
+UNited Kingdom
+University
+Chicago
+Medicine
+France
+Illinois
+Business
+2006
+Culture
+iteration number = 15 ; d = 0.6
+United States
+University
+Chicago
+Business
+Medicine
+Illinois
+Culture
+University of Illinois at Urbana-Champaign
+Engineering
+Human Resources
+iteration number = 16 ; d = 0.6
+University
+Chicago
+Business
+Illinois
+Medicine
+University of Illinois at Urbana-Champaign
+Human Resources
+Privacy
+Culture
+Social
+iteration number = 17 ; d = 0.6
+University
+Business
+Chicago
+Human Resources
+University of Illinois at Urbana-Champaign
+Privacy
+Illinois
+Medicine
+Social
+Global
+iteration number = 18 ; d = 0.6
+University
+Business
+Chicago
+Human Resources
+University of Illinois at Urbana-Champaign
+Privacy
+Illinois
+Social
+Global
+Medicine
+iteration number = 19 ; d = 0.6
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Illinois
+Global
+Campus
+iteration number = 20 ; d = 0.6
+University
+Business
+Human Resources
+Chicago
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Global
+Illinois
+Campus
+iteration number = 1 ; d = 0.65
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.65
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.65
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.65
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.65
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.65
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.65
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.65
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.65
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.65
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+English language
+iteration number = 16 ; d = 0.65
+United States
+UNited Kingdom
+France
+University
+Chicago
+2006
+England
+Medicine
+Illinois
+Business
+iteration number = 17 ; d = 0.65
+United States
+University
+Chicago
+UNited Kingdom
+Business
+Medicine
+Illinois
+Culture
+University of Illinois at Urbana-Champaign
+Engineering
+iteration number = 18 ; d = 0.65
+United States
+University
+Chicago
+Business
+Medicine
+Illinois
+University of Illinois at Urbana-Champaign
+Human Resources
+Privacy
+Culture
+iteration number = 19 ; d = 0.65
+University
+Chicago
+Business
+University of Illinois at Urbana-Champaign
+Human Resources
+Illinois
+Medicine
+Privacy
+Social
+Campus
+iteration number = 20 ; d = 0.65
+University
+Business
+Chicago
+Human Resources
+University of Illinois at Urbana-Champaign
+Privacy
+Illinois
+Medicine
+Social
+Campus
+iteration number = 1 ; d = 0.7
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.7
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.7
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.7
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.7
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.7
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.7
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.7
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.7
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.7
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Chicago
+University
+Canada
+iteration number = 19 ; d = 0.7
+United States
+UNited Kingdom
+University
+Chicago
+France
+Medicine
+Business
+Illinois
+2006
+Culture
+iteration number = 20 ; d = 0.7
+United States
+University
+Chicago
+UNited Kingdom
+Business
+Medicine
+Illinois
+University of Illinois at Urbana-Champaign
+Culture
+Engineering
+iteration number = 1 ; d = 0.75
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.75
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.75
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.75
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.75
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.75
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.75
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.75
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.75
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 0.75
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+English language
+iteration number = 1 ; d = 0.8
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.8
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.8
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.8
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.8
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.8
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.8
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.8
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.8
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 0.8
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 1 ; d = 0.85
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.85
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.85
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.85
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.85
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.85
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.85
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.85
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.85
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 0.85
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 1 ; d = 0.9
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.9
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.9
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.9
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.9
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.9
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.9
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.9
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.9
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 0.9
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 1 ; d = 0.95
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.95
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.95
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.95
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.95
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.95
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.95
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.95
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.95
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 0.95
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 1 ; d = 1.0
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 1.0
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 1.0
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 1.0
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 1.0
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 1.0
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 1.0
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 1.0
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 1.0
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 14 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 15 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 16 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 17 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 18 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 19 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 20 ; d = 1.0
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
