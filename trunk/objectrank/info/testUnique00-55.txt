@@ -1,0 +1,2870 @@
+Employment
+Minute
+Business
+2008
+Consumer
+Library
+Main
+Student
+Institute
+Alumni Association
+Future
+Global
+Springfield
+Policy
+Emergency
+Human Resources
+University of Illinois at Urbana-Champaign
+Safety
+Information Science
+About Us
+Classroom
+Parking
+Chancellor
+People
+Illinois
+Public
+Aviation
+Navigation
+Privacy
+Submit
+Campus
+Chicago
+Information
+Social
+University
+Medicine
+Continuing Education
+CITES
+Graduate College
+Engineering
+Engagement
+International
+Culture
+iteration number = 10 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 2 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 3 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 4 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 5 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 6 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 7 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 8 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 9 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 10 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 11 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 12 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 13 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 14 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 15 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 16 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 17 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 18 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 19 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 20 ; d = 0.0
+Global
+Future
+Chicago
+Aviation
+Graduate College
+International
+Public
+Campus
+Institute
+Navigation
+iteration number = 10 ; d = 0.05
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.05
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.05
+Chicago
+Illinois
+University
+Medicine
+Business
+Culture
+Engineering
+2008
+Information
+Library
+iteration number = 4 ; d = 0.05
+University
+Business
+Chicago
+Privacy
+Human Resources
+Illinois
+Global
+Social
+International
+Medicine
+iteration number = 5 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Illinois
+Campus
+iteration number = 6 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 7 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 8 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 9 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 11 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 12 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 13 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 14 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 15 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 16 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 17 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 18 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 19 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 20 ; d = 0.05
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.1
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.1
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.1
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+Australia
+iteration number = 4 ; d = 0.1
+Chicago
+University
+Illinois
+Business
+Medicine
+Culture
+Engineering
+2008
+Information
+Privacy
+iteration number = 5 ; d = 0.1
+University
+Business
+Chicago
+Privacy
+Human Resources
+Global
+Social
+Illinois
+International
+Medicine
+iteration number = 6 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Illinois
+Campus
+iteration number = 7 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 8 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 9 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 11 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 12 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 13 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 14 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 15 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 16 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 17 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 18 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 19 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 20 ; d = 0.1
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.15
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.15
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.15
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.15
+United States
+UNited Kingdom
+2006
+Chicago
+England
+2005
+France
+Illinois
+University
+Medicine
+iteration number = 5 ; d = 0.15
+University
+Chicago
+Business
+Illinois
+Medicine
+Culture
+Engineering
+Privacy
+Human Resources
+Information
+iteration number = 6 ; d = 0.15
+University
+Business
+Chicago
+Privacy
+Human Resources
+Global
+Social
+International
+Illinois
+Medicine
+iteration number = 7 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Illinois
+Campus
+iteration number = 8 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 9 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 11 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 12 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 13 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 14 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 15 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 16 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 17 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 18 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 19 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 20 ; d = 0.15
+University
+Business
+Privacy
+Human Resources
+Global
+Chicago
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.2
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.2
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.2
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.2
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.2
+United States
+Chicago
+University
+Illinois
+Medicine
+Business
+Culture
+Engineering
+Information
+2008
+iteration number = 6 ; d = 0.2
+University
+Chicago
+Business
+Illinois
+Medicine
+Privacy
+Human Resources
+Culture
+Social
+Engineering
+iteration number = 7 ; d = 0.2
+University
+Business
+Chicago
+Privacy
+Human Resources
+Global
+Social
+International
+Illinois
+Campus
+iteration number = 8 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 9 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 11 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 12 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 13 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 14 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 15 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 16 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 17 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 18 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 19 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 20 ; d = 0.2
+University
+Business
+Privacy
+Human Resources
+Chicago
+Global
+Social
+International
+Campus
+Illinois
+iteration number = 10 ; d = 0.25
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.25
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.25
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.25
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.25
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.25
+United States
+Chicago
+University
+Illinois
+Medicine
+Business
+Culture
+Engineering
+Information
+2008
+iteration number = 7 ; d = 0.25
+University
+Chicago
+Business
+Illinois
+Privacy
+Human Resources
+Medicine
+Social
+Global
+Culture
+iteration number = 8 ; d = 0.25
+University
+Business
+Chicago
+Human Resources
+Privacy
+Global
+Social
+International
+Illinois
+University of Illinois at Urbana-Champaign
+iteration number = 9 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 10 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 11 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 12 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 13 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 14 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 15 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 16 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 17 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 18 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 19 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 20 ; d = 0.25
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 10 ; d = 0.3
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.3
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.3
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.3
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.3
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.3
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Chicago
+Canada
+2004
+iteration number = 7 ; d = 0.3
+United States
+University
+Chicago
+Business
+Illinois
+Medicine
+Culture
+Engineering
+Information
+Privacy
+iteration number = 8 ; d = 0.3
+University
+Chicago
+Business
+Human Resources
+Privacy
+Illinois
+Medicine
+Social
+Global
+University of Illinois at Urbana-Champaign
+iteration number = 9 ; d = 0.3
+University
+Business
+Chicago
+Human Resources
+Privacy
+Global
+Social
+International
+Illinois
+University of Illinois at Urbana-Champaign
+iteration number = 10 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 11 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 12 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 13 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 14 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 15 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 16 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 17 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 18 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 19 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 20 ; d = 0.3
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 10 ; d = 0.35
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.35
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.35
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.35
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.35
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.35
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.35
+United States
+UNited Kingdom
+2006
+France
+England
+Chicago
+2005
+University
+Illinois
+Medicine
+iteration number = 8 ; d = 0.35
+United States
+University
+Chicago
+Business
+Illinois
+Medicine
+Culture
+Engineering
+Privacy
+Human Resources
+iteration number = 9 ; d = 0.35
+University
+Chicago
+Business
+Human Resources
+Privacy
+Illinois
+Medicine
+Social
+University of Illinois at Urbana-Champaign
+Global
+iteration number = 10 ; d = 0.35
+University
+Business
+Chicago
+Human Resources
+Privacy
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Illinois
+iteration number = 11 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 12 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 13 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 14 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 15 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 16 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 17 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 18 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 19 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 20 ; d = 0.35
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+International
+University of Illinois at Urbana-Champaign
+Campus
+iteration number = 10 ; d = 0.4
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.4
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.4
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.4
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.4
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.4
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.4
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.4
+United States
+UNited Kingdom
+2006
+France
+England
+Chicago
+University
+2005
+Medicine
+Illinois
+iteration number = 9 ; d = 0.4
+United States
+University
+Chicago
+Business
+Illinois
+Medicine
+Culture
+Engineering
+Human Resources
+Privacy
+iteration number = 10 ; d = 0.4
+University
+Chicago
+Business
+Illinois
+Human Resources
+Privacy
+Medicine
+University of Illinois at Urbana-Champaign
+Social
+Global
+iteration number = 11 ; d = 0.4
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Global
+Illinois
+International
+iteration number = 12 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Illinois
+iteration number = 13 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 14 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 15 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 16 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 17 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 18 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 19 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 20 ; d = 0.4
+University
+Business
+Human Resources
+Privacy
+Chicago
+Global
+Social
+University of Illinois at Urbana-Champaign
+International
+Campus
+iteration number = 10 ; d = 0.45
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.45
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.45
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.45
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.45
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.45
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.45
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.45
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.45
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Chicago
+University
+Germany
+Medicine
+iteration number = 10 ; d = 0.45
+United States
+University
+Chicago
+Business
+Medicine
+Illinois
+Culture
+Engineering
+University of Illinois at Urbana-Champaign
+Information
+iteration number = 11 ; d = 0.45
+University
+Chicago
+Business
+Illinois
+Medicine
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Culture
+Social
+iteration number = 12 ; d = 0.45
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Illinois
+Social
+Global
+Medicine
+iteration number = 13 ; d = 0.45
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Global
+Illinois
+International
+iteration number = 14 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 15 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 16 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 17 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 18 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 19 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 20 ; d = 0.45
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Global
+Social
+International
+Campus
+iteration number = 10 ; d = 0.5
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.5
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.5
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.5
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.5
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.5
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.5
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.5
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.5
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.5
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+Chicago
+University
+iteration number = 11 ; d = 0.5
+United States
+University
+Chicago
+UNited Kingdom
+Medicine
+Business
+Illinois
+Culture
+Engineering
+Information
+iteration number = 12 ; d = 0.5
+University
+Chicago
+Business
+Illinois
+Medicine
+Human Resources
+Privacy
+Culture
+University of Illinois at Urbana-Champaign
+Engineering
+iteration number = 13 ; d = 0.5
+University
+Business
+Chicago
+Human Resources
+Privacy
+Illinois
+University of Illinois at Urbana-Champaign
+Medicine
+Social
+Global
+iteration number = 14 ; d = 0.5
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Illinois
+Social
+Global
+International
+iteration number = 15 ; d = 0.5
+University
+Business
+Human Resources
+Chicago
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Global
+Illinois
+International
+iteration number = 16 ; d = 0.5
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 17 ; d = 0.5
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 18 ; d = 0.5
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 19 ; d = 0.5
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 20 ; d = 0.5
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+International
+Campus
+iteration number = 10 ; d = 0.55
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.55
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.55
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.55
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.55
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.55
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.55
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.55
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.55
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.55
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.55
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.55
+United States
+UNited Kingdom
+France
+Chicago
+2006
+University
+England
+Medicine
+Illinois
+Business
+iteration number = 13 ; d = 0.55
+United States
+University
+Chicago
+Business
+Medicine
+Illinois
+Culture
+Engineering
+University of Illinois at Urbana-Champaign
+Human Resources
+iteration number = 14 ; d = 0.55
+University
+Chicago
+Business
+Illinois
+Medicine
+Human Resources
+University of Illinois at Urbana-Champaign
+Privacy
+Culture
+Social
+iteration number = 15 ; d = 0.55
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Illinois
+Medicine
+Social
+Global
+iteration number = 16 ; d = 0.55
+University
+Business
+Chicago
+Human Resources
+Privacy
+University of Illinois at Urbana-Champaign
+Illinois
+Social
+Global
+Campus
+iteration number = 17 ; d = 0.55
+University
+Business
+Human Resources
+Chicago
+Privacy
+University of Illinois at Urbana-Champaign
+Social
+Global
+Illinois
+Campus
+iteration number = 18 ; d = 0.55
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+Campus
+Illinois
+iteration number = 19 ; d = 0.55
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+Campus
+Illinois
+iteration number = 20 ; d = 0.55
+University
+Business
+Human Resources
+Privacy
+Chicago
+University of Illinois at Urbana-Champaign
+Social
+Global
+Campus
+International
+iteration number = 10 ; d = 0.6
+United States
+England
+2006
+Germany
+2005
+Canada
+UNited Kingdom
+France
+2004
+India
+iteration number = 2 ; d = 0.6
+United States
+2006
+UNited Kingdom
+2005
+England
+Canada
+France
+2004
+Germany
+Australia
+iteration number = 3 ; d = 0.6
+United States
+UNited Kingdom
+2006
+2005
+England
+France
+Canada
+2004
+Germany
+2007
+iteration number = 4 ; d = 0.6
+United States
+UNited Kingdom
+2006
+England
+2005
+France
+Canada
+Germany
+2004
+Australia
+iteration number = 5 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 6 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 7 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 8 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 9 ; d = 0.6
+United States
+UNited Kingdom
+2006
+France
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 10 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 11 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 12 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+World War II
+iteration number = 13 ; d = 0.6
+United States
+UNited Kingdom
+France
+2006
+England
+2005
+Germany
+Canada
+2004
+Chicago
+iteration number = 14 ; d = 0.6
+United States
+UNited Kingdom
+University
+Chicago
+Medicine
+France
+Illinois
+Business
+2006
+Culture
+iteration number = 15 ; d = 0.6
+United States
+University
+Chicago
+Business
+Medicine
+Illinois
+Culture
+University of Illinois at Urbana-Champaign
+Engineering
+Human Resources
+iteration number = 16 ; d = 0.6
+University
+Chicago
+Business
+Illinois
+Medicine
+University of Illinois at Urbana-Champaign
+Human Resources
+Privacy
+Culture
+Social
+iteration number = 17 ; d = 0.6
+University
+Business
+Chicago
+Human Resources
+University of Illinois at Urbana-Champaign
+Privacy
+Illinois
+Medicine
+Social
+Global
