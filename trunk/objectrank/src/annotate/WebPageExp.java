@@ -1,19 +1,13 @@
 package annotate;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
+
+import linkGraphProcess.Processor;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -22,7 +16,6 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.TermQuery;
-import org.htmlparser.Attribute;
 import org.htmlparser.Node;
 import org.htmlparser.Parser;
 import org.htmlparser.nodes.RemarkNode;
@@ -32,14 +25,17 @@ import org.htmlparser.util.NodeIterator;
 import org.htmlparser.util.NodeList;
 
 public class WebPageExp {
-	public static String linkRecomIdxFold = "E:\\NamedEntityAnnotatorIndex\\LinkSuggestIndex_v4";
+	
+//	public static String linkRecomIdxFold = "E:\\NamedEntityAnnotatorIndex\\LinkSuggestIndex_v4";
+	public static String linkRecomIdxFold = "E:\\NER\\LinkSuggestIndex_v4";
+	
 	public static double threshold = 0.5;
 	public static int maxPhraseLength = 6;
 	public static Annotation[] annotationBuffer = new Annotation[999999];
 	public static int numAnnotation = 0;
 	public static String outputFileName = "E:\\NamedEntityAnnotatorTest\\output.html";
 	public static HashSet<String> stopwords = new HashSet<String>();
-	public static String stopwordsFile = "E:\\users\\fulinyun\\objectrank\\info\\stopwords.txt";
+	public static String stopwordsFile = Processor.projectFolder+"info\\stopwords.txt";
 	
 	static {
 		try {
