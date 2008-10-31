@@ -65,7 +65,7 @@ import linkGraphProcess.Processor;
 		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
 		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
 		double[] pr = Processor.calculatePR(1.0, 12, Processor.matrix, Processor.olinkNum, inPage, 0.4);
-		String[] list = Processor.selectTop(pr, 10);
+		String[] list = Processor.selectTop(pr, 10, new double[10]);
 		for (String s : list) print.println("<p>" + s + "</p>");
 		print.close();
 	}

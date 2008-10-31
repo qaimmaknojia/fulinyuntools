@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -13,6 +14,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -29,7 +31,7 @@ public class Processor {
 	public static String temp = "E:\\temp.txt";
 	public static String idMap = "E:\\users\\fulinyun\\objectrank\\info\\name2id.txt";
 	public static String idMatrix = "E:\\users\\fulinyun\\objectrank\\info\\idMatrix";
-	public static String idMatrixUnique = "E:\\users\\fulinyun\\objectrank\\info\\idMatrixUnique";
+	public static String linkFromMatrixUnique = "E:\\users\\fulinyun\\objectrank\\info\\linkFromMatrixUnique";
 	public static String outlinkNum = "E:\\users\\fulinyun\\objectrank\\info\\outlinkNum";
 	public static String outlinkNumUnique = "E:\\users\\fulinyun\\objectrank\\info\\outlinkNumUnique";
 	public static int numId = 1797355;
@@ -37,6 +39,7 @@ public class Processor {
 	public static int[][] matrix;
 	public static int[] olinkNum;
 	public static HashMap<String, Integer> idMapMap;
+	public static String linkToMatrixUnique = "E:\\users\\fulinyun\\objectrank\\info\\linkToMatrixUnique";
 	
 	// PR(A) = (1-d)b + d(PR(t1)/C(t1) + ... + PR(tn)/C(tn))
 	public static double[] calculatePR(double initialPR, int numIteration, 
@@ -68,7 +71,7 @@ public class Processor {
 		return pr1;
 	}
 	
-	public static String[] selectTop(final double[] pr, int topNum) {
+	public static String[] selectTop(final double[] pr, int topNum, double[] score) {
 		Integer[] ret = new Integer[pr.length];
 		for (int i = 0; i < ret.length; i++) ret[i] = i;
 		Arrays.sort(ret, new Comparator<Integer>() {
@@ -79,7 +82,10 @@ public class Processor {
 			}
 		});
 		String[] retStr = new String[topNum];
-		for (int i = 0; i < topNum; i++) retStr[i] = nameMap[ret[i]];
+		for (int i = 0; i < topNum; i++) {
+			retStr[i] = nameMap[ret[i]];
+			score[i] = pr[ret[i].intValue()];
+		}
 		return retStr;
 	}
 	
@@ -137,7 +143,7 @@ public class Processor {
 		return ret;
 	}
 	
-	private static int[][] loadIdMatrix(String linkFromMatrix) throws Exception {
+	private static int[][] loadLinkFromMatrix(String linkFromMatrix) throws Exception {
 		System.out.println("begin loading id matrix");
 //		long length = new File(linkFromMatrix).length();
 //		FileChannel fc = new RandomAccessFile(linkFromMatrix, "r").getChannel();
@@ -257,7 +263,7 @@ public class Processor {
 		dos.close();
 	}
 
-	public static void getIdMatrix(String input, String map, String output) throws Exception {
+	public static void createLinkFromMatrix(String input, String map, String output) throws Exception {
 		HashMap<String, Integer> idmap = loadIdMap(map);
 		System.out.println("begin getting id matrix");
 		BufferedReader br = new BufferedReader(new FileReader(input));
@@ -281,7 +287,7 @@ public class Processor {
 		br.close();
 	}
 	
-	public static void getIdMatrixUnique(String input, String map, String output) throws Exception {
+	public static void createLinkFromMatrixUnique(String input, String map, String output) throws Exception {
 		HashMap<String, Integer> idmap = loadIdMap(map);
 		System.out.println("begin getting id matrix");
 		BufferedReader br = new BufferedReader(new FileReader(input));
@@ -473,7 +479,7 @@ public class Processor {
 
 	public static HashSet<Integer> getInPageId(String[] names) {
 		HashSet<Integer> ret = new HashSet<Integer>();
-		for (String name : names) ret.add(idMapMap.get(name));
+		for (String name : names) if (idMapMap.containsKey(name)) ret.add(idMapMap.get(name));
 		return ret;
 	}
 	
@@ -490,59 +496,112 @@ public class Processor {
 		br.close();
 	}
 	
+	public static void createLinkToMatrix(String linkFromMatrix, String output) throws Exception {
+		System.out.println("begin reading link from matrix");
+		DataInputStream dis = new DataInputStream(new FileInputStream(linkFromMatrix));
+		HashMap<Integer, ArrayList<Integer>> linkToMatrix = new HashMap<Integer, ArrayList<Integer>>();
+		int num = dis.readInt();
+		for (int i = 0; i < num; i++) {
+			int id = dis.readInt();
+			int n = dis.readInt();
+			for (int j = 0; j < n; j++) {
+				int key = dis.readInt();
+				if (linkToMatrix.containsKey(key)) linkToMatrix.get(key).add(id);
+				else {
+					ArrayList<Integer> value = new ArrayList<Integer>();
+					value.add(id);
+					linkToMatrix.put(key, value);
+				}
+			}
+			if ((i+1)%1000000 == 0) System.out.println(i+1);
+		}
+		dis.close();
+		System.out.println("begin writing link to matrix");
+		DataOutputStream dos = new DataOutputStream(new FileOutputStream(output));
+		int lineCount = 0;
+		dos.writeInt(linkToMatrix.size());
+		for (Integer i : linkToMatrix.keySet()) {
+			dos.writeInt(i.intValue());
+			ArrayList<Integer> list = linkToMatrix.get(i);
+			dos.writeInt(list.size());
+			for (Integer j : list) dos.writeInt(j.intValue());
+			lineCount++;
+			if (lineCount%1000000 == 0) System.out.println(lineCount);
+		}
+		dos.close();
+	}
+	
+	public static void tunePara(String url, String output) throws Exception {
+		PrintWriter pw = new PrintWriter(new FileWriter(output));
+		pw.println(url);
+		String[] recognizedNames = WebPageExp.recognize(url);
+		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
+		for (Integer i : inPage) pw.println(Processor.nameMap[i.intValue()]);
+//		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
+		int topNum = 10;
+		for (int i = 5; i < 51; i += 5) {
+			System.out.println("i = " + i + " ; j = 5");
+			System.gc();
+			double d = (i+0.0)/100.0;
+			double[] pr = calculatePR(1.0, 5, matrix, olinkNum, inPage, d);
+			double[] score = new double[topNum];
+			String[] list = selectTop(pr, topNum, score);
+			pw.println("iteration number = " + 5 + " ; d = " + d);
+			pw.flush();
+			for (int j = 0; j < topNum; j++) {
+				pw.println(list[j] + "\t" + score[j]);
+				pw.flush();
+			}
+			for (int j = 6; j < 13; j++) {
+				System.out.println("i = " + i + " ; j = " + j + " " + new Date().toString());
+				System.gc();
+				pr = calculatePR1moreRound(pr, matrix, olinkNum, inPage, d);
+				list = selectTop(pr, 10, score);
+				pw.println("iteration number = " + j + " ; d = " + d);
+				pw.flush();
+				for (int k = 0; k < topNum; k++) {
+					pw.println(list[k] + "\t" + score[k]);
+					pw.flush();
+				}
+			}
+		}
+		pw.close();
+
+	}
+	
 	public static void main(String[] args) throws Exception {
 //		checkFile(linkFrom);
 //		toID(linkFrom, idMap);
 //		getMissingNames(linkFrom, idMap, "E:\\missingNames");
 //		uniqueMissingNames("E:\\missingNames", "E:\\missingNamesUnique");
 //		addId2missingNames("E:\\missingNamesUnique", "E:\\missingNamesWithId");
-//		getIdMatrix(linkFrom, idMap, idMatrix);
+//		createLinkFromMatrix(linkFrom, idMap, idMatrix);
 //		getOutlinkNum(idMatrix, outlinkNum);
 
-//		getIdMatrixUnique(linkFrom, idMap, idMatrixUnique);	//running
-//		getOutlinkNumUnique(idMatrixUnique, outlinkNumUnique);	//to run
-		
-		String test = "E:\\testUnique.txt";
-		PrintWriter pw = new PrintWriter(new FileWriter(test));
-		String[] recognizedNames = WebPageExp.recognize("http://illinois.edu");
-		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
-		for (Integer i : inPage) pw.println(Processor.nameMap[i.intValue()]);
-		for (int i = 0; i < 101; i += 5) {
-			System.out.println("i = " + i + " ; j = 1");
-			System.gc();
-			double d = (i+0.0)/100.0;
-			double[] pr = calculatePR(1.0, 1, matrix, olinkNum, inPage, d);
-			String[] list = selectTop(pr, 10);
-			pw.println("iteration number = " + 10 + " ; d = " + d);
-			pw.flush();
-			for (String s : list) {
-				pw.println(s);
-				pw.flush();
-			}
-			for (int j = 2; j < 21; j++) {
-				System.out.println("i = " + i + " ; j = " + j + " " + new Date().toString());
-				System.gc();
-				pr = calculatePR1moreRound(pr, matrix, olinkNum, inPage, d);
-				list = selectTop(pr, 10);
-				pw.println("iteration number = " + j + " ; d = " + d);
-				pw.flush();
-				for (String s : list) {
-					pw.println(s);
-					pw.flush();
-				}
-			}
-		}
-		pw.close();
-		
-		
+//		createLinkFromMatrixUnique(linkFrom, idMap, linkFromMatrixUnique);	//running
+//		getOutlinkNumUnique(linkFromMatrixUnique, outlinkNumUnique);	//to run
+
 //		getNameMatrix("E:\\nameMatrix.txt");
 //		compareFile("E:\\nameMatrix.txt", linkFrom);
+		
+//		createLinkToMatrix(linkFromMatrixUnique, linkToMatrixUnique);
+
+		File[] fn = new File("E:\\users\\fulinyun\\objectrank\\res\\").listFiles(new FileFilter() {
+			public boolean accept(File f) {
+				return f.getName().endsWith(".htm");
+			}
+		});
+		for (int i = 0; i < fn.length; i++) {
+			File f = fn[i];
+			System.out.println("tuning " + f.getName());
+			tunePara(f.getAbsolutePath(), "E:\\" + f.getName() + ".txt");
+		}
 	}
 	
 	static {
 		try {
 			System.out.println(new Date().toString());
-			matrix = loadIdMatrix(idMatrixUnique);
+			matrix = loadLinkFromMatrix(linkFromMatrixUnique);
 			System.out.println(new Date().toString());
 			olinkNum = getOutlinkNum(outlinkNumUnique);
 			System.out.println(new Date().toString());
