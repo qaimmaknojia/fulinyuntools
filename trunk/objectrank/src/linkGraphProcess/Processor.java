@@ -26,20 +26,24 @@ import annotate.WebPageExp;
 public class Processor {
 
 //	public static String linkFrom = "\\\\poseidon\\team\\Semantic Search\\data\\wikipedia data\\entityGraphLinkFrom";
-	public static String linkFrom = "E:\\entityGraphLinkFrom";
+	
+	public static String projectFolder = "E:\\eclipse_workspace\\objectrank\\";
+//	public static String projectfolder = "E:\\users\\fulinyun\\objectrank\\";
+	
+//	public static String linkFrom = "E:\\entityGraphLinkFrom";
 	public static int maxLine = 1200000;
 	public static String temp = "E:\\temp.txt";
-	public static String idMap = "E:\\users\\fulinyun\\objectrank\\info\\name2id.txt";
-	public static String idMatrix = "E:\\users\\fulinyun\\objectrank\\info\\idMatrix";
-	public static String linkFromMatrixUnique = "E:\\users\\fulinyun\\objectrank\\info\\linkFromMatrixUnique";
-	public static String outlinkNum = "E:\\users\\fulinyun\\objectrank\\info\\outlinkNum";
-	public static String outlinkNumUnique = "E:\\users\\fulinyun\\objectrank\\info\\outlinkNumUnique";
+	public static String idMap = projectFolder+"info\\name2id.txt";
+	public static String idMatrix = projectFolder+"info\\idMatrix";
+	public static String linkFromMatrixUnique = projectFolder+"info\\linkFromMatrixUnique";
+	public static String outlinkNum = projectFolder+"info\\outlinkNum";
+	public static String outlinkNumUnique = projectFolder+"info\\outlinkNumUnique";
 	public static int numId = 1797355;
 	public static String[] nameMap;
 	public static int[][] matrix;
 	public static int[] olinkNum;
 	public static HashMap<String, Integer> idMapMap;
-	public static String linkToMatrixUnique = "E:\\users\\fulinyun\\objectrank\\info\\linkToMatrixUnique";
+	public static String linkToMatrixUnique = projectFolder+"info\\linkToMatrixUnique";
 	
 	// PR(A) = (1-d)b + d(PR(t1)/C(t1) + ... + PR(tn)/C(tn))
 	public static double[] calculatePR(double initialPR, int numIteration, 
@@ -540,28 +544,28 @@ public class Processor {
 //		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
 		int topNum = 10;
 		for (int i = 5; i < 51; i += 5) {
-			System.out.println("i = " + i + " ; j = 5");
+			System.out.println("i = " + i + " ; j = 3");
 			System.gc();
 			double d = (i+0.0)/100.0;
-			double[] pr = calculatePR(1.0, 5, matrix, olinkNum, inPage, d);
+			double[] pr = calculatePR(1.0, 3, matrix, olinkNum, inPage, d);
 			double[] score = new double[topNum];
 			String[] list = selectTop(pr, topNum, score);
-			pw.println("iteration number = " + 5 + " ; d = " + d);
-			pw.flush();
+			pw.println("iteration number = " + 3 + " ; d = " + d);
+//			pw.flush();
 			for (int j = 0; j < topNum; j++) {
 				pw.println(list[j] + "\t" + score[j]);
-				pw.flush();
+//				pw.flush();
 			}
-			for (int j = 6; j < 13; j++) {
+			for (int j = 4; j < 15; j++) {
 				System.out.println("i = " + i + " ; j = " + j + " " + new Date().toString());
 				System.gc();
 				pr = calculatePR1moreRound(pr, matrix, olinkNum, inPage, d);
 				list = selectTop(pr, 10, score);
 				pw.println("iteration number = " + j + " ; d = " + d);
-				pw.flush();
+//				pw.flush();
 				for (int k = 0; k < topNum; k++) {
 					pw.println(list[k] + "\t" + score[k]);
-					pw.flush();
+//					pw.flush();
 				}
 			}
 		}
@@ -586,7 +590,7 @@ public class Processor {
 		
 //		createLinkToMatrix(linkFromMatrixUnique, linkToMatrixUnique);
 
-		File[] fn = new File("E:\\users\\fulinyun\\objectrank\\res\\").listFiles(new FileFilter() {
+		File[] fn = new File("E:\\eclipse_workspace\\objectrank\\res\\").listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				return f.getName().endsWith(".htm");
 			}
@@ -594,7 +598,7 @@ public class Processor {
 		for (int i = 0; i < fn.length; i++) {
 			File f = fn[i];
 			System.out.println("tuning " + f.getName());
-			tunePara(f.getAbsolutePath(), "E:\\" + f.getName() + ".txt");
+			tunePara(f.getAbsolutePath(), "E:\\objectRankTuning\\" + f.getName() + ".txt");
 		}
 	}
 	
