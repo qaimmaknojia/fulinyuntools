@@ -130,6 +130,7 @@ public class WebPageExp {
 	
 	public ArrayList<Annotation> recognize(String url, Searcher searcher) throws Exception {
 		Parser parser = new Parser(url);
+		parser.setEncoding("utf-8");
 		ArrayList<Annotation> ret = new ArrayList<Annotation>();
 		for (NodeIterator i = parser.elements(); i.hasMoreNodes(); ) 
 			ret.addAll(recognize(i.nextNode(), searcher));
