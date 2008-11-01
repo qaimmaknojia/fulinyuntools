@@ -1333,7 +1333,7 @@ History	0.5151597960351644
 Oracle machine	0.5105999916105172
 Stephen Cole Kleene	0.5097834604099075
 Rice's Theorem	0.509167781204745
-iteration number = 13 ; d = 0.5
+iteration number = 13 ; d = 0.5	*
 Michael Sipser	0.5637711881442579
 Recursion theory	0.5355881673952791
 Abstract machine	0.5290725918051455
@@ -1344,7 +1344,7 @@ Oracle machine	0.5105410624396097
 Stephen Cole Kleene	0.5095531550109459
 Rice's Theorem	0.5091216976750168
 Petri net	0.5085284544893492
-iteration number = 14 ; d = 0.5
+iteration number = 14 ; d = 0.5	*
 Michael Sipser	0.5637062119170042
 Recursion theory	0.5353876225548525
 Pushdown automaton	0.5290153242598414

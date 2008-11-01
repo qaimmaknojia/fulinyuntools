@@ -47,7 +47,7 @@ August	0.9503041473897889
 Navigation	0.9502818457392289
 License	0.9501755406449476
 Simulation	0.9501393734778979
-iteration number = 5 ; d = 0.05
+iteration number = 5 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548985549657809
 Plasma modeling	0.9547500000715466
 Science	0.9510998958776482
@@ -58,7 +58,7 @@ History	0.9500573843890693
 Main	0.9500547049526016
 Simulation	0.9500397270090055
 Related	0.9500368375435833
-iteration number = 6 ; d = 0.05
+iteration number = 6 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548975060388458
 Plasma modeling	0.954750000001899
 Science	0.9510449553083964
@@ -69,7 +69,7 @@ Main	0.950052224438912
 Related	0.950036581594115
 Simulation	0.9500351919421216
 License	0.9500218372827722
-iteration number = 7 ; d = 0.05
+iteration number = 7 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974568897503
 Plasma modeling	0.9547500000000999
 Science	0.9510424786260927
@@ -80,7 +80,7 @@ Main	0.9500521190025286
 Related	0.9500365707479848
 Simulation	0.9500349888308334
 License	0.95002156218399
-iteration number = 8 ; d = 0.05
+iteration number = 8 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974546127631
 Plasma modeling	0.9547500000000086
 Science	0.951042367790467
@@ -91,7 +91,7 @@ Main	0.9500521144619156
 Related	0.9500365702816495
 Simulation	0.950034979731967
 License	0.9500215502621442
-iteration number = 9 ; d = 0.05
+iteration number = 9 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974545089509
 Plasma modeling	0.9547500000000039
 Science	0.9510423628600875
@@ -102,7 +102,7 @@ Main	0.9500521142643067
 Related	0.9500365702615929
 Simulation	0.9500349793264463
 License	0.9500215497448674
-iteration number = 10 ; d = 0.05
+iteration number = 10 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974545042598
 Plasma modeling	0.9547500000000037
 Science	0.9510423626415978
@@ -113,18 +113,18 @@ Main	0.9500521142556722
 Related	0.9500365702607279
 Simulation	0.9500349793084285
 License	0.9500215497223953
-iteration number = 11 ; d = 0.05
-Magnetohydrodynamics	0.9548974545040493
-Plasma modeling	0.9547500000000037
+iteration number = 11 ; d = 0.05	*5
+Magnetohydrodynamics	0.9548974545040493	*
+Plasma modeling	0.9547500000000037	*
 Science	0.9510423626319437
-Stochastic	0.9505451780016784
+Stochastic	0.9505451780016784	*
 Wikipedia	0.9500749422086149
-Computation	0.9500573091709562
+Computation	0.9500573091709562	*
 Main	0.9500521142552942
 Related	0.9500365702606905
-Simulation	0.9500349793076303
+Simulation	0.9500349793076303	*
 License	0.950021549721418
-iteration number = 12 ; d = 0.05
+iteration number = 12 ; d = 0.05	*5
 Magnetohydrodynamics	0.95489745450404
 Plasma modeling	0.9547500000000037
 Science	0.9510423626315181
@@ -135,7 +135,7 @@ Main	0.9500521142552777
 Related	0.9500365702606889
 Simulation	0.950034979307595
 License	0.9500215497213754
-iteration number = 13 ; d = 0.05
+iteration number = 13 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974545040395
 Plasma modeling	0.9547500000000037
 Science	0.9510423626314994
@@ -146,7 +146,7 @@ Main	0.9500521142552769
 Related	0.9500365702606888
 Simulation	0.9500349793075934
 License	0.9500215497213735
-iteration number = 14 ; d = 0.05
+iteration number = 14 ; d = 0.05	*5
 Magnetohydrodynamics	0.9548974545040395
 Plasma modeling	0.9547500000000037
 Science	0.9510423626314986
@@ -190,7 +190,7 @@ Navigation	0.9004454859992581
 August	0.9004301145958972
 Computation	0.9003016703547343
 License	0.900295208393601
-iteration number = 6 ; d = 0.1
+iteration number = 6 ; d = 0.1	*
 Magnetohydrodynamics	0.9095640619005884
 Plasma modeling	0.9090000001215285
 Science	0.90220480365365
@@ -201,7 +201,7 @@ Main	0.900205511305553
 History	0.90017602848614
 Simulation	0.9001470699417288
 Related	0.9001393493866333
-iteration number = 7 ; d = 0.1
+iteration number = 7 ; d = 0.1	*
 Magnetohydrodynamics	0.909561069039296
 Plasma modeling	0.9090000000125358
 Science	0.9020537196143222
@@ -212,7 +212,7 @@ Main	0.9001990671908662
 Related	0.9001386864205546
 Simulation	0.900134680300959
 License	0.900083886100784
-iteration number = 8 ; d = 0.1
+iteration number = 8 ; d = 0.1	*
 Magnetohydrodynamics	0.909560791501337
 Plasma modeling	0.909000000001503
 Science	0.9020401930001954
@@ -223,7 +223,7 @@ Main	0.9001985124418036
 Related	0.9001386294126027
 Simulation	0.9001335699655445
 License	0.9000824293230034
-iteration number = 9 ; d = 0.1
+iteration number = 9 ; d = 0.1	*
 Magnetohydrodynamics	0.90956076618273
 Plasma modeling	0.9090000000003363
 Science	0.9020389893416686
@@ -234,7 +234,7 @@ Main	0.9001984641655676
 Related	0.9001386245095936
 Simulation	0.9001334709785758
 License	0.900082302914559
-iteration number = 10 ; d = 0.1
+iteration number = 10 ; d = 0.1	*
 Magnetohydrodynamics	0.909560763893594
 Plasma modeling	0.9090000000002237
 Science	0.9020388826457767
@@ -245,7 +245,7 @@ Main	0.900198459947065
 Related	0.9001386240866852
 Simulation	0.9001334621811046
 License	0.9000822919319869
-iteration number = 11 ; d = 0.1
+iteration number = 11 ; d = 0.1	*
 Magnetohydrodynamics	0.9095607636882092
 Plasma modeling	0.909000000000213
 Science	0.9020388732159916
@@ -256,7 +256,7 @@ Main	0.9001984595777285
 Related	0.9001386240501381
 Simulation	0.9001334614014789
 License	0.900082290976766
-iteration number = 12 ; d = 0.1
+iteration number = 12 ; d = 0.1	*
 Magnetohydrodynamics	0.909560763669878
 Plasma modeling	0.909000000000212
 Science	0.9020388723843772
@@ -267,7 +267,7 @@ Main	0.9001984595453804
 Related	0.9001386240469752
 Simulation	0.9001334613325319
 License	0.9000822908936148
-iteration number = 13 ; d = 0.1
+iteration number = 13 ; d = 0.1	*
 Magnetohydrodynamics	0.9095607636682487
 Plasma modeling	0.9090000000002119
 Science	0.9020388723111578
@@ -278,7 +278,7 @@ Main	0.9001984595425477
 Related	0.9001386240467011
 Simulation	0.9001334613264453
 License	0.9000822908863714
-iteration number = 14 ; d = 0.1
+iteration number = 14 ; d = 0.1	*
 Magnetohydrodynamics	0.9095607636681042
 Plasma modeling	0.9090000000002119
 Science	0.9020388723047194
@@ -333,7 +333,7 @@ Computation	0.8505525363911439
 Navigation	0.8505266638247433
 Main	0.8505043231395899
 August	0.8504422546147371
-iteration number = 7 ; d = 0.15
+iteration number = 7 ; d = 0.15	*
 Magnetohydrodynamics	0.8639512534448583
 Plasma modeling	0.8627500002128166
 Science	0.8532384031772642
@@ -344,7 +344,7 @@ Main	0.8504343812754374
 Simulation	0.8503064806108579
 History	0.8502997096121301
 Related	0.8502957701187587
-iteration number = 8 ; d = 0.15
+iteration number = 8 ; d = 0.15	*
 Magnetohydrodynamics	0.8639467492234573
 Plasma modeling	0.8627500000353436
 Science	0.853018570923453
@@ -355,7 +355,7 @@ Main	0.8504253547804794
 Related	0.8502948419253771
 Simulation	0.8502884375885559
 License	0.8501798160624481
-iteration number = 9 ; d = 0.15
+iteration number = 9 ; d = 0.15	*
 Magnetohydrodynamics	0.8639461325586902
 Plasma modeling	0.8627500000070366
 Science	0.8529892222401976
@@ -366,7 +366,7 @@ Main	0.8504241767577244
 Related	0.850294722198655
 Simulation	0.8502860243544681
 License	0.8501767304954674
-iteration number = 10 ; d = 0.15
+iteration number = 10 ; d = 0.15	*
 Magnetohydrodynamics	0.8639460488911465
 Plasma modeling	0.8627500000029373
 Science	0.8529853192755951
@@ -377,7 +377,7 @@ Main	0.8504240223649927
 Related	0.8502947067096949
 Simulation	0.8502857025893493
 License	0.8501763284002415
-iteration number = 11 ; d = 0.15
+iteration number = 11 ; d = 0.15	*
 Magnetohydrodynamics	0.8639460376276952
 Plasma modeling	0.862750000002347
 Science	0.8529848017987569
@@ -388,7 +388,7 @@ Main	0.850424002089365
 Related	0.8502947047020545
 Simulation	0.8502856598125664
 License	0.8501762759436299
-iteration number = 12 ; d = 0.15
+iteration number = 12 ; d = 0.15	*
 Magnetohydrodynamics	0.8639460361194177
 Plasma modeling	0.8627500000022653
 Science	0.8529847333380454
@@ -399,7 +399,7 @@ Main	0.8504239994255801
 Related	0.8502947044414514
 Simulation	0.8502856541374993
 License	0.8501762690944437
-iteration number = 13 ; d = 0.15
+iteration number = 13 ; d = 0.15	*
 Magnetohydrodynamics	0.8639460359182874
 Plasma modeling	0.8627500000022541
 Science	0.8529847242959846
@@ -410,7 +410,7 @@ Main	0.8504239990756934
 Related	0.850294704407576
 Simulation	0.8502856533859631
 License	0.850176268199506
-iteration number = 14 ; d = 0.15
+iteration number = 14 ; d = 0.15	*
 Magnetohydrodynamics	0.8639460358915501
 Plasma modeling	0.8627500000022525
 Science	0.8529847231032912
@@ -465,7 +465,7 @@ August	0.802365858091693
 Stochastic	0.802335742522831
 License	0.8014752447976596
 Simulation	0.8013525522162632
-iteration number = 7 ; d = 0.2
+iteration number = 7 ; d = 0.2	*
 Magnetohydrodynamics	0.8180480089895544
 Plasma modeling	0.8160000015893127
 Science	0.8057749580754677
@@ -476,7 +476,7 @@ Computation	0.8008728826353996
 Main	0.8007913768779338
 Simulation	0.8006376288617302
 Navigation	0.8006290100878003
-iteration number = 8 ; d = 0.2
+iteration number = 8 ; d = 0.2	*
 Magnetohydrodynamics	0.8180160467303961
 Plasma modeling	0.8160000003424047
 Science	0.8042126000321679
@@ -487,7 +487,7 @@ Main	0.8007271400451984
 Simulation	0.8005094117148615
 Related	0.8004947543024774
 History	0.8004384675012209
-iteration number = 9 ; d = 0.2
+iteration number = 9 ; d = 0.2	*
 Magnetohydrodynamics	0.8180102089089056
 Plasma modeling	0.8160000000755819
 Science	0.8039344249839501
@@ -498,7 +498,7 @@ Main	0.800715964879806
 Related	0.8004936176390864
 Simulation	0.8004865421337284
 License	0.8003035515188638
-iteration number = 10 ; d = 0.2
+iteration number = 10 ; d = 0.2	*
 Magnetohydrodynamics	0.8180091523284552
 Plasma modeling	0.8160000000240285
 Science	0.8038850916128633
@@ -509,7 +509,7 @@ Main	0.800714012257247
 Related	0.800493421595137
 Simulation	0.8004824757134125
 License	0.8002984641501703
-iteration number = 11 ; d = 0.2
+iteration number = 11 ; d = 0.2	*
 Magnetohydrodynamics	0.8180089626159659
 Plasma modeling	0.8160000000141051
 Science	0.803876369288369
@@ -520,7 +520,7 @@ Main	0.8007136703597577
 Related	0.8004933877171003
 Simulation	0.8004817548132853
 License	0.8002975792760633
-iteration number = 12 ; d = 0.2
+iteration number = 12 ; d = 0.2	*
 Magnetohydrodynamics	0.818008928735177
 Plasma modeling	0.8160000000122728
 Science	0.8038748305504837
@@ -531,7 +531,7 @@ Main	0.8007136104681266
 Related	0.8004933818541681
 Simulation	0.80048162728
 License	0.8002974252336172
-iteration number = 13 ; d = 0.2
+iteration number = 13 ; d = 0.2	*
 Magnetohydrodynamics	0.8180089227099981
 Plasma modeling	0.8160000000119374
 Science	0.8038745595544253
@@ -542,7 +542,7 @@ Main	0.8007135999788646
 Related	0.8004933808380901
 Simulation	0.8004816047595318
 License	0.8002973983975974
-iteration number = 14 ; d = 0.2
+iteration number = 14 ; d = 0.2	*
 Magnetohydrodynamics	0.8180089216418964
 Plasma modeling	0.8160000000118768
 Science	0.8038745118905717
@@ -597,7 +597,7 @@ Navigation	0.7585292485956314
 Wikipedia	0.7583339181063836
 License	0.7549325809979625
 Simulation	0.7540335805692372
-iteration number = 7 ; d = 0.25
+iteration number = 7 ; d = 0.25	*
 Magnetohydrodynamics	0.7718909376033722
 Plasma modeling	0.7687500075642695
 Science	0.7637642158088535
@@ -608,7 +608,7 @@ Navigation	0.7521791576186682
 August	0.7519916401382449
 Computation	0.7515742966739126
 Simulation	0.751455163641261
-iteration number = 8 ; d = 0.25
+iteration number = 8 ; d = 0.25	*
 Magnetohydrodynamics	0.7717470235744358
 Plasma modeling	0.7687500020125952
 Science	0.7567173553007096
@@ -619,7 +619,7 @@ Computation	0.7512523625712098
 Main	0.7511326825044448
 Simulation	0.7508769306196404
 Navigation	0.7507746647468317
-iteration number = 9 ; d = 0.25
+iteration number = 9 ; d = 0.25	*
 Magnetohydrodynamics	0.7717141459472382
 Plasma modeling	0.7687500005171459
 Science	0.7551485951388063
@@ -630,7 +630,7 @@ Main	0.7510696005850113
 Simulation	0.7507479816945228
 Related	0.7507249993993952
 History	0.7506110289857092
-iteration number = 10 ; d = 0.25
+iteration number = 10 ; d = 0.25	*
 Magnetohydrodynamics	0.7717067039208599
 Plasma modeling	0.768750000155702
 Science	0.7548007580161327
@@ -641,7 +641,7 @@ Main	0.751055824482529
 Related	0.7507236150714021
 Simulation	0.750719315750581
 License	0.750449409453262
-iteration number = 11 ; d = 0.25
+iteration number = 11 ; d = 0.25	*
 Magnetohydrodynamics	0.7717050330192967
 Plasma modeling	0.7687500000685024
 Science	0.7547238732699787
@@ -652,7 +652,7 @@ Main	0.7510528093636594
 Related	0.7507233160708011
 Simulation	0.7507129624371308
 License	0.7504416027531146
-iteration number = 12 ; d = 0.25
+iteration number = 12 ; d = 0.25	*
 Magnetohydrodynamics	0.7717046599065618
 Plasma modeling	0.7687500000483619
 Science	0.754706916986784
@@ -663,7 +663,7 @@ Main	0.7510521491384818
 Related	0.7507232513954325
 Simulation	0.7507115573253177
 License	0.750439904056552
-iteration number = 13 ; d = 0.25
+iteration number = 13 ; d = 0.25	*
 Magnetohydrodynamics	0.7717045769487401
 Plasma modeling	0.7687500000437512
 Science	0.7547031838288188
@@ -674,7 +674,7 @@ Main	0.7510520045965128
 Related	0.7507232373857693
 Simulation	0.7507112471444637
 License	0.7504395341542817
-iteration number = 14 ; d = 0.25
+iteration number = 14 ; d = 0.25	*
 Magnetohydrodynamics	0.7717045585630262
 Plasma modeling	0.7687500000427084
 Science	0.7547023630208728
@@ -751,7 +751,7 @@ Navigation	0.7022276278264491
 Computation	0.7019710218865505
 August	0.7018942643722609
 Main	0.7017706603163743
-iteration number = 9 ; d = 0.3
+iteration number = 9 ; d = 0.3	*
 Magnetohydrodynamics	0.7250369801048806
 Plasma modeling	0.721000002567916
 Science	0.707764448750625
@@ -762,7 +762,7 @@ Computation	0.7016772664245228
 Main	0.7015145861684466
 Simulation	0.7011539696788365
 Related	0.7009819521421041
-iteration number = 10 ; d = 0.3
+iteration number = 10 ; d = 0.3	*
 Magnetohydrodynamics	0.7250008001638742
 Plasma modeling	0.7210000008198599
 Science	0.7060714629619599
@@ -773,7 +773,7 @@ Main	0.7014474882133745
 Simulation	0.7010144765877662
 Related	0.7009752030733433
 History	0.7008373222334975
-iteration number = 11 ; d = 0.3
+iteration number = 11 ; d = 0.3	*
 Magnetohydrodynamics	0.7249910483778423
 Plasma modeling	0.7210000003122575
 Science	0.7056223359784543
@@ -784,7 +784,7 @@ Main	0.7014298661028024
 Simulation	0.7009773712371768
 Related	0.7009734539858314
 License	0.7006121253702698
-iteration number = 12 ; d = 0.3
+iteration number = 12 ; d = 0.3	*
 Magnetohydrodynamics	0.7249884344656571
 Plasma modeling	0.7210000001714616
 Science	0.7055034598418709
@@ -795,7 +795,7 @@ Main	0.7014252355260125
 Related	0.7009730000283576
 Simulation	0.700967522358205
 License	0.700600206750463
-iteration number = 13 ; d = 0.3
+iteration number = 13 ; d = 0.3	*
 Magnetohydrodynamics	0.7249877368900169
 Plasma modeling	0.7210000001327495
 Science	0.7054720501652062
@@ -806,7 +806,7 @@ Main	0.7014240189679142
 Related	0.7009728820376274
 Simulation	0.7009649130991966
 License	0.7005970924541605
-iteration number = 14 ; d = 0.3
+iteration number = 14 ; d = 0.3	*
 Magnetohydrodynamics	0.724987551334154
 Plasma modeling	0.7210000001222385
 Science	0.7054637623062697
@@ -894,7 +894,7 @@ Navigation	0.6524837243239534
 Computation	0.6524323996217828
 Main	0.6521770472843363
 August	0.6520040648864517
-iteration number = 10 ; d = 0.35
+iteration number = 10 ; d = 0.35	*
 Magnetohydrodynamics	0.6778738248416968
 Plasma modeling	0.6727500035550841
 Science	0.6589956396794894
@@ -905,7 +905,7 @@ Computation	0.6521346922628622
 Main	0.6519243221050098
 Simulation	0.6514653656068913
 Related	0.6512417978585685
-iteration number = 11 ; d = 0.35
+iteration number = 11 ; d = 0.35	*
 Magnetohydrodynamics	0.6778310430886482
 Plasma modeling	0.6727500013347207
 Science	0.6570232618125673
@@ -916,7 +916,7 @@ Main	0.6518468880666525
 Simulation	0.6513024536509205
 Related	0.651234104431161
 History	0.65115064028994
-iteration number = 12 ; d = 0.35
+iteration number = 12 ; d = 0.35	*
 Magnetohydrodynamics	0.6778176596962294
 Plasma modeling	0.6727500006155825
 Science	0.6564141134086893
@@ -927,7 +927,7 @@ Main	0.6518231489151423
 Simulation	0.6512519972938153
 Related	0.6512317751587172
 License	0.6507873129034066
-iteration number = 13 ; d = 0.35
+iteration number = 13 ; d = 0.35	*
 Magnetohydrodynamics	0.6778134916913944
 Plasma modeling	0.6727500003846726
 Science	0.6562263176268935
@@ -938,7 +938,7 @@ Main	0.6518158723532981
 Simulation	0.6512364001936116
 Related	0.6512310689097264
 License	0.6507686789841228
-iteration number = 14 ; d = 0.35
+iteration number = 14 ; d = 0.35	*
 Magnetohydrodynamics	0.6778121979499939
 Plasma modeling	0.6727500003114881
 Science	0.6561685016217617
@@ -1026,7 +1026,7 @@ Navigation	0.6068445632439727
 August	0.6063825133303312
 Stochastic	0.6043612987145556
 License	0.6040794905460241
-iteration number = 10 ; d = 0.4
+iteration number = 10 ; d = 0.4	*
 Magnetohydrodynamics	0.6303665948768311
 Plasma modeling	0.6240000130309754
 Science	0.6175836574284881
@@ -1037,7 +1037,7 @@ Navigation	0.6029547890878637
 Computation	0.6029471306370812
 Main	0.6026274614744991
 Simulation	0.6023934570717758
-iteration number = 11 ; d = 0.4
+iteration number = 11 ; d = 0.4	*
 Magnetohydrodynamics	0.6302145213647373
 Plasma modeling	0.6240000051647983
 Science	0.6105643693165865
@@ -1048,7 +1048,7 @@ Computation	0.6026151488488255
 Main	0.6023517072590145
 Simulation	0.6018138454571951
 Navigation	0.6015867046436338
-iteration number = 12 ; d = 0.4
+iteration number = 12 ; d = 0.4	*
 Magnetohydrodynamics	0.6301601301855575
 Plasma modeling	0.6240000022502353
 Science	0.6080864513412906
@@ -1059,7 +1059,7 @@ Main	0.6022550892749421
 History	0.6016130808756611
 Simulation	0.6016086504240794
 Related	0.60149055618658
-iteration number = 13 ; d = 0.4
+iteration number = 13 ; d = 0.4	*
 Magnetohydrodynamics	0.6301407653806799
 Plasma modeling	0.6240000011794975
 Science	0.6072132887005987
@@ -1070,7 +1070,7 @@ Main	0.6022212415369372
 Simulation	0.6015361493443648
 Related	0.6014872682744666
 History	0.6009748962320173
-iteration number = 14 ; d = 0.4
+iteration number = 14 ; d = 0.4	*
 Magnetohydrodynamics	0.630133894290713
 Plasma modeling	0.6240000007914224
 Science	0.6069060394241594
@@ -1180,7 +1180,7 @@ Navigation	0.553721542673692
 Computation	0.5535203207045281
 Main	0.5531212293681471
 August	0.5529501435873042
-iteration number = 12 ; d = 0.45
+iteration number = 12 ; d = 0.45	*
 Magnetohydrodynamics	0.5820186855980236
 Plasma modeling	0.5747500079611544
 Science	0.5627766777368385
@@ -1191,7 +1191,7 @@ Computation	0.5531165246704526
 Main	0.5527920436929936
 Simulation	0.552214662554396
 Navigation	0.552082602496191
-iteration number = 13 ; d = 0.45
+iteration number = 13 ; d = 0.45	*
 Magnetohydrodynamics	0.5819445586939537
 Plasma modeling	0.5747500038716085
 Science	0.5594314185083241
@@ -1202,7 +1202,7 @@ Main	0.55266229991795
 History	0.552350546680403
 Simulation	0.5519369761879331
 Related	0.5517336777396432
-iteration number = 14 ; d = 0.45
+iteration number = 14 ; d = 0.45	*
 Magnetohydrodynamics	0.5819149610535161
 Plasma modeling	0.5747500022029589
 Science	0.5581069989391767
@@ -1323,7 +1323,7 @@ Computation	0.5041838753155414
 Stochastic	0.5041339892980256
 August	0.5040475274885384
 Main	0.5036782965591756
-iteration number = 13 ; d = 0.5
+iteration number = 13 ; d = 0.5	*
 Magnetohydrodynamics	0.5332522719235113
 Plasma modeling	0.5250000128586145
 Science	0.5162528336214318
@@ -1334,7 +1334,7 @@ Stochastic	0.5036342113366107
 Main	0.5032520768058745
 Navigation	0.5028379027284691
 Simulation	0.5027092837544201
-iteration number = 14 ; d = 0.5
+iteration number = 14 ; d = 0.5	*
 Magnetohydrodynamics	0.5331443751044463
 Plasma modeling	0.5250000067883321
 Science	0.511420819782655

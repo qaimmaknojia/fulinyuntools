@@ -65,7 +65,7 @@ Information	0.9653765212833971
 Geometry	0.9635728813207347
 Royal Society	0.9588259677471145
 Library	0.9585169559350065
-iteration number = 4 ; d = 0.05
+iteration number = 4 ; d = 0.05	*7
 Computational geometry	0.9683288878115863
 Science	0.9556395600999891
 Computer Science	0.9543922527005726
@@ -76,7 +76,7 @@ Computer	0.9534357114344735
 Point in polygon	0.9526843076170439
 Information	0.9518574333247705
 Geometry	0.9514536270326927
-iteration number = 5 ; d = 0.05
+iteration number = 5 ; d = 0.05	*
 Computational geometry	0.9682946076063237
 Science	0.9544404915694742
 Line segment	0.9543264772421655
@@ -87,7 +87,7 @@ Computer	0.9525144864333873
 Information	0.951250617875498
 5	0.9508828877465628
 Geometry	0.9508731179423167
-iteration number = 6 ; d = 0.05
+iteration number = 6 ; d = 0.05	*
 Computational geometry	0.9682930421128457
 Science	0.9543855523556687
 Line segment	0.9543237388975483
@@ -98,7 +98,7 @@ Computer	0.952474406809484
 Information	0.9512230256949994
 5	0.9508825580625345
 Geometry	0.9508457872593028
-iteration number = 7 ; d = 0.05
+iteration number = 7 ; d = 0.05	*
 Computational geometry	0.9682929718890806
 Science	0.954383075728047
 Line segment	0.9543236077483759
@@ -109,7 +109,7 @@ Computer	0.9524726584652258
 Information	0.9512217984299955
 5	0.950882542791142
 Geometry	0.9508445269869149
-iteration number = 8 ; d = 0.05
+iteration number = 8 ; d = 0.05	*
 Computational geometry	0.9682929687388998
 Science	0.9543829648946451
 Line segment	0.9543236015953006
@@ -120,7 +120,7 @@ Computer	0.9524725822483977
 Information	0.9512217441198455
 5	0.9508825420979833
 Geometry	0.9508444694263664
-iteration number = 9 ; d = 0.05
+iteration number = 9 ; d = 0.05	*
 Computational geometry	0.9682929685977986
 Science	0.9543829599643577
 Line segment	0.9543236013113142
@@ -131,7 +131,7 @@ Computer	0.9524725789200693
 Information	0.9512217417261696
 5	0.9508825420667976
 Geometry	0.9508444668161667
-iteration number = 10 ; d = 0.05
+iteration number = 10 ; d = 0.05	*
 Computational geometry	0.9682929685914952
 Science	0.954382959745872
 Line segment	0.9543236012983427
@@ -142,7 +142,7 @@ Computer	0.9524725787746008
 Information	0.9512217416208695
 5	0.9508825420654063
 Geometry	0.9508444666984398
-iteration number = 11 ; d = 0.05
+iteration number = 11 ; d = 0.05	*
 Computational geometry	0.9682929685912139
 Science	0.9543829597362181
 Line segment	0.9543236012977545
@@ -153,7 +153,7 @@ Computer	0.9524725787682362
 Information	0.9512217416162424
 5	0.9508825420653446
 Geometry	0.9508444666931527
-iteration number = 12 ; d = 0.05
+iteration number = 12 ; d = 0.05	*
 Computational geometry	0.9682929685912014
 Science	0.9543829597357925
 Line segment	0.954323601297728
@@ -164,7 +164,7 @@ Computer	0.9524725787679577
 Information	0.9512217416160392
 5	0.9508825420653418
 Geometry	0.9508444666929161
-iteration number = 13 ; d = 0.05
+iteration number = 13 ; d = 0.05	*
 Computational geometry	0.9682929685912008
 Science	0.9543829597357737
 Line segment	0.9543236012977268
@@ -175,7 +175,7 @@ Computer	0.9524725787679454
 Information	0.9512217416160302
 5	0.9508825420653417
 Geometry	0.9508444666929056
-iteration number = 14 ; d = 0.05
+iteration number = 14 ; d = 0.05	*
 Computational geometry	0.9682929685912008
 Science	0.9543829597357728
 Line segment	0.9543236012977268
@@ -208,7 +208,7 @@ Information	0.9126069286867352
 Geometry	0.9116317457026568
 Line segment	0.9091120956260565
 Pattern	0.9086812545647088
-iteration number = 5 ; d = 0.1
+iteration number = 5 ; d = 0.1	*
 Computational geometry	0.9352422845474391
 Science	0.9102545998495828
 Line segment	0.9082969093349145
@@ -219,7 +219,7 @@ Computer	0.9061804460324366
 Point in polygon	0.9051709276057098
 Information	0.9033598888997872
 Geometry	0.9028019902280568
-iteration number = 6 ; d = 0.1
+iteration number = 6 ; d = 0.1	*
 Computational geometry	0.9351945408489665
 Science	0.9085795079876655
 Line segment	0.9082136852060274
@@ -230,7 +230,7 @@ Computer	0.904956394121427
 Information	0.9025180290044177
 Geometry	0.9019696645748407
 5	0.9017395920529463
-iteration number = 7 ; d = 0.1
+iteration number = 7 ; d = 0.1	*
 Computational geometry	0.9351902575686742
 Science	0.9084284272637944
 Line segment	0.9082057044794989
@@ -241,7 +241,7 @@ Computer	0.9048496006284386
 Information	0.9024431200937775
 Geometry	0.9018928658288557
 5	0.901738661130016
-iteration number = 8 ; d = 0.1
+iteration number = 8 ; d = 0.1	*
 Computational geometry	0.9351898732497661
 Science	0.908414900919334
 Line segment	0.9082049549740027
@@ -252,7 +252,7 @@ Computer	0.9048402903662619
 Information	0.9024364888798141
 Geometry	0.9018858479526191
 5	0.9017385765836027
-iteration number = 9 ; d = 0.1
+iteration number = 9 ; d = 0.1	*
 Computational geometry	0.9351898388167733
 Science	0.9084136972831367
 Line segment	0.908204885751799
@@ -263,7 +263,7 @@ Computer	0.904839477257641
 Information	0.9024359042943311
 Geometry	0.9018852112958309
 5	0.9017385689727421
-iteration number = 10 ; d = 0.1
+iteration number = 10 ; d = 0.1	*
 Computational geometry	0.935189835740129
 Science	0.9084135905891183
 Line segment	0.9082048794257847
@@ -274,7 +274,7 @@ Computer	0.9048394061854779
 Information	0.9024358528584888
 Geometry	0.9018851538534429
 5	0.9017385682935153
-iteration number = 11 ; d = 0.1
+iteration number = 11 ; d = 0.1	*
 Computational geometry	0.9351898354656006
 Science	0.9084135811594913
 Line segment	0.9082048788518677
@@ -285,7 +285,7 @@ Computer	0.9048393999666274
 Information	0.9024358483379415
 Geometry	0.901885148693012
 5	0.9017385682331922
-iteration number = 12 ; d = 0.1
+iteration number = 12 ; d = 0.1	*
 Computational geometry	0.9351898354411442
 Science	0.9084135803278903
 Line segment	0.9082048788001001
@@ -296,7 +296,7 @@ Computer	0.904839399422148
 Information	0.9024358479409447
 Geometry	0.9018851482310644
 5	0.9017385682278561
-iteration number = 13 ; d = 0.1
+iteration number = 13 ; d = 0.1	*
 Computational geometry	0.9351898354389684
 Science	0.9084135802546721
 Line segment	0.9082048787954513
@@ -307,7 +307,7 @@ Computer	0.9048393993744537
 Information	0.902435847906099
 Geometry	0.9018851481898355
 5	0.9017385682273855
-iteration number = 14 ; d = 0.1
+iteration number = 14 ; d = 0.1	*
 Computational geometry	0.9351898354387751
 Science	0.9084135802482338
 Line segment	0.9082048787950353
@@ -351,7 +351,7 @@ Pattern	0.8616871612860636
 History	0.860914619103088
 Information	0.8606481106561881
 Geometry	0.8600595505997756
-iteration number = 6 ; d = 0.15
+iteration number = 6 ; d = 0.15	*
 Computational geometry	0.9006701804288787
 Science	0.8639766904316842
 Computer Science	0.8617486025005434
@@ -362,7 +362,7 @@ Point in polygon	0.8574465057618956
 1975	0.8556909231491744
 Information	0.8545672633564287
 Geometry	0.8540599607139348
-iteration number = 7 ; d = 0.15
+iteration number = 7 ; d = 0.15	*
 Computational geometry	0.9006237950744753
 Science	0.8623403442272074
 Line segment	0.8616597585338708
@@ -373,7 +373,7 @@ Computer	0.8572634977793638
 Information	0.85375542092373
 Geometry	0.8532291278526832
 5	0.8525606228710678
-iteration number = 8 ; d = 0.15
+iteration number = 8 ; d = 0.15	*
 Computational geometry	0.9006175516221661
 Science	0.8621205163249264
 Line segment	0.861647603301463
@@ -384,7 +384,7 @@ Computer	0.857112034867212
 Information	0.8536475962071444
 Geometry	0.8531151987828116
 5	0.8525592496995954
-iteration number = 9 ; d = 0.15
+iteration number = 9 ; d = 0.15	*
 Computational geometry	0.9006167124278043
 Science	0.8620911681821609
 Line segment	0.861645918357259
@@ -395,7 +395,7 @@ Computer	0.8570921938600415
 Information	0.8536333365416253
 Geometry	0.853099690668541
 5	0.852559064193164
-iteration number = 10 ; d = 0.15
+iteration number = 10 ; d = 0.15	*
 Computational geometry	0.9006165999439781
 Science	0.8620872652855761
 Line segment	0.8616456872885948
@@ -406,7 +406,7 @@ Computer	0.857089592613378
 Information	0.8536314544320002
 Geometry	0.8530975913297048
 5	0.8525590393533774
-iteration number = 11 ; d = 0.15
+iteration number = 11 ; d = 0.15	*
 Computational geometry	0.9006165848872616
 Science	0.8620867478173527
 Line segment	0.8616456558334188
@@ -417,7 +417,7 @@ Computer	0.8570892512088926
 Information	0.8536312063021111
 Geometry	0.8530973083770061
 5	0.8525590360435703
-iteration number = 12 ; d = 0.15
+iteration number = 12 ; d = 0.15	*
 Computational geometry	0.9006165828751063
 Science	0.8620866793577412
 Line segment	0.8616456515764541
@@ -428,7 +428,7 @@ Computer	0.8570892063735357
 Information	0.8536311736148
 Geometry	0.853097270376946
 5	0.8525590356043424
-iteration number = 13 ; d = 0.15
+iteration number = 13 ; d = 0.15	*
 Computational geometry	0.9006165826065626
 Science	0.8620866703158214
 Line segment	0.8616456510029018
@@ -439,7 +439,7 @@ Computer	0.8570892004825019
 Information	0.8536311693110886
 Geometry	0.8530972652889416
 5	0.8525590355462193
-iteration number = 14 ; d = 0.15
+iteration number = 14 ; d = 0.15	*
 Computational geometry	0.9006165825707753
 Science	0.8620866691231462
 Line segment	0.8616456509259177
@@ -483,7 +483,7 @@ History	0.8457578996334063
 Information	0.8343651028526974
 Geometry	0.833793167206583
 Royal Society	0.8210108652446029
-iteration number = 6 ; d = 0.2
+iteration number = 6 ; d = 0.2	*7
 Computational geometry	0.8647978165158071
 1975	0.8301835608724848
 Science	0.8260152539562283
@@ -494,7 +494,7 @@ Pattern	0.8144330774803344
 Information	0.8100553385584028
 Geometry	0.8098631433103123
 Point in polygon	0.8095092576001985
-iteration number = 7 ; d = 0.2
+iteration number = 7 ; d = 0.2	*7
 Computational geometry	0.8645506997833533
 Science	0.8172962884498559
 Computer Science	0.8151364397020632
@@ -505,7 +505,7 @@ Point in polygon	0.8094990609929965
 1975	0.8058789000024252
 Information	0.805726582627217
 Geometry	0.8054419354821992
-iteration number = 8 ; d = 0.2
+iteration number = 8 ; d = 0.2	*
 Computational geometry	0.8645063464466303
 Science	0.8157339610885943
 Line segment	0.8146668487156485
@@ -516,7 +516,7 @@ Computer	0.8094377393167633
 Information	0.8049598314607671
 Geometry	0.8046332150618117
 5	0.8033367298316982
-iteration number = 9 ; d = 0.2
+iteration number = 9 ; d = 0.2	*
 Computational geometry	0.8644983963357138
 Science	0.815455791121604
 Line segment	0.8146509087239031
@@ -527,7 +527,7 @@ Computer	0.8092495225445725
 Information	0.8048246136969678
 Geometry	0.8044863867390548
 5	0.8033349722679776
-iteration number = 10 ; d = 0.2
+iteration number = 10 ; d = 0.2	*
 Computational geometry	0.8644969753920141
 Science	0.81540645860311
 Line segment	0.8146479927619983
@@ -538,7 +538,7 @@ Computer	0.8092166231513857
 Information	0.8048008158658836
 Geometry	0.8044598780139349
 5	0.8033346583848707
-iteration number = 11 ; d = 0.2
+iteration number = 11 ; d = 0.2	*
 Computational geometry	0.8644967217629779
 Science	0.8153977364225963
 Line segment	0.8146474633080909
@@ -549,7 +549,7 @@ Computer	0.8092108661191714
 Information	0.8047966324607717
 Geometry	0.8044551131019457
 5	0.8033346026064415
-iteration number = 12 ; d = 0.2
+iteration number = 12 ; d = 0.2	*
 Computational geometry	0.8644966765664154
 Science	0.8153961977092241
 Line segment	0.8146473677440491
@@ -560,7 +560,7 @@ Computer	0.8092098580823656
 Information	0.8047958976375141
 Geometry	0.8044542597180158
 5	0.8033345927353406
-iteration number = 13 ; d = 0.2
+iteration number = 13 ; d = 0.2	*
 Computational geometry	0.864496668523066
 Science	0.8153959267173561
 Line segment	0.8146473505726026
@@ -571,7 +571,7 @@ Computer	0.8092096814865729
 Information	0.8047957686352276
 Geometry	0.8044541073422333
 5	0.80333459099345
-iteration number = 14 ; d = 0.2
+iteration number = 14 ; d = 0.2	*
 Computational geometry	0.8644966670937522
 Science	0.815395879054222
 Line segment	0.8146473474989443
@@ -626,7 +626,7 @@ History	0.7811009107303273
 Geometry	0.7765605123575703
 Information	0.7759804333784451
 Line segment	0.7693609582796836
-iteration number = 7 ; d = 0.25
+iteration number = 7 ; d = 0.25	*7
 Computational geometry	0.8270085124938069
 Science	0.7773954097350846
 1975	0.7754427133070091
@@ -637,7 +637,7 @@ Pattern	0.7668462278551127
 Point in polygon	0.7613242153766512
 Geometry	0.7606370051605775
 Information	0.7603552473879606
-iteration number = 8 ; d = 0.25
+iteration number = 8 ; d = 0.25	*
 Computational geometry	0.8268085575312356
 Science	0.7703486863863397
 Computer Science	0.7684903750970576
@@ -648,7 +648,7 @@ Point in polygon	0.7613155870311199
 Geometry	0.7569942718182191
 Information	0.7568947015809903
 1975	0.7564437893567387
-iteration number = 9 ; d = 0.25
+iteration number = 9 ; d = 0.25	*
 Computational geometry	0.8267637482893789
 Science	0.7687799546180086
 Computer Science	0.7674865180787775
@@ -659,7 +659,7 @@ Point in polygon	0.761313667675648
 Geometry	0.7561672548969476
 Information	0.7561317638929113
 5	0.7540583794172789
-iteration number = 10 ; d = 0.25
+iteration number = 10 ; d = 0.25	*
 Computational geometry	0.826753736239241
 Science	0.7684321234506268
 Computer Science	0.7672632150307662
@@ -670,7 +670,7 @@ Computer	0.7612520711213364
 Geometry	0.755980559467518
 Information	0.7559639084885618
 5	0.7540561670224395
-iteration number = 11 ; d = 0.25
+iteration number = 11 ; d = 0.25	*
 Computational geometry	0.8267515021359244
 Science	0.7683552399615876
 Computer Science	0.7672135820176771
@@ -681,7 +681,7 @@ Computer	0.7612013001000191
 Geometry	0.7559386012685729
 Information	0.7559270226432351
 5	0.7540556754498058
-iteration number = 12 ; d = 0.25
+iteration number = 12 ; d = 0.25	*
 Computational geometry	0.8267510044443064
 Science	0.768338283945929
 Line segment	0.7672112409455425
@@ -692,7 +692,7 @@ Computer	0.7611901881613472
 Geometry	0.7559292060675827
 Information	0.7559189235120718
 5	0.7540555666874242
-iteration number = 13 ; d = 0.25
+iteration number = 13 ; d = 0.25	*
 Computational geometry	0.8267508937192656
 Science	0.7683345508451281
 Line segment	0.7672110046769307
@@ -703,7 +703,7 @@ Computer	0.7611877548508846
 Geometry	0.7559271087456264
 Information	0.7559171461491156
 5	0.7540555426931393
-iteration number = 14 ; d = 0.25
+iteration number = 14 ; d = 0.25	*
 Computational geometry	0.8267508691219188
 Science	0.7683337300494524
 Line segment	0.7672109518012613
@@ -769,7 +769,7 @@ History	0.7249259036252164
 Geometry	0.7243613032641767
 Information	0.7228841552395721
 Line segment	0.7211426345251942
-iteration number = 8 ; d = 0.3
+iteration number = 8 ; d = 0.3	*7
 Computational geometry	0.7875451614093737
 Science	0.7295552916955012
 Computer Science	0.7258880056089606
@@ -780,7 +780,7 @@ Computer	0.7188520304897059
 Point in polygon	0.712890704850905
 Geometry	0.7120739054781741
 Information	0.7111852951614722
-iteration number = 9 ; d = 0.3
+iteration number = 9 ; d = 0.3	*
 Computational geometry	0.7873635709805319
 Science	0.7231939647747374
 Computer Science	0.7218184920519691
@@ -791,7 +791,7 @@ Point in polygon	0.7128829261218163
 Geometry	0.7087249120283757
 Information	0.7080897937319708
 1975	0.7075369540946588
-iteration number = 10 ; d = 0.3
+iteration number = 10 ; d = 0.3	*
 Computational geometry	0.7873148768706586
 Science	0.721501007665537
 Computer Science	0.7207321308898447
@@ -802,7 +802,7 @@ Point in polygon	0.7128808397234153
 Geometry	0.707817381657576
 Information	0.7072724682700061
 5	0.7047156994703723
-iteration number = 11 ; d = 0.3
+iteration number = 11 ; d = 0.3	*
 Computational geometry	0.7873018364411853
 Science	0.7210518879468397
 Computer Science	0.7204423552546723
@@ -813,7 +813,7 @@ Point in polygon	0.7128802834771024
 Geometry	0.7075725622763087
 Information	0.7070569296252341
 5	0.7047128285593047
-iteration number = 12 ; d = 0.3
+iteration number = 12 ; d = 0.3	*
 Computational geometry	0.7872983500527365
 Science	0.7209330136655495
 Computer Science	0.7203651237513505
@@ -824,7 +824,7 @@ Point in polygon	0.7128801349712997
 Geometry	0.707506763643188
 Information	0.7070001355980259
 5	0.7047120661582432
-iteration number = 13 ; d = 0.3
+iteration number = 13 ; d = 0.3	*
 Computational geometry	0.7872974191766994
 Science	0.7209016044645896
 Computer Science	0.7203445634682973
@@ -835,7 +835,7 @@ Point in polygon	0.7128800953548642
 Geometry	0.7074891339764804
 Information	0.7069851788789743
 5	0.7047118642912656
-iteration number = 14 ; d = 0.3
+iteration number = 14 ; d = 0.3	*
 Computational geometry	0.7872971709992401
 Science	0.7208933167281849
 Computer Science	0.7203390959764541
@@ -912,7 +912,7 @@ History	0.672823336966739
 Line segment	0.6727403316398987
 Information	0.6724039560624306
 United States	0.6721258209877139
-iteration number = 9 ; d = 0.35
+iteration number = 9 ; d = 0.35	*7
 Computational geometry	0.7463164133247635
 Science	0.682279675046271
 Computer Science	0.6792246705375905
@@ -923,7 +923,7 @@ Pattern	0.6705702604503744
 Point in polygon	0.6641953542458343
 Geometry	0.6640615501439924
 Information	0.6624144623071211
-iteration number = 10 ; d = 0.35
+iteration number = 10 ; d = 0.35	*
 Computational geometry	0.7461333060518054
 Science	0.675908186481198
 Computer Science	0.675138223446713
@@ -934,7 +934,7 @@ Point in polygon	0.6641875061403139
 Geometry	0.6606509174694557
 Information	0.6593369808763624
 1975	0.65933088134063
-iteration number = 11 ; d = 0.35
+iteration number = 11 ; d = 0.35	*
 Computational geometry	0.7460760885592925
 Science	0.673935840128555
 Computer Science	0.6738664357346457
@@ -945,7 +945,7 @@ Point in polygon	0.6641850652453234
 Geometry	0.6595771696299356
 Information	0.6583900900396552
 5	0.6552985043349547
-iteration number = 12 ; d = 0.35
+iteration number = 12 ; d = 0.35	*
 Computational geometry	0.7460582396804778
 Computer Science	0.6734709440766313
 Science	0.6733267011141778
@@ -956,7 +956,7 @@ Point in polygon	0.6641843049207962
 Geometry	0.6592403992862476
 Information	0.6580989888177009
 5	0.6552945982189552
-iteration number = 13 ; d = 0.35
+iteration number = 13 ; d = 0.35	*
 Computational geometry	0.7460526789803221
 Computer Science	0.6733480980512422
 Science	0.6731389081411404
@@ -967,7 +967,7 @@ Point in polygon	0.664184068276544
 Geometry	0.659135104691568
 Information	0.6580095469030746
 5	0.6552933913662916
-iteration number = 14 ; d = 0.35
+iteration number = 14 ; d = 0.35	*
 Computational geometry	0.7460509491655489
 Computer Science	0.6733099816715323
 Science	0.6730810929800666
@@ -1055,7 +1055,7 @@ Geometry	0.6272454728123947
 Line segment	0.6240976858940424
 Information	0.6236526208644444
 History	0.6235721835091853
-iteration number = 10 ; d = 0.4
+iteration number = 10 ; d = 0.4	*7
 Computational geometry	0.7032376917440437
 Science	0.635659478044782
 Computer Science	0.6330348779511364
@@ -1066,7 +1066,7 @@ Pattern	0.6218629360171374
 Geometry	0.6166444257189792
 Point in polygon	0.6152241958705716
 Information	0.6140663471929114
-iteration number = 11 ; d = 0.4
+iteration number = 11 ; d = 0.4	*
 Computational geometry	0.7030342711135547
 Science	0.628640300509864
 Computer Science	0.6285120234101493
@@ -1077,7 +1077,7 @@ Point in polygon	0.6152155169339065
 Geometry	0.6128288243014912
 1975	0.6121870423353767
 Information	0.610695201361665
-iteration number = 12 ; d = 0.4
+iteration number = 12 ; d = 0.4	*
 Computational geometry	0.7029617394522543
 Computer Science	0.6269044288837933
 Science	0.6261624201868945
@@ -1088,7 +1088,7 @@ Point in polygon	0.6152124270731306
 Geometry	0.6114607302170525
 Information	0.6095106985676993
 1975	0.6060719631800291
-iteration number = 13 ; d = 0.4
+iteration number = 13 ; d = 0.4	*
 Computational geometry	0.7029359108171089
 Computer Science	0.6263336860557674
 Science	0.6252892704184869
@@ -1099,7 +1099,7 @@ Point in polygon	0.6152113279444867
 Geometry	0.6109717492371206
 Information	0.6090947458770366
 5	0.6057907932356728
-iteration number = 14 ; d = 0.4
+iteration number = 14 ; d = 0.4	*
 Computational geometry	0.7029267269909721
 Computer Science	0.62613127521746
 Science	0.6249820255628948
@@ -1198,7 +1198,7 @@ Geometry	0.5815790439575993
 History	0.576993750229444
 Information	0.5765353611024896
 Line segment	0.5752301976680659
-iteration number = 11 ; d = 0.45
+iteration number = 11 ; d = 0.45	*
 Computational geometry	0.6582309082562129
 Science	0.5901276837887943
 1975	0.5876735128637339
@@ -1209,7 +1209,7 @@ Pattern	0.5727880708118721
 Geometry	0.5700520794878919
 Information	0.566329094181028
 Point in polygon	0.5659634206258881
-iteration number = 12 ; d = 0.45
+iteration number = 12 ; d = 0.45	*
 Computational geometry	0.6579842273697588
 Computer Science	0.5820987734236819
 Science	0.5816904283739525
@@ -1220,7 +1220,7 @@ Computer	0.5709315349004191
 Point in polygon	0.5659529113339353
 Geometry	0.5654008338934648
 Information	0.5622944638826096
-iteration number = 13 ; d = 0.45
+iteration number = 13 ; d = 0.45	*
 Computational geometry	0.6578853869481711
 Computer Science	0.5799140482015057
 Science	0.5783452176404793
@@ -1231,7 +1231,7 @@ Point in polygon	0.5659487054298002
 Geometry	0.5635300386872963
 Information	0.5607004735189538
 1975	0.5586738695997121
-iteration number = 14 ; d = 0.45
+iteration number = 14 ; d = 0.45	*
 Computational geometry	0.6578458431557058
 Computer Science	0.5790422801568428
 Science	0.5770208168083176
@@ -1341,7 +1341,7 @@ Geometry	0.5385391557046655
 History	0.5339299107853928
 Information	0.5315707611058451
 Line segment	0.5262237707771269
-iteration number = 12 ; d = 0.5
+iteration number = 12 ; d = 0.5	*
 Computational geometry	0.6112309328649974
 1975	0.5514692052697101
 Science	0.5466539385104732
@@ -1352,7 +1352,7 @@ Line segment	0.5246932150792886
 Pattern	0.5233810607992144
 Information	0.5196463958599171
 Point in polygon	0.5163993783268018
-iteration number = 13 ; d = 0.5
+iteration number = 13 ; d = 0.5	*
 Computational geometry	0.6109068591946609
 Computer Science	0.5362632702131864
 Science	0.5356711234111464
@@ -1363,7 +1363,7 @@ Pattern	0.5229144052772958
 Geometry	0.518689955476722
 Point in polygon	0.5163855890122812
 Information	0.5144116011496065
-iteration number = 14 ; d = 0.5
+iteration number = 14 ; d = 0.5	*
 Computational geometry	0.6107627721308625
 Computer Science	0.5330858252755992
 Science	0.5308391765846532
