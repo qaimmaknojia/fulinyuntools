@@ -1477,7 +1477,7 @@ Alonzo Church	0.5783778166460146
 1981	0.571859693065669
 Roman numerals	0.5628788581146552
 Culture	0.5615441072489568
-iteration number = 13 ; d = 0.5
+iteration number = 13 ; d = 0.5	*
 United States	0.8929545394341747
 Mathematics	0.6735130781171558
 Algorithm	0.6702815918415874
@@ -1488,7 +1488,7 @@ Alonzo Church	0.5779020764804748
 Culture	0.5534323300107464
 Computer	0.5528076483982041
 Mathematical Logic	0.5520800545889366
-iteration number = 14 ; d = 0.5
+iteration number = 14 ; d = 0.5	*
 United States	0.7967024875375854
 Algorithm	0.6688421152158254
 Mathematics	0.6625255610342357
