@@ -598,7 +598,7 @@ public class Processor {
 		for (int i = 0; i < fn.length; i++) {
 			File f = fn[i];
 			System.out.println("tuning " + f.getName());
-			tunePara(f.getAbsolutePath(), "E:\\objectRankTuning\\" + f.getName() + ".txt");
+			tunePara(f.getAbsolutePath(), projectFolder+"tuning\\" + f.getName() + ".txt");
 		}
 	}
 	
