@@ -13,7 +13,9 @@ public class Alarm {
 	public static int h, m, s;
 	
 	public static void main(String[] args) throws Exception {
-		setTime(11, 12, 18);
+//		setTime(11, 12, 18);
+		after(0, 45, 0);
+		System.out.println(h + ", " + m + ", " + s);
 		while (true) {
 			Calendar c = Calendar.getInstance();
 			c.setTime(new Date());
@@ -41,5 +43,15 @@ public class Alarm {
 		h = hh;
 		m = mm;
 		s = ss;
+	}
+	
+	public static void after(int hh, int mm, int ss) {
+		Calendar c = Calendar.getInstance();
+		c.add(Calendar.HOUR_OF_DAY, hh);
+		c.add(Calendar.MINUTE, mm);
+		c.add(Calendar.SECOND, ss);
+		h = c.get(Calendar.HOUR_OF_DAY);
+		m = c.get(Calendar.MINUTE);
+		s = c.get(Calendar.SECOND);
 	}
 }
