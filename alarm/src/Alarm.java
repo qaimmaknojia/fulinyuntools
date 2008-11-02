@@ -7,6 +7,11 @@ import java.awt.event.WindowEvent;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
+
 
 public class Alarm {
 
@@ -15,7 +20,8 @@ public class Alarm {
 	public static void main(String[] args) throws Exception {
 //		setTime(11, 12, 18);
 		after(0, 50, 0);
-		System.out.println(alarmTime.toString());
+		System.out.println(alarmTime.get(Calendar.HOUR_OF_DAY) + ":" + alarmTime.get(Calendar.MINUTE) + 
+				":" + alarmTime.get(Calendar.SECOND));
 		while (true) {
 			Calendar c = Calendar.getInstance();
 			if (c.compareTo(alarmTime) >= 0) {
@@ -34,6 +40,12 @@ public class Alarm {
 			}
 			Thread.currentThread().sleep(1000);
 		}
+//		System.out.println("logging in");
+//		loginXiaonei();
+//		System.out.println("do job");
+//		doJob();
+//		System.out.println("logging out");
+//		logout();
 	}
 	
 	public static void setTime(int hh, int mm, int ss) {
@@ -45,9 +57,67 @@ public class Alarm {
 	}
 	
 	public static void after(int hh, int mm, int ss) {
-		Calendar c = Calendar.getInstance();
-		c.add(Calendar.HOUR_OF_DAY, hh);
-		c.add(Calendar.MINUTE, mm);
-		c.add(Calendar.SECOND, ss);
+		alarmTime = Calendar.getInstance();
+		alarmTime.add(Calendar.HOUR_OF_DAY, hh);
+		alarmTime.add(Calendar.MINUTE, mm);
+		alarmTime.add(Calendar.SECOND, ss);
+	}
+	
+	public static void loginXiaonei() throws Exception {
+		HttpClient client = new HttpClient();
+		PostMethod method = new PostMethod("http://login.xiaonei.com/Login.do");
+//		method.setRequestHeader("Cookie", "");
+		NameValuePair[] data = { new NameValuePair("email", "fulinyun@126.com"),
+				new NameValuePair("password", "password") };
+		method.setRequestBody(data);
+		client.executeMethod(method);
+		Header[] responseHeaders = method.getResponseHeaders();
+		for (int i = 0; i < responseHeaders.length; i++) {
+			System.out.println(responseHeaders[i].getName() + " = " 
+					+ responseHeaders[i].getValue());
+		}
+//		byte[] responseBody = method.getResponseBody();
+//		System.out.println(new String(responseBody));
+		System.out.println("***************** body ******************");
+		System.out.println(method.getResponseBodyAsString());
+		
+	}
+	
+	public static void doJob() throws Exception {
+		HttpClient client = new HttpClient();
+		PostMethod method = new PostMethod("http://mob.xiaonei.com/job.do");
+//		method.setRequestHeader("Cookie", "");
+		NameValuePair[] data = { new NameValuePair("id", "5") };
+		method.setRequestBody(data);
+		client.executeMethod(method);
+		Header[] responseHeaders = method.getResponseHeaders();
+		for (int i = 0; i < responseHeaders.length; i++) {
+			System.out.println(responseHeaders[i].getName() + " = " 
+					+ responseHeaders[i].getValue());
+		}
+//		byte[] responseBody = method.getResponseBody();
+//		System.out.println(new String(responseBody));
+		System.out.println("***************** body ******************");
+		System.out.println(method.getResponseBodyAsString());
+		
+	}
+	
+	public static void logout() throws Exception {
+		HttpClient client = new HttpClient();
+		PostMethod method = new PostMethod("http://www.xiaonei.com/Logout.do");
+//		method.setRequestHeader("Cookie", "");
+		NameValuePair[] data = { };
+		method.setRequestBody(data);
+		client.executeMethod(method);
+		Header[] responseHeaders = method.getResponseHeaders();
+		for (int i = 0; i < responseHeaders.length; i++) {
+			System.out.println(responseHeaders[i].getName() + " = " 
+					+ responseHeaders[i].getValue());
+		}
+//		byte[] responseBody = method.getResponseBody();
+//		System.out.println(new String(responseBody));
+		System.out.println("***************** body ******************");
+		System.out.println(method.getResponseBodyAsString());
+		
 	}
 }
