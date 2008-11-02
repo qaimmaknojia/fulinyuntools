@@ -10,18 +10,15 @@ import java.util.Date;
 
 public class Alarm {
 
-	public static int h, m, s;
+	public static Calendar alarmTime;
 	
 	public static void main(String[] args) throws Exception {
 //		setTime(11, 12, 18);
-		after(0, 45, 0);
-		System.out.println(h + ", " + m + ", " + s);
+		after(0, 50, 0);
+		System.out.println(alarmTime.toString());
 		while (true) {
 			Calendar c = Calendar.getInstance();
-			c.setTime(new Date());
-//			System.out.println(c.get(Calendar.HOUR_OF_DAY) + ", " + c.get(Calendar.MINUTE) + 
-//					", " + c.get(Calendar.SECOND));
-			if (c.get(Calendar.HOUR_OF_DAY) >= h && c.get(Calendar.MINUTE) >= m && c.get(Calendar.SECOND) >= s) {
+			if (c.compareTo(alarmTime) >= 0) {
 				Dialog d = new Dialog((Frame)null, new Date().toString());
 				d.add(new Label(new Date().toString()));
 				d.setLocation(new Point(300, 300));
@@ -40,9 +37,10 @@ public class Alarm {
 	}
 	
 	public static void setTime(int hh, int mm, int ss) {
-		h = hh;
-		m = mm;
-		s = ss;
+		alarmTime = Calendar.getInstance();
+		alarmTime.set(Calendar.HOUR_OF_DAY, hh);
+		alarmTime.set(Calendar.MINUTE, mm);
+		alarmTime.set(Calendar.SECOND, ss);
 	}
 	
 	public static void after(int hh, int mm, int ss) {
@@ -50,8 +48,5 @@ public class Alarm {
 		c.add(Calendar.HOUR_OF_DAY, hh);
 		c.add(Calendar.MINUTE, mm);
 		c.add(Calendar.SECOND, ss);
-		h = c.get(Calendar.HOUR_OF_DAY);
-		m = c.get(Calendar.MINUTE);
-		s = c.get(Calendar.SECOND);
 	}
 }
