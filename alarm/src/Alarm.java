@@ -41,6 +41,7 @@ public class Alarm {
 		alarmTime.set(Calendar.HOUR_OF_DAY, hh);
 		alarmTime.set(Calendar.MINUTE, mm);
 		alarmTime.set(Calendar.SECOND, ss);
+		if (Calendar.getInstance().compareTo(alarmTime) > 0) alarmTime.add(Calendar.HOUR_OF_DAY, 24);
 	}
 	
 	public static void after(int hh, int mm, int ss) {
