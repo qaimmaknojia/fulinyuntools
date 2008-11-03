@@ -10,9 +10,31 @@ public class Path {
 	public static int[] dirc = {-1, 0, 1, 0};
 	
 	public static void main(String[] args) {
-		test();
+		test1();
 	}
 	
+	public static void test1() {
+		int n = 5;
+		int[][] map = new int[n][n];
+		for (int i = 0, k = 0; i < n; i++) {
+			if (i%2 == 0) {
+				for (int j = 0; j < n; j++, k++) {
+				map[i][j] = k;
+				System.out.print("\t" + map[i][j]);
+				}
+			} else {
+				for (int j = n-1; j >= 0; j--, k++) {
+					map[i][j] = k;
+				}
+				for (int j = 0; j < n; j++) System.out.print("\t" + map[i][j]);
+			}
+			System.out.println();
+		}
+		System.out.println();
+		LinkedList<Point> result = longestDownwardPath(map);
+		for (Point p : result) System.out.print("(" + p.r + ","+ p.c + "," + p.h + ")");
+	}
+
 	public static void test() {
 		int n = 5;
 		int h = 1000;
@@ -46,7 +68,7 @@ public class Path {
 			System.out.println("round " + count);
 			flag = false;
 			for (int i = 0; i < map.length; i++) for (int j = 0; j < map[i].length; j++) 
-				if (!filledMap[i][j] && lowerMap[i][j] == fillNum(lengthMap, i, j)) {
+				if (!filledMap[i][j] && lowerMap[i][j] == fillNum(map, lengthMap, i, j)) {
 				fill(lengthMap, i, j);
 				filledMap[i][j] = true;
 				flag = true;
@@ -67,13 +89,13 @@ public class Path {
 		return count;
 	}
 	
-	public static int fillNum(int[][] map, int r, int c) {
+	public static int fillNum(int[][] map, int[][] lengthMap, int r, int c) {
 		int count = 0;
 		for (int i = 0; i < 4; i++) {
 			int rr = r + dirr[i];
 			int cc = c + dirc[i];
 			if (rr < 0 || rr >= map.length || cc < 0 || cc >= map[0].length) continue;
-			if (map[rr][cc] != -1) count++;
+			if (lengthMap[rr][cc] != -1 && map[rr][cc] < map[r][c]) count++;
 		}
 		return count;
 	}
