@@ -13,10 +13,37 @@ public class Alarm {
 	public static Calendar alarmTime;
 	
 	public static void main(String[] args) throws Exception {
-//		setAlarm(15, 0, 0, "15:00:00");
-		setAfterAlarm(0, 45, 0, "mob@xiaonei");
+//		setAlarm(10, 0, 0, "battery");
+//		setAfterAlarm(0, 2, 0, "mob@xiaonei");
+//		setAfterAlarm(0, 40, 0, "ares");
+		everyDay(10, 0, 0, "netyi");
 	}
 
+	public static void everyDay(int h, int m, int s, String message) throws Exception {
+		setTime(h, m, s);
+		System.out.println(alarmTime.get(Calendar.HOUR_OF_DAY) + ":" + alarmTime.get(Calendar.MINUTE) + 
+				":" + alarmTime.get(Calendar.SECOND) + "\tevery day\t" + message);
+		while (true) {
+			Calendar c = Calendar.getInstance();
+			if (c.compareTo(alarmTime) >= 0) {
+				Dialog d = new Dialog((Frame)null, new Date().toString());
+				d.add(new Label(message));
+				d.setLocation(new Point(300, 300));
+				d.setSize(200, 70);
+				d.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent e) {
+						System.exit(0);
+					}
+				});
+				d.setAlwaysOnTop(true);
+				d.setVisible(true);
+				setTime(h, m, s);
+			}
+			Thread.currentThread().sleep(1000);
+		}
+		
+	}
+	
 	public static void setAlarm(int h, int m, int s, String message) throws Exception {
 		setTime(h, m, s);
 		System.out.println(alarmTime.get(Calendar.HOUR_OF_DAY) + ":" + alarmTime.get(Calendar.MINUTE) + 
