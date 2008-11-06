@@ -14,7 +14,7 @@ public class Alarm {
 	
 	public static void main(String[] args) throws Exception {
 //		setAlarm(10, 0, 0, "battery");
-//		setAfterAlarm(0, 2, 0, "mob@xiaonei");
+//		setAfterAlarm(0, 50, 0, "mob@xiaonei");
 //		setAfterAlarm(0, 40, 0, "ares");
 		everyDay(10, 0, 0, "netyi");
 	}
@@ -25,17 +25,17 @@ public class Alarm {
 				":" + alarmTime.get(Calendar.SECOND) + "\tevery day\t" + message);
 		while (true) {
 			Calendar c = Calendar.getInstance();
+			final Dialog d = new Dialog((Frame)null, new Date().toString());
+			d.add(new Label(message));
+			d.setLocation(new Point(300, 300));
+			d.setSize(200, 70);
+			d.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					d.setVisible(false);
+				}
+			});
+			d.setAlwaysOnTop(true);
 			if (c.compareTo(alarmTime) >= 0) {
-				Dialog d = new Dialog((Frame)null, new Date().toString());
-				d.add(new Label(message));
-				d.setLocation(new Point(300, 300));
-				d.setSize(200, 70);
-				d.addWindowListener(new WindowAdapter() {
-					public void windowClosing(WindowEvent e) {
-						System.exit(0);
-					}
-				});
-				d.setAlwaysOnTop(true);
 				d.setVisible(true);
 				setTime(h, m, s);
 			}
