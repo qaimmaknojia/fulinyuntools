@@ -8,6 +8,7 @@ import java.util.HashSet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import linkGraphProcess.Processor;
 
@@ -57,15 +58,16 @@ import linkGraphProcess.Processor;
 	*/
 		String str = (String)request.getParameter("url");
 		System.out.println("url = " + str);
-		PrintWriter print = response.getWriter();
 //		if (print == null) System.out.println("print is null!");
 	//	print.println(str);
 	//WebPageExp.getStream1(str);
 		String[] recognizedNames = WebPageExp.recognize(str);
 		HashSet<Integer> inPage = Processor.getInPageId(recognizedNames);
 		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
-		double[] pr = Processor.calculatePR(1.0, 12, Processor.matrix, Processor.olinkNum, inPage, 0.4);
+		double[] pr = Processor.calculatePR(1.0, 6, Processor.matrix, Processor.olinkNum, inPage, 0.05);
 		String[] list = Processor.selectTop(pr, 10, new double[10]);
+		request.getSession().setAttribute("entities", list);
+		PrintWriter print = response.getWriter();
 		for (String s : list) print.println("<p>" + s + "</p>");
 		print.close();
 	}
