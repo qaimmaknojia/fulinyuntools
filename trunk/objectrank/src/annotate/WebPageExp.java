@@ -2,6 +2,8 @@ package annotate;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,8 +28,11 @@ import org.htmlparser.util.NodeList;
 
 public class WebPageExp {
 	
-//	public static String linkRecomIdxFold = "E:\\NamedEntityAnnotatorIndex\\LinkSuggestIndex_v4";
-	public static String linkRecomIdxFold = "E:\\NER\\LinkSuggestIndex_v4";
+	public static String preAdd = "<b style=\"color:black;background-color:#ffff66\">";
+	public static String postAdd = "</b>";
+	
+	public static String linkRecomIdxFold = "E:\\NamedEntityAnnotatorIndex\\LinkSuggestIndex_v4";
+//	public static String linkRecomIdxFold = "E:\\NER\\LinkSuggestIndex_v4";
 	
 	public static double threshold = 0.5;
 	public static int maxPhraseLength = 6;
@@ -104,6 +109,18 @@ public class WebPageExp {
 //
 //	}
 
+	public static String highlight(String url, String[] entities) throws Exception {
+		System.out.println("top 10 entities:");
+		for (String s : entities) System.out.println(s);
+		BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+		StringBuilder sb = new StringBuilder();
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			for (String s : entities) line = line.replaceAll(s, preAdd+s+postAdd);
+			sb.append(line);
+		}
+		return sb.toString();
+	}
+	
 	public static String[] recognize(String url) {
 
 		WebPageExp exp = new WebPageExp();
