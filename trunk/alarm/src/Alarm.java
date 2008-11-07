@@ -14,9 +14,11 @@ public class Alarm {
 	
 	public static void main(String[] args) throws Exception {
 //		setAlarm(10, 0, 0, "battery");
-//		setAfterAlarm(0, 50, 0, "mob@xiaonei");
+		setAfterAlarm(0, 24*3, 0, "mob@xiaonei");
 //		setAfterAlarm(0, 40, 0, "ares");
-		everyDay(10, 0, 0, "netyi");
+//		everyDay(10, 0, 0, "netyi");
+//		setAfterAlarm(0, 6, 0, "5ips");
+//		setAfterAlarm(0, 20, 0, "TOEFL writing");
 	}
 
 	public static void everyDay(int h, int m, int s, String message) throws Exception {
