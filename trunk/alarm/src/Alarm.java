@@ -4,8 +4,12 @@ import java.awt.Label;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Date;
+
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
 
 
 public class Alarm {
@@ -13,12 +17,13 @@ public class Alarm {
 	public static Calendar alarmTime;
 	
 	public static void main(String[] args) throws Exception {
-//		setAlarm(10, 0, 0, "battery");
-		setAfterAlarm(0, 24*3, 0, "mob@xiaonei");
+//		setAlarm(13, 51, 0, "mob@xiaonei");
+//		setAfterAlarm(0, 55, 0, "mob@xiaonei, 33, 11");
 //		setAfterAlarm(0, 40, 0, "ares");
 //		everyDay(10, 0, 0, "netyi");
 //		setAfterAlarm(0, 6, 0, "5ips");
 //		setAfterAlarm(0, 20, 0, "TOEFL writing");
+		setAfterAlarm(0, 0, 10, "test");
 	}
 
 	public static void everyDay(int h, int m, int s, String message) throws Exception {
@@ -39,6 +44,10 @@ public class Alarm {
 			d.setAlwaysOnTop(true);
 			if (c.compareTo(alarmTime) >= 0) {
 				d.setVisible(true);
+				FileInputStream notice = new FileInputStream("media/notice.wav");
+				AudioStream as = new AudioStream(notice);
+				AudioPlayer.player.start(as);
+//				as.close();
 				setTime(h, m, s);
 			}
 			Thread.currentThread().sleep(1000);
@@ -64,6 +73,10 @@ public class Alarm {
 				});
 				d.setAlwaysOnTop(true);
 				d.setVisible(true);
+				FileInputStream notice = new FileInputStream("media/notice.wav");
+				AudioStream as = new AudioStream(notice);
+				AudioPlayer.player.start(as);
+//				as.close();
 				break;
 			}
 			Thread.currentThread().sleep(1000);
@@ -88,6 +101,10 @@ public class Alarm {
 				});
 				d.setAlwaysOnTop(true);
 				d.setVisible(true);
+				FileInputStream notice = new FileInputStream("media/notice.wav");
+				AudioStream as = new AudioStream(notice);
+				AudioPlayer.player.start(as);
+//				as.close();
 				break;
 			}
 			Thread.currentThread().sleep(1000);
