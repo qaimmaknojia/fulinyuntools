@@ -5,10 +5,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import linkGraphProcess.Processor;
 
@@ -56,6 +57,7 @@ import linkGraphProcess.Processor;
 		response.getOutputStream().println(sb.toString());
 		System.out.println("total processing time: " + (end.getTime()-start.getTime()) + " milliseconds.");
 	*/
+
 		String str = (String)request.getParameter("url");
 		System.out.println("url = " + str);
 //		if (print == null) System.out.println("print is null!");
@@ -66,9 +68,15 @@ import linkGraphProcess.Processor;
 		for (Integer i : inPage) System.out.println(Processor.nameMap[i.intValue()]);
 		double[] pr = Processor.calculatePR(1.0, 6, Processor.matrix, Processor.olinkNum, inPage, 0.05);
 		String[] list = Processor.selectTop(pr, 10, new double[10]);
-		request.getSession().setAttribute("entities", list);
+		ServletContext context = this.getServletContext();
+        context.setAttribute("entities", list);
+//      RequestDispatcher dispatcher=context.getRequestDispatcher("/Highlight");
+//      dispatcher.forward(request, response);
+//		request.getSession().setAttribute("entities", list);
 		PrintWriter print = response.getWriter();
-		for (String s : list) print.println("<p>" + s + "</p>");
+		for (int i = 0; i < list.length; i++) 
+			print.println("<p>" + WebPageExp.preAddPre + Integer.toHexString(WebPageExp.color+i*WebPageExp.diff) + WebPageExp.preAddPost + 
+					list[i] + WebPageExp.postAdd + "</p>");
 		print.close();
 	}
 }
