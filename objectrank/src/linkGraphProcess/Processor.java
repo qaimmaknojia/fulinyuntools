@@ -27,8 +27,8 @@ public class Processor {
 
 //	public static String linkFrom = "\\\\poseidon\\team\\Semantic Search\\data\\wikipedia data\\entityGraphLinkFrom";
 	
-	public static String projectFolder = "E:\\eclipse_workspace\\objectrank\\";
-//	public static String projectfolder = "E:\\users\\fulinyun\\objectrank\\";
+//	public static String projectFolder = "E:\\eclipse_workspace\\objectrank\\";
+	public static String projectFolder = "E:\\users\\fulinyun\\objectrank\\";
 	
 //	public static String linkFrom = "E:\\entityGraphLinkFrom";
 	public static int maxLine = 1200000;
@@ -590,12 +590,12 @@ public class Processor {
 		
 //		createLinkToMatrix(linkFromMatrixUnique, linkToMatrixUnique);
 
-		File[] fn = new File("E:\\eclipse_workspace\\objectrank\\res\\").listFiles(new FileFilter() {
+		File[] fn = new File(projectFolder+"res\\").listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				return f.getName().endsWith(".htm");
 			}
 		});
-		for (int i = 0; i < fn.length; i++) {
+		for (int i = 1; i < fn.length; i++) {
 			File f = fn[i];
 			System.out.println("tuning " + f.getName());
 			tunePara(f.getAbsolutePath(), projectFolder+"tuning\\" + f.getName() + ".txt");
