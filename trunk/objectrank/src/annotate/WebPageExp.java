@@ -2,14 +2,14 @@ package annotate;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-
-import linkGraphProcess.Processor;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -28,19 +28,25 @@ import org.htmlparser.util.NodeList;
 
 public class WebPageExp {
 	
-	public static String preAdd = "<b style=\"color:black;background-color:#ffff66\">";
+	public static String preAddPre = "<b style=\"color:black;background-color:#";
+	public static int color = 0xffff44;
+	public static int diff = 0x11;
+	public static String preAddPost = "\">";
 	public static String postAdd = "</b>";
 	
+//	public static String linkRecomIdxFold = "E:\\NER\\LinkSuggestIndex_v4";	
 	public static String linkRecomIdxFold = "E:\\NamedEntityAnnotatorIndex\\LinkSuggestIndex_v4";
-//	public static String linkRecomIdxFold = "E:\\NER\\LinkSuggestIndex_v4";
 	
+//	public static String projectFolder = "E:\\eclipse_workspace\\objectrank\\";
+	public static String projectFolder = "E:\\users\\fulinyun\\objectrank\\";
+		
 	public static double threshold = 0.5;
 	public static int maxPhraseLength = 6;
 	public static Annotation[] annotationBuffer = new Annotation[999999];
 	public static int numAnnotation = 0;
 	public static String outputFileName = "E:\\NamedEntityAnnotatorTest\\output.html";
 	public static HashSet<String> stopwords = new HashSet<String>();
-	public static String stopwordsFile = Processor.projectFolder+"info\\stopwords.txt";
+	public static String stopwordsFile = projectFolder+"info\\stopwords.txt";
 	
 	static {
 		try {
@@ -55,7 +61,7 @@ public class WebPageExp {
 		for (String line = br.readLine(); line != null; line = br.readLine()) stopwords.add(line);
 	}
 	
-//	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 //		Date start = new Date();
 //		WebPageExp exp = new WebPageExp();
 //		stopwords.add("-");
@@ -77,7 +83,12 @@ public class WebPageExp {
 //		Date end = new Date();
 //		System.out.println("total processing time: " + (end.getTime() - start.getTime())
 //				+ " milliseconds.");
-//	}
+		String text = highlight("http://en.wikipedia.org/wiki/Cognitive_science", new String[]{"cognitive science", "Artificial intelligence", 
+				"Neuroscience", "James McClelland", "Psychology", "Philosophy", "Memory", "Brain", "Linguistics", "Noam Chomsky"});
+		PrintWriter pw = new PrintWriter(new FileWriter("E:\\test.html"));
+		pw.println(text);
+		pw.close();
+	}
 
 //	public static String getStream(String str) {
 //		Date start = new Date();
@@ -112,13 +123,107 @@ public class WebPageExp {
 	public static String highlight(String url, String[] entities) throws Exception {
 		System.out.println("top 10 entities:");
 		for (String s : entities) System.out.println(s);
-		BufferedReader br = new BufferedReader(new InputStreamReader(new URL(url).openStream()));
+		Parser parser = new Parser(url);
+		parser.setEncoding("utf-8");
 		StringBuilder sb = new StringBuilder();
-		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			for (String s : entities) line = line.replaceAll(s, preAdd+s+postAdd);
-			sb.append(line);
+		for (NodeIterator i = parser.elements(); i.hasMoreNodes(); ) {
+			Node n = i.nextNode();
+			if (n instanceof TextNode) {
+				String text = n.getText();
+				for (int j = 0; j < entities.length; j++) text = replaceAllIgnoreCase(text, entities[j], j);
+				sb.append(text);
+			} else if (n instanceof TagNode){
+				TagNode tag = (TagNode) n;
+				String tn = tag.getRawTagName();
+				if (tn.equalsIgnoreCase("title") || tn.equalsIgnoreCase("head")
+						|| tn.equalsIgnoreCase("script") || tn.equalsIgnoreCase("img")
+						|| tn.startsWith("![")) {
+					sb.append(n.toHtml());
+				} else {
+					if (n.getChildren() == null) sb.append(n.toHtml());
+					else {
+						sb.append(getStartHtml(n));
+						NodeList nl = n.getChildren();
+						if (nl != null) for (NodeIterator ni = nl.elements(); ni.hasMoreNodes(); ) sb.append(highlight(ni.nextNode(), entities));
+						sb.append(getEndHtml(n));
+					}
+				}
+			} else {
+				sb.append(n.toHtml());
+			}
 		}
 		return sb.toString();
+	}
+	
+	public static String highlight(Node n, String[] entities) throws Exception {
+		if (n instanceof TextNode) {
+			String text = n.getText();
+			for (int i = 0; i < entities.length; i++) text = replaceAllIgnoreCase(text, entities[i], i);
+			return text;
+		} else if (n instanceof TagNode) {
+			TagNode tag = (TagNode) n;
+			String tn = tag.getRawTagName();
+			if (tn.equalsIgnoreCase("title") || tn.equalsIgnoreCase("head")
+					|| tn.equalsIgnoreCase("script") || tn.equalsIgnoreCase("img")
+					|| tn.startsWith("![")) {
+				return n.toHtml();
+			} else {
+				if (n.getChildren() == null) return n.toHtml();
+				StringBuilder sb = new StringBuilder();
+				sb.append(getStartHtml(n));
+				NodeList nl = n.getChildren();
+				if (nl != null) for (NodeIterator ni = nl.elements(); ni.hasMoreNodes(); ) sb.append(highlight(ni.nextNode(), entities));
+				sb.append(getEndHtml(n));
+				return sb.toString();
+			}
+		} else {
+			return n.toHtml();
+		}
+	}
+	
+	public static String replaceAllIgnoreCase(String text, String str, int rank) {
+//		System.out.println("replaceAllIgnoreCase(" + text + ", " + str + ")");
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < str.length(); i++) {
+			char c = str.charAt(i);
+			sb.append("(" + Character.toLowerCase(c) + "|" + Character.toUpperCase(c) + ")");
+		}
+		Pattern p = Pattern.compile(sb.toString());
+		ArrayList<Integer> replaceList = new ArrayList<Integer>();
+		for (int i = 0; i < text.length()-str.length()+1; i++) {
+			Matcher m = p.matcher(text.substring(i, i+str.length()));
+			if (m.matches()) {
+				replaceList.add(i);
+//				System.out.println(i + " : " + text.substring(i, i+str.length()));
+			}
+		}
+		StringBuilder sb1 = new StringBuilder();
+		int start = 0;
+		for (Integer i : replaceList) {
+			if (i > start){
+				sb1.append(text.substring(start, i));
+				sb1.append(preAddPre + Integer.toHexString(color+rank*diff) + preAddPost + text.substring(i, i+str.length())+postAdd);
+				start = i+str.length();
+			} else {
+				sb1.append(preAddPre + Integer.toHexString(color+rank*diff) + preAddPost + text.substring(i, i+str.length())+postAdd);
+				start = i+str.length();
+			}
+//			System.out.println(i + " : " + sb1.toString());
+		}
+		sb1.append(text.substring(start));
+		return sb1.toString();
+	}
+	
+	public static String getStartHtml(Node n) {
+		String raw = n.toHtml();
+		int pos = raw.indexOf('>')+1;
+		return raw.substring(0, pos);
+	}
+	
+	public static String getEndHtml(Node n) {
+		String raw = n.toHtml();
+		int pos = raw.lastIndexOf('<');
+		return raw.substring(pos);
 	}
 	
 	public static String[] recognize(String url) {
