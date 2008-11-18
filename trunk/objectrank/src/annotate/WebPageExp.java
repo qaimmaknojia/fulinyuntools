@@ -254,7 +254,7 @@ public class WebPageExp {
 			ret.addAll(recognize(i.nextNode(), searcher));
 		return ret;
 	}
-	
+
 	public ArrayList<Annotation> recognize(Node node, Searcher searcher) throws Exception {
 		ArrayList<Annotation> ret = new ArrayList<Annotation>();
 		if (node instanceof TextNode) {
@@ -278,7 +278,7 @@ public class WebPageExp {
 		}
 		return ret;
 	}
-	
+
 	public ArrayList<Annotation> recognizeText(String text, Searcher searcher) throws Exception {
 		ArrayList<Annotation> ret = new ArrayList<Annotation>();
 		if (!containalnum(text)) return ret;
