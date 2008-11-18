@@ -595,8 +595,9 @@ public class Processor {
 				return f.getName().endsWith(".htm");
 			}
 		});
-		for (int i = 1; i < fn.length; i++) {
+		for (int i = 0; i < fn.length; i++) {
 			File f = fn[i];
+			if (new File(projectFolder+"tuning\\" + f.getName() + ".txt").exists()) continue;
 			System.out.println("tuning " + f.getName());
 			tunePara(f.getAbsolutePath(), projectFolder+"tuning\\" + f.getName() + ".txt");
 		}
