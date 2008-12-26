@@ -1,20 +1,24 @@
+import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.Properties;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
 public class MobRobot {
+
+	public static String configFile = "/configHome.prop";
 
 	public static int startX = 30;
 	public static int startY = 1006;
@@ -22,32 +26,175 @@ public class MobRobot {
 	public static int firefoxY = 294;
 	public static int addressX = 765;
 	public static int addressY = 74;
-	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static int taskX = 251;
 	public static int taskY = 313;
 	public static int doX = 878;
 	public static int doY = 786;
 	public static int exitX = 1267;
 	public static int exitY = 11;
-
-	public static void main(String[] args) throws Exception {
-		doTask();
-		while(true) {
-			doTask();
-			Thread.currentThread().sleep(50*60*1000);
+	public static int scrollX;
+	public static int scrollY;
+	public static int screenWidth;
+	public static int screenHeight;
+	public static int brotherBeginX;
+	public static int brotherBeginY;
+	public static int brotherEndX;
+	public static int storeX;
+	public static int storeY;
+	public static int gunBeginX;
+	public static int gunBeginY;
+	public static int gunEndX;
+	public static int helmetBeginX;
+	public static int helmetBeginY;
+	public static int helmetEndX;
+	public static int carBeginX;
+	public static int carBeginY;
+	public static int carEndX;
+	public static int buyGunX;
+	public static int buyGunY;
+	public static int buyHelmetX;
+	public static int buyHelmetY;
+	public static int buyCarX;
+	public static int buyCarY;
+	public static int moneyBeginX;
+	public static int moneyBeginY;
+	public static int moneyEndX;
+	
+	public static String mobURL = "http://mob.xiaonei.com/home.do";
+	public static Robot robot = null;
+	public static String picFilePrefix = "E:\\mobtemp\\snapshot";
+	
+	static {
+		try {
+			Properties prop = new Properties();
+			InputStream is = MobRobot.class.getResourceAsStream(configFile);
+			prop.load(is);
+			startX = Integer.parseInt(prop.getProperty("startX"));
+			startY = Integer.parseInt(prop.getProperty("startY"));
+			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
+			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
+			addressX = Integer.parseInt(prop.getProperty("addressX"));
+			addressY = Integer.parseInt(prop.getProperty("addressY"));
+			taskX = Integer.parseInt(prop.getProperty("taskX"));
+			taskY = Integer.parseInt(prop.getProperty("taskY"));
+			doX = Integer.parseInt(prop.getProperty("doX"));
+			doY = Integer.parseInt(prop.getProperty("doY"));
+			scrollX = Integer.parseInt(prop.getProperty("scrollX"));
+			scrollY = Integer.parseInt(prop.getProperty("scrollY"));
+			exitX = Integer.parseInt(prop.getProperty("exitX"));
+			exitY = Integer.parseInt(prop.getProperty("exitY"));
+			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
+			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
+			brotherBeginX = Integer.parseInt(prop.getProperty("brotherBeginX"));
+			brotherBeginY = Integer.parseInt(prop.getProperty("brotherBeginY"));
+			brotherEndX = Integer.parseInt(prop.getProperty("brotherEndX"));
+			storeX = Integer.parseInt(prop.getProperty("storeX"));
+			storeY = Integer.parseInt(prop.getProperty("storeY"));
+			gunBeginX = Integer.parseInt(prop.getProperty("gunBeginX"));
+			gunBeginY = Integer.parseInt(prop.getProperty("gunBeginY"));
+			gunEndX = Integer.parseInt(prop.getProperty("gunEndX"));
+			helmetBeginX = Integer.parseInt(prop.getProperty("helmetBeginX"));
+			helmetBeginY = Integer.parseInt(prop.getProperty("helmetBeginY"));
+			helmetEndX = Integer.parseInt(prop.getProperty("helmetEndX"));
+			carBeginX = Integer.parseInt(prop.getProperty("carBeginX"));
+			carBeginY = Integer.parseInt(prop.getProperty("carBeginY"));
+			carEndX = Integer.parseInt(prop.getProperty("carEndX"));
+			buyGunX = Integer.parseInt(prop.getProperty("buyGunX"));
+			buyGunY = Integer.parseInt(prop.getProperty("buyGunY"));
+			buyHelmetX = Integer.parseInt(prop.getProperty("buyHelmetX"));
+			buyHelmetY = Integer.parseInt(prop.getProperty("buyHelmetY"));
+			buyCarX = Integer.parseInt(prop.getProperty("buyCarX"));
+			buyCarY = Integer.parseInt(prop.getProperty("buyCarY"));
+			moneyBeginX = Integer.parseInt(prop.getProperty("moneyBeginX"));
+			moneyBeginY = Integer.parseInt(prop.getProperty("moneyBeginY"));
+			moneyEndX = Integer.parseInt(prop.getProperty("moneyEndX"));
+			
+			System.out.println("startX = " + startX + "; startY = " + startY + "; firefoxX = " + firefoxX + 
+					"; firefoxY = " + firefoxY + "; addressX = " + addressX + "; addressY = " + addressY + 
+					"; taskX = " + taskX + "; taskY = " + taskY + "; scrollX = " + scrollX + "; scrollY = " + 
+					scrollY + "; doX = " + doX + "; doY = " + doY + "; exitX = " + exitX + "; exitY = " + 
+					exitY + "; screenWidth = " + screenWidth + "; screenHeight = " + screenHeight + 
+					"; brotherBeginX = " + brotherBeginX + "; brotherBeginY = " + brotherBeginY + 
+					"; brotherEndX = " + brotherEndX + "; storeX = " + storeX + "; storeY = " + storeY + 
+					"; gunBeginX = " + gunBeginX + "; gunBeginY = " + gunBeginY + "; gunEndX = " + gunEndX + 
+					"; helmetBeginX = " + helmetBeginX + "; helmetBeginY = " + helmetBeginY + "; helmetEndX = " + 
+					helmetEndX + "; carBeginX = " + carBeginX + "; carBeginY = " + carBeginY + "; carEndX = " + 
+					carEndX + "; buyGunX = " + buyGunX + "; buyGunY = " + buyGunY + "; buyHelmetX = " + 
+					buyHelmetX + "; buyHelmetY = " + buyHelmetY + "; buyCarX = " + buyCarX + "; buyCarY = " + 
+					buyCarY + "; moneyBeginX = " + moneyBeginX + "; moneyBeginY = " + moneyBeginY + 
+					"; moneyEndX = " + moneyEndX);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 	
-	public static void doTask() throws Exception {
+	public static void main(String[] args) throws Exception {
+//		while(true) {
+//			initRobot();
+//			enterMob();
+//			doTask();
+//			takePic(picFilePrefix+ new Date().toString().replaceAll(":", "_") + ".jpg");
+//			exit();
+//			Thread.currentThread().sleep(50*60*1000);
+//		}
+		
+//		initRobot();
+//		enterMob();
+//		enterStore();
+//		buyGun();
+//		buyHelmet();
+//		buyCar();
+//		exitMob();
+		
+		while (true) {
+			checkWeapon();
+			Thread.currentThread().sleep(60*60*1000);
+		}
+	}
+	
+	public static void checkWeapon() throws Exception {
+		initRobot();
+		enterMob();
+		int brotherNumber = getBrotherNumber();
+		System.out.println("got brother number: " + brotherNumber);
+		enterStore();
+		int moneyAmount = getMoneyAmount();
+		int gunNumber = getGunNumber();
+		int helmetNumber = getHelmetNumber();
+		int carNumber = getCarNumber();
+		System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
+				"; helmet number: " + helmetNumber + "; car number: " + carNumber);
+		exitMob();
+		while (moneyAmount >= 916000 && gunNumber < brotherNumber+1) {
+			enterMob();
+			enterStore();
+			buyGun();
+			buyHelmet();
+			buyCar();
+			gunNumber++;
+			helmetNumber++;
+			carNumber++;
+			moneyAmount -= 916000;
+			System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
+					"; helmet number: " + helmetNumber + "; car number: " + carNumber);
+			exitMob();
+		}
+	}
+	
+	public static void initRobot() throws Exception {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
-		Robot robot = new Robot(screen);
-
+		robot = new Robot(screen);
+	}
+	
+	public static void enterMob() throws Exception {
 		robot.delay(2000);
 		robot.mouseMove(startX, startY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
+//		robot.keyPress(KeyEvent.VK_WINDOWS);
+//		robot.keyRelease(KeyEvent.VK_WINDOWS);
+		
 		robot.delay(2000);
 		robot.mouseMove(firefoxX, firefoxY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -72,43 +219,221 @@ public class MobRobot {
 		}
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
-		
+	}
+	
+	public static void doTask() throws Exception {
 		robot.delay(5000);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		
 		robot.delay(5000);
 		robot.mouseMove(doX, doY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+	}
+	
+	public static void takePic(String fn) throws Exception {
 		robot.delay(2000);
-		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, 1280, 1024));
-		ImageIO.write(image, "JPEG", new File("E:\\mobtemp\\snapshot" + new Date().toString().replaceAll(":", "_") + ".jpg"));
-		
+		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth, screenHeight));
+		ImageIO.write(image, "JPEG", new File(fn));
+	}
+	
+	public static void exitMob() throws Exception {
 		robot.delay(5000);
 		robot.mouseMove(exitX, exitY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
 		System.out.println(new Date().toString() + " task finished");
-
 	}
-}
-
-class ImageFrame extends JFrame {
-	/**
-	   @param image the image to display
-	 */
-	public ImageFrame(Image image) {
-		setTitle("Capture");
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
-		JLabel label = new JLabel(new ImageIcon(image));
-		add(label);
+	
+	public static int getBrotherNumber() throws Exception {
+		robot.delay(5000);
+		robot.mouseMove(brotherBeginX, brotherBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(brotherEndX, brotherBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+		
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str.substring(5, 8));
 	}
+	
+	public static void enterStore() throws Exception {
+		robot.delay(5000);
+		robot.mouseMove(storeX, storeY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
+	
+	public static int getMoneyAmount() throws Exception {
+		robot.delay(5000);
+		robot.mouseMove(moneyBeginX, moneyBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(moneyEndX, moneyBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+		
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str.substring(4));
+	}
+	
+	public static int getGunNumber() throws Exception {
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		robot.delay(5000);
+		robot.mouseMove(gunBeginX, gunBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(gunEndX, gunBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
 
-	public static final int DEFAULT_WIDTH = 450;
-	public static final int DEFAULT_HEIGHT = 350;
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str);
+	}
+	
+	public static int getHelmetNumber() throws Exception {
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		robot.delay(5000);
+		robot.mouseMove(helmetBeginX, helmetBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(helmetEndX, helmetBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str);
+	}
+	
+	public static int getCarNumber() throws Exception {
+		robot.delay(5000);
+		robot.mouseMove(carBeginX, carBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(carEndX, carBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str);
+	}
+	
+	public static void buyGun() throws Exception {
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		robot.delay(5000);
+		robot.mouseMove(buyGunX, buyGunY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
+	
+	public static void buyHelmet() throws Exception {
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		robot.delay(5000);
+		robot.mouseMove(buyHelmetX, buyHelmetY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
+	
+	public static void buyCar() throws Exception {
+		if (configFile.equals("/configHome.prop")) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		robot.delay(5000);
+		robot.mouseMove(buyCarX, buyCarY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
 }
