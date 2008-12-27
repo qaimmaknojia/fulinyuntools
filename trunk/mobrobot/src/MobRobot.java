@@ -59,6 +59,13 @@ public class MobRobot {
 	public static int moneyBeginX;
 	public static int moneyBeginY;
 	public static int moneyEndX;
+	public static int sellCarX;
+	public static int sellCarY;
+	public static int buyCar1X;
+	public static int buyCar1Y;
+	public static int car1BeginX;
+	public static int car1BeginY;
+	public static int car1EndX;
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
@@ -108,6 +115,13 @@ public class MobRobot {
 			moneyBeginX = Integer.parseInt(prop.getProperty("moneyBeginX"));
 			moneyBeginY = Integer.parseInt(prop.getProperty("moneyBeginY"));
 			moneyEndX = Integer.parseInt(prop.getProperty("moneyEndX"));
+			sellCarX = Integer.parseInt(prop.getProperty("sellCarX"));
+			sellCarY = Integer.parseInt(prop.getProperty("sellCarY"));
+			buyCar1X = Integer.parseInt(prop.getProperty("buyCar1X"));
+			buyCar1Y = Integer.parseInt(prop.getProperty("buyCar1Y"));
+			car1BeginX = Integer.parseInt(prop.getProperty("car1BeginX"));
+			car1BeginY = Integer.parseInt(prop.getProperty("car1BeginY"));
+			car1EndX = Integer.parseInt(prop.getProperty("car1EndX"));
 			
 			System.out.println("startX = " + startX + "; startY = " + startY + "; firefoxX = " + firefoxX + 
 					"; firefoxY = " + firefoxY + "; addressX = " + addressX + "; addressY = " + addressY + 
@@ -146,14 +160,66 @@ public class MobRobot {
 //		buyCar();
 //		exitMob();
 		
+//		while (true) {
+//			checkWeapon();
+//			Thread.currentThread().sleep(50*60*1000);
+//		}
+		initRobot();
 		while (true) {
+			enterMob();
+			doTask();
+			exitMob();
 			checkWeapon();
+			adjustEquip();
 			Thread.currentThread().sleep(50*60*1000);
 		}
 	}
 	
+	private static void adjustEquip() throws Exception {
+		enterMob();
+		enterStore();
+		int moneyAmount = getMoneyAmount();
+		int carNumber = getCarNumber1();
+		System.out.println("money amount: " + moneyAmount + "; car number: " + carNumber);
+		while (moneyAmount >= 1150000 && carNumber > 10) {
+			sellCar();
+			buyCar1();
+			moneyAmount -= 1150000;
+			carNumber--;
+		}
+		exitMob();
+	}
+
+	private static void sellCar() throws Exception {
+		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+
+		robot.delay(5000);
+		robot.mouseMove(sellCarX, sellCarY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
+
+	private static void buyCar1() throws Exception {
+
+		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+
+		robot.delay(5000);
+		robot.mouseMove(buyCar1X, buyCar1Y);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+	}
+	
 	public static void checkWeapon() throws Exception {
-		initRobot();
 		enterMob();
 		int brotherNumber = getBrotherNumber();
 		System.out.println("got brother number: " + brotherNumber);
@@ -161,22 +227,26 @@ public class MobRobot {
 		int moneyAmount = getMoneyAmount();
 		int gunNumber = getGunNumber();
 		int helmetNumber = getHelmetNumber();
-		int carNumber = getCarNumber();
+		int carNumber = getCarNumber1();
+		int car1Number = getCar1Number();
 		System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-				"; helmet number: " + helmetNumber + "; car number: " + carNumber);
+				"; helmet number: " + helmetNumber + "; car number: " + carNumber + 
+				"; car1 number: " + car1Number);
 		exitMob();
-		while (moneyAmount >= 916000 && gunNumber < brotherNumber+1) {
+		while (moneyAmount >= 1500000+16000+200000 && gunNumber < brotherNumber+1) {
 			enterMob();
 			enterStore();
 			buyGun();
 			buyHelmet();
-			buyCar();
+			buyCar1();
 			gunNumber++;
 			helmetNumber++;
 			carNumber++;
-			moneyAmount -= 916000;
+			car1Number++;
+			moneyAmount -= 1716000;
 			System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-					"; helmet number: " + helmetNumber + "; car number: " + carNumber);
+					"; helmet number: " + helmetNumber + "; car number: " + carNumber +
+					"; car1 number: " + car1Number);
 			exitMob();
 		}
 	}
@@ -232,6 +302,8 @@ public class MobRobot {
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		} else {
+			
 		}
 		
 		robot.delay(5000);
@@ -363,6 +435,62 @@ public class MobRobot {
 		robot.mouseMove(carBeginX, carBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(carEndX, carBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str);
+	}
+	
+	public static int getCarNumber1() throws Exception {
+		
+		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		
+		robot.delay(5000);
+		robot.mouseMove(carBeginX, carBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(carEndX, carBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		return Integer.parseInt(str);
+	}
+	
+	public static int getCar1Number() throws Exception {
+		
+		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
+		
+		robot.delay(5000);
+		robot.mouseMove(car1BeginX, car1BeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(car1EndX, car1BeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
 		robot.keyPress(KeyEvent.VK_CONTROL);
