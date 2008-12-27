@@ -166,9 +166,7 @@ public class MobRobot {
 //		}
 		initRobot();
 		while (true) {
-			enterMob();
 			doTask();
-			exitMob();
 			checkWeapon();
 			adjustEquip();
 			Thread.currentThread().sleep(50*60*1000);
@@ -227,11 +225,9 @@ public class MobRobot {
 		int moneyAmount = getMoneyAmount();
 		int gunNumber = getGunNumber();
 		int helmetNumber = getHelmetNumber();
-		int carNumber = getCarNumber1();
 		int car1Number = getCar1Number();
 		System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-				"; helmet number: " + helmetNumber + "; car number: " + carNumber + 
-				"; car1 number: " + car1Number);
+				"; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
 		exitMob();
 		while (moneyAmount >= 1500000+16000+200000 && gunNumber < brotherNumber+1) {
 			enterMob();
@@ -241,12 +237,10 @@ public class MobRobot {
 			buyCar1();
 			gunNumber++;
 			helmetNumber++;
-			carNumber++;
 			car1Number++;
 			moneyAmount -= 1716000;
 			System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-					"; helmet number: " + helmetNumber + "; car number: " + carNumber +
-					"; car1 number: " + car1Number);
+					"; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
 			exitMob();
 		}
 	}
@@ -292,6 +286,7 @@ public class MobRobot {
 	}
 	
 	public static void doTask() throws Exception {
+		enterMob();
 		robot.delay(5000);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -310,6 +305,7 @@ public class MobRobot {
 		robot.mouseMove(doX, doY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		exitMob();
 	}
 	
 	public static void takePic(String fn) throws Exception {
