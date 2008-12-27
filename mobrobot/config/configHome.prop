@@ -37,3 +37,7 @@ storeY=303
 moneyBeginX=45
 moneyBeginY=276
 moneyEndX=179
+sellCarX=699
+sellCarY=438
+buyCar1X=571
+buyCar1Y=533
