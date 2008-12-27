@@ -148,7 +148,7 @@ public class MobRobot {
 		
 		while (true) {
 			checkWeapon();
-			Thread.currentThread().sleep(60*60*1000);
+			Thread.currentThread().sleep(50*60*1000);
 		}
 	}
 	
