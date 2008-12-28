@@ -66,6 +66,9 @@ public class MobRobot {
 	public static int car1BeginX;
 	public static int car1BeginY;
 	public static int car1EndX;
+	public static int levelBeginX;
+	public static int levelBeginY;
+	public static int levelEndX;
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
@@ -122,6 +125,9 @@ public class MobRobot {
 			car1BeginX = Integer.parseInt(prop.getProperty("car1BeginX"));
 			car1BeginY = Integer.parseInt(prop.getProperty("car1BeginY"));
 			car1EndX = Integer.parseInt(prop.getProperty("car1EndX"));
+			levelBeginX = Integer.parseInt(prop.getProperty("levelBeginX"));
+			levelBeginY = Integer.parseInt(prop.getProperty("levelBeginY"));
+			levelEndX = Integer.parseInt(prop.getProperty("levelEndX"));
 			
 			System.out.println("startX = " + startX + "; startY = " + startY + "; firefoxX = " + firefoxX + 
 					"; firefoxY = " + firefoxY + "; addressX = " + addressX + "; addressY = " + addressY + 
@@ -166,13 +172,44 @@ public class MobRobot {
 //		}
 		initRobot();
 		while (true) {
-			doTask();
+			System.out.println(new Date().toString() + " task begins");
+//			doTask();
+			int level = getLevel();
+			System.out.println("level: " + level);
+			if (level >= 40) break;
 			checkWeapon();
 			adjustEquip();
+			System.out.println(new Date().toString() + " task finished");
 			Thread.currentThread().sleep(50*60*1000);
 		}
 	}
 	
+	private static int getLevel() throws Exception {
+		enterMob();
+		
+		robot.delay(5000);
+		robot.mouseMove(levelBeginX, levelBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(levelEndX, levelBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.delay(5000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+		
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		
+		exitMob();
+		
+		return Integer.parseInt(str.substring(3));
+	}
+
 	private static void adjustEquip() throws Exception {
 		enterMob();
 		enterStore();
@@ -319,8 +356,6 @@ public class MobRobot {
 		robot.mouseMove(exitX, exitY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		System.out.println(new Date().toString() + " task finished");
 	}
 	
 	public static int getBrotherNumber() throws Exception {
