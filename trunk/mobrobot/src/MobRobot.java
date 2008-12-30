@@ -18,7 +18,8 @@ import javax.imageio.ImageIO;
 
 public class MobRobot {
 
-	public static String configFile = "/configHome.prop";
+//	public static String configFile = "/configHome.prop";
+	public static String configFile = "/configSchool.prop";
 
 	public static int startX = 30;
 	public static int startY = 1006;
@@ -69,11 +70,11 @@ public class MobRobot {
 	public static int levelBeginX;
 	public static int levelBeginY;
 	public static int levelEndX;
-	
+
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
 	public static String picFilePrefix = "E:\\mobtemp\\snapshot";
-	
+
 	static {
 		try {
 			Properties prop = new Properties();
@@ -128,26 +129,32 @@ public class MobRobot {
 			levelBeginX = Integer.parseInt(prop.getProperty("levelBeginX"));
 			levelBeginY = Integer.parseInt(prop.getProperty("levelBeginY"));
 			levelEndX = Integer.parseInt(prop.getProperty("levelEndX"));
-			
-			System.out.println("startX = " + startX + "; startY = " + startY + "; firefoxX = " + firefoxX + 
-					"; firefoxY = " + firefoxY + "; addressX = " + addressX + "; addressY = " + addressY + 
-					"; taskX = " + taskX + "; taskY = " + taskY + "; scrollX = " + scrollX + "; scrollY = " + 
-					scrollY + "; doX = " + doX + "; doY = " + doY + "; exitX = " + exitX + "; exitY = " + 
-					exitY + "; screenWidth = " + screenWidth + "; screenHeight = " + screenHeight + 
-					"; brotherBeginX = " + brotherBeginX + "; brotherBeginY = " + brotherBeginY + 
-					"; brotherEndX = " + brotherEndX + "; storeX = " + storeX + "; storeY = " + storeY + 
-					"; gunBeginX = " + gunBeginX + "; gunBeginY = " + gunBeginY + "; gunEndX = " + gunEndX + 
-					"; helmetBeginX = " + helmetBeginX + "; helmetBeginY = " + helmetBeginY + "; helmetEndX = " + 
-					helmetEndX + "; carBeginX = " + carBeginX + "; carBeginY = " + carBeginY + "; carEndX = " + 
-					carEndX + "; buyGunX = " + buyGunX + "; buyGunY = " + buyGunY + "; buyHelmetX = " + 
-					buyHelmetX + "; buyHelmetY = " + buyHelmetY + "; buyCarX = " + buyCarX + "; buyCarY = " + 
-					buyCarY + "; moneyBeginX = " + moneyBeginX + "; moneyBeginY = " + moneyBeginY + 
-					"; moneyEndX = " + moneyEndX);
+
+			System.out
+					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
+							+ firefoxX + "; firefoxY = " + firefoxY + "; addressX = " + addressX
+							+ "; addressY = " + addressY + "; taskX = " + taskX + "; taskY = "
+							+ taskY + "; scrollX = " + scrollX + "; scrollY = " + scrollY
+							+ "; doX = " + doX + "; doY = " + doY + "; exitX = " + exitX
+							+ "; exitY = " + exitY + "; screenWidth = " + screenWidth
+							+ "; screenHeight = " + screenHeight + "; brotherBeginX = "
+							+ brotherBeginX + "; brotherBeginY = " + brotherBeginY
+							+ "; brotherEndX = " + brotherEndX + "; storeX = " + storeX
+							+ "; storeY = " + storeY + "; gunBeginX = " + gunBeginX
+							+ "; gunBeginY = " + gunBeginY + "; gunEndX = " + gunEndX
+							+ "; helmetBeginX = " + helmetBeginX + "; helmetBeginY = "
+							+ helmetBeginY + "; helmetEndX = " + helmetEndX + "; carBeginX = "
+							+ carBeginX + "; carBeginY = " + carBeginY + "; carEndX = " + carEndX
+							+ "; buyGunX = " + buyGunX + "; buyGunY = " + buyGunY
+							+ "; buyHelmetX = " + buyHelmetX + "; buyHelmetY = " + buyHelmetY
+							+ "; buyCarX = " + buyCarX + "; buyCarY = " + buyCarY
+							+ "; moneyBeginX = " + moneyBeginX + "; moneyBeginY = " + moneyBeginY
+							+ "; moneyEndX = " + moneyEndX);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 //		while(true) {
 //			initRobot();
@@ -157,64 +164,73 @@ public class MobRobot {
 //			exit();
 //			Thread.currentThread().sleep(50*60*1000);
 //		}
-		
+
 //		initRobot();
 //		enterMob();
 //		enterStore();
 //		buyGun();
 //		buyHelmet();
 //		buyCar();
-//		exitMob();
-		
+//		exitFirefox();
+
 //		while (true) {
 //			checkWeapon();
 //			Thread.currentThread().sleep(50*60*1000);
 //		}
 		initRobot();
+		Thread.currentThread().sleep(10*60*1000);
+//		doTask();
 		while (true) {
-			System.out.println(new Date().toString() + " task begins");
-//			doTask();
-			int level = getLevel();
-			System.out.println("level: " + level);
-			if (level >= 40) break;
-			checkWeapon();
-			adjustEquip();
-			System.out.println(new Date().toString() + " task finished");
-			Thread.currentThread().sleep(50*60*1000);
+			Date start = new Date();
+			long startms = start.getTime();
+			System.out.println(start.toString() + " task begins");
+			doTask();
+//			int level = getLevel();
+//			System.out.println("level: " + level);
+//			if (level >= 40) break;
+//			checkWeapon();
+//			adjustEquip();
+			Date end = new Date();
+			long timeConsumption = end.getTime()-startms;
+			System.out.println(end.toString() + " task finished");
+			Thread.currentThread().sleep(50 * 60 * 1000 - timeConsumption);
 		}
 	}
-	
+
 	private static int getLevel() throws Exception {
+
 		enterMob();
-		
+
 		robot.delay(5000);
 		robot.mouseMove(levelBeginX, levelBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(levelEndX, levelBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
 		robot.delay(5000);
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_CONTROL);
-		
+
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
-		
-		exitMob();
-		
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
+
+		exitFirefox();
+
 		return Integer.parseInt(str.substring(3));
 	}
 
 	private static void adjustEquip() throws Exception {
+
 		enterMob();
 		enterStore();
 		int moneyAmount = getMoneyAmount();
-		int carNumber = getCarNumber1();
+		int carNumber = getCarNumber();
 		System.out.println("money amount: " + moneyAmount + "; car number: " + carNumber);
 		while (moneyAmount >= 1150000 && carNumber > 10) {
 			sellCar();
@@ -222,11 +238,12 @@ public class MobRobot {
 			moneyAmount -= 1150000;
 			carNumber--;
 		}
-		exitMob();
+		exitFirefox();
 	}
 
 	private static void sellCar() throws Exception {
-		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+
+		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -241,7 +258,7 @@ public class MobRobot {
 
 	private static void buyCar1() throws Exception {
 
-		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -253,8 +270,9 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
-	
+
 	public static void checkWeapon() throws Exception {
+
 		enterMob();
 		int brotherNumber = getBrotherNumber();
 		System.out.println("got brother number: " + brotherNumber);
@@ -263,10 +281,10 @@ public class MobRobot {
 		int gunNumber = getGunNumber();
 		int helmetNumber = getHelmetNumber();
 		int car1Number = getCar1Number();
-		System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-				"; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
-		exitMob();
-		while (moneyAmount >= 1500000+16000+200000 && gunNumber < brotherNumber+1) {
+		System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber
+				+ "; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
+		exitFirefox();
+		while (moneyAmount >= 1500000 + 16000 + 200000 && gunNumber < brotherNumber + 1) {
 			enterMob();
 			enterStore();
 			buyGun();
@@ -276,26 +294,28 @@ public class MobRobot {
 			helmetNumber++;
 			car1Number++;
 			moneyAmount -= 1716000;
-			System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber + 
-					"; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
-			exitMob();
+			System.out.println("money amount: " + moneyAmount + "; gun number: " + gunNumber
+					+ "; helmet number: " + helmetNumber + "; car1 number: " + car1Number);
+			exitFirefox();
 		}
 	}
-	
+
 	public static void initRobot() throws Exception {
+
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
 		robot = new Robot(screen);
 	}
-	
+
 	public static void enterMob() throws Exception {
+
 		robot.delay(2000);
 		robot.mouseMove(startX, startY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 //		robot.keyPress(KeyEvent.VK_WINDOWS);
 //		robot.keyRelease(KeyEvent.VK_WINDOWS);
-		
+
 		robot.delay(2000);
 		robot.mouseMove(firefoxX, firefoxY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -305,10 +325,10 @@ public class MobRobot {
 		robot.mouseMove(addressX, addressY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
 		robot.delay(2000);
 		for (int i = 0; i < mobURL.length(); i++) {
-			if ((int)mobURL.charAt(i) == 58) {
+			if ((int) mobURL.charAt(i) == 58) {
 				robot.keyPress(KeyEvent.VK_SHIFT);
 				robot.keyPress(KeyEvent.VK_SEMICOLON);
 				robot.keyRelease(KeyEvent.VK_SEMICOLON);
@@ -321,90 +341,99 @@ public class MobRobot {
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
 	}
-	
+
 	public static void doTask() throws Exception {
+
 		enterMob();
 		robot.delay(5000);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
 		if (configFile.equals("/configHome.prop")) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		} else {
-			
+
 		}
-		
+
 		robot.delay(5000);
 		robot.mouseMove(doX, doY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		exitMob();
+		
+		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+
+		exitFirefox();
 	}
-	
+
 	public static void takePic(String fn) throws Exception {
+
 		robot.delay(2000);
-		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth, screenHeight));
+		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
+				screenHeight));
 		ImageIO.write(image, "JPEG", new File(fn));
 	}
-	
-	public static void exitMob() throws Exception {
+
+	public static void exitFirefox() throws Exception {
+
 		robot.delay(5000);
 		robot.mouseMove(exitX, exitY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
-	
+
 	public static int getBrotherNumber() throws Exception {
 		robot.delay(5000);
 		robot.mouseMove(brotherBeginX, brotherBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(brotherEndX, brotherBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_CONTROL);
-		
+
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
 		return Integer.parseInt(str.substring(5, 8));
 	}
-	
+
 	public static void enterStore() throws Exception {
 		robot.delay(5000);
 		robot.mouseMove(storeX, storeY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
-	
+
 	public static int getMoneyAmount() throws Exception {
 		robot.delay(5000);
 		robot.mouseMove(moneyBeginX, moneyBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(moneyEndX, moneyBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_CONTROL);
-		
+
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
 		return Integer.parseInt(str.substring(4));
 	}
-	
+
 	public static int getGunNumber() throws Exception {
 		if (configFile.equals("/configHome.prop")) {
 			robot.delay(5000);
@@ -415,13 +444,19 @@ public class MobRobot {
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		} else {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		}
 		robot.delay(5000);
 		robot.mouseMove(gunBeginX, gunBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(gunEndX, gunBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
+		robot.delay(2000);
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
@@ -429,25 +464,29 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
 	}
-	
+
 	public static int getHelmetNumber() throws Exception {
-		if (configFile.equals("/configHome.prop")) {
+
+		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		}
+
 		robot.delay(5000);
 		robot.mouseMove(helmetBeginX, helmetBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(helmetEndX, helmetBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
+		robot.delay(2000);
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
@@ -455,47 +494,57 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+//		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
 	}
-	
+
+//	public static int getCarNumber() throws Exception {
+//		robot.delay(5000);
+//		robot.mouseMove(carBeginX, carBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(carEndX, carBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+//		System.out.println(str);
+//		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+//		return Integer.parseInt(str);
+//	}
+
 	public static int getCarNumber() throws Exception {
-		robot.delay(5000);
-		robot.mouseMove(carBeginX, carBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(carEndX, carBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
 
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
-		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
-		return Integer.parseInt(str);
-	}
-	
-	public static int getCarNumber1() throws Exception {
-		
-		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		if (configFile.equals("/configHome.prop")) {
+			for (int i = 0; i < 3; i++) {
+				robot.delay(5000);
+				robot.mouseMove(scrollX, scrollY);
+				robot.mousePress(InputEvent.BUTTON1_MASK);
+				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			}
+		} else {
+			for (int i = 0; i < 2; i++) {
+				robot.delay(5000);
+				robot.mouseMove(scrollX, scrollY);
+				robot.mousePress(InputEvent.BUTTON1_MASK);
+				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			}
 		}
-		
+
 		robot.delay(5000);
 		robot.mouseMove(carBeginX, carBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(carEndX, carBeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
+		robot.delay(2000);
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
@@ -503,27 +552,28 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+//		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
 	}
-	
+
 	public static int getCar1Number() throws Exception {
-		
-		if (configFile.equals("/configHome.prop")) for (int i = 0; i < 3; i++) {
+
+		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		}
-		
+
 		robot.delay(5000);
 		robot.mouseMove(car1BeginX, car1BeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(car1EndX, car1BeginY);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
+		robot.delay(2000);
 		robot.keyPress(KeyEvent.VK_CONTROL);
 		robot.keyPress(KeyEvent.VK_C);
 		robot.keyRelease(KeyEvent.VK_C);
@@ -531,12 +581,13 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String)content.getTransferData(DataFlavor.stringFlavor);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
 	}
-	
+
 	public static void buyGun() throws Exception {
 		if (configFile.equals("/configHome.prop")) {
 			robot.delay(5000);
@@ -547,52 +598,45 @@ public class MobRobot {
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		} else {
+			robot.delay(5000);
+			robot.mouseMove(scrollX, scrollY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
 		}
+
 		robot.delay(5000);
 		robot.mouseMove(buyGunX, buyGunY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
-	
+
 	public static void buyHelmet() throws Exception {
-		if (configFile.equals("/configHome.prop")) {
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		}
+
 		robot.delay(5000);
 		robot.mouseMove(buyHelmetX, buyHelmetY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
-	
-	public static void buyCar() throws Exception {
-		if (configFile.equals("/configHome.prop")) {
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		}
-		robot.delay(5000);
-		robot.mouseMove(buyCarX, buyCarY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-	}
+
+//	public static void buyCar() throws Exception {
+//		for (int i = 0; i < 3; i++) {
+//			robot.delay(5000);
+//			robot.mouseMove(scrollX, scrollY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		}
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(buyCarX, buyCarY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//	}
 }
