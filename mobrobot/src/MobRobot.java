@@ -1,6 +1,9 @@
+import java.awt.Dialog;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Label;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.datatransfer.Clipboard;
@@ -8,18 +11,24 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+
 public class MobRobot {
 
-//	public static String configFile = "/configHome.prop";
-	public static String configFile = "/configSchool.prop";
+	public static String configFile = "/configHome.prop";
+//	public static String configFile = "/configSchool.prop";
 
 	public static int startX = 30;
 	public static int startY = 1006;
@@ -70,13 +79,25 @@ public class MobRobot {
 	public static int levelBeginX;
 	public static int levelBeginY;
 	public static int levelEndX;
-
+	public static int fightX;
+	public static int fightY;
+	public static int doFightX;
+	public static int doFightY;
+	public static int healthBeginX;
+	public static int healthBeginY;
+	public static int healthEndX;
+	
+	public static Dialog noticeDialog = new Dialog((Frame)null, "");
+	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
 	public static String picFilePrefix = "E:\\mobtemp\\snapshot";
 
 	static {
 		try {
+			
+			noticeDialog.add(new Label("task begins!"));
+			
 			Properties prop = new Properties();
 			InputStream is = MobRobot.class.getResourceAsStream(configFile);
 			prop.load(is);
@@ -129,27 +150,34 @@ public class MobRobot {
 			levelBeginX = Integer.parseInt(prop.getProperty("levelBeginX"));
 			levelBeginY = Integer.parseInt(prop.getProperty("levelBeginY"));
 			levelEndX = Integer.parseInt(prop.getProperty("levelEndX"));
-
-			System.out
-					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
-							+ firefoxX + "; firefoxY = " + firefoxY + "; addressX = " + addressX
-							+ "; addressY = " + addressY + "; taskX = " + taskX + "; taskY = "
-							+ taskY + "; scrollX = " + scrollX + "; scrollY = " + scrollY
-							+ "; doX = " + doX + "; doY = " + doY + "; exitX = " + exitX
-							+ "; exitY = " + exitY + "; screenWidth = " + screenWidth
-							+ "; screenHeight = " + screenHeight + "; brotherBeginX = "
-							+ brotherBeginX + "; brotherBeginY = " + brotherBeginY
-							+ "; brotherEndX = " + brotherEndX + "; storeX = " + storeX
-							+ "; storeY = " + storeY + "; gunBeginX = " + gunBeginX
-							+ "; gunBeginY = " + gunBeginY + "; gunEndX = " + gunEndX
-							+ "; helmetBeginX = " + helmetBeginX + "; helmetBeginY = "
-							+ helmetBeginY + "; helmetEndX = " + helmetEndX + "; carBeginX = "
-							+ carBeginX + "; carBeginY = " + carBeginY + "; carEndX = " + carEndX
-							+ "; buyGunX = " + buyGunX + "; buyGunY = " + buyGunY
-							+ "; buyHelmetX = " + buyHelmetX + "; buyHelmetY = " + buyHelmetY
-							+ "; buyCarX = " + buyCarX + "; buyCarY = " + buyCarY
-							+ "; moneyBeginX = " + moneyBeginX + "; moneyBeginY = " + moneyBeginY
-							+ "; moneyEndX = " + moneyEndX);
+			fightX = Integer.parseInt(prop.getProperty("fightX"));
+			fightY = Integer.parseInt(prop.getProperty("fightY"));
+			doFightX = Integer.parseInt(prop.getProperty("doFightX"));
+			doFightY = Integer.parseInt(prop.getProperty("doFightY"));
+			healthBeginX = Integer.parseInt(prop.getProperty("healthBeginX"));
+			healthBeginY = Integer.parseInt(prop.getProperty("healthBeginY"));
+			healthEndX = Integer.parseInt(prop.getProperty("healthEndX"));
+			
+//			System.out
+//					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
+//							+ firefoxX + "; firefoxY = " + firefoxY + "; addressX = " + addressX
+//							+ "; addressY = " + addressY + "; taskX = " + taskX + "; taskY = "
+//							+ taskY + "; scrollX = " + scrollX + "; scrollY = " + scrollY
+//							+ "; doX = " + doX + "; doY = " + doY + "; exitX = " + exitX
+//							+ "; exitY = " + exitY + "; screenWidth = " + screenWidth
+//							+ "; screenHeight = " + screenHeight + "; brotherBeginX = "
+//							+ brotherBeginX + "; brotherBeginY = " + brotherBeginY
+//							+ "; brotherEndX = " + brotherEndX + "; storeX = " + storeX
+//							+ "; storeY = " + storeY + "; gunBeginX = " + gunBeginX
+//							+ "; gunBeginY = " + gunBeginY + "; gunEndX = " + gunEndX
+//							+ "; helmetBeginX = " + helmetBeginX + "; helmetBeginY = "
+//							+ helmetBeginY + "; helmetEndX = " + helmetEndX + "; carBeginX = "
+//							+ carBeginX + "; carBeginY = " + carBeginY + "; carEndX = " + carEndX
+//							+ "; buyGunX = " + buyGunX + "; buyGunY = " + buyGunY
+//							+ "; buyHelmetX = " + buyHelmetX + "; buyHelmetY = " + buyHelmetY
+//							+ "; buyCarX = " + buyCarX + "; buyCarY = " + buyCarY
+//							+ "; moneyBeginX = " + moneyBeginX + "; moneyBeginY = " + moneyBeginY
+//							+ "; moneyEndX = " + moneyEndX);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,24 +205,103 @@ public class MobRobot {
 //			checkWeapon();
 //			Thread.currentThread().sleep(50*60*1000);
 //		}
+//		Thread.currentThread().sleep(15*60*1000);
 		initRobot();
-		Thread.currentThread().sleep(10*60*1000);
+//		Thread.currentThread().sleep(10*60*1000);
 //		doTask();
 		while (true) {
 			Date start = new Date();
 			long startms = start.getTime();
 			System.out.println(start.toString() + " task begins");
-			doTask();
+//			doTask();
 //			int level = getLevel();
 //			System.out.println("level: " + level);
 //			if (level >= 40) break;
 //			checkWeapon();
 //			adjustEquip();
-			Date end = new Date();
-			long timeConsumption = end.getTime()-startms;
-			System.out.println(end.toString() + " task finished");
-			Thread.currentThread().sleep(50 * 60 * 1000 - timeConsumption);
+			notice();
+			int health = fight();
+			if (health >= 90) {
+				Date end = new Date();
+				long timeConsumption = end.getTime()-startms;
+				System.out.println(end.toString() + " task finished");
+				Thread.currentThread().sleep(2 * 60 * 1000 - timeConsumption);
+			} else {
+				System.out.println("waiting for " + ((100-health)*3) + " minutes");
+				Thread.currentThread().sleep((100-health) * 180 * 1000);
+			}
 		}
+	}
+
+	private static void notice() throws Exception {
+
+		Dialog d = noticeDialog;
+		d.setTitle(new Date().toString());
+//		d.add(new Label("task begins!"));
+		d.setLocation(new Point(300, 300));
+		d.setSize(200, 70);
+		d.setAlwaysOnTop(true);
+		d.setVisible(true);
+		FileInputStream notice = new FileInputStream("media/notice.wav");
+		AudioStream as = new AudioStream(notice);
+		AudioPlayer.player.start(as);
+		Thread.currentThread().sleep(5000);
+		d.setVisible(false);
+		
+	}
+
+	private static int fight() throws Exception {
+		
+		enterMob();
+		
+		int health = getHealth();
+		System.out.println("health: " + health);
+		if (health < 90) {
+			exitFirefox();
+			return health;
+		}
+
+		robot.delay(5000);
+		robot.mouseMove(fightX, fightY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.delay(10000);
+		robot.mouseMove(doFightX, doFightY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+		
+		exitFirefox();
+		return health;
+		
+	}
+
+	private static int getHealth() throws Exception {
+		
+		robot.delay(5000);
+		robot.mouseMove(healthBeginX, healthBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(healthEndX, healthBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		for (int i = 0; i < str.length(); i++)
+			System.out.println(str.charAt(i));
+		
+		return Integer.parseInt(str.substring(3, str.indexOf("/")));
+		
 	}
 
 	private static int getLevel() throws Exception {
@@ -223,6 +330,7 @@ public class MobRobot {
 		exitFirefox();
 
 		return Integer.parseInt(str.substring(3));
+		
 	}
 
 	private static void adjustEquip() throws Exception {
@@ -239,6 +347,7 @@ public class MobRobot {
 			carNumber--;
 		}
 		exitFirefox();
+		
 	}
 
 	private static void sellCar() throws Exception {
@@ -254,6 +363,7 @@ public class MobRobot {
 		robot.mouseMove(sellCarX, sellCarY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 	private static void buyCar1() throws Exception {
@@ -269,6 +379,7 @@ public class MobRobot {
 		robot.mouseMove(buyCar1X, buyCar1Y);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 	public static void checkWeapon() throws Exception {
@@ -305,6 +416,7 @@ public class MobRobot {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
 		robot = new Robot(screen);
+		
 	}
 
 	public static void enterMob() throws Exception {
@@ -340,6 +452,7 @@ public class MobRobot {
 		}
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
+		
 	}
 
 	public static void doTask() throws Exception {
@@ -367,6 +480,7 @@ public class MobRobot {
 		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
 
 		exitFirefox();
+		
 	}
 
 	public static void takePic(String fn) throws Exception {
@@ -375,6 +489,7 @@ public class MobRobot {
 		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
 				screenHeight));
 		ImageIO.write(image, "JPEG", new File(fn));
+		
 	}
 
 	public static void exitFirefox() throws Exception {
@@ -383,6 +498,7 @@ public class MobRobot {
 		robot.mouseMove(exitX, exitY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 	public static int getBrotherNumber() throws Exception {
@@ -404,16 +520,20 @@ public class MobRobot {
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
 		return Integer.parseInt(str.substring(5, 8));
+		
 	}
 
 	public static void enterStore() throws Exception {
+		
 		robot.delay(5000);
 		robot.mouseMove(storeX, storeY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 	public static int getMoneyAmount() throws Exception {
+		
 		robot.delay(5000);
 		robot.mouseMove(moneyBeginX, moneyBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -432,9 +552,11 @@ public class MobRobot {
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
 		return Integer.parseInt(str.substring(4));
+		
 	}
 
 	public static int getGunNumber() throws Exception {
+		
 		if (configFile.equals("/configHome.prop")) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
@@ -469,6 +591,7 @@ public class MobRobot {
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
+		
 	}
 
 	public static int getHelmetNumber() throws Exception {
@@ -498,6 +621,7 @@ public class MobRobot {
 		System.out.println(str);
 //		for (int i = 0; i < str.length(); i++) System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
+		
 	}
 
 //	public static int getCarNumber() throws Exception {
