@@ -299,8 +299,10 @@ public class MobRobot {
 		System.out.println(str);
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
-		
-		return Integer.parseInt(str.substring(3, str.indexOf("/")));
+		int numStart;
+		for (numStart = 0; numStart < str.length(); numStart++) 
+			if (Character.isDigit(str.charAt(numStart))) break;
+		return Integer.parseInt(str.substring(numStart, str.indexOf("/")));
 		
 	}
 
