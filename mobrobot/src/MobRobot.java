@@ -11,24 +11,18 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
 import javax.imageio.ImageIO;
 
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-
 public class MobRobot {
 
-	public static String configFile = "/configHome.prop";
-//	public static String configFile = "/configSchool.prop";
+//	public static String configFile = "/configHome.prop";
+	public static String configFile = "/configSchool.prop";
 
 	public static int startX = 30;
 	public static int startY = 1006;
@@ -86,13 +80,22 @@ public class MobRobot {
 	public static int healthBeginX;
 	public static int healthBeginY;
 	public static int healthEndX;
+	public static int richTaskX;
+	public static int richTaskY;
+	public static int prepareX;
+	public static int prepareY;
+	public static int veryRichTaskX;
+	public static int veryRichTaskY;
+	public static int scrollupX;
+	public static int scrollupY;
 	
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
 	public static String picFilePrefix = "E:\\mobtemp\\snapshot";
-
+	public static String workingSign = "E:\\mobtemp\\robotworking";
+	
 	static {
 		try {
 			
@@ -157,6 +160,14 @@ public class MobRobot {
 			healthBeginX = Integer.parseInt(prop.getProperty("healthBeginX"));
 			healthBeginY = Integer.parseInt(prop.getProperty("healthBeginY"));
 			healthEndX = Integer.parseInt(prop.getProperty("healthEndX"));
+			richTaskX = Integer.parseInt(prop.getProperty("richTaskX"));
+			richTaskY = Integer.parseInt(prop.getProperty("richTaskY"));
+			prepareX = Integer.parseInt(prop.getProperty("prepareX"));
+			prepareY = Integer.parseInt(prop.getProperty("prepareY"));
+			veryRichTaskX = Integer.parseInt(prop.getProperty("veryRichTaskX"));
+			veryRichTaskY = Integer.parseInt(prop.getProperty("veryRichTaskY"));
+			scrollupX = Integer.parseInt(prop.getProperty("scrollupX"));
+			scrollupY = Integer.parseInt(prop.getProperty("scrollupY"));
 			
 //			System.out
 //					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
@@ -184,53 +195,196 @@ public class MobRobot {
 	}
 
 	public static void main(String[] args) throws Exception {
-//		while(true) {
-//			initRobot();
-//			enterMob();
-//			doTask();
-//			takePic(picFilePrefix+ new Date().toString().replaceAll(":", "_") + ".jpg");
-//			exit();
-//			Thread.currentThread().sleep(50*60*1000);
-//		}
-
-//		initRobot();
-//		enterMob();
-//		enterStore();
-//		buyGun();
-//		buyHelmet();
-//		buyCar();
-//		exitFirefox();
-
-//		while (true) {
-//			checkWeapon();
-//			Thread.currentThread().sleep(50*60*1000);
-//		}
-//		Thread.currentThread().sleep(15*60*1000);
+		try {
+			mainFight(args);
+//			mainRich(args);
+		} catch (Exception e) {
+			new File(workingSign).delete();
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	public static void mainVeryRich(String[] args) throws Exception {
+		
 		initRobot();
-//		Thread.currentThread().sleep(10*60*1000);
-//		doTask();
 		while (true) {
+			while (new File(workingSign).exists()) {
+				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+				Thread.currentThread().sleep(40*1000);
+			}
+			new File(workingSign).createNewFile();
+			
 			Date start = new Date();
 			long startms = start.getTime();
 			System.out.println(start.toString() + " task begins");
-//			doTask();
-//			int level = getLevel();
-//			System.out.println("level: " + level);
-//			if (level >= 40) break;
-//			checkWeapon();
-//			adjustEquip();
 			notice();
+			doVeryRichTask();
+			Date end = new Date();
+			System.out.println(end.toString() + " task finished");
+			long timeConsumption = end.getTime()-startms;
+			
+			new File(workingSign).delete();
+			
+			Thread.currentThread().sleep(10 * 5 * 60 * 1000 - timeConsumption);
+			
+			while (new File(workingSign).exists()) {
+				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+				Thread.currentThread().sleep(40*1000);
+			}
+			new File(workingSign).createNewFile();
+			
+			start = new Date();
+			startms = start.getTime();
+			System.out.println(start.toString() + " prepare begins");
+			notice();
+			prepare();
+			end = new Date();
+			System.out.println(end.toString() + " task finished");
+			timeConsumption = end.getTime()-startms;
+			
+			new File(workingSign).delete();
+			
+			Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+		}
+	}
+	
+	public static void mainRich(String[] args) throws Exception {
+
+		initRobot();
+		Thread.currentThread().sleep(25*5*60*1000);
+		while (true) {
+			while (new File(workingSign).exists()) {
+				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+				Thread.currentThread().sleep(40*1000);
+			}
+			new File(workingSign).createNewFile();
+			
+			Date start = new Date();
+			long startms = start.getTime();
+			System.out.println(start.toString() + " task begins");
+			notice();
+			doRichTask();
+			Date end = new Date();
+			System.out.println(end.toString() + " task finished");
+			long timeConsumption = end.getTime()-startms;
+			
+			new File(workingSign).delete();
+
+			Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+			
+		}
+	}
+
+	public static void mainFight(String[] args) throws Exception {
+
+		initRobot();
+		while (true) {
+			while (new File(workingSign).exists()) {
+				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+				Thread.currentThread().sleep(40*1000);
+			}
+			new File(workingSign).createNewFile();
+			
+			Date start = new Date();
+			long startms = start.getTime();
+			System.out.println(start.toString() + " task begins");
+			notice();
+
 			int health = fight();
+			
+			new File(workingSign).delete();
+			
 			if (health >= 90) {
 				Date end = new Date();
 				long timeConsumption = end.getTime()-startms;
 				System.out.println(end.toString() + " task finished");
 				Thread.currentThread().sleep(2 * 60 * 1000 - timeConsumption);
 			} else {
-				System.out.println("waiting for " + ((100-health)*3) + " minutes");
-				Thread.currentThread().sleep((100-health) * 180 * 1000);
+				System.out.println("waiting for " + ((145-health)*3) + " minutes");
+				Thread.currentThread().sleep((145-health) * 180 * 1000);
 			}
 		}
+	}
+	
+	private static void prepare() throws Exception {
+
+		enterMob();
+		
+		robot.delay(5000);
+		robot.mouseMove(taskX, taskY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(scrollX, scrollY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(prepareX, prepareY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+
+		exitFirefox();
+		
+	}
+
+	private static void doVeryRichTask() throws Exception {
+		
+		enterMob();
+		
+		robot.delay(5000);
+		robot.mouseMove(taskX, taskY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(scrollX, scrollY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(veryRichTaskX, veryRichTaskY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+
+		exitFirefox();
+		
+	}
+
+	private static void doRichTask() throws Exception {
+		
+		enterMob();
+		
+		robot.delay(5000);
+		robot.mouseMove(taskX, taskY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(scrollX, scrollY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.mouseMove(richTaskX, richTaskY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.delay(5000);
+		robot.mouseMove(scrollupX, scrollupY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+
+		exitFirefox();
+		
 	}
 
 	private static void notice() throws Exception {
@@ -242,9 +396,9 @@ public class MobRobot {
 		d.setSize(200, 70);
 		d.setAlwaysOnTop(true);
 		d.setVisible(true);
-		FileInputStream notice = new FileInputStream("media/notice.wav");
-		AudioStream as = new AudioStream(notice);
-		AudioPlayer.player.start(as);
+//		FileInputStream notice = new FileInputStream("media/notice.wav");
+//		AudioStream as = new AudioStream(notice);
+//		AudioPlayer.player.start(as);
 		Thread.currentThread().sleep(5000);
 		d.setVisible(false);
 		
@@ -297,8 +451,8 @@ public class MobRobot {
 		Transferable content = cb.getContents(null);
 		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
 		System.out.println(str);
-		for (int i = 0; i < str.length(); i++)
-			System.out.println(str.charAt(i));
+//		for (int i = 0; i < str.length(); i++)
+//			System.out.println(str.charAt(i));
 		int numStart;
 		for (numStart = 0; numStart < str.length(); numStart++) 
 			if (Character.isDigit(str.charAt(numStart))) break;
