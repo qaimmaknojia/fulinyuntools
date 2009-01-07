@@ -198,6 +198,7 @@ public class MobRobot {
 		try {
 			mainFight(args);
 //			mainRich(args);
+//			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
 			e.printStackTrace();
@@ -208,45 +209,60 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) throws Exception {
 		
 		initRobot();
+		Thread.currentThread().sleep(36*5*60*1000);
 		while (true) {
-			while (new File(workingSign).exists()) {
-				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				Thread.currentThread().sleep(40*1000);
-			}
-			new File(workingSign).createNewFile();
-			
-			Date start = new Date();
-			long startms = start.getTime();
-			System.out.println(start.toString() + " task begins");
-			notice();
-			doVeryRichTask();
-			Date end = new Date();
-			System.out.println(end.toString() + " task finished");
-			long timeConsumption = end.getTime()-startms;
-			
-			new File(workingSign).delete();
-			
+			long timeConsumption = mainDoVeryRichTask();
 			Thread.currentThread().sleep(10 * 5 * 60 * 1000 - timeConsumption);
 			
-			while (new File(workingSign).exists()) {
-				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				Thread.currentThread().sleep(40*1000);
-			}
-			new File(workingSign).createNewFile();
+			long timeConsumption1 = mainPrepare();
+			Thread.currentThread().sleep(40 * 5 * 60 * 1000 - timeConsumption1);
 			
-			start = new Date();
-			startms = start.getTime();
-			System.out.println(start.toString() + " prepare begins");
-			notice();
-			prepare();
-			end = new Date();
-			System.out.println(end.toString() + " task finished");
-			timeConsumption = end.getTime()-startms;
-			
-			new File(workingSign).delete();
-			
-			Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
 		}
+	}
+	
+	private static long mainPrepare() throws Exception {
+
+		while (new File(workingSign).exists()) {
+			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+			Thread.currentThread().sleep(40*1000);
+		}
+		new File(workingSign).createNewFile();
+		
+		Date start = new Date();
+		long startms = start.getTime();
+		System.out.println(start.toString() + " prepare begins");
+		notice();
+		prepare();
+		Date end = new Date();
+		System.out.println(end.toString() + " prepare finished");
+		long timeConsumption = end.getTime()-startms;
+		
+		new File(workingSign).delete();
+
+		return timeConsumption;
+	}
+	
+	private static long mainDoVeryRichTask() throws Exception {
+
+		while (new File(workingSign).exists()) {
+			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+			Thread.currentThread().sleep(40*1000);
+		}
+		new File(workingSign).createNewFile();
+		
+		Date start = new Date();
+		long startms = start.getTime();
+		System.out.println(start.toString() + " task begins");
+		notice();
+		doVeryRichTask();
+		Date end = new Date();
+		System.out.println(end.toString() + " task finished");
+		long timeConsumption = end.getTime()-startms;
+		
+		new File(workingSign).delete();
+
+		return timeConsumption;
+		
 	}
 	
 	public static void mainRich(String[] args) throws Exception {
@@ -325,7 +341,12 @@ public class MobRobot {
 		robot.mouseMove(prepareX, prepareY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
+
+		robot.delay(5000);
+		robot.mouseMove(scrollupX, scrollupY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
 		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
 
 		exitFirefox();
@@ -351,6 +372,11 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
+		robot.delay(5000);
+		robot.mouseMove(scrollupX, scrollupY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
 		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
 
 		exitFirefox();
@@ -420,7 +446,7 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
-		robot.delay(10000);
+		robot.delay(15000);
 		robot.mouseMove(doFightX, doFightY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -435,7 +461,7 @@ public class MobRobot {
 
 	private static int getHealth() throws Exception {
 		
-		robot.delay(5000);
+		robot.delay(10000);
 		robot.mouseMove(healthBeginX, healthBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseMove(healthEndX, healthBeginY);
