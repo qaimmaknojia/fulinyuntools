@@ -88,6 +88,9 @@ public class MobRobot {
 	public static int veryRichTaskY;
 	public static int scrollupX;
 	public static int scrollupY;
+	public static int hurtBeginX;
+	public static int hurtBeginY;
+	public static int hurtEndX;
 	
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
 	
@@ -168,6 +171,9 @@ public class MobRobot {
 			veryRichTaskY = Integer.parseInt(prop.getProperty("veryRichTaskY"));
 			scrollupX = Integer.parseInt(prop.getProperty("scrollupX"));
 			scrollupY = Integer.parseInt(prop.getProperty("scrollupY"));
+			hurtBeginX = Integer.parseInt(prop.getProperty("hurtBeginX"));
+			hurtBeginY = Integer.parseInt(prop.getProperty("hurtBeginY"));
+			hurtEndX = Integer.parseInt(prop.getProperty("hurtEndX"));
 			
 //			System.out
 //					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
@@ -196,8 +202,11 @@ public class MobRobot {
 
 	public static void main(String[] args) throws Exception {
 		try {
+			initRobot();
 			mainFight(args);
 //			mainRich(args);
+//			Thread.currentThread().sleep(5*60*1000);
+//			initRobot();
 //			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
@@ -208,8 +217,7 @@ public class MobRobot {
 	
 	public static void mainVeryRich(String[] args) throws Exception {
 		
-		initRobot();
-		Thread.currentThread().sleep(36*5*60*1000);
+		Thread.currentThread().sleep(4*60*60*1000);
 		while (true) {
 			long timeConsumption = mainDoVeryRichTask();
 			Thread.currentThread().sleep(10 * 5 * 60 * 1000 - timeConsumption);
@@ -294,7 +302,7 @@ public class MobRobot {
 
 	public static void mainFight(String[] args) throws Exception {
 
-		initRobot();
+		Thread.currentThread().sleep(4*60*60*1000);
 		while (true) {
 			while (new File(workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
@@ -307,22 +315,72 @@ public class MobRobot {
 			System.out.println(start.toString() + " task begins");
 			notice();
 
-			int health = fight();
+			enterMob();
+			
+			int health = getHealth();
+			System.out.println("health: " + health);
+			if (health < 90) {
+				exitFirefox();
+				new File(workingSign).delete();
+				System.out.println("waiting for " + ((145-health)*3) + " minutes");
+				Thread.currentThread().sleep((145-health) * 180 * 1000);
+				continue;
+			}
+
+			robot.delay(5000);
+			robot.mouseMove(fightX, fightY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			
+			robot.delay(15000);
+			robot.mouseMove(doFightX, doFightY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+			robot.delay(5000);
+			takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+			
+			int hurt = getHurt();
+			
+			exitFirefox();
 			
 			new File(workingSign).delete();
 			
-			if (health >= 90) {
-				Date end = new Date();
-				long timeConsumption = end.getTime()-startms;
-				System.out.println(end.toString() + " task finished");
-				Thread.currentThread().sleep(2 * 60 * 1000 - timeConsumption);
-			} else {
-				System.out.println("waiting for " + ((145-health)*3) + " minutes");
-				Thread.currentThread().sleep((145-health) * 180 * 1000);
-			}
+			Date end = new Date();
+			long timeConsumption = end.getTime()-startms;
+			System.out.println(end.toString() + " task finished");
+			Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
 		}
 	}
 	
+	private static int getHurt() throws Exception {
+		
+		robot.delay(10000);
+		robot.mouseMove(hurtBeginX, hurtBeginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(hurtEndX, hurtBeginY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		System.out.println(str);
+		int numStart;
+		for (numStart = 0; numStart < str.length(); numStart++) 
+			if (Character.isDigit(str.charAt(numStart))) break;
+		int numEnd;
+		for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
+			if (!Character.isDigit(str.charAt(numEnd))) break;
+		return Integer.parseInt(str.substring(numStart, numEnd));
+
+	}
+
 	private static void prepare() throws Exception {
 
 		enterMob();
@@ -427,35 +485,6 @@ public class MobRobot {
 //		AudioPlayer.player.start(as);
 		Thread.currentThread().sleep(5000);
 		d.setVisible(false);
-		
-	}
-
-	private static int fight() throws Exception {
-		
-		enterMob();
-		
-		int health = getHealth();
-		System.out.println("health: " + health);
-		if (health < 90) {
-			exitFirefox();
-			return health;
-		}
-
-		robot.delay(5000);
-		robot.mouseMove(fightX, fightY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		robot.delay(15000);
-		robot.mouseMove(doFightX, doFightY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(5000);
-		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
-		
-		exitFirefox();
-		return health;
 		
 	}
 
@@ -598,7 +627,43 @@ public class MobRobot {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
 		robot = new Robot(screen);
+/*		
+		robot.delay(5000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_ALT);
+		robot.keyPress(KeyEvent.VK_DELETE);
+		robot.keyRelease(KeyEvent.VK_DELETE);
+		robot.keyRelease(KeyEvent.VK_ALT);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
 		
+		robot.delay(10000);
+		robot.keyPress(KeyEvent.VK_F);
+		robot.keyRelease(KeyEvent.VK_F);
+		robot.keyPress(KeyEvent.VK_U);
+		robot.keyRelease(KeyEvent.VK_U);
+		robot.keyPress(KeyEvent.VK_L);
+		robot.keyRelease(KeyEvent.VK_L);
+		robot.keyPress(KeyEvent.VK_I);
+		robot.keyRelease(KeyEvent.VK_I);
+		robot.keyPress(KeyEvent.VK_N);
+		robot.keyRelease(KeyEvent.VK_N);
+		robot.keyPress(KeyEvent.VK_Y);
+		robot.keyRelease(KeyEvent.VK_Y);
+		robot.keyPress(KeyEvent.VK_U);
+		robot.keyRelease(KeyEvent.VK_U);
+		robot.keyPress(KeyEvent.VK_N);
+		robot.keyRelease(KeyEvent.VK_N);
+		robot.keyPress(KeyEvent.VK_1);
+		robot.keyRelease(KeyEvent.VK_1);
+		robot.keyPress(KeyEvent.VK_0);
+		robot.keyRelease(KeyEvent.VK_0);
+		robot.keyPress(KeyEvent.VK_2);
+		robot.keyRelease(KeyEvent.VK_2);
+		robot.keyPress(KeyEvent.VK_3);
+		robot.keyRelease(KeyEvent.VK_3);
+		robot.keyPress(KeyEvent.VK_ENTER);
+		robot.keyRelease(KeyEvent.VK_ENTER);
+*/		
 	}
 
 	public static void enterMob() throws Exception {
@@ -614,7 +679,25 @@ public class MobRobot {
 		robot.mouseMove(firefoxX, firefoxY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+/*
+		robot.delay(5000);
+		robot.mouseMove(2, 2);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
+		robot.delay(1000);
+		robot.keyPress(KeyEvent.VK_R);
+		robot.keyRelease(KeyEvent.VK_R);
+
+		robot.delay(5000);
+		robot.mouseMove(5, 5);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
+		robot.delay(1000);
+		robot.keyPress(KeyEvent.VK_X);
+		robot.keyRelease(KeyEvent.VK_X);
+*/		
 		robot.delay(5000);
 		robot.mouseMove(addressX, addressY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
