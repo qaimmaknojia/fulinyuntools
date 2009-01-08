@@ -302,7 +302,6 @@ public class MobRobot {
 
 	public static void mainFight(String[] args) throws Exception {
 
-		Thread.currentThread().sleep(4*60*60*1000);
 		while (true) {
 			while (new File(workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
@@ -341,7 +340,7 @@ public class MobRobot {
 			takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
 			
 			int hurt = getHurt();
-			
+			System.out.println("hurt: " + hurt);
 			exitFirefox();
 			
 			new File(workingSign).delete();
