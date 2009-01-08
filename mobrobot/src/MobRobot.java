@@ -669,7 +669,7 @@ public class MobRobot {
 
 		robot.delay(2000);
 		for (int i = 0; i < mobURL.length(); i++) {
-			if ((int) mobURL.charAt(i) == 58) {
+			if (mobURL.charAt(i) == ':') {
 				robot.keyPress(KeyEvent.VK_SHIFT);
 				robot.keyPress(KeyEvent.VK_SEMICOLON);
 				robot.keyRelease(KeyEvent.VK_SEMICOLON);
@@ -731,6 +731,7 @@ public class MobRobot {
 	}
 
 	public static int getBrotherNumber() throws Exception {
+		
 		robot.delay(5000);
 		robot.mouseMove(brotherBeginX, brotherBeginY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -939,9 +940,11 @@ public class MobRobot {
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
 		return Integer.parseInt(str);
+		
 	}
 
 	public static void buyGun() throws Exception {
+		
 		if (configFile.equals("/configHome.prop")) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
@@ -963,9 +966,11 @@ public class MobRobot {
 		robot.mouseMove(buyGunX, buyGunY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 	public static void buyHelmet() throws Exception {
+		
 		for (int i = 0; i < 3; i++) {
 			robot.delay(5000);
 			robot.mouseMove(scrollX, scrollY);
@@ -977,6 +982,7 @@ public class MobRobot {
 		robot.mouseMove(buyHelmetX, buyHelmetY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		
 	}
 
 //	public static void buyCar() throws Exception {
