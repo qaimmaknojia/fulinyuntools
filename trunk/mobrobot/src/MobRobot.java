@@ -627,43 +627,7 @@ public class MobRobot {
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
 		robot = new Robot(screen);
-/*		
-		robot.delay(5000);
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_ALT);
-		robot.keyPress(KeyEvent.VK_DELETE);
-		robot.keyRelease(KeyEvent.VK_DELETE);
-		robot.keyRelease(KeyEvent.VK_ALT);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
 		
-		robot.delay(10000);
-		robot.keyPress(KeyEvent.VK_F);
-		robot.keyRelease(KeyEvent.VK_F);
-		robot.keyPress(KeyEvent.VK_U);
-		robot.keyRelease(KeyEvent.VK_U);
-		robot.keyPress(KeyEvent.VK_L);
-		robot.keyRelease(KeyEvent.VK_L);
-		robot.keyPress(KeyEvent.VK_I);
-		robot.keyRelease(KeyEvent.VK_I);
-		robot.keyPress(KeyEvent.VK_N);
-		robot.keyRelease(KeyEvent.VK_N);
-		robot.keyPress(KeyEvent.VK_Y);
-		robot.keyRelease(KeyEvent.VK_Y);
-		robot.keyPress(KeyEvent.VK_U);
-		robot.keyRelease(KeyEvent.VK_U);
-		robot.keyPress(KeyEvent.VK_N);
-		robot.keyRelease(KeyEvent.VK_N);
-		robot.keyPress(KeyEvent.VK_1);
-		robot.keyRelease(KeyEvent.VK_1);
-		robot.keyPress(KeyEvent.VK_0);
-		robot.keyRelease(KeyEvent.VK_0);
-		robot.keyPress(KeyEvent.VK_2);
-		robot.keyRelease(KeyEvent.VK_2);
-		robot.keyPress(KeyEvent.VK_3);
-		robot.keyRelease(KeyEvent.VK_3);
-		robot.keyPress(KeyEvent.VK_ENTER);
-		robot.keyRelease(KeyEvent.VK_ENTER);
-*/		
 	}
 
 	public static void enterMob() throws Exception {
