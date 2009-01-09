@@ -373,6 +373,7 @@ public class MobRobot {
 		int numStart;
 		for (numStart = 0; numStart < str.length(); numStart++) 
 			if (Character.isDigit(str.charAt(numStart))) break;
+		if (numStart == str.length()) return 100;
 		int numEnd;
 		for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
 			if (!Character.isDigit(str.charAt(numEnd))) break;
