@@ -13,11 +13,28 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+import sun.misc.BASE64Encoder;
 
 public class MobRobot {
 
@@ -200,14 +217,16 @@ public class MobRobot {
 		}
 	}
 
+//	public static void main(String[] args) throws Exception {
+//		sendMail("smtp.sjtu.edu.cn", "java mail test", null);
+//	}
+	
 	public static void main(String[] args) throws Exception {
 		try {
 			initRobot();
-			mainFight(args);
-//			mainRich(args);
-//			Thread.currentThread().sleep(5*60*1000);
-//			initRobot();
-//			mainVeryRich(args);
+//			mainFight(args);
+			Thread.currentThread().sleep(30*5*60*1000);
+			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
 			e.printStackTrace();
@@ -217,7 +236,6 @@ public class MobRobot {
 	
 	public static void mainVeryRich(String[] args) throws Exception {
 		
-		Thread.currentThread().sleep(4*60*60*1000);
 		while (true) {
 			long timeConsumption = mainDoVeryRichTask();
 			Thread.currentThread().sleep(10 * 5 * 60 * 1000 - timeConsumption);
@@ -228,6 +246,103 @@ public class MobRobot {
 		}
 	}
 	
+	private static void sendMail(String msgText, String attach) throws Exception {
+		
+		String to = "fulinyunxp@sjtu.edu.cn";
+		String from = "fulinyunxp@sjtu.edu.cn";
+		String host = "smtp.sjtu.edu.cn";
+		String filename = attach;
+		boolean debug = false;
+		String msgText1 = msgText+"\n";
+		String subject = "mob robot report";
+
+		// create some properties and get the default Session
+		Properties props = System.getProperties();
+		props.put("mail.smtp.host", host);
+
+		Session session = Session.getInstance(props, null);
+		session.setDebug(debug);
+
+		try {
+			// create a message
+			MimeMessage msg = new MimeMessage(session);
+			msg.setFrom(new InternetAddress(from));
+			InternetAddress[] address = { new InternetAddress(to) };
+			msg.setRecipients(Message.RecipientType.TO, address);
+			msg.setSubject(subject);
+
+			// create and fill the first message part
+			MimeBodyPart mbp1 = new MimeBodyPart();
+			mbp1.setText(msgText1);
+
+			// create the second message part
+			MimeBodyPart mbp2 = new MimeBodyPart();
+
+			// attach the file to the message
+			mbp2.attachFile(filename);
+
+			/*
+			 * Use the following approach instead of the above line if
+			 * you want to control the MIME type of the attached file.
+			 * Normally you should never need to do this.
+			 *
+			   FileDataSource fds = new FileDataSource(filename) {
+			public String getContentType() {
+			    return "application/octet-stream";
+			}
+			};
+			mbp2.setDataHandler(new DataHandler(fds));
+			mbp2.setFileName(fds.getName());
+			 */
+
+			// create the Multipart and add its parts to it
+			Multipart mp = new MimeMultipart();
+			mp.addBodyPart(mbp1);
+			mp.addBodyPart(mbp2);
+
+			// add the Multipart to the message
+			msg.setContent(mp);
+
+			// set the Date: header
+			msg.setSentDate(new Date());
+
+			/*
+			 * If you want to control the Content-Transfer-Encoding
+			 * of the attached file, do the following.  Normally you
+			 * should never need to do this.
+			 *
+			msg.saveChanges();
+			mbp2.setHeader("Content-Transfer-Encoding", "base64");
+			 */
+
+			// send the message
+			Transport.send(msg);
+
+		} catch (MessagingException mex) {
+			mex.printStackTrace();
+			Exception ex = null;
+			if ((ex = mex.getNextException()) != null) {
+				ex.printStackTrace();
+			}
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+	}
+	
+//	private static void receive(Scanner in) throws Exception {
+//		if (in.hasNextLine()) {
+//			String line = in.nextLine();
+//			System.out.println(line);
+//		}
+//	}
+
+//	public static void send(PrintWriter out, String s) throws Exception {
+//		System.out.println(s);
+//		out.print(s.replaceAll("\n", "\r\n"));
+//		out.print("\r\n");
+//		out.flush();
+//	}
+
 	private static long mainPrepare() throws Exception {
 
 		while (new File(workingSign).exists()) {
@@ -337,7 +452,9 @@ public class MobRobot {
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
 			robot.delay(5000);
-			takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			takePic(pic);
+			sendMail(new Date().toString(), pic);
 			
 			int hurt = getHurt();
 			System.out.println("hurt: " + hurt);
@@ -405,7 +522,9 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
-		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		takePic(pic);
+		sendMail(new Date().toString(), pic);
 
 		exitFirefox();
 		
@@ -435,8 +554,10 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
-		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
-
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		takePic(pic);
+		sendMail(new Date().toString(), pic);
+		
 		exitFirefox();
 		
 	}
@@ -465,7 +586,9 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
-		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		takePic(pic);
+		sendMail(new Date().toString(), pic);
 
 		exitFirefox();
 		
@@ -707,7 +830,9 @@ public class MobRobot {
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 		
-		takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		takePic(pic);
+		sendMail(new Date().toString(), pic);
 
 		exitFirefox();
 		
