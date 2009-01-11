@@ -107,7 +107,7 @@ public class MobRobot {
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
-	public static String picFilePrefix = "E:\\mobtemp\\snapshot";
+	public static String picFilePrefix = "E:\\mobtemp\\snapshot ";
 	public static String workingSign = "E:\\mobtemp\\robotworking";
 	public static String enterLandmark = "E:\\mobtemp\\enter.bmp";
 	public static String taskLandmark = "E:\\mobtemp\\task.bmp";
