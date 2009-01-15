@@ -104,6 +104,9 @@ public class MobRobot {
 	public static int hurtEndX;
 	public static int lawyerX;
 	public static int lawyerY;
+	public static int staminaBeginX;
+	public static int staminaBeginY;
+	public static int staminaEndX;
 	
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
 	
@@ -193,6 +196,9 @@ public class MobRobot {
 			hurtEndX = Integer.parseInt(prop.getProperty("hurtEndX"));
 			lawyerX = Integer.parseInt(prop.getProperty("lawyerX"));
 			lawyerY = Integer.parseInt(prop.getProperty("lawyerY"));
+			staminaBeginX = Integer.parseInt(prop.getProperty("staminaBeginX"));
+			staminaBeginY = Integer.parseInt(prop.getProperty("staminaBeginY"));
+			staminaEndX = Integer.parseInt(prop.getProperty("staminaEndX"));
 			
 //			System.out
 //					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
@@ -219,7 +225,7 @@ public class MobRobot {
 		}
 	}
 
-//	public static void main(String[] args) throws Exception {
+//	public static void main(String[] args) {
 //		initRobot();
 //		enterMob();
 //		Point p = findLandmark("E:\\mobtemp\\enter.bmp");
@@ -227,11 +233,11 @@ public class MobRobot {
 //		exitFirefox();
 //	}
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		try {
 			initRobot();
-//			mainFight(args);
-			mainVeryRich(args);
+			mainFight(args);
+//			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
 			e.printStackTrace();
@@ -239,17 +245,21 @@ public class MobRobot {
 		}
 	}
 	
-	public static Point findLandmark(String bmpLm) throws Exception {
-		
-		robot.delay(2000);
-		BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
-		BufferedImage image = ImageIO.read(new File(bmpLm));
-		for (int y = 0; y < screen.getHeight()-image.getHeight(); y++) {
-			for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
-				if (match(screen, image, x, y)) return new Point(x, y); 
+	public static Point findLandmark(String bmpLm) {
+		try {
+			robot.delay(2000);
+			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
+			BufferedImage image = ImageIO.read(new File(bmpLm));
+			for (int y = 0; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
+					if (match(screen, image, x, y)) return new Point(x, y); 
+				}
 			}
+			return new Point(-1, -1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Point(-1, -1);
 		}
-		return new Point(-1, -1);
 	}
 		
 	private static boolean match(BufferedImage screen, BufferedImage image, int x, int y) {
@@ -261,19 +271,22 @@ public class MobRobot {
 		return true;
 	}
 
-	public static void mainVeryRich(String[] args) throws Exception {
+	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
 		
-		Thread.currentThread().sleep(9*5*60*1000);
 		while (true) {
 			long timeConsumption = mainDoVeryRichTask();
 			long timeConsumption1 = mainPrepare();
-			Thread.currentThread().sleep(50 * 5 * 60 * 1000 - timeConsumption1 - timeConsumption);
+			try {
+				Thread.currentThread().sleep(50 * 5 * 60 * 1000 - timeConsumption1 - timeConsumption);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	private static void sendMail(String type, String msgText, String attach) throws Exception {
+	private static void sendMail(String type, String msgText, String attach) {
 		try {
 			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
 			final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
@@ -327,13 +340,21 @@ public class MobRobot {
 		}
 	}
 	
-	private static long mainPrepare() throws Exception {
+	private static long mainPrepare() {
 
 		while (new File(workingSign).exists()) {
 			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-			Thread.currentThread().sleep(40*1000);
+			try {
+				Thread.currentThread().sleep(40*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		new File(workingSign).createNewFile();
+		try {
+			new File(workingSign).createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		Date start = new Date();
 		long startms = start.getTime();
@@ -347,15 +368,24 @@ public class MobRobot {
 		new File(workingSign).delete();
 
 		return timeConsumption;
+
 	}
 	
-	private static long mainDoVeryRichTask() throws Exception {
+	private static long mainDoVeryRichTask() {
 		
 		while (new File(workingSign).exists()) {
 			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-			Thread.currentThread().sleep(40*1000);
+			try {
+				Thread.currentThread().sleep(40*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
-		new File(workingSign).createNewFile();
+		try {
+			new File(workingSign).createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		Date start = new Date();
 		long startms = start.getTime();
@@ -372,16 +402,28 @@ public class MobRobot {
 		
 	}
 	
-	public static void mainRich(String[] args) throws Exception {
+	public static void mainRich(String[] args) {
 
 		initRobot();
-		Thread.currentThread().sleep(25*5*60*1000);
+		try {
+			Thread.currentThread().sleep(25*5*60*1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		while (true) {
 			while (new File(workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				Thread.currentThread().sleep(40*1000);
+				try {
+					Thread.currentThread().sleep(40*1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			new File(workingSign).createNewFile();
+			try {
+				new File(workingSign).createNewFile();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			Date start = new Date();
 			long startms = start.getTime();
@@ -394,19 +436,31 @@ public class MobRobot {
 			
 			new File(workingSign).delete();
 
-			Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+			try {
+				Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 		}
 	}
 
-	public static void mainFight(String[] args) throws Exception {
+	public static void mainFight(String[] args) {
 
 		while (true) {
 			while (new File(workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				Thread.currentThread().sleep(40*1000);
+				try {
+					Thread.currentThread().sleep(40*1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-			new File(workingSign).createNewFile();
+			try {
+				new File(workingSign).createNewFile();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			Date start = new Date();
 			long startms = start.getTime();
@@ -421,7 +475,11 @@ public class MobRobot {
 				exitFirefox();
 				new File(workingSign).delete();
 				System.out.println("waiting for " + ((145-health)*3) + " minutes");
-				Thread.currentThread().sleep((145-health) * 180 * 1000);
+				try {
+					Thread.currentThread().sleep((145-health) * 180 * 1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				continue;
 			}
 
@@ -449,11 +507,15 @@ public class MobRobot {
 			Date end = new Date();
 			long timeConsumption = end.getTime()-startms;
 			System.out.println(end.toString() + " task finished");
-			Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
+			try {
+				Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	private static int getHurt() throws Exception {
+	private static int getHurt() {
 		
 		robot.delay(10000);
 		robot.mouseMove(hurtBeginX, hurtBeginY);
@@ -469,7 +531,12 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(str);
 		int numStart;
 		for (numStart = 0; numStart < str.length(); numStart++) 
@@ -482,7 +549,7 @@ public class MobRobot {
 
 	}
 
-	private static void prepare() throws Exception {
+	private static void prepare() {
 
 		enterMob();
 		
@@ -502,7 +569,11 @@ public class MobRobot {
 			
 			exitFirefox();
 			
-			Thread.currentThread().sleep(4*3600*1000);
+			try {
+				Thread.currentThread().sleep(4*3600*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			
 			doVeryRichTask();
 			
@@ -510,6 +581,10 @@ public class MobRobot {
 			
 			robot.delay(10000);
 			waitForLandmark(enterLandmark);
+			
+			int stamina = getStamina();
+			if (stamina < 10) robot.delay((10-stamina)*5*60*1000);
+			
 			robot.mouseMove(taskX, taskY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -540,12 +615,15 @@ public class MobRobot {
 		
 	}
 
-	private static void doVeryRichTask() throws Exception {
+	private static void doVeryRichTask() {
 		
 		enterMob();
 		
 		robot.delay(5000);
 		waitForLandmark(enterLandmark);
+		
+		int stamina = getStamina();
+		if (stamina < 40) robot.delay((40-stamina)*5*60*1000);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -574,7 +652,37 @@ public class MobRobot {
 		
 	}
 
-	private static void waitForLandmark(String landmark) throws Exception {
+	private static int getStamina() {
+		try {
+			robot.delay(5000);
+			robot.mouseMove(staminaBeginX, staminaBeginY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseMove(staminaEndX, staminaBeginY);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			
+			robot.delay(5000);
+			robot.keyPress(KeyEvent.VK_CONTROL);
+			robot.keyPress(KeyEvent.VK_C);
+			robot.keyRelease(KeyEvent.VK_C);
+			robot.keyRelease(KeyEvent.VK_CONTROL);
+	
+			Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+			Transferable content = cb.getContents(null);
+			String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+			System.out.println(str);
+			int numStart;
+			for (numStart = 0; numStart < str.length(); numStart++) 
+				if (Character.isDigit(str.charAt(numStart))) break;
+			if (numStart == str.length()) return 40;
+			return Integer.parseInt(str.substring(numStart, str.indexOf("/")));
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 40;
+		}
+		
+	}
+
+	private static void waitForLandmark(String landmark) {
 
 		Point p = findLandmark(landmark);
 		int retry = 0;
@@ -586,7 +694,7 @@ public class MobRobot {
 		}
 	}
 	
-	private static void doRichTask() throws Exception {
+	private static void doRichTask() {
 		
 		enterMob();
 		
@@ -618,7 +726,7 @@ public class MobRobot {
 		
 	}
 
-	private static void notice() throws Exception {
+	private static void notice() {
 
 		Dialog d = noticeDialog;
 		d.setTitle(new Date().toString());
@@ -630,12 +738,16 @@ public class MobRobot {
 //		FileInputStream notice = new FileInputStream("media/notice.wav");
 //		AudioStream as = new AudioStream(notice);
 //		AudioPlayer.player.start(as);
-		Thread.currentThread().sleep(5000);
+		try {
+			Thread.currentThread().sleep(5000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		d.setVisible(false);
 		
 	}
 
-	private static int getHealth() throws Exception {
+	private static int getHealth() {
 		
 		robot.delay(10000);
 		robot.mouseMove(healthBeginX, healthBeginY);
@@ -651,7 +763,12 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(str);
 //		for (int i = 0; i < str.length(); i++)
 //			System.out.println(str.charAt(i));
@@ -663,7 +780,7 @@ public class MobRobot {
 		
 	}
 
-	private static int getLevel() throws Exception {
+	private static int getLevel() {
 
 		enterMob();
 
@@ -681,7 +798,12 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(str);
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
@@ -692,7 +814,7 @@ public class MobRobot {
 		
 	}
 
-//	private static void adjustEquip() throws Exception {
+//	private static void adjustEquip() {
 //
 //		enterMob();
 //		enterStore();
@@ -709,7 +831,7 @@ public class MobRobot {
 //		
 //	}
 
-//	private static void sellCar() throws Exception {
+//	private static void sellCar() {
 //
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
@@ -725,7 +847,7 @@ public class MobRobot {
 //		
 //	}
 
-//	private static void buyCar1() throws Exception {
+//	private static void buyCar1() {
 //
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
@@ -741,7 +863,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static void checkWeapon() throws Exception {
+//	public static void checkWeapon() {
 //
 //		enterMob();
 //		int brotherNumber = getBrotherNumber();
@@ -770,15 +892,19 @@ public class MobRobot {
 //		}
 //	}
 
-	public static void initRobot() throws Exception {
+	public static void initRobot() {
 
 		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		GraphicsDevice screen = environment.getDefaultScreenDevice();
-		robot = new Robot(screen);
+		try {
+			robot = new Robot(screen);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 
-	public static void enterMob() throws Exception {
+	public static void enterMob() {
 
 		robot.delay(2000);
 		robot.mouseMove(startX, startY);
@@ -832,7 +958,7 @@ public class MobRobot {
 		
 	}
 
-	public static void doTask() throws Exception {
+	public static void doTask() {
 
 		enterMob();
 		robot.delay(5000);
@@ -862,16 +988,20 @@ public class MobRobot {
 		
 	}
 
-	public static void takePic(String fn) throws Exception {
+	public static void takePic(String fn) {
 
 		robot.delay(2000);
 		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
 				screenHeight));
-		ImageIO.write(image, "JPEG", new File(fn));
+		try {
+			ImageIO.write(image, "JPEG", new File(fn));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
-	public static void exitFirefox() throws Exception {
+	public static void exitFirefox() {
 
 		robot.delay(5000);
 		robot.mouseMove(exitX, exitY);
@@ -880,7 +1010,7 @@ public class MobRobot {
 		
 	}
 
-	public static int getBrotherNumber() throws Exception {
+	public static int getBrotherNumber() {
 		
 		robot.delay(5000);
 		robot.mouseMove(brotherBeginX, brotherBeginY);
@@ -895,7 +1025,12 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(str);
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
@@ -903,7 +1038,7 @@ public class MobRobot {
 		
 	}
 
-	public static void enterStore() throws Exception {
+	public static void enterStore() {
 		
 		robot.delay(5000);
 		robot.mouseMove(storeX, storeY);
@@ -912,7 +1047,7 @@ public class MobRobot {
 		
 	}
 
-	public static int getMoneyAmount() throws Exception {
+	public static int getMoneyAmount() {
 		
 		robot.delay(5000);
 		robot.mouseMove(moneyBeginX, moneyBeginY);
@@ -927,7 +1062,12 @@ public class MobRobot {
 
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
-		String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		System.out.println(str);
 		for (int i = 0; i < str.length(); i++)
 			System.out.println(str.charAt(i));
@@ -935,7 +1075,7 @@ public class MobRobot {
 		
 	}
 
-//	public static int getGunNumber() throws Exception {
+//	public static int getGunNumber() {
 //		
 //		if (configFile.equals("/configHome.prop")) {
 //			robot.delay(5000);
@@ -972,7 +1112,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static int getHelmetNumber() throws Exception {
+//	public static int getHelmetNumber() {
 //
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
@@ -1001,7 +1141,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static int getCarNumber() throws Exception {
+//	public static int getCarNumber() {
 //		robot.delay(5000);
 //		robot.mouseMove(carBeginX, carBeginY);
 //		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -1021,7 +1161,7 @@ public class MobRobot {
 //		return Integer.parseInt(str);
 //	}
 
-//	public static int getCarNumber() throws Exception {
+//	public static int getCarNumber() {
 //
 //		if (configFile.equals("/configHome.prop")) {
 //			for (int i = 0; i < 3; i++) {
@@ -1058,7 +1198,7 @@ public class MobRobot {
 //		return Integer.parseInt(str);
 //	}
 
-//	public static int getCar1Number() throws Exception {
+//	public static int getCar1Number() {
 //
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
@@ -1089,7 +1229,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static void buyGun() throws Exception {
+//	public static void buyGun() {
 //		
 //		if (configFile.equals("/configHome.prop")) {
 //			robot.delay(5000);
@@ -1115,7 +1255,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static void buyHelmet() throws Exception {
+//	public static void buyHelmet() {
 //		
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
@@ -1131,7 +1271,7 @@ public class MobRobot {
 //		
 //	}
 
-//	public static void buyCar() throws Exception {
+//	public static void buyCar() {
 //		for (int i = 0; i < 3; i++) {
 //			robot.delay(5000);
 //			robot.mouseMove(scrollX, scrollY);
