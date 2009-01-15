@@ -102,6 +102,8 @@ public class MobRobot {
 	public static int hurtBeginX;
 	public static int hurtBeginY;
 	public static int hurtEndX;
+	public static int lawyerX;
+	public static int lawyerY;
 	
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
 	
@@ -112,6 +114,7 @@ public class MobRobot {
 	public static String enterLandmark = "E:\\mobtemp\\enter.bmp";
 	public static String taskLandmark = "E:\\mobtemp\\task.bmp";
 	public static String fightLandmark = "E:\\mobtemp\\fight.bmp";
+	public static String jailLandmark = "E:\\mobtemp\\jail.bmp";
 	
 	static {
 		try {
@@ -188,6 +191,8 @@ public class MobRobot {
 			hurtBeginX = Integer.parseInt(prop.getProperty("hurtBeginX"));
 			hurtBeginY = Integer.parseInt(prop.getProperty("hurtBeginY"));
 			hurtEndX = Integer.parseInt(prop.getProperty("hurtEndX"));
+			lawyerX = Integer.parseInt(prop.getProperty("lawyerX"));
+			lawyerY = Integer.parseInt(prop.getProperty("lawyerY"));
 			
 //			System.out
 //					.println("startX = " + startX + "; startY = " + startY + "; firefoxX = "
@@ -226,7 +231,6 @@ public class MobRobot {
 		try {
 			initRobot();
 //			mainFight(args);
-			Thread.currentThread().sleep(30*5*60*1000);
 			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
@@ -247,8 +251,7 @@ public class MobRobot {
 		}
 		return new Point(-1, -1);
 	}
-	
-	
+		
 	private static boolean match(BufferedImage screen, BufferedImage image, int x, int y) {
 		for (int sy = y, iy = 0; iy < image.getHeight(); sy++, iy++) {
 			for (int sx = x, ix = 0; ix < image.getWidth(); sx++, ix++) {
@@ -260,66 +263,68 @@ public class MobRobot {
 
 	public static void mainVeryRich(String[] args) throws Exception {
 		
+		System.out.println("task");
+		
+		Thread.currentThread().sleep(9*5*60*1000);
 		while (true) {
 			long timeConsumption = mainDoVeryRichTask();
-			Thread.currentThread().sleep(10 * 5 * 60 * 1000 - timeConsumption);
-			
 			long timeConsumption1 = mainPrepare();
-			Thread.currentThread().sleep(40 * 5 * 60 * 1000 - timeConsumption1);
-			
+			Thread.currentThread().sleep(50 * 5 * 60 * 1000 - timeConsumption1 - timeConsumption);
 		}
 	}
 	
 	private static void sendMail(String type, String msgText, String attach) throws Exception {
-		
-		Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-		final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-		Properties props = System.getProperties();
-		props.setProperty("mail.smtp.host", "smtp.gmail.com");
-		props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
-		props.setProperty("mail.smtp.socketFactory.fallback", "false");
-		props.setProperty("mail.smtp.port", "465");
-		props.setProperty("mail.smtp.socketFactory.port", "465");
-		props.put("mail.smtp.auth", "true");
-		final String username = "mobrobot";
-		final String password = "qwertyui";
-		Session session = Session.getDefaultInstance(props,	new Authenticator() {
-					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(username, password);
-					}
-				});
-
-		// -- Create a new message --
-		Message msg = new MimeMessage(session);
-
-		// -- Set the FROM and TO fields --
-		msg.setFrom(new InternetAddress(username + "@gmail.com"));
-		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
-				"fulinyun@126.com", false));
-		msg.setSubject("mob robot report " + type);
-		
-		// create and fill the first message part
-		MimeBodyPart mbp1 = new MimeBodyPart();
-		mbp1.setText(msgText);
-
-		// create the second message part
-		MimeBodyPart mbp2 = new MimeBodyPart();
-
-		// attach the file to the message
-		mbp2.attachFile(attach);
-
-		// create the Multipart and add its parts to it
-		Multipart mp = new MimeMultipart();
-		mp.addBodyPart(mbp1);
-		mp.addBodyPart(mbp2);
-
-		// add the Multipart to the message
-		msg.setContent(mp);
-
-		msg.setSentDate(new Date());
-		
-		Transport.send(msg);
-		
+		try {
+			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+			final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
+			Properties props = System.getProperties();
+			props.setProperty("mail.smtp.host", "smtp.gmail.com");
+			props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
+			props.setProperty("mail.smtp.socketFactory.fallback", "false");
+			props.setProperty("mail.smtp.port", "465");
+			props.setProperty("mail.smtp.socketFactory.port", "465");
+			props.put("mail.smtp.auth", "true");
+			final String username = "mobrobot";
+			final String password = "qwertyui";
+			Session session = Session.getDefaultInstance(props,	new Authenticator() {
+						protected PasswordAuthentication getPasswordAuthentication() {
+							return new PasswordAuthentication(username, password);
+						}
+					});
+	
+			// -- Create a new message --
+			Message msg = new MimeMessage(session);
+	
+			// -- Set the FROM and TO fields --
+			msg.setFrom(new InternetAddress(username + "@gmail.com"));
+			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
+					"fulinyun@126.com", false));
+			msg.setSubject("mob robot report " + type);
+			
+			// create and fill the first message part
+			MimeBodyPart mbp1 = new MimeBodyPart();
+			mbp1.setText(msgText);
+	
+			// create the second message part
+			MimeBodyPart mbp2 = new MimeBodyPart();
+	
+			// attach the file to the message
+			mbp2.attachFile(attach);
+	
+			// create the Multipart and add its parts to it
+			Multipart mp = new MimeMultipart();
+			mp.addBodyPart(mbp1);
+			mp.addBodyPart(mbp2);
+	
+			// add the Multipart to the message
+			msg.setContent(mp);
+	
+			msg.setSentDate(new Date());
+			
+			Transport.send(msg);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private static long mainPrepare() throws Exception {
@@ -345,7 +350,7 @@ public class MobRobot {
 	}
 	
 	private static long mainDoVeryRichTask() throws Exception {
-
+		
 		while (new File(workingSign).exists()) {
 			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
 			Thread.currentThread().sleep(40*1000);
@@ -482,33 +487,37 @@ public class MobRobot {
 		enterMob();
 		
 		robot.delay(5000);
-		Point p = findLandmark(enterLandmark);
-		int retry = 0;
-		while (p.x == -1 && p.y == -1) {
-			robot.delay(5000);
-			p = findLandmark(enterLandmark);
-			if (p.x == -1 && p.y == -1) {
-				exitFirefox();
-				enterMob();
-				robot.delay(5000);
-				p = findLandmark(enterLandmark);
-				retry++;
-				if (retry == 10) break;
-			}
-		}
+		waitForLandmark(enterLandmark);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
 		robot.delay(5000);
-		p = findLandmark(taskLandmark);
-		retry = 0;
-		while (p.x == -1 && p.y == -1) {
+		waitForLandmark(taskLandmark);
+		Point p = findLandmark(jailLandmark);
+		if (p.x != -1 && p.y != -1) {
+//			robot.mouseMove(lawyerX, lawyerY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			
+			exitFirefox();
+			
+			Thread.currentThread().sleep(4*3600*1000);
+			
+			doVeryRichTask();
+			
+			enterMob();
+			
+			robot.delay(10000);
+			waitForLandmark(enterLandmark);
+			robot.mouseMove(taskX, taskY);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
 			robot.delay(5000);
-			p = findLandmark(taskLandmark);
-			retry++;
-			if (retry == 10) break;
+			waitForLandmark(taskLandmark);
 		}
+
 		robot.mouseMove(scrollX, scrollY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -536,33 +545,13 @@ public class MobRobot {
 		enterMob();
 		
 		robot.delay(5000);
-		Point p = findLandmark(enterLandmark);
-		int retry = 0;
-		while (p.x == -1 && p.y == -1) {
-			robot.delay(5000);
-			p = findLandmark(enterLandmark);
-			if (p.x == -1 && p.y == -1) {
-				exitFirefox();
-				enterMob();
-				robot.delay(5000);
-				p = findLandmark(enterLandmark);
-				retry++;
-				if (retry == 10) break;
-			}
-		}
+		waitForLandmark(enterLandmark);
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
 		robot.delay(5000);
-		p = findLandmark(taskLandmark);
-		retry = 0;
-		while (p.x == -1 && p.y == -1) {
-			robot.delay(5000);
-			p = findLandmark(taskLandmark);
-			retry++;
-			if (retry == 10) break;
-		}
+		waitForLandmark(taskLandmark);
 		robot.mouseMove(scrollX, scrollY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -585,6 +574,18 @@ public class MobRobot {
 		
 	}
 
+	private static void waitForLandmark(String landmark) throws Exception {
+
+		Point p = findLandmark(landmark);
+		int retry = 0;
+		while (p.x == -1 && p.y == -1) {
+			robot.delay(5000);
+			p = findLandmark(landmark);
+			retry++;
+			if (retry == 10) break;
+		}
+	}
+	
 	private static void doRichTask() throws Exception {
 		
 		enterMob();
