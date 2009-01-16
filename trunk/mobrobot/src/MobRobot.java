@@ -236,8 +236,8 @@ public class MobRobot {
 	public static void main(String[] args) {
 		try {
 			initRobot();
-			mainFight(args);
-//			mainVeryRich(args);
+//			mainFight(args);
+			mainVeryRich(args);
 		} catch (Exception e) {
 			new File(workingSign).delete();
 			e.printStackTrace();
@@ -279,7 +279,8 @@ public class MobRobot {
 			long timeConsumption = mainDoVeryRichTask();
 			long timeConsumption1 = mainPrepare();
 			try {
-				Thread.currentThread().sleep(50 * 5 * 60 * 1000 - timeConsumption1 - timeConsumption);
+				System.out.println("waiting for " + (45*5) + " minutes");
+				Thread.currentThread().sleep(45 * 5 * 60 * 1000);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -342,20 +343,6 @@ public class MobRobot {
 	
 	private static long mainPrepare() {
 
-		while (new File(workingSign).exists()) {
-			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-			try {
-				Thread.currentThread().sleep(40*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			new File(workingSign).createNewFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " prepare begins");
@@ -364,28 +351,12 @@ public class MobRobot {
 		Date end = new Date();
 		System.out.println(end.toString() + " prepare finished");
 		long timeConsumption = end.getTime()-startms;
-		
-		new File(workingSign).delete();
 
 		return timeConsumption;
 
 	}
 	
 	private static long mainDoVeryRichTask() {
-		
-		while (new File(workingSign).exists()) {
-			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-			try {
-				Thread.currentThread().sleep(40*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			new File(workingSign).createNewFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		
 		Date start = new Date();
 		long startms = start.getTime();
@@ -396,8 +367,6 @@ public class MobRobot {
 		System.out.println(end.toString() + " task finished");
 		long timeConsumption = end.getTime()-startms;
 		
-		new File(workingSign).delete();
-
 		return timeConsumption;
 		
 	}
@@ -433,8 +402,6 @@ public class MobRobot {
 			Date end = new Date();
 			System.out.println(end.toString() + " task finished");
 			long timeConsumption = end.getTime()-startms;
-			
-			new File(workingSign).delete();
 
 			try {
 				Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
@@ -448,20 +415,6 @@ public class MobRobot {
 	public static void mainFight(String[] args) {
 
 		while (true) {
-			while (new File(workingSign).exists()) {
-				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				try {
-					Thread.currentThread().sleep(40*1000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			try {
-				new File(workingSign).createNewFile();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
 			Date start = new Date();
 			long startms = start.getTime();
 			System.out.println(start.toString() + " task begins");
@@ -473,7 +426,6 @@ public class MobRobot {
 			System.out.println("health: " + health);
 			if (health < 90) {
 				exitFirefox();
-				new File(workingSign).delete();
 				System.out.println("waiting for " + ((145-health)*3) + " minutes");
 				try {
 					Thread.currentThread().sleep((145-health) * 180 * 1000);
@@ -502,12 +454,11 @@ public class MobRobot {
 			System.out.println("hurt: " + hurt);
 			exitFirefox();
 			
-			new File(workingSign).delete();
-			
 			Date end = new Date();
 			long timeConsumption = end.getTime()-startms;
 			System.out.println(end.toString() + " task finished");
 			try {
+				System.out.println("waiting for " + (hurt*3) + " minutes");
 				Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -555,6 +506,20 @@ public class MobRobot {
 		
 		robot.delay(5000);
 		waitForLandmark(enterLandmark);
+		
+		int stamina = getStamina();
+		if (stamina < 10) {
+			exitFirefox();
+			try {
+				System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
+				Thread.currentThread().sleep((10-stamina)*5*60*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			enterMob();
+			robot.delay(5000);
+			waitForLandmark(enterLandmark);
+		}
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -570,6 +535,7 @@ public class MobRobot {
 			exitFirefox();
 			
 			try {
+				System.out.println("waiting for 4 hours");
 				Thread.currentThread().sleep(4*3600*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -582,8 +548,19 @@ public class MobRobot {
 			robot.delay(10000);
 			waitForLandmark(enterLandmark);
 			
-			int stamina = getStamina();
-			if (stamina < 10) robot.delay((10-stamina)*5*60*1000);
+			stamina = getStamina();
+			if (stamina < 10) {
+				exitFirefox();
+				try {
+					System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
+					Thread.currentThread().sleep((10-stamina)*5*60*1000);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				enterMob();
+				robot.delay(10000);
+				waitForLandmark(enterLandmark);
+			}
 			
 			robot.mouseMove(taskX, taskY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -623,7 +600,18 @@ public class MobRobot {
 		waitForLandmark(enterLandmark);
 		
 		int stamina = getStamina();
-		if (stamina < 40) robot.delay((40-stamina)*5*60*1000);
+		if (stamina < 40) {
+			exitFirefox();
+			try {
+				System.out.println("waiting for " + ((40-stamina)*5) + " minutes");
+				Thread.currentThread().sleep((40-stamina)*5*60*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			enterMob();
+			robot.delay(5000);
+			waitForLandmark(enterLandmark);
+		}
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -674,7 +662,9 @@ public class MobRobot {
 			for (numStart = 0; numStart < str.length(); numStart++) 
 				if (Character.isDigit(str.charAt(numStart))) break;
 			if (numStart == str.length()) return 40;
-			return Integer.parseInt(str.substring(numStart, str.indexOf("/")));
+			int ret = Integer.parseInt(str.substring(numStart, str.indexOf("/")));
+			System.out.println("stamina: " + ret);
+			return ret;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return 40;
@@ -906,6 +896,20 @@ public class MobRobot {
 
 	public static void enterMob() {
 
+		while (new File(workingSign).exists()) {
+			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+			try {
+				Thread.currentThread().sleep(40*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		try {
+			new File(workingSign).createNewFile();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		robot.delay(2000);
 		robot.mouseMove(startX, startY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -1007,6 +1011,7 @@ public class MobRobot {
 		robot.mouseMove(exitX, exitY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		new File(workingSign).delete();
 		
 	}
 
