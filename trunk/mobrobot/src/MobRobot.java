@@ -1,4 +1,5 @@
 import java.awt.Dialog;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -9,6 +10,8 @@ import java.awt.Robot;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -29,6 +32,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.swing.JButton;
 
 public class MobRobot {
 
@@ -107,8 +111,10 @@ public class MobRobot {
 	public static int staminaBeginX;
 	public static int staminaBeginY;
 	public static int staminaEndX;
+	public static int countdown = 5;
 	
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
+	public static JButton delay = new JButton(""+countdown);
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
 	public static Robot robot = null;
@@ -122,7 +128,23 @@ public class MobRobot {
 	static {
 		try {
 			
+			noticeDialog.setLayout(new FlowLayout());
 			noticeDialog.add(new Label("task begins!"));
+			delay.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						countdown += 60;
+						delay.setText(""+countdown);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					
+				}
+				
+			});
+			noticeDialog.add(delay);
 			
 			Properties prop = new Properties();
 			InputStream is = MobRobot.class.getResourceAsStream(configFile);
@@ -238,10 +260,28 @@ public class MobRobot {
 			initRobot();
 //			mainFight(args);
 			mainVeryRich(args);
+//			mainCheck(args);
+//			notice();
+//			System.exit(0);
 		} catch (Exception e) {
 			new File(workingSign).delete();
 			e.printStackTrace();
 			System.exit(1);
+		}
+	}
+	
+	public static void mainCheck(String[] args) {
+		while (true) {
+			try {
+				enterMob();
+				String pic = picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg";
+				takePic(pic);
+				sendMail("check", new Date().toString(), pic);
+				exitFirefox();
+				Thread.currentThread().sleep(60*60*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -274,13 +314,19 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-		
+//		try {
+//			Thread.currentThread().sleep(50*5*60*1000);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		mainDoVeryRichTask();
+		mainPrepare();
 		while (true) {
-			long timeConsumption = mainDoVeryRichTask();
-			long timeConsumption1 = mainPrepare();
 			try {
-				System.out.println("waiting for " + (45*5) + " minutes");
-				Thread.currentThread().sleep(45 * 5 * 60 * 1000);
+				mainDoVeryRichTask();
+				mainPrepare();
+				System.out.println("waiting for " + (50*5) + " minutes");
+				Thread.currentThread().sleep(50 * 5 * 60 * 1000);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -414,6 +460,12 @@ public class MobRobot {
 
 	public static void mainFight(String[] args) {
 
+		System.out.println("fight");
+//		try {
+//			Thread.currentThread().sleep(40*3*60*1000);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		while (true) {
 			Date start = new Date();
 			long startms = start.getTime();
@@ -507,19 +559,19 @@ public class MobRobot {
 		robot.delay(5000);
 		waitForLandmark(enterLandmark);
 		
-		int stamina = getStamina();
-		if (stamina < 10) {
-			exitFirefox();
-			try {
-				System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
-				Thread.currentThread().sleep((10-stamina)*5*60*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			enterMob();
-			robot.delay(5000);
-			waitForLandmark(enterLandmark);
-		}
+//		int stamina = getStamina();
+//		if (stamina < 10) {
+//			exitFirefox();
+//			try {
+//				System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
+//				Thread.currentThread().sleep((10-stamina)*5*60*1000);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			enterMob();
+//			robot.delay(5000);
+//			waitForLandmark(enterLandmark);
+//		}
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -548,19 +600,19 @@ public class MobRobot {
 			robot.delay(10000);
 			waitForLandmark(enterLandmark);
 			
-			stamina = getStamina();
-			if (stamina < 10) {
-				exitFirefox();
-				try {
-					System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
-					Thread.currentThread().sleep((10-stamina)*5*60*1000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				enterMob();
-				robot.delay(10000);
-				waitForLandmark(enterLandmark);
-			}
+//			stamina = getStamina();
+//			if (stamina < 10) {
+//				exitFirefox();
+//				try {
+//					System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
+//					Thread.currentThread().sleep((10-stamina)*5*60*1000);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				enterMob();
+//				robot.delay(10000);
+//				waitForLandmark(enterLandmark);
+//			}
 			
 			robot.mouseMove(taskX, taskY);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
@@ -599,19 +651,19 @@ public class MobRobot {
 		robot.delay(5000);
 		waitForLandmark(enterLandmark);
 		
-		int stamina = getStamina();
-		if (stamina < 40) {
-			exitFirefox();
-			try {
-				System.out.println("waiting for " + ((40-stamina)*5) + " minutes");
-				Thread.currentThread().sleep((40-stamina)*5*60*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			enterMob();
-			robot.delay(5000);
-			waitForLandmark(enterLandmark);
-		}
+//		int stamina = getStamina();
+//		if (stamina < 40) {
+//			exitFirefox();
+//			try {
+//				System.out.println("waiting for " + ((40-stamina)*5) + " minutes");
+//				Thread.currentThread().sleep((40-stamina)*5*60*1000);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			enterMob();
+//			robot.delay(5000);
+//			waitForLandmark(enterLandmark);
+//		}
 		robot.mouseMove(taskX, taskY);
 		robot.mousePress(InputEvent.BUTTON1_MASK);
 		robot.mouseRelease(InputEvent.BUTTON1_MASK);
@@ -729,7 +781,12 @@ public class MobRobot {
 //		AudioStream as = new AudioStream(notice);
 //		AudioPlayer.player.start(as);
 		try {
-			Thread.currentThread().sleep(5000);
+			countdown = 5;
+			while (countdown != 0) {
+				Thread.currentThread().sleep(1000);
+				countdown--;
+				delay.setText(""+countdown);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
