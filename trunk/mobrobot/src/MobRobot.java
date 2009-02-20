@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
@@ -131,21 +133,19 @@ public class MobRobot {
 			noticeDialog.setLayout(new FlowLayout());
 			noticeDialog.add(new Label("task begins!"));
 			delay.addActionListener(new ActionListener() {
-
-				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					try {
-						countdown += 60;
-						delay.setText(""+countdown);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					
+					countdown += 60;
+					delay.setText(""+countdown);
 				}
-				
 			});
 			noticeDialog.add(delay);
-			
+			noticeDialog.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent e) {
+					countdown += 60;
+					delay.setText(""+countdown);
+				}
+			});
+
 			Properties prop = new Properties();
 			InputStream is = MobRobot.class.getResourceAsStream(configFile);
 			prop.load(is);
@@ -290,9 +290,12 @@ public class MobRobot {
 			robot.delay(2000);
 			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
 			BufferedImage image = ImageIO.read(new File(bmpLm));
-			for (int y = 0; y < screen.getHeight()-image.getHeight(); y++) {
-				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
-					if (match(screen, image, x, y)) return new Point(x, y); 
+			for (int y = 170; y < 360/*screen.getHeight()-image.getHeight()*/; y++) {
+				for (int x = 150; x < 210/*screen.getWidth()-image.getWidth()*/; x++) {
+					if (match(screen, image, x, y)) {
+						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+						return new Point(x, y); 
+					}
 				}
 			}
 			return new Point(-1, -1);
@@ -301,7 +304,7 @@ public class MobRobot {
 			return new Point(-1, -1);
 		}
 	}
-		
+	
 	private static boolean match(BufferedImage screen, BufferedImage image, int x, int y) {
 		for (int sy = y, iy = 0; iy < image.getHeight(); sy++, iy++) {
 			for (int sx = x, ix = 0; ix < image.getWidth(); sx++, ix++) {
@@ -314,13 +317,11 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-//		try {
-//			Thread.currentThread().sleep(50*5*60*1000);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		mainDoVeryRichTask();
-		mainPrepare();
+		try {
+			Thread.currentThread().sleep(50*5*60*1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		while (true) {
 			try {
 				mainDoVeryRichTask();
