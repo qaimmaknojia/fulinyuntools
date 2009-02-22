@@ -204,7 +204,7 @@ public class FarmlandRobot {
 			robot.mouseMove(place[i].x, place[i].y);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			Point cancel = findLandmark("e:\\farmland\\cancel.bmp", 0, 0);
+			Point cancel = findLandmark("e:\\farmland\\cancelScarify.bmp", 0, 0);
 			if (cancel.x != -1 && cancel.y != -1) {
 				robot.delay(1000);
 				robot.mouseMove(cancel.x, cancel.y);
