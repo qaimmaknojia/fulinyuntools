@@ -50,7 +50,8 @@ public class FarmlandRobot {
 	public static int exitY = 8;
 	public static int countdown = 5;
 	public static JButton delay = new JButton(""+countdown);
-	
+	public static String picFilePrefix = "E:\\farmland\\snapshot ";
+
 	static {
 		try {
 			
@@ -93,16 +94,21 @@ public class FarmlandRobot {
 //		robot.delay(30000);
 		robot.delay(5000);
 		initPlace();
+		
 //		testPlacePos();
 //		initDialog();
-		water();
-		removeWeed();
-		removeWorm();
-		harvest();
-		scarify();
-		sellAll();	//todo
-		plant();	//todo
+		
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		harvest();
+//		scarify();
+//		sellAll();	//todo
+//		plant();	//todo
 //		exitFirefox();
+		buyCarrot();
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+
 	}
 	
 	private static void removeWorm() {
@@ -129,13 +135,15 @@ public class FarmlandRobot {
 		traverseLand();
 	}
 
-	private static void findAndClick(String target) {
+	private static boolean findAndClick(String target) {
 		Point tar = findLandmark(target, 0, 0);
 		if (tar.x != -1 && tar.y != -1) {
 			robot.mouseMove(tar.x, tar.y);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			return true;
 		}
+		return false;
 	}
 
 	private static void sellAll() {
@@ -145,6 +153,36 @@ public class FarmlandRobot {
 		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
 	}
 
+	private static void buyCarrot() {
+		findAndClick("e:\\farmland\\shop.bmp");
+		robot.delay(1000);
+		findAndClick("e:\\farmland\\carrot.bmp");
+		robot.delay(1000);
+		findAndClick("e:\\farmland\\confirmBuy.bmp");
+		robot.delay(2000);
+		while (!findAndClick("e:\\farmland\\confirmNoMoney.bmp")) {
+			robot.delay(1000);
+			findAndClick("e:\\farmland\\carrot.bmp");
+			robot.delay(1000);
+			findAndClick("e:\\farmland\\confirmBuy.bmp");
+			robot.delay(1000);
+		}
+		findAndClick("e:\\farmland\\quitShop.bmp");
+	}
+	
+	public static void takePic(String fn) {
+
+		robot.delay(2000);
+		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
+				screenHeight));
+		try {
+			ImageIO.write(image, "JPEG", new File(fn));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public static void enterFarmland() {
 
 		while (new File(workingSign).exists()) {
