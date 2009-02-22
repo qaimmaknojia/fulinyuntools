@@ -88,28 +88,45 @@ public class FarmlandRobot {
 		}
 	}
 
+	public static void main1(String[] args) {
+		notice();
+		initRobot();
+		initPlace();
+		buyCarrot();
+//		notice();
+//		robot.delay(10000);
+//		Point p = findLandmark("e:\\confirmBuy2.bmp", 0, 0);
+//		robot.mouseMove(p.x, p.y);
+	}
+	
 	public static void main(String[] args) {
 		notice();
 		initRobot();
-//		enterFarmland();
-//		robot.delay(30000);
+		enterFarmland();
+		robot.delay(30000);
 		initPlace();
 		
 //		testPlacePos();
 //		initDialog();
-		
-//		water();
-//		removeWeed();
-//		removeWorm();
-//		harvest();
-		scarify();
-//		sellAll();	//todo
-//		plant();	//todo
-//		exitFirefox();
-//		buyCarrot();
-//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//		takePic(pic);
-		
+
+		while (true) {
+			water();
+			removeWeed();
+			removeWorm();
+			harvest();
+			scarify();
+			sellAll();//not tested
+			buyCarrot();//not tested
+			plant();
+			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			takePic(pic);
+			exitFirefox();
+			try {
+				Thread.currentThread().sleep(15*60*60*1000);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private static void removeWorm() {
@@ -132,6 +149,7 @@ public class FarmlandRobot {
 
 	private static void plant() {
 		findAndClick("e:\\farmland\\bag.bmp");
+		robot.delay(1000);
 		findAndClick("e:\\farmland\\carrotInBag.bmp");
 		traverseLand();
 	}
@@ -149,24 +167,27 @@ public class FarmlandRobot {
 
 	private static void sellAll() {
 		findAndClick("e:\\farmland\\storeHouse.bmp");
+		robot.delay(1000);
 		findAndClick("e:\\farmland\\sell.bmp");
-		findAndClick("e:\\farmland\\confirm.bmp");
+		robot.delay(1000);
+		findAndClick("e:\\farmland\\confirmSell.bmp");
+		robot.delay(1000);
+		findAndClick("e:\\farmland\\confirmSell2.bmp");
+		robot.delay(1000);
 		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
 	}
 
 	private static void buyCarrot() {
 		findAndClick("e:\\farmland\\shop.bmp");
 		robot.delay(1000);
-		findAndClick("e:\\farmland\\carrot.bmp");
-		robot.delay(1000);
-		findAndClick("e:\\farmland\\confirmBuy.bmp");
-		robot.delay(2000);
-		while (!findAndClick("e:\\farmland\\confirmNoMoney.bmp")) {
-			robot.delay(1000);
+		for (int i = 0; i < numPlace; i++) {
 			findAndClick("e:\\farmland\\carrot.bmp");
 			robot.delay(1000);
 			findAndClick("e:\\farmland\\confirmBuy.bmp");
+			robot.delay(2000);
+			findAndClick("e:\\farmland\\confirmBuy2.bmp");
 			robot.delay(1000);
+			findAndClick("e:\\farmland\\confirmNoMoney.bmp");
 		}
 		findAndClick("e:\\farmland\\quitShop.bmp");
 	}
