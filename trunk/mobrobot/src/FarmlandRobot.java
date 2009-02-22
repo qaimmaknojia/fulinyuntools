@@ -89,10 +89,10 @@ public class FarmlandRobot {
 	}
 
 	public static void main(String[] args) {
+		notice();
 		initRobot();
 //		enterFarmland();
 //		robot.delay(30000);
-		robot.delay(5000);
 		initPlace();
 		
 //		testPlacePos();
@@ -102,13 +102,14 @@ public class FarmlandRobot {
 //		removeWeed();
 //		removeWorm();
 //		harvest();
-//		scarify();
+		scarify();
 //		sellAll();	//todo
 //		plant();	//todo
 //		exitFirefox();
-		buyCarrot();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-
+//		buyCarrot();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		takePic(pic);
+		
 	}
 	
 	private static void removeWorm() {
@@ -266,13 +267,8 @@ public class FarmlandRobot {
 			robot.mouseMove(place[i].x, place[i].y);
 			robot.mousePress(InputEvent.BUTTON1_MASK);
 			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			Point cancel = findLandmark("e:\\farmland\\cancelScarify.bmp", 0, 0);
-			if (cancel.x != -1 && cancel.y != -1) {
-				robot.delay(1000);
-				robot.mouseMove(cancel.x, cancel.y);
-				robot.mousePress(InputEvent.BUTTON1_MASK);
-				robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			}
+			robot.delay(1000);
+			findAndClick("e:\\farmland\\cancelScarify.bmp");
 		}
 
 	}
@@ -313,6 +309,30 @@ public class FarmlandRobot {
 		noticeDialog.setSize(1000, 70);
 		noticeDialog.setAlwaysOnTop(true);
 		noticeDialog.setVisible(true);
+	}
+
+	private static void notice() {
+
+		Dialog d = noticeDialog;
+		d.setTitle(new Date().toString());
+
+		d.setLocation(new Point(300, 300));
+		d.setSize(200, 70);
+		d.setAlwaysOnTop(true);
+		d.setVisible(true);
+
+		try {
+			countdown = 5;
+			while (countdown != 0) {
+				Thread.currentThread().sleep(1000);
+				countdown--;
+				delay.setText(""+countdown);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		d.setVisible(false);
+		
 	}
 
 	private static JButton createJButton(String title, final String target) {
