@@ -89,18 +89,40 @@ public class FarmlandRobot {
 
 	public static void main(String[] args) {
 		initRobot();
-		enterFarmland();
-//		robot.delay(5000);
+//		enterFarmland();
+//		robot.delay(30000);
+		robot.delay(5000);
 		initPlace();
 //		testPlacePos();
 //		initDialog();
+		water();
+		removeWeed();
+		removeWorm();
 		harvest();
 		scarify();
-		sellAll();
-		plant();
-		exitFirefox();
+		sellAll();	//todo
+		plant();	//todo
+//		exitFirefox();
 	}
 	
+	private static void removeWorm() {
+		findAndClick("e:\\farmland\\removeWorm.bmp");
+		traverseLand();
+		
+	}
+
+	private static void removeWeed() {
+		findAndClick("e:\\farmland\\removeWeed.bmp");
+		traverseLand();
+		
+	}
+
+	private static void water() {
+		findAndClick("e:\\farmland\\water.bmp");
+		traverseLand();
+		
+	}
+
 	private static void plant() {
 		findAndClick("e:\\farmland\\bag.bmp");
 		findAndClick("e:\\farmland\\carrotInBag.bmp");
@@ -109,16 +131,18 @@ public class FarmlandRobot {
 
 	private static void findAndClick(String target) {
 		Point tar = findLandmark(target, 0, 0);
-		robot.mouseMove(tar.x, tar.y);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		if (tar.x != -1 && tar.y != -1) {
+			robot.mouseMove(tar.x, tar.y);
+			robot.mousePress(InputEvent.BUTTON1_MASK);
+			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
 	}
 
 	private static void sellAll() {
 		findAndClick("e:\\farmland\\storeHouse.bmp");
 		findAndClick("e:\\farmland\\sell.bmp");
 		findAndClick("e:\\farmland\\confirm.bmp");
-		
+		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
 	}
 
 	public static void enterFarmland() {
