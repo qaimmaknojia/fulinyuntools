@@ -293,7 +293,7 @@ public class MobRobot {
 			for (int y = 170; y < 360/*screen.getHeight()-image.getHeight()*/; y++) {
 				for (int x = 150; x < 210/*screen.getWidth()-image.getWidth()*/; x++) {
 					if (match(screen, image, x, y)) {
-						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+//						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
 						return new Point(x, y); 
 					}
 				}
@@ -588,12 +588,14 @@ public class MobRobot {
 			exitFirefox();
 			
 			try {
-				System.out.println("waiting for 4 hours");
-				Thread.currentThread().sleep(4*3600*1000);
+				System.out.println("in jail, waiting for 250 minutes");
+				Thread.currentThread().sleep(50*5*60*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			
+			doVeryRichTask();
+			prepare();
 			doVeryRichTask();
 			
 			enterMob();
