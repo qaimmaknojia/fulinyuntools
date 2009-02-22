@@ -8,8 +8,6 @@ import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -27,10 +25,14 @@ public class FarmlandRobot {
 	public static int screenHeight = 768;
 	public static int mouseX = 0;
 	public static int mouseY = 0;
+	public static int place1offsetX = -390;
+	public static int place1offsetY = 160;
+	public static Point[] place = null;
 	
 	public static void main(String[] args) {
 		initRobot();
-		initDialog();
+		initPlace();
+//		initDialog();
 	}
 	
 	private static void initDialog() {
@@ -126,4 +128,15 @@ public class FarmlandRobot {
 		return true;
 	}
 
+	public static void initPlace() {
+		place = new Point[20];
+		for (int i = 0; i < 20; i++) place[i] = new Point();
+		Point shopPos = findLandmark("e:\\farmland\\shop.bmp", 0, 0);
+		place[1].x = shopPos.x+place1offsetX;
+		place[1].y = shopPos.y+place1offsetY;
+		for (int i = 2; i < 19; i++) {
+			place[i].x = place[1].x+(i-1)/3*100-(i-1)%3*100;
+			place[i].y = place[1].y+(i-1)/3*50+(i-1)%3*50;
+		}
+	}
 }
