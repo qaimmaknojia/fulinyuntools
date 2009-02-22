@@ -82,7 +82,9 @@ public class FarmlandRobot {
 			addressY = Integer.parseInt(prop.getProperty("addressY"));
 			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
 			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
-
+			exitX = Integer.parseInt(prop.getProperty("exitX"));
+			exitY = Integer.parseInt(prop.getProperty("exitY"));
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -100,6 +102,12 @@ public class FarmlandRobot {
 	}
 	
 	public static void main(String[] args) {
+		System.out.println("farmland");
+		try {
+			Thread.currentThread().sleep(15*60*60*1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		notice();
 		initRobot();
 		enterFarmland();
