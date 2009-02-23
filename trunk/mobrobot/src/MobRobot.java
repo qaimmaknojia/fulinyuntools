@@ -38,21 +38,18 @@ import javax.swing.JButton;
 
 public class MobRobot {
 
-//	public static String configFile = "/configHome.prop";
-	public static String configFile = "/configSchool.prop";
-
-	public static int startX = 30;
-	public static int startY = 1006;
-	public static int firefoxX = 78;
-	public static int firefoxY = 294;
-	public static int addressX = 765;
-	public static int addressY = 74;
+//	public static int startX = 30;
+//	public static int startY = 1006;
+//	public static int firefoxX = 78;
+//	public static int firefoxY = 294;
+//	public static int addressX = 765;
+//	public static int addressY = 74;
 	public static int taskX = 251;
 	public static int taskY = 313;
 	public static int doX = 878;
 	public static int doY = 786;
-	public static int exitX = 1267;
-	public static int exitY = 11;
+//	public static int exitX = 1267;
+//	public static int exitY = 11;
 	public static int scrollX;
 	public static int scrollY;
 	public static int screenWidth;
@@ -113,15 +110,10 @@ public class MobRobot {
 	public static int staminaBeginX;
 	public static int staminaBeginY;
 	public static int staminaEndX;
-	public static int countdown = 5;
-	
-	public static Dialog noticeDialog = new Dialog((Frame)null, "");
-	public static JButton delay = new JButton(""+countdown);
 	
 	public static String mobURL = "http://mob.xiaonei.com/home.do";
-	public static Robot robot = null;
 	public static String picFilePrefix = "E:\\mobtemp\\snapshot ";
-	public static String workingSign = "E:\\mobtemp\\robotworking";
+	
 	public static String enterLandmark = "E:\\mobtemp\\enter.bmp";
 	public static String taskLandmark = "E:\\mobtemp\\task.bmp";
 	public static String fightLandmark = "E:\\mobtemp\\fight.bmp";
@@ -130,39 +122,23 @@ public class MobRobot {
 	static {
 		try {
 			
-			noticeDialog.setLayout(new FlowLayout());
-			noticeDialog.add(new Label("task begins!"));
-			delay.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent arg0) {
-					countdown += 60;
-					delay.setText(""+countdown);
-				}
-			});
-			noticeDialog.add(delay);
-			noticeDialog.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					countdown += 60;
-					delay.setText(""+countdown);
-				}
-			});
-
 			Properties prop = new Properties();
-			InputStream is = MobRobot.class.getResourceAsStream(configFile);
+			InputStream is = MobRobot.class.getResourceAsStream(Common.configFile);
 			prop.load(is);
-			startX = Integer.parseInt(prop.getProperty("startX"));
-			startY = Integer.parseInt(prop.getProperty("startY"));
-			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
-			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
-			addressX = Integer.parseInt(prop.getProperty("addressX"));
-			addressY = Integer.parseInt(prop.getProperty("addressY"));
+//			startX = Integer.parseInt(prop.getProperty("startX"));
+//			startY = Integer.parseInt(prop.getProperty("startY"));
+//			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
+//			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
+//			addressX = Integer.parseInt(prop.getProperty("addressX"));
+//			addressY = Integer.parseInt(prop.getProperty("addressY"));
 			taskX = Integer.parseInt(prop.getProperty("taskX"));
 			taskY = Integer.parseInt(prop.getProperty("taskY"));
 			doX = Integer.parseInt(prop.getProperty("doX"));
 			doY = Integer.parseInt(prop.getProperty("doY"));
 			scrollX = Integer.parseInt(prop.getProperty("scrollX"));
 			scrollY = Integer.parseInt(prop.getProperty("scrollY"));
-			exitX = Integer.parseInt(prop.getProperty("exitX"));
-			exitY = Integer.parseInt(prop.getProperty("exitY"));
+//			exitX = Integer.parseInt(prop.getProperty("exitX"));
+//			exitY = Integer.parseInt(prop.getProperty("exitY"));
 			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
 			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
 			brotherBeginX = Integer.parseInt(prop.getProperty("brotherBeginX"));
@@ -247,24 +223,16 @@ public class MobRobot {
 		}
 	}
 
-//	public static void main(String[] args) {
-//		initRobot();
-//		enterMob();
-//		Point p = findLandmark("E:\\mobtemp\\enter.bmp");
-//		System.out.println(p.x + "," + p.y);
-//		exitFirefox();
-//	}
-	
 	public static void main(String[] args) {
 		try {
-			initRobot();
+			Common.initRobot();
 //			mainFight(args);
 			mainVeryRich(args);
 //			mainCheck(args);
 //			notice();
 //			System.exit(0);
 		} catch (Exception e) {
-			new File(workingSign).delete();
+			new File(Common.workingSign).delete();
 			e.printStackTrace();
 			System.exit(1);
 		}
@@ -273,11 +241,11 @@ public class MobRobot {
 	public static void mainCheck(String[] args) {
 		while (true) {
 			try {
-				enterMob();
+				Common.enterGame(mobURL);
 				String pic = picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg";
-				takePic(pic);
-				sendMail("check", new Date().toString(), pic);
-				exitFirefox();
+				Common.takePic(pic);
+				Common.sendMail("check", new Date().toString(), pic);
+				Common.exitFirefox();
 				Thread.currentThread().sleep(60*60*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -285,35 +253,6 @@ public class MobRobot {
 		}
 	}
 	
-	public static Point findLandmark(String bmpLm) {
-		try {
-			robot.delay(2000);
-			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
-			BufferedImage image = ImageIO.read(new File(bmpLm));
-			for (int y = 170; y < 360/*screen.getHeight()-image.getHeight()*/; y++) {
-				for (int x = 150; x < 210/*screen.getWidth()-image.getWidth()*/; x++) {
-					if (match(screen, image, x, y)) {
-//						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
-						return new Point(x, y); 
-					}
-				}
-			}
-			return new Point(-1, -1);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new Point(-1, -1);
-		}
-	}
-	
-	private static boolean match(BufferedImage screen, BufferedImage image, int x, int y) {
-		for (int sy = y, iy = 0; iy < image.getHeight(); sy++, iy++) {
-			for (int sx = x, ix = 0; ix < image.getWidth(); sx++, ix++) {
-				if (screen.getRGB(sx, sy) != image.getRGB(ix, iy)) return false;
-			}
-		}
-		return true;
-	}
-
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
@@ -334,66 +273,12 @@ public class MobRobot {
 		}
 	}
 	
-	private static void sendMail(String type, String msgText, String attach) {
-		try {
-			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
-			final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-			Properties props = System.getProperties();
-			props.setProperty("mail.smtp.host", "smtp.gmail.com");
-			props.setProperty("mail.smtp.socketFactory.class", SSL_FACTORY);
-			props.setProperty("mail.smtp.socketFactory.fallback", "false");
-			props.setProperty("mail.smtp.port", "465");
-			props.setProperty("mail.smtp.socketFactory.port", "465");
-			props.put("mail.smtp.auth", "true");
-			final String username = "mobrobot";
-			final String password = "qwertyui";
-			Session session = Session.getDefaultInstance(props,	new Authenticator() {
-						protected PasswordAuthentication getPasswordAuthentication() {
-							return new PasswordAuthentication(username, password);
-						}
-					});
-	
-			// -- Create a new message --
-			Message msg = new MimeMessage(session);
-	
-			// -- Set the FROM and TO fields --
-			msg.setFrom(new InternetAddress(username + "@gmail.com"));
-			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(
-					"fulinyun@126.com", false));
-			msg.setSubject("mob robot report " + type);
-			
-			// create and fill the first message part
-			MimeBodyPart mbp1 = new MimeBodyPart();
-			mbp1.setText(msgText);
-	
-			// create the second message part
-			MimeBodyPart mbp2 = new MimeBodyPart();
-	
-			// attach the file to the message
-			mbp2.attachFile(attach);
-	
-			// create the Multipart and add its parts to it
-			Multipart mp = new MimeMultipart();
-			mp.addBodyPart(mbp1);
-			mp.addBodyPart(mbp2);
-	
-			// add the Multipart to the message
-			msg.setContent(mp);
-	
-			msg.setSentDate(new Date());
-			
-			Transport.send(msg);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private static long mainPrepare() {
 
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " prepare begins");
-		notice();
+		Common.notice(new Date().toString(), 300, 300);
 		prepare();
 		Date end = new Date();
 		System.out.println(end.toString() + " prepare finished");
@@ -408,7 +293,7 @@ public class MobRobot {
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " task begins");
-		notice();
+		Common.notice(new Date().toString(), 300, 300);
 		doVeryRichTask();
 		Date end = new Date();
 		System.out.println(end.toString() + " task finished");
@@ -418,147 +303,147 @@ public class MobRobot {
 		
 	}
 	
-	public static void mainRich(String[] args) {
-
-		initRobot();
-		try {
-			Thread.currentThread().sleep(25*5*60*1000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		while (true) {
-			while (new File(workingSign).exists()) {
-				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				try {
-					Thread.currentThread().sleep(40*1000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			try {
-				new File(workingSign).createNewFile();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			Date start = new Date();
-			long startms = start.getTime();
-			System.out.println(start.toString() + " task begins");
-			notice();
-			doRichTask();
-			Date end = new Date();
-			System.out.println(end.toString() + " task finished");
-			long timeConsumption = end.getTime()-startms;
-
-			try {
-				Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-		}
-	}
-
-	public static void mainFight(String[] args) {
-
-		System.out.println("fight");
+//	public static void mainRich(String[] args) {
+//
+//		initRobot();
 //		try {
-//			Thread.currentThread().sleep(40*3*60*1000);
+//			Thread.currentThread().sleep(25*5*60*1000);
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		while (true) {
-			Date start = new Date();
-			long startms = start.getTime();
-			System.out.println(start.toString() + " task begins");
-			notice();
+//		while (true) {
+//			while (new File(workingSign).exists()) {
+//				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+//				try {
+//					Thread.currentThread().sleep(40*1000);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//			try {
+//				new File(workingSign).createNewFile();
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			
+//			Date start = new Date();
+//			long startms = start.getTime();
+//			System.out.println(start.toString() + " task begins");
+//			notice();
+//			doRichTask();
+//			Date end = new Date();
+//			System.out.println(end.toString() + " task finished");
+//			long timeConsumption = end.getTime()-startms;
+//
+//			try {
+//				Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			
+//		}
+//	}
 
-			enterMob();
-			
-			int health = getHealth();
-			System.out.println("health: " + health);
-			if (health < 90) {
-				exitFirefox();
-				System.out.println("waiting for " + ((145-health)*3) + " minutes");
-				try {
-					Thread.currentThread().sleep((145-health) * 180 * 1000);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				continue;
-			}
-
-			robot.delay(5000);
-			robot.mouseMove(fightX, fightY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			
-			robot.delay(15000);
-			robot.mouseMove(doFightX, doFightY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-			robot.delay(5000);
-			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-			takePic(pic);
-			sendMail("fight", new Date().toString(), pic);
-			
-			int hurt = getHurt();
-			System.out.println("hurt: " + hurt);
-			exitFirefox();
-			
-			Date end = new Date();
-			long timeConsumption = end.getTime()-startms;
-			System.out.println(end.toString() + " task finished");
-			try {
-				System.out.println("waiting for " + (hurt*3) + " minutes");
-				Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
+//	public static void mainFight(String[] args) {
+//
+//		System.out.println("fight");
+////		try {
+////			Thread.currentThread().sleep(40*3*60*1000);
+////		} catch (Exception e) {
+////			e.printStackTrace();
+////		}
+//		while (true) {
+//			Date start = new Date();
+//			long startms = start.getTime();
+//			System.out.println(start.toString() + " task begins");
+//			notice();
+//
+//			enterMob();
+//			
+//			int health = getHealth();
+//			System.out.println("health: " + health);
+//			if (health < 90) {
+//				exitFirefox();
+//				System.out.println("waiting for " + ((145-health)*3) + " minutes");
+//				try {
+//					Thread.currentThread().sleep((145-health) * 180 * 1000);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				continue;
+//			}
+//
+//			robot.delay(5000);
+//			robot.mouseMove(fightX, fightY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//			
+//			robot.delay(15000);
+//			robot.mouseMove(doFightX, doFightY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//			robot.delay(5000);
+//			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//			takePic(pic);
+//			sendMail("fight", new Date().toString(), pic);
+//			
+//			int hurt = getHurt();
+//			System.out.println("hurt: " + hurt);
+//			exitFirefox();
+//			
+//			Date end = new Date();
+//			long timeConsumption = end.getTime()-startms;
+//			System.out.println(end.toString() + " task finished");
+//			try {
+//				System.out.println("waiting for " + (hurt*3) + " minutes");
+//				Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 	
-	private static int getHurt() {
-		
-		robot.delay(10000);
-		robot.mouseMove(hurtBeginX, hurtBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(hurtEndX, hurtBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(5000);
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = "";
-		try {
-			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(str);
-		int numStart;
-		for (numStart = 0; numStart < str.length(); numStart++) 
-			if (Character.isDigit(str.charAt(numStart))) break;
-		if (numStart == str.length()) return 100;
-		int numEnd;
-		for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
-			if (!Character.isDigit(str.charAt(numEnd))) break;
-		return Integer.parseInt(str.substring(numStart, numEnd));
-
-	}
+//	private static int getHurt() {
+//		
+//		robot.delay(10000);
+//		robot.mouseMove(hurtBeginX, hurtBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(hurtEndX, hurtBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.delay(5000);
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = "";
+//		try {
+//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(str);
+//		int numStart;
+//		for (numStart = 0; numStart < str.length(); numStart++) 
+//			if (Character.isDigit(str.charAt(numStart))) break;
+//		if (numStart == str.length()) return 100;
+//		int numEnd;
+//		for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
+//			if (!Character.isDigit(str.charAt(numEnd))) break;
+//		return Integer.parseInt(str.substring(numStart, numEnd));
+//
+//	}
 
 	private static void prepare() {
 
-		enterMob();
+		Common.enterGame(mobURL);
 		
-		robot.delay(5000);
-		waitForLandmark(enterLandmark);
+		Common.robot.delay(5000);
+		waitForLandmark(enterLandmark, 0, 0);
 		
 //		int stamina = getStamina();
 //		if (stamina < 10) {
@@ -573,19 +458,17 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		robot.mouseMove(taskX, taskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.moveAndClick(taskX, taskY);
 
-		robot.delay(5000);
-		waitForLandmark(taskLandmark);
-		Point p = findLandmark(jailLandmark);
+		Common.robot.delay(5000);
+		waitForLandmark(taskLandmark, 0, 0);
+		Point p = Common.findLandmark(jailLandmark, 0, 0);
 		if (p.x != -1 && p.y != -1) {
 //			robot.mouseMove(lawyerX, lawyerY);
 //			robot.mousePress(InputEvent.BUTTON1_MASK);
 //			robot.mouseRelease(InputEvent.BUTTON1_MASK);
 			
-			exitFirefox();
+			Common.exitFirefox();
 			
 			try {
 				System.out.println("in jail, waiting for 250 minutes");
@@ -598,10 +481,10 @@ public class MobRobot {
 			prepare();
 			doVeryRichTask();
 			
-			enterMob();
+			Common.enterGame(mobURL);
 			
-			robot.delay(10000);
-			waitForLandmark(enterLandmark);
+			Common.robot.delay(10000);
+			waitForLandmark(enterLandmark, 0, 0);
 			
 //			stamina = getStamina();
 //			if (stamina < 10) {
@@ -617,42 +500,34 @@ public class MobRobot {
 //				waitForLandmark(enterLandmark);
 //			}
 			
-			robot.mouseMove(taskX, taskY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+			Common.moveAndClick(taskX, taskY);
 
-			robot.delay(5000);
-			waitForLandmark(taskLandmark);
+			Common.robot.delay(5000);
+			waitForLandmark(taskLandmark, 0, 0);
 		}
 
-		robot.mouseMove(scrollX, scrollY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.moveAndClick(scrollX, scrollY);
 
-		robot.delay(5000);
-		robot.mouseMove(prepareX, prepareY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.robot.delay(5000);
+		Common.moveAndClick(prepareX, prepareY);
 
-		robot.delay(5000);
-		robot.mouseMove(scrollupX, scrollupY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.robot.delay(5000);
+		Common.moveAndClick(scrollupX, scrollupY);
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		takePic(pic);
-		sendMail("prepare", new Date().toString(), pic);
+		Common.takePic(pic);
+		Common.sendMail("prepare", new Date().toString(), pic);
 
-		exitFirefox();
+		Common.exitFirefox();
 		
 	}
 
 	private static void doVeryRichTask() {
 		
-		enterMob();
+		Common.enterGame(mobURL);
 		
-		robot.delay(5000);
-		waitForLandmark(enterLandmark);
+		Common.robot.delay(5000);
+		waitForLandmark(enterLandmark, 0, 0);
 		
 //		int stamina = getStamina();
 //		if (stamina < 40) {
@@ -667,202 +542,168 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		robot.mouseMove(taskX, taskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.moveAndClick(taskX, taskY);
 
-		robot.delay(5000);
-		waitForLandmark(taskLandmark);
-		robot.mouseMove(scrollX, scrollY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.robot.delay(5000);
+		waitForLandmark(taskLandmark, 0, 0);
+		Common.moveAndClick(scrollX, scrollY);
 
-		robot.delay(5000);
-		robot.mouseMove(veryRichTaskX, veryRichTaskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.robot.delay(5000);
+		Common.moveAndClick(veryRichTaskX, veryRichTaskY);
 		
-		robot.delay(5000);
-		robot.mouseMove(scrollupX, scrollupY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		Common.robot.delay(5000);
+		Common.moveAndClick(scrollupX, scrollupY);
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		takePic(pic);
-		sendMail("task", new Date().toString(), pic);
+		Common.takePic(pic);
+		Common.sendMail("task", new Date().toString(), pic);
 		
-		exitFirefox();
-		
-	}
-
-	private static int getStamina() {
-		try {
-			robot.delay(5000);
-			robot.mouseMove(staminaBeginX, staminaBeginY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseMove(staminaEndX, staminaBeginY);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			
-			robot.delay(5000);
-			robot.keyPress(KeyEvent.VK_CONTROL);
-			robot.keyPress(KeyEvent.VK_C);
-			robot.keyRelease(KeyEvent.VK_C);
-			robot.keyRelease(KeyEvent.VK_CONTROL);
-	
-			Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-			Transferable content = cb.getContents(null);
-			String str = (String) content.getTransferData(DataFlavor.stringFlavor);
-			System.out.println(str);
-			int numStart;
-			for (numStart = 0; numStart < str.length(); numStart++) 
-				if (Character.isDigit(str.charAt(numStart))) break;
-			if (numStart == str.length()) return 40;
-			int ret = Integer.parseInt(str.substring(numStart, str.indexOf("/")));
-			System.out.println("stamina: " + ret);
-			return ret;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return 40;
-		}
+		Common.exitFirefox();
 		
 	}
 
-	private static void waitForLandmark(String landmark) {
+//	private static int getStamina() {
+//		try {
+//			robot.delay(5000);
+//			robot.mouseMove(staminaBeginX, staminaBeginY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseMove(staminaEndX, staminaBeginY);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//			
+//			robot.delay(5000);
+//			robot.keyPress(KeyEvent.VK_CONTROL);
+//			robot.keyPress(KeyEvent.VK_C);
+//			robot.keyRelease(KeyEvent.VK_C);
+//			robot.keyRelease(KeyEvent.VK_CONTROL);
+//	
+//			Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//			Transferable content = cb.getContents(null);
+//			String str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//			System.out.println(str);
+//			int numStart;
+//			for (numStart = 0; numStart < str.length(); numStart++) 
+//				if (Character.isDigit(str.charAt(numStart))) break;
+//			if (numStart == str.length()) return 40;
+//			int ret = Integer.parseInt(str.substring(numStart, str.indexOf("/")));
+//			System.out.println("stamina: " + ret);
+//			return ret;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return 40;
+//		}
+//		
+//	}
 
-		Point p = findLandmark(landmark);
+	private static void waitForLandmark(String landmark, int sx, int sy) {
+
+		Point p = Common.findLandmark(landmark, sx, sy);
 		int retry = 0;
 		while (p.x == -1 && p.y == -1) {
-			robot.delay(5000);
-			p = findLandmark(landmark);
+			Common.robot.delay(5000);
+			p = Common.findLandmark(landmark, sx, sy);
 			retry++;
 			if (retry == 10) break;
 		}
 	}
 	
-	private static void doRichTask() {
-		
-		enterMob();
-		
-		robot.delay(5000);
-		robot.mouseMove(taskX, taskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//	private static void doRichTask() {
+//		
+//		enterMob();
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(taskX, taskY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.delay(5000);
+//		robot.mouseMove(scrollX, scrollY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.delay(5000);
+//		robot.mouseMove(richTaskX, richTaskY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(scrollupX, scrollupY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		takePic(pic);
+//		sendMail("", new Date().toString(), pic);
+//
+//		exitFirefox();
+//		
+//	}
 
-		robot.delay(5000);
-		robot.mouseMove(scrollX, scrollY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//	private static int getHealth() {
+//		
+//		robot.delay(10000);
+//		robot.mouseMove(healthBeginX, healthBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(healthEndX, healthBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.delay(5000);
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = "";
+//		try {
+//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(str);
+////		for (int i = 0; i < str.length(); i++)
+////			System.out.println(str.charAt(i));
+//		int numStart;
+//		for (numStart = 0; numStart < str.length(); numStart++) 
+//			if (Character.isDigit(str.charAt(numStart))) break;
+//		if (numStart == str.length()) return 15;
+//		return Integer.parseInt(str.substring(numStart, str.indexOf("/")));
+//		
+//	}
 
-		robot.delay(5000);
-		robot.mouseMove(richTaskX, richTaskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		robot.delay(5000);
-		robot.mouseMove(scrollupX, scrollupY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		takePic(pic);
-		sendMail("", new Date().toString(), pic);
-
-		exitFirefox();
-		
-	}
-
-	private static void notice() {
-
-		Dialog d = noticeDialog;
-		d.setTitle(new Date().toString());
-//		d.add(new Label("task begins!"));
-		d.setLocation(new Point(300, 300));
-		d.setSize(200, 70);
-		d.setAlwaysOnTop(true);
-		d.setVisible(true);
-//		FileInputStream notice = new FileInputStream("media/notice.wav");
-//		AudioStream as = new AudioStream(notice);
-//		AudioPlayer.player.start(as);
-		try {
-			countdown = 5;
-			while (countdown != 0) {
-				Thread.currentThread().sleep(1000);
-				countdown--;
-				delay.setText(""+countdown);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		d.setVisible(false);
-		
-	}
-
-	private static int getHealth() {
-		
-		robot.delay(10000);
-		robot.mouseMove(healthBeginX, healthBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(healthEndX, healthBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(5000);
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = "";
-		try {
-			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(str);
+//	private static int getLevel() {
+//
+//		enterMob();
+//
+//		robot.delay(5000);
+//		robot.mouseMove(levelBeginX, levelBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(levelEndX, levelBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.delay(5000);
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = "";
+//		try {
+//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(str);
 //		for (int i = 0; i < str.length(); i++)
 //			System.out.println(str.charAt(i));
-		int numStart;
-		for (numStart = 0; numStart < str.length(); numStart++) 
-			if (Character.isDigit(str.charAt(numStart))) break;
-		if (numStart == str.length()) return 15;
-		return Integer.parseInt(str.substring(numStart, str.indexOf("/")));
-		
-	}
-
-	private static int getLevel() {
-
-		enterMob();
-
-		robot.delay(5000);
-		robot.mouseMove(levelBeginX, levelBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(levelEndX, levelBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(5000);
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = "";
-		try {
-			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(str);
-		for (int i = 0; i < str.length(); i++)
-			System.out.println(str.charAt(i));
-
-		exitFirefox();
-
-		return Integer.parseInt(str.substring(3));
-		
-	}
+//
+//		exitFirefox();
+//
+//		return Integer.parseInt(str.substring(3));
+//		
+//	}
 
 //	private static void adjustEquip() {
 //
@@ -942,203 +783,100 @@ public class MobRobot {
 //		}
 //	}
 
-	public static void initRobot() {
+//	public static void doTask() {
+//
+//		enterMob();
+//		robot.delay(5000);
+//		robot.mouseMove(taskX, taskY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		if (configFile.equals("/configHome.prop")) {
+//			robot.delay(5000);
+//			robot.mouseMove(scrollX, scrollY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		} else {
+//
+//		}
+//
+//		robot.delay(5000);
+//		robot.mouseMove(doX, doY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		takePic(pic);
+//		sendMail("", new Date().toString(), pic);
+//
+//		exitFirefox();
+//		
+//	}
 
-		GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice screen = environment.getDefaultScreenDevice();
-		try {
-			robot = new Robot(screen);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
+//	public static int getBrotherNumber() {
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(brotherBeginX, brotherBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(brotherEndX, brotherBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = "";
+//		try {
+//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(str);
+//		for (int i = 0; i < str.length(); i++)
+//			System.out.println(str.charAt(i));
+//		return Integer.parseInt(str.substring(5, 8));
+//		
+//	}
 
-	public static void enterMob() {
+//	public static void enterStore() {
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(storeX, storeY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//		
+//	}
 
-		while (new File(workingSign).exists()) {
-			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-			try {
-				Thread.currentThread().sleep(40*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		try {
-			new File(workingSign).createNewFile();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		robot.delay(2000);
-		robot.mouseMove(startX, startY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//		robot.keyPress(KeyEvent.VK_WINDOWS);
-//		robot.keyRelease(KeyEvent.VK_WINDOWS);
-
-		robot.delay(2000);
-		robot.mouseMove(firefoxX, firefoxY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-/*
-		robot.delay(5000);
-		robot.mouseMove(2, 2);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(1000);
-		robot.keyPress(KeyEvent.VK_R);
-		robot.keyRelease(KeyEvent.VK_R);
-
-		robot.delay(5000);
-		robot.mouseMove(5, 5);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		robot.delay(1000);
-		robot.keyPress(KeyEvent.VK_X);
-		robot.keyRelease(KeyEvent.VK_X);
-*/		
-		robot.delay(5000);
-		robot.mouseMove(addressX, addressY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.delay(2000);
-		for (int i = 0; i < mobURL.length(); i++) {
-			if (mobURL.charAt(i) == ':') {
-				robot.keyPress(KeyEvent.VK_SHIFT);
-				robot.keyPress(KeyEvent.VK_SEMICOLON);
-				robot.keyRelease(KeyEvent.VK_SEMICOLON);
-				robot.keyRelease(KeyEvent.VK_SHIFT);
-			} else {
-				robot.keyPress(Character.toUpperCase(mobURL.charAt(i)));
-				robot.keyRelease(Character.toUpperCase(mobURL.charAt(i)));
-			}
-		}
-		robot.keyPress(KeyEvent.VK_ENTER);
-		robot.keyRelease(KeyEvent.VK_ENTER);
-		
-	}
-
-	public static void doTask() {
-
-		enterMob();
-		robot.delay(5000);
-		robot.mouseMove(taskX, taskY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		if (configFile.equals("/configHome.prop")) {
-			robot.delay(5000);
-			robot.mouseMove(scrollX, scrollY);
-			robot.mousePress(InputEvent.BUTTON1_MASK);
-			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		} else {
-
-		}
-
-		robot.delay(5000);
-		robot.mouseMove(doX, doY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		takePic(pic);
-		sendMail("", new Date().toString(), pic);
-
-		exitFirefox();
-		
-	}
-
-	public static void takePic(String fn) {
-
-		robot.delay(2000);
-		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
-				screenHeight));
-		try {
-			ImageIO.write(image, "JPEG", new File(fn));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static void exitFirefox() {
-
-		robot.delay(5000);
-		robot.mouseMove(exitX, exitY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		new File(workingSign).delete();
-		
-	}
-
-	public static int getBrotherNumber() {
-		
-		robot.delay(5000);
-		robot.mouseMove(brotherBeginX, brotherBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(brotherEndX, brotherBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = "";
-		try {
-			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(str);
-		for (int i = 0; i < str.length(); i++)
-			System.out.println(str.charAt(i));
-		return Integer.parseInt(str.substring(5, 8));
-		
-	}
-
-	public static void enterStore() {
-		
-		robot.delay(5000);
-		robot.mouseMove(storeX, storeY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-		
-	}
-
-	public static int getMoneyAmount() {
-		
-		robot.delay(5000);
-		robot.mouseMove(moneyBeginX, moneyBeginY);
-		robot.mousePress(InputEvent.BUTTON1_MASK);
-		robot.mouseMove(moneyEndX, moneyBeginY);
-		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-
-		robot.keyPress(KeyEvent.VK_CONTROL);
-		robot.keyPress(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_C);
-		robot.keyRelease(KeyEvent.VK_CONTROL);
-
-		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-		Transferable content = cb.getContents(null);
-		String str = "";
-		try {
-			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println(str);
-		for (int i = 0; i < str.length(); i++)
-			System.out.println(str.charAt(i));
-		return Integer.parseInt(str.substring(4));
-		
-	}
+//	public static int getMoneyAmount() {
+//		
+//		robot.delay(5000);
+//		robot.mouseMove(moneyBeginX, moneyBeginY);
+//		robot.mousePress(InputEvent.BUTTON1_MASK);
+//		robot.mouseMove(moneyEndX, moneyBeginY);
+//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//		robot.keyPress(KeyEvent.VK_CONTROL);
+//		robot.keyPress(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_C);
+//		robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//		Transferable content = cb.getContents(null);
+//		String str = "";
+//		try {
+//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println(str);
+//		for (int i = 0; i < str.length(); i++)
+//			System.out.println(str.charAt(i));
+//		return Integer.parseInt(str.substring(4));
+//		
+//	}
 
 //	public static int getGunNumber() {
 //		
