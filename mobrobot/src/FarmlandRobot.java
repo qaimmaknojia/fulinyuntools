@@ -66,6 +66,7 @@ public class FarmlandRobot {
 			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			Common.exitFirefox();
+			System.out.println(new Date().toString() + " maintain completed");
 			try {
 				Thread.currentThread().sleep(3*60*60*1000);
 			} catch (Exception e) {
@@ -102,6 +103,7 @@ public class FarmlandRobot {
 			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			Common.exitFirefox();
+			System.out.println(new Date().toString() + " harvest completed");
 			try {
 				Thread.currentThread().sleep(15*60*60*1000);
 			} catch (Exception e) {
@@ -198,6 +200,18 @@ public class FarmlandRobot {
 			Common.robot.delay(2000);
 		}
 	}
+
+	public static void initPlace() {
+		place = new Point[20];
+		for (int i = 0; i < 20; i++) place[i] = new Point();
+		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 0, 0);
+		place[1].x = shopPlace.x+place1offsetX;
+		place[1].y = shopPlace.y+place1offsetY;
+		for (int i = 2; i < 19; i++) {
+			place[i].x = place[1].x+(i-1)/3*100-(i-1)%3*100;
+			place[i].y = place[1].y+(i-1)/3*50+(i-1)%3*50;
+		}
+	}
 	
 //	private static void initDialog() {
 //		JButton findHarvest = createJButton("find harvest", "e:\\farmland\\harvest.bmp");
@@ -241,16 +255,4 @@ public class FarmlandRobot {
 //		});
 //		return ret;
 //	}
-
-	public static void initPlace() {
-		place = new Point[20];
-		for (int i = 0; i < 20; i++) place[i] = new Point();
-		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 0, 0);
-		place[1].x = shopPlace.x+place1offsetX;
-		place[1].y = shopPlace.y+place1offsetY;
-		for (int i = 2; i < 19; i++) {
-			place[i].x = place[1].x+(i-1)/3*100-(i-1)%3*100;
-			place[i].y = place[1].y+(i-1)/3*50+(i-1)%3*50;
-		}
-	}
 }
