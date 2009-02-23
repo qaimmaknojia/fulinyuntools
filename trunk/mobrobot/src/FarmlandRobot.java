@@ -34,8 +34,8 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		mainHarvest(args);
-		mainMaintain(args);
+		mainHarvest(args);
+//		mainMaintain(args);
 	}
 	
 	public static void mainMaintain(String[] args) {
@@ -78,7 +78,7 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
-			Thread.currentThread().sleep(15*60*60*1000);
+			Thread.currentThread().sleep(10*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

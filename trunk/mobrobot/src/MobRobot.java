@@ -256,11 +256,6 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-		try {
-			Thread.currentThread().sleep(50*5*60*1000);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		while (true) {
 			try {
 				mainDoVeryRichTask();
