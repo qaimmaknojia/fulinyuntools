@@ -1,40 +1,8 @@
-import java.awt.Dialog;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Label;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
-import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
-
-import javax.imageio.ImageIO;
-import javax.mail.Authenticator;
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.swing.JButton;
 
 public class MobRobot {
 
@@ -256,6 +224,16 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
+		try {
+			Thread.currentThread().sleep(4 * 60 * 60 * 1000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mainDoVeryRichTask();
+		mainPrepare();
+		mainDoVeryRichTask();
+		mainPrepare();
+		
 		while (true) {
 			try {
 				mainDoVeryRichTask();
@@ -298,147 +276,12 @@ public class MobRobot {
 		
 	}
 	
-//	public static void mainRich(String[] args) {
-//
-//		initRobot();
-//		try {
-//			Thread.currentThread().sleep(25*5*60*1000);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		while (true) {
-//			while (new File(workingSign).exists()) {
-//				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-//				try {
-//					Thread.currentThread().sleep(40*1000);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//			try {
-//				new File(workingSign).createNewFile();
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			
-//			Date start = new Date();
-//			long startms = start.getTime();
-//			System.out.println(start.toString() + " task begins");
-//			notice();
-//			doRichTask();
-//			Date end = new Date();
-//			System.out.println(end.toString() + " task finished");
-//			long timeConsumption = end.getTime()-startms;
-//
-//			try {
-//				Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//			
-//		}
-//	}
-
-//	public static void mainFight(String[] args) {
-//
-//		System.out.println("fight");
-////		try {
-////			Thread.currentThread().sleep(40*3*60*1000);
-////		} catch (Exception e) {
-////			e.printStackTrace();
-////		}
-//		while (true) {
-//			Date start = new Date();
-//			long startms = start.getTime();
-//			System.out.println(start.toString() + " task begins");
-//			notice();
-//
-//			enterMob();
-//			
-//			int health = getHealth();
-//			System.out.println("health: " + health);
-//			if (health < 90) {
-//				exitFirefox();
-//				System.out.println("waiting for " + ((145-health)*3) + " minutes");
-//				try {
-//					Thread.currentThread().sleep((145-health) * 180 * 1000);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//				continue;
-//			}
-//
-//			robot.delay(5000);
-//			robot.mouseMove(fightX, fightY);
-//			robot.mousePress(InputEvent.BUTTON1_MASK);
-//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//			
-//			robot.delay(15000);
-//			robot.mouseMove(doFightX, doFightY);
-//			robot.mousePress(InputEvent.BUTTON1_MASK);
-//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//
-//			robot.delay(5000);
-//			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//			takePic(pic);
-//			sendMail("fight", new Date().toString(), pic);
-//			
-//			int hurt = getHurt();
-//			System.out.println("hurt: " + hurt);
-//			exitFirefox();
-//			
-//			Date end = new Date();
-//			long timeConsumption = end.getTime()-startms;
-//			System.out.println(end.toString() + " task finished");
-//			try {
-//				System.out.println("waiting for " + (hurt*3) + " minutes");
-//				Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
-	
-//	private static int getHurt() {
-//		
-//		robot.delay(10000);
-//		robot.mouseMove(hurtBeginX, hurtBeginY);
-//		robot.mousePress(InputEvent.BUTTON1_MASK);
-//		robot.mouseMove(hurtEndX, hurtBeginY);
-//		robot.mouseRelease(InputEvent.BUTTON1_MASK);
-//
-//		robot.delay(5000);
-//		robot.keyPress(KeyEvent.VK_CONTROL);
-//		robot.keyPress(KeyEvent.VK_C);
-//		robot.keyRelease(KeyEvent.VK_C);
-//		robot.keyRelease(KeyEvent.VK_CONTROL);
-//
-//		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
-//		Transferable content = cb.getContents(null);
-//		String str = "";
-//		try {
-//			str = (String) content.getTransferData(DataFlavor.stringFlavor);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println(str);
-//		int numStart;
-//		for (numStart = 0; numStart < str.length(); numStart++) 
-//			if (Character.isDigit(str.charAt(numStart))) break;
-//		if (numStart == str.length()) return 100;
-//		int numEnd;
-//		for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
-//			if (!Character.isDigit(str.charAt(numEnd))) break;
-//		return Integer.parseInt(str.substring(numStart, numEnd));
-//
-//	}
-
 	private static void prepare() {
 
 		Common.enterGame(mobURL);
 		
 		Common.robot.delay(5000);
-		waitForLandmark(enterLandmark, 0, 0);
+		waitForLandmark(enterLandmark, 190, 180);
 		
 //		int stamina = getStamina();
 //		if (stamina < 10) {
@@ -456,50 +299,50 @@ public class MobRobot {
 		Common.moveAndClick(taskX, taskY);
 
 		Common.robot.delay(5000);
-		waitForLandmark(taskLandmark, 0, 0);
-		Point p = Common.findLandmark(jailLandmark, 0, 0);
-		if (p.x != -1 && p.y != -1) {
-//			robot.mouseMove(lawyerX, lawyerY);
-//			robot.mousePress(InputEvent.BUTTON1_MASK);
-//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
-			
-			Common.exitFirefox();
-			
-			try {
-				System.out.println("in jail, waiting for 250 minutes");
-				Thread.currentThread().sleep(50*5*60*1000);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			doVeryRichTask();
-			prepare();
-			doVeryRichTask();
-			
-			Common.enterGame(mobURL);
-			
-			Common.robot.delay(10000);
-			waitForLandmark(enterLandmark, 0, 0);
-			
-//			stamina = getStamina();
-//			if (stamina < 10) {
-//				exitFirefox();
-//				try {
-//					System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
-//					Thread.currentThread().sleep((10-stamina)*5*60*1000);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//				enterMob();
-//				robot.delay(10000);
-//				waitForLandmark(enterLandmark);
+		waitForLandmark(taskLandmark, 150, 340);
+//		Point p = Common.findLandmark(jailLandmark, 160, 340);
+//		if (p.x != -1 && p.y != -1) {
+////			robot.mouseMove(lawyerX, lawyerY);
+////			robot.mousePress(InputEvent.BUTTON1_MASK);
+////			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//			
+//			Common.exitFirefox();
+//			
+//			try {
+//				System.out.println("in jail, waiting for 250 minutes");
+//				Thread.currentThread().sleep(50*5*60*1000);
+//			} catch (Exception e) {
+//				e.printStackTrace();
 //			}
-			
-			Common.moveAndClick(taskX, taskY);
-
-			Common.robot.delay(5000);
-			waitForLandmark(taskLandmark, 0, 0);
-		}
+//			
+//			doVeryRichTask();
+//			prepare();
+//			doVeryRichTask();
+//			
+//			Common.enterGame(mobURL);
+//			
+//			Common.robot.delay(10000);
+//			waitForLandmark(enterLandmark, 190, 180);
+//			
+////			stamina = getStamina();
+////			if (stamina < 10) {
+////				exitFirefox();
+////				try {
+////					System.out.println("waiting for " + ((10-stamina)*5) + " minutes");
+////					Thread.currentThread().sleep((10-stamina)*5*60*1000);
+////				} catch (Exception e) {
+////					e.printStackTrace();
+////				}
+////				enterMob();
+////				robot.delay(10000);
+////				waitForLandmark(enterLandmark);
+////			}
+//			
+//			Common.moveAndClick(taskX, taskY);
+//
+//			Common.robot.delay(5000);
+//			waitForLandmark(taskLandmark, 150, 340);
+//		}
 
 		Common.moveAndClick(scrollX, scrollY);
 
@@ -514,7 +357,6 @@ public class MobRobot {
 		Common.sendMail("prepare", new Date().toString(), pic);
 
 		Common.exitFirefox();
-		
 	}
 
 	private static void doVeryRichTask() {
@@ -522,7 +364,7 @@ public class MobRobot {
 		Common.enterGame(mobURL);
 		
 		Common.robot.delay(5000);
-		waitForLandmark(enterLandmark, 0, 0);
+		waitForLandmark(enterLandmark, 190, 180);
 		
 //		int stamina = getStamina();
 //		if (stamina < 40) {
@@ -540,7 +382,7 @@ public class MobRobot {
 		Common.moveAndClick(taskX, taskY);
 
 		Common.robot.delay(5000);
-		waitForLandmark(taskLandmark, 0, 0);
+		waitForLandmark(taskLandmark, 150, 340);
 		Common.moveAndClick(scrollX, scrollY);
 
 		Common.robot.delay(5000);
@@ -554,9 +396,155 @@ public class MobRobot {
 		Common.sendMail("task", new Date().toString(), pic);
 		
 		Common.exitFirefox();
-		
 	}
 
+	private static void waitForLandmark(String landmark, int sx, int sy) {
+
+		Point p = Common.findLandmark(landmark, sx, sy);
+		int retry = 0;
+		while (p.x == -1 && p.y == -1) {
+			Common.robot.delay(5000);
+			p = Common.findLandmark(landmark, sx, sy);
+			retry++;
+			if (retry == 10) break;
+		}
+	}
+
+//	public static void mainRich(String[] args) {
+//
+//			initRobot();
+//			try {
+//				Thread.currentThread().sleep(25*5*60*1000);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			while (true) {
+//				while (new File(workingSign).exists()) {
+//					System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
+//					try {
+//						Thread.currentThread().sleep(40*1000);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//				try {
+//					new File(workingSign).createNewFile();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				
+//				Date start = new Date();
+//				long startms = start.getTime();
+//				System.out.println(start.toString() + " task begins");
+//				notice();
+//				doRichTask();
+//				Date end = new Date();
+//				System.out.println(end.toString() + " task finished");
+//				long timeConsumption = end.getTime()-startms;
+//
+//				try {
+//					Thread.currentThread().sleep(30 * 5 * 60 * 1000 - timeConsumption);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//				
+//			}
+//		}
+
+//		public static void mainFight(String[] args) {
+//
+//			System.out.println("fight");
+////			try {
+////				Thread.currentThread().sleep(40*3*60*1000);
+////			} catch (Exception e) {
+////				e.printStackTrace();
+////			}
+//			while (true) {
+//				Date start = new Date();
+//				long startms = start.getTime();
+//				System.out.println(start.toString() + " task begins");
+//				notice();
+//
+//				enterMob();
+//				
+//				int health = getHealth();
+//				System.out.println("health: " + health);
+//				if (health < 90) {
+//					exitFirefox();
+//					System.out.println("waiting for " + ((145-health)*3) + " minutes");
+//					try {
+//						Thread.currentThread().sleep((145-health) * 180 * 1000);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//					continue;
+//				}
+//
+//				robot.delay(5000);
+//				robot.mouseMove(fightX, fightY);
+//				robot.mousePress(InputEvent.BUTTON1_MASK);
+//				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//				
+//				robot.delay(15000);
+//				robot.mouseMove(doFightX, doFightY);
+//				robot.mousePress(InputEvent.BUTTON1_MASK);
+//				robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//				robot.delay(5000);
+//				String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//				takePic(pic);
+//				sendMail("fight", new Date().toString(), pic);
+//				
+//				int hurt = getHurt();
+//				System.out.println("hurt: " + hurt);
+//				exitFirefox();
+//				
+//				Date end = new Date();
+//				long timeConsumption = end.getTime()-startms;
+//				System.out.println(end.toString() + " task finished");
+//				try {
+//					System.out.println("waiting for " + (hurt*3) + " minutes");
+//					Thread.currentThread().sleep(hurt * 3 * 60 * 1000 - timeConsumption);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+		
+//		private static int getHurt() {
+//			
+//			robot.delay(10000);
+//			robot.mouseMove(hurtBeginX, hurtBeginY);
+//			robot.mousePress(InputEvent.BUTTON1_MASK);
+//			robot.mouseMove(hurtEndX, hurtBeginY);
+//			robot.mouseRelease(InputEvent.BUTTON1_MASK);
+//
+//			robot.delay(5000);
+//			robot.keyPress(KeyEvent.VK_CONTROL);
+//			robot.keyPress(KeyEvent.VK_C);
+//			robot.keyRelease(KeyEvent.VK_C);
+//			robot.keyRelease(KeyEvent.VK_CONTROL);
+//
+//			Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+//			Transferable content = cb.getContents(null);
+//			String str = "";
+//			try {
+//				str = (String) content.getTransferData(DataFlavor.stringFlavor);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println(str);
+//			int numStart;
+//			for (numStart = 0; numStart < str.length(); numStart++) 
+//				if (Character.isDigit(str.charAt(numStart))) break;
+//			if (numStart == str.length()) return 100;
+//			int numEnd;
+//			for (numEnd = numStart+1; numEnd < str.length(); numEnd++)
+//				if (!Character.isDigit(str.charAt(numEnd))) break;
+//			return Integer.parseInt(str.substring(numStart, numEnd));
+//
+//		}
+	
 //	private static int getStamina() {
 //		try {
 //			robot.delay(5000);
@@ -588,18 +576,6 @@ public class MobRobot {
 //		}
 //		
 //	}
-
-	private static void waitForLandmark(String landmark, int sx, int sy) {
-
-		Point p = Common.findLandmark(landmark, sx, sy);
-		int retry = 0;
-		while (p.x == -1 && p.y == -1) {
-			Common.robot.delay(5000);
-			p = Common.findLandmark(landmark, sx, sy);
-			retry++;
-			if (retry == 10) break;
-		}
-	}
 	
 //	private static void doRichTask() {
 //		
