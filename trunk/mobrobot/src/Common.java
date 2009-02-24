@@ -160,6 +160,11 @@ public class Common {
 				robot.keyPress(KeyEvent.VK_SEMICOLON);
 				robot.keyRelease(KeyEvent.VK_SEMICOLON);
 				robot.keyRelease(KeyEvent.VK_SHIFT);
+			} else if (url.charAt(i) == '_') {
+				robot.keyPress(KeyEvent.VK_SHIFT);
+				robot.keyPress(KeyEvent.VK_MINUS);
+				robot.keyRelease(KeyEvent.VK_MINUS);
+				robot.keyRelease(KeyEvent.VK_SHIFT);
 			} else {
 				robot.keyPress(Character.toUpperCase(url.charAt(i)));
 				robot.keyRelease(Character.toUpperCase(url.charAt(i)));
@@ -193,16 +198,16 @@ public class Common {
 			robot.delay(2000);
 			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
 			BufferedImage image = ImageIO.read(new File(bmpLm));
-			for (int y = startY; y < screen.getHeight()-image.getHeight(); y++) {
-				for (int x = startX; x < screen.getWidth()-image.getWidth(); x++) {
+			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = sx; x < screen.getWidth()-image.getWidth(); x++) {
 					if (match(screen, image, x, y)) {
 						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
 				}
 			}
-			for (int y = 0; y < startY; y++) {
-				for (int x = 0; x < startX; x++) {
+			for (int y = 0; y < sy; y++) {
+				for (int x = 0; x < sx; x++) {
 					if (match(screen, image, x, y)) {
 						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 

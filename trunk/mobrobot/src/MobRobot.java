@@ -273,7 +273,7 @@ public class MobRobot {
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " prepare begins");
-		Common.notice(new Date().toString(), 300, 300);
+		Common.notice("mob", 300, 300);
 		prepare();
 		Date end = new Date();
 		System.out.println(end.toString() + " prepare finished");
@@ -288,7 +288,7 @@ public class MobRobot {
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " task begins");
-		Common.notice(new Date().toString(), 300, 300);
+		Common.notice("mob", 300, 300);
 		doVeryRichTask();
 		Date end = new Date();
 		System.out.println(end.toString() + " task finished");
