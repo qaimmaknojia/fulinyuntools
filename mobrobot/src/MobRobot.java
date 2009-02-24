@@ -281,7 +281,7 @@ public class MobRobot {
 		Common.enterGame(mobURL);
 		
 		Common.robot.delay(5000);
-		waitForLandmark(enterLandmark, 190, 180);
+		Common.waitForLandmark(enterLandmark, 190, 180);
 		
 //		int stamina = getStamina();
 //		if (stamina < 10) {
@@ -299,7 +299,7 @@ public class MobRobot {
 		Common.moveAndClick(taskX, taskY);
 
 		Common.robot.delay(5000);
-		waitForLandmark(taskLandmark, 150, 340);
+		Common.waitForLandmark(taskLandmark, 150, 340);
 //		Point p = Common.findLandmark(jailLandmark, 160, 340);
 //		if (p.x != -1 && p.y != -1) {
 ////			robot.mouseMove(lawyerX, lawyerY);
@@ -364,7 +364,7 @@ public class MobRobot {
 		Common.enterGame(mobURL);
 		
 		Common.robot.delay(5000);
-		waitForLandmark(enterLandmark, 190, 180);
+		Common.waitForLandmark(enterLandmark, 190, 180);
 		
 //		int stamina = getStamina();
 //		if (stamina < 40) {
@@ -382,7 +382,7 @@ public class MobRobot {
 		Common.moveAndClick(taskX, taskY);
 
 		Common.robot.delay(5000);
-		waitForLandmark(taskLandmark, 150, 340);
+		Common.waitForLandmark(taskLandmark, 150, 340);
 		Common.moveAndClick(scrollX, scrollY);
 
 		Common.robot.delay(5000);
@@ -396,18 +396,6 @@ public class MobRobot {
 		Common.sendMail("task", new Date().toString(), pic);
 		
 		Common.exitFirefox();
-	}
-
-	private static void waitForLandmark(String landmark, int sx, int sy) {
-
-		Point p = Common.findLandmark(landmark, sx, sy);
-		int retry = 0;
-		while (p.x == -1 && p.y == -1) {
-			Common.robot.delay(5000);
-			p = Common.findLandmark(landmark, sx, sy);
-			retry++;
-			if (retry == 10) break;
-		}
 	}
 
 //	public static void mainRich(String[] args) {

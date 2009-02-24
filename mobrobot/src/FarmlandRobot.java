@@ -30,6 +30,7 @@ public class FarmlandRobot {
 			Common.initRobot();
 			Common.enterGame(farmlandURL);
 			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 			initPlace();
 		
 			water();
@@ -61,6 +62,7 @@ public class FarmlandRobot {
 			Common.initRobot();
 			Common.enterGame(farmlandURL);
 			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 			initPlace();
 		
 			harvest();
@@ -145,7 +147,7 @@ public class FarmlandRobot {
 	
 	private static void traverseLand() {
 		for (int i = 1; i <= numPlace; i++) {
-			Common.robot.delay(2000);
+			Common.robot.delay(3000);
 			Common.moveAndClick(place[i].x, place[i].y);
 		}
 	}
