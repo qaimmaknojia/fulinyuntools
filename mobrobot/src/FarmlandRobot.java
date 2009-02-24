@@ -1,26 +1,5 @@
-import java.awt.Dialog;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Label;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Robot;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.InputStream;
 import java.util.Date;
-import java.util.Properties;
-
-import javax.imageio.ImageIO;
-import javax.swing.JButton;
 
 
 public class FarmlandRobot {
@@ -34,8 +13,8 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-		mainHarvest(args);
-//		mainMaintain(args);
+//		mainHarvest(args);
+		mainMaintain(args);
 	}
 	
 	public static void mainMaintain(String[] args) {
@@ -45,24 +24,17 @@ public class FarmlandRobot {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Common.notice("farmland", 300, 300);
-		Common.initRobot();
-		Common.enterGame(farmlandURL);
-		Common.robot.delay(30000);
-		initPlace();
-		
-//		testPlacePos();
-//		initDialog();
 
 		while (true) {
+			Common.notice("farmland", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			initPlace();
+		
 			water();
 			removeWeed();
 			removeWorm();
-//			harvest();
-//			scarify();
-//			sellAll();
-//			buyCarrot();
-//			plant();
 			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			Common.exitFirefox();
@@ -78,23 +50,19 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
-			Thread.currentThread().sleep(15*60*60*1000);
+			Thread.currentThread().sleep(14*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Common.notice("farmland", 300, 300);
-		Common.initRobot();
-		Common.enterGame(farmlandURL);
-		Common.robot.delay(30000);
-		initPlace();
 		
-//		testPlacePos();
-//		initDialog();
-
 		while (true) {
-//			water();
-//			removeWeed();
-//			removeWorm();
+	
+			Common.notice("farmland", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			initPlace();
+		
 			harvest();
 			scarify();
 			sellAll();
@@ -135,7 +103,7 @@ public class FarmlandRobot {
 	}
 
 	private static boolean findAndClick(String target) {
-		Point tar = Common.findLandmark(target, 0, 0);
+		Point tar = Common.findLandmark(target, 0, 300);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;
@@ -204,7 +172,7 @@ public class FarmlandRobot {
 	public static void initPlace() {
 		place = new Point[20];
 		for (int i = 0; i < 20; i++) place[i] = new Point();
-		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 0, 0);
+		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310);
 		place[1].x = shopPlace.x+place1offsetX;
 		place[1].y = shopPlace.y+place1offsetY;
 		for (int i = 2; i < 19; i++) {
