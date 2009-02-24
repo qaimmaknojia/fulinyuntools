@@ -207,6 +207,14 @@ public class Common {
 				}
 			}
 			for (int y = 0; y < sy; y++) {
+				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
+					if (match(screen, image, x, y)) {
+						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
+					}
+				}
+			}
+			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
 				for (int x = 0; x < sx; x++) {
 					if (match(screen, image, x, y)) {
 						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
@@ -214,7 +222,6 @@ public class Common {
 					}
 				}
 			}
-			
 			return new Point(-1, -1);
 		} catch (Exception e) {
 			e.printStackTrace();
