@@ -7,6 +7,9 @@ import java.awt.Label;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -291,5 +294,17 @@ public class Common {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public static String getClipBoardString() {
+		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
+		Transferable content = cb.getContents(null);
+		String str = "";
+		try {
+			str = (String) content.getTransferData(DataFlavor.stringFlavor);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(str);
+		return str;
+	}
 }
