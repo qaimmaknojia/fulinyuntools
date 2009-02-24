@@ -26,7 +26,7 @@ public class FarmlandRobot {
 		}
 
 		while (true) {
-			Common.notice("farmland", 300, 300);
+			Common.notice("farmland maintain", 300, 300);
 			Common.initRobot();
 			Common.enterGame(farmlandURL);
 			Common.robot.delay(30000);
@@ -58,7 +58,7 @@ public class FarmlandRobot {
 		
 		while (true) {
 	
-			Common.notice("farmland", 300, 300);
+			Common.notice("farmland harvest", 300, 300);
 			Common.initRobot();
 			Common.enterGame(farmlandURL);
 			Common.robot.delay(30000);
