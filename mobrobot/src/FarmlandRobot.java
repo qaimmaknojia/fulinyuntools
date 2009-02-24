@@ -41,11 +41,11 @@ public class FarmlandRobot {
 	public static void mainMaintain(String[] args) {
 		System.out.println("maintain");
 		try {
-			Thread.currentThread().sleep(3*60*60*1000);
+//			Thread.currentThread().sleep(3*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		Common.notice(new Date().toString(), 300, 300);
+		Common.notice("farmland", 300, 300);
 		Common.initRobot();
 		Common.enterGame(farmlandURL);
 		Common.robot.delay(30000);
@@ -78,7 +78,7 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
-			Thread.currentThread().sleep(10*60*60*1000);
+			Thread.currentThread().sleep(15*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -20,7 +20,7 @@ public class CardRobot {
 	public static void main1(String[] args) throws Exception {
 		Common.initRobot();
 		System.out.println("card");
-		Thread.currentThread().sleep(6*60*60*1000);
+		Thread.currentThread().sleep(16*60*60*1000);
 		while (true) {
 			while (new File(Common.workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
@@ -30,7 +30,7 @@ public class CardRobot {
 
 			Date start = new Date();
 			long startms = start.getTime();
-			Common.notice(new Date().toString(), 300, 300);
+			Common.notice("card", 300, 300);
 			Common.enterGame(cardURL);
 			Common.robot.delay(10000);
 			Common.takePic(picFilePrefix + start.toString().replaceAll(":", "_") + ".jpg");
