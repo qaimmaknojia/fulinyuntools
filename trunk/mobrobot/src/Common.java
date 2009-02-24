@@ -74,7 +74,7 @@ public class Common {
 			noticeDialog.add(delay);
 			noticeDialog.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
-					countdown += 60;
+					countdown += 3600;
 					delay.setText(""+countdown);
 				}
 			});
