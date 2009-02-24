@@ -20,6 +20,7 @@ public class FarmlandRobot {
 	public static void mainMaintain(String[] args) {
 		System.out.println("maintain");
 		try {
+//			System.out.println("sleep until " + new Date(new Date().getTime()+3*60*60*1000).toString());
 //			Thread.currentThread().sleep(3*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -41,6 +42,7 @@ public class FarmlandRobot {
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " maintain completed");
 			try {
+				System.out.println("sleep until " + new Date(new Date().getTime()+3*60*60*1000).toString());
 				Thread.currentThread().sleep(3*60*60*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -51,6 +53,7 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
+			System.out.println("sleep until " + new Date(new Date().getTime()+14*60*60*1000).toString());
 			Thread.currentThread().sleep(14*60*60*1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,6 +78,7 @@ public class FarmlandRobot {
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " harvest completed");
 			try {
+				System.out.println("sleep until " + new Date(new Date().getTime()+15*60*60*1000).toString());
 				Thread.currentThread().sleep(15*60*60*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
