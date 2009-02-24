@@ -295,6 +295,20 @@ public class Common {
 		}
 	}
 	
+	public static void copyString(int x, int beginY, int endY) {
+		robot.delay(10000);
+		robot.mouseMove(x, beginY);
+		robot.mousePress(InputEvent.BUTTON1_MASK);
+		robot.mouseMove(x, endY);
+		robot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+		robot.delay(5000);
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_C);
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+	}
+	
 	public static String getClipBoardString() {
 		Clipboard cb = new Frame().getToolkit().getSystemClipboard();
 		Transferable content = cb.getContents(null);
