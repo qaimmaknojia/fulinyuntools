@@ -214,6 +214,7 @@ public class MobRobot {
 				Common.takePic(pic);
 				Common.sendMail("check", new Date().toString(), pic);
 				Common.exitFirefox();
+				System.out.println("sleep until " + new Date(new Date().getTime()+60*60*1000).toString());
 				Thread.currentThread().sleep(60*60*1000);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -225,6 +226,7 @@ public class MobRobot {
 		
 		System.out.println("task");
 		try {
+			System.out.println("sleep until " + new Date(new Date().getTime()+4*60*60*1000).toString());
 			Thread.currentThread().sleep(4 * 60 * 60 * 1000);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -239,6 +241,7 @@ public class MobRobot {
 				mainDoVeryRichTask();
 				mainPrepare();
 				System.out.println("waiting for " + (50*5) + " minutes");
+				System.out.println("sleep until " + new Date(new Date().getTime()+250*60*60*1000).toString());
 				Thread.currentThread().sleep(50 * 5 * 60 * 1000);
 			} catch (Exception e) {
 				e.printStackTrace();
