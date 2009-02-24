@@ -295,6 +295,18 @@ public class Common {
 		}
 	}
 	
+	public static void waitForLandmark(String landmark, int sx, int sy) {
+
+		Point p = findLandmark(landmark, sx, sy);
+		int retry = 0;
+		while (p.x == -1 && p.y == -1) {
+			robot.delay(5000);
+			p = findLandmark(landmark, sx, sy);
+			retry++;
+			if (retry == 10) break;
+		}
+	}
+
 	public static void copyString(int x, int beginY, int endY) {
 		robot.delay(10000);
 		robot.mouseMove(x, beginY);
