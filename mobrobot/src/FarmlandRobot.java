@@ -13,8 +13,8 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		mainHarvest(args);
-		mainMaintain(args);
+		mainHarvest(args);
+//		mainMaintain(args);
 	}
 	
 	public static void mainMaintain(String[] args) {
@@ -53,8 +53,9 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
-			System.out.println("sleep until " + new Date(new Date().getTime()+14*60*60*1000).toString());
-			Thread.currentThread().sleep(14*60*60*1000);
+			long sleep = 14*60*60*1000;
+			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+			Thread.currentThread().sleep(sleep);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,7 +68,7 @@ public class FarmlandRobot {
 			Common.robot.delay(30000);
 			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 			initPlace();
-		
+
 			harvest();
 			scarify();
 			sellAll();
@@ -78,8 +79,9 @@ public class FarmlandRobot {
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " harvest completed");
 			try {
-				System.out.println("sleep until " + new Date(new Date().getTime()+15*60*60*1000).toString());
-				Thread.currentThread().sleep(15*60*60*1000);
+				long sleep = 15*60*60*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -109,7 +111,7 @@ public class FarmlandRobot {
 	}
 
 	private static boolean findAndClick(String target) {
-		Point tar = Common.findLandmark(target, 0, 300);
+		Point tar = Common.findLandmark(target, 400, 300);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;
