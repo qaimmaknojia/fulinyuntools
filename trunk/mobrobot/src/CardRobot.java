@@ -20,8 +20,9 @@ public class CardRobot {
 	public static void main1(String[] args) throws Exception {
 		Common.initRobot();
 		System.out.println("card");
-		System.out.println("sleep until " + new Date(new Date().getTime()+16*60*60*1000).toString());
-		Thread.currentThread().sleep(16*60*60*1000);
+		long sleep = 16*60*60*1000;
+		System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+		Thread.currentThread().sleep(sleep);
 		while (true) {
 			while (new File(Common.workingSign).exists()) {
 				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");

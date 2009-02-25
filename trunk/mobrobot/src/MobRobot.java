@@ -226,8 +226,9 @@ public class MobRobot {
 		
 		System.out.println("task");
 		try {
-			System.out.println("sleep until " + new Date(new Date().getTime()+4*60*60*1000).toString());
-			Thread.currentThread().sleep(4 * 60 * 60 * 1000);
+			long sleep = 25*5*60*1000;
+			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+			Thread.currentThread().sleep(sleep);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -241,8 +242,9 @@ public class MobRobot {
 				mainDoVeryRichTask();
 				mainPrepare();
 				System.out.println("waiting for " + (50*5) + " minutes");
-				System.out.println("sleep until " + new Date(new Date().getTime()+250*60*60*1000).toString());
-				Thread.currentThread().sleep(50 * 5 * 60 * 1000);
+				long sleep = 50 * 5 * 60 * 1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
