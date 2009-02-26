@@ -305,6 +305,12 @@ public class Common {
 			retry++;
 			if (retry == 10) break;
 		}
+		
+		if (retry == 10) {
+			robot.keyPress(KeyEvent.VK_F5);
+			robot.keyRelease(KeyEvent.VK_F5);
+			robot.delay(30000);
+		}		
 	}
 
 	public static void copyString(int x, int beginY, int endY) {

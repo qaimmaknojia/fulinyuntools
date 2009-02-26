@@ -20,8 +20,9 @@ public class FarmlandRobot {
 	public static void mainMaintain(String[] args) {
 		System.out.println("maintain");
 		try {
-//			System.out.println("sleep until " + new Date(new Date().getTime()+3*60*60*1000).toString());
-//			Thread.currentThread().sleep(3*60*60*1000);
+			long sleep = 5400*1000;
+			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+			Thread.currentThread().sleep(sleep);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -42,8 +43,9 @@ public class FarmlandRobot {
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " maintain completed");
 			try {
-				System.out.println("sleep until " + new Date(new Date().getTime()+3*60*60*1000).toString());
-				Thread.currentThread().sleep(3*60*60*1000);
+				long sleep = 5400*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -53,7 +55,7 @@ public class FarmlandRobot {
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
 		try {
-			long sleep = 14*60*60*1000;
+			long sleep = 14*60*60*1000+29*60*1000;
 			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 			Thread.currentThread().sleep(sleep);
 		} catch (Exception e) {
@@ -155,6 +157,7 @@ public class FarmlandRobot {
 		for (int i = 1; i <= numPlace; i++) {
 			Common.robot.delay(3000);
 			Common.moveAndClick(place[i].x, place[i].y);
+			findAndClick("e:\\farmland\\confirmUpgrade.bmp");
 		}
 	}
 
