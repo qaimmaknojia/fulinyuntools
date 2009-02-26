@@ -24,11 +24,6 @@ public class CardRobot {
 		System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 		Thread.currentThread().sleep(sleep);
 		while (true) {
-			while (new File(Common.workingSign).exists()) {
-				System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
-				Thread.currentThread().sleep(40*1000);
-			}
-			new File(Common.workingSign).createNewFile();
 
 			Date start = new Date();
 			long startms = start.getTime();
@@ -37,8 +32,6 @@ public class CardRobot {
 			Common.robot.delay(10000);
 			Common.takePic(picFilePrefix + start.toString().replaceAll(":", "_") + ".jpg");
 			Common.exitFirefox();
-			
-			new File(Common.workingSign).delete();
 			
 			Date end = new Date();
 			long timeConsumption = end.getTime()-startms;
