@@ -9,7 +9,7 @@ public class FarmlandRobot {
 	public static Point[] place = null;
 	public static Point shopPlace = null;
 	public static int numPlace = 8;
-	public static int numAuto = 1;
+	public static int numAuto = 8;
 	public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
@@ -45,6 +45,10 @@ public class FarmlandRobot {
 	}
 	
 	public static void simplePlant() {
+		
+		System.out.println("farmland simple plant");
+		Common.sleepUntil(8, 10, 0);
+		
 		Common.notice("farmland simple plant", 300, 300);
 		Common.initRobot();
 		Common.enterGame(farmlandURL);
@@ -52,8 +56,8 @@ public class FarmlandRobot {
 		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 		initPlace();
 		
-		buySeed("e:\\farmland\\carrot.bmp");
-		plant("e:\\farmland\\carrotInBag.bmp");
+		buySeed("e:\\farmland\\white.bmp", 7);
+		plant("e:\\farmland\\whiteInBag.bmp");
 		
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
@@ -135,7 +139,7 @@ public class FarmlandRobot {
 		harvest();
 		scarify();
 		sellAll();
-		plant("e:\\farmland\\whithInBag.bmp");
+		plant("e:\\farmland\\whiteInBag.bmp");
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 		Common.exitFirefox();
@@ -190,7 +194,7 @@ public class FarmlandRobot {
 			harvest();
 			scarify();
 			sellAll();
-			buySeed("e:\\farmland\\white.bmp");//white carrot, actually
+			buySeed("e:\\farmland\\white.bmp", numAuto);//white carrot, actually
 			plant("e:\\farmland\\whiteInBag.bmp");
 			mature();
 			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
@@ -312,10 +316,10 @@ public class FarmlandRobot {
 		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
 	}
 
-	private static void buySeed(String seed) {
+	private static void buySeed(String seed, int num) {
 		findAndClick("e:\\farmland\\shop.bmp");
 		Common.robot.delay(1000);
-		for (int i = 0; i < numAuto; i++) {
+		for (int i = 0; i < num; i++) {
 			findAndClick(seed);
 			Common.robot.delay(1000);
 			findAndClick("e:\\farmland\\confirmBuy.bmp");
