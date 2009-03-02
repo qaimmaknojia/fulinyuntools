@@ -17,12 +17,13 @@ public class CardRobot {
 		}
 	}
 	
-	public static void main1(String[] args) throws Exception {
+	public static void main1(String[] args) {
 		Common.initRobot();
 		System.out.println("card");
-		long sleep = 16*60*60*1000;
-		System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-		Thread.currentThread().sleep(sleep);
+//		long sleep = 16*60*60*1000;
+//		System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+//		Thread.currentThread().sleep(sleep);
+		Common.sleepUntil(2, 0, 0);
 		while (true) {
 
 			Date start = new Date();
@@ -36,7 +37,7 @@ public class CardRobot {
 			Date end = new Date();
 			long timeConsumption = end.getTime()-startms;
 			System.out.println(end.toString() + " logged in card");
-			Thread.currentThread().sleep(24*60*60*1000-timeConsumption);
+			Common.sleepUntil(2, 0, 0);
 		}
 	}
 }
