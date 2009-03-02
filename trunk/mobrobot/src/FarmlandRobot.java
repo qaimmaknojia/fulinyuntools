@@ -8,24 +8,70 @@ public class FarmlandRobot {
 	public static int place1offsetY = 160;
 	public static Point[] place = null;
 	public static Point shopPlace = null;
-	public static int numPlace = 7;
+	public static int numPlace = 8;
+	public static int numAuto = 1;
 	public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-		mainHarvest(args);
+//		mainHarvest(args);
 //		mainMaintain(args);
+		simpleHarvest();
+//		simplePlant();
+//		mainObserve();
+//		fullView();
+	}
+	
+	public static void fullView() {
+		
+		Common.notice("farmland full view", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		
+		for (int i = 1; i < 9; i++) {
+			Common.robot.mouseMove(place[i].x, place[i].y);
+			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+		}
+		
+		Common.exitFirefox();
+		System.out.println(new Date().toString() + " full view completed");
+
+		System.exit(0);
+
+	}
+	
+	public static void simplePlant() {
+		Common.notice("farmland simple plant", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		
+		buySeed("e:\\farmland\\carrot.bmp");
+		plant("e:\\farmland\\carrotInBag.bmp");
+		
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		Common.exitFirefox();
+		System.out.println(new Date().toString() + " simple plant completed");
+
+		System.exit(0);
 	}
 	
 	public static void mainMaintain(String[] args) {
 		System.out.println("maintain");
-		try {
-			long sleep = 5400*1000;
-			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-			Thread.currentThread().sleep(sleep);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			long sleep = 3600*1000;
+//			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+//			Thread.currentThread().sleep(sleep);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 
 		while (true) {
 			Common.notice("farmland maintain", 300, 300);
@@ -43,7 +89,7 @@ public class FarmlandRobot {
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " maintain completed");
 			try {
-				long sleep = 5400*1000;
+				long sleep = 3600*1000;
 				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
@@ -52,15 +98,85 @@ public class FarmlandRobot {
 		}
 	}
 	
+	public static void simpleHarvest() {
+		
+		System.out.println("simple harvest");
+		Common.sleepUntil(8, 0, 0);
+		
+		Common.notice("farmland simple harvest", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+
+		harvest();
+		scarify();
+		sellAll();
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		Common.exitFirefox();
+		System.out.println(new Date().toString() + " simple harvest completed");
+
+		System.exit(0);
+	}
+	
+	public static void mainObserve() {
+		
+		System.out.println("observe");
+		Common.sleepUntil(0, 30, 0);
+		
+		Common.notice("farmland observe", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		harvest();
+		scarify();
+		sellAll();
+		plant("e:\\farmland\\whithInBag.bmp");
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		Common.exitFirefox();
+		
+		for (int i = 0; i < 10; i++) {
+			Common.notice("farmland observe", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+			initPlace();
+			
+			Common.robot.mouseMove(place[1].x, place[1].y);
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+			Common.exitFirefox();
+			System.out.println(new Date().toString() + " observe completed");
+			
+			try {
+				long sleep = 60*60*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		System.exit(0);
+	}
+	
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
-		try {
-			long sleep = 14*60*60*1000+29*60*1000;
-			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-			Thread.currentThread().sleep(sleep);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		try {
+//			long sleep = 9*60*60*1000;
+//			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+//			Thread.currentThread().sleep(sleep);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		
+		Common.sleepUntil(22, 30, 0);
 		
 		while (true) {
 	
@@ -74,42 +190,105 @@ public class FarmlandRobot {
 			harvest();
 			scarify();
 			sellAll();
-			buyCarrot();
-			plant();
+			buySeed("e:\\farmland\\white.bmp");//white carrot, actually
+			plant("e:\\farmland\\whiteInBag.bmp");
+			mature();
 			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " harvest completed");
+			
 			try {
-				long sleep = 15*60*60*1000;
+				long sleep = 60*60*1000;
 				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			Common.notice("farmland harvest", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+			initPlace();
+			water();
+			removeWeed();
+			removeWorm();
+			mature();
+			harvest();
+
+			try {
+				long sleep = 60*60*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Common.notice("farmland harvest", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+			initPlace();
+			water();
+			removeWeed();
+			removeWorm();
+			mature();
+
+			try {
+				long sleep = 121*60*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			Common.notice("farmland harvest", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+			initPlace();
+			water();
+			removeWeed();
+			removeWorm();
+			mature();
+
+			try {
+				long sleep = 118*60*1000;
+				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
+				Thread.currentThread().sleep(sleep);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 	}
 	
+	private static void mature() {
+		plant("e:\\farmland\\matureInBag.bmp");
+		
+	}
+
 	private static void removeWorm() {
 		findAndClick("e:\\farmland\\removeWorm.bmp");
-		traverseLand();
+		traverseLand(numPlace);
 	}
 
 	private static void removeWeed() {
 		findAndClick("e:\\farmland\\removeWeed.bmp");
-		traverseLand();
+		traverseLand(numPlace);
 	}
 
 	private static void water() {
 		findAndClick("e:\\farmland\\water.bmp");
-		traverseLand();
+		traverseLand(numPlace);
 	}
 
-	private static void plant() {
+	private static void plant(String seed) {
 		findAndClick("e:\\farmland\\bag.bmp");
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\carrotInBag.bmp");
-		traverseLand();
+		findAndClick(seed);
+		traverseLand(numAuto);
 	}
 
 	private static boolean findAndClick(String target) {
@@ -133,11 +312,11 @@ public class FarmlandRobot {
 		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
 	}
 
-	private static void buyCarrot() {
+	private static void buySeed(String seed) {
 		findAndClick("e:\\farmland\\shop.bmp");
 		Common.robot.delay(1000);
-		for (int i = 0; i < numPlace; i++) {
-			findAndClick("e:\\farmland\\carrot.bmp");
+		for (int i = 0; i < numAuto; i++) {
+			findAndClick(seed);
 			Common.robot.delay(1000);
 			findAndClick("e:\\farmland\\confirmBuy.bmp");
 			Common.robot.delay(2000);
@@ -150,11 +329,11 @@ public class FarmlandRobot {
 	
 	private static void harvest() {
 		findAndClick("e:\\farmland\\harvest.bmp");
-		traverseLand();
+		traverseLand(numPlace);
 	}
 	
-	private static void traverseLand() {
-		for (int i = 1; i <= numPlace; i++) {
+	private static void traverseLand(int np) {
+		for (int i = 1; i <= np; i++) {
 			Common.robot.delay(3000);
 			Common.moveAndClick(place[i].x, place[i].y);
 			findAndClick("e:\\farmland\\confirmUpgrade.bmp");
@@ -164,7 +343,7 @@ public class FarmlandRobot {
 	private static void scarify() {
 		findAndClick("e:\\farmland\\scarify.bmp");
 		
-		for (int i = 1; i <= numPlace; i++) {
+		for (int i = 1; i <= numAuto; i++) {
 			Common.robot.delay(2000);
 			Common.moveAndClick(place[i].x, place[i].y);
 			Common.robot.delay(2000);
