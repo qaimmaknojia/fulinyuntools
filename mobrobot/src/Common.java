@@ -102,7 +102,7 @@ public class Common {
 		alarmTime.set(Calendar.MINUTE, m);
 		alarmTime.set(Calendar.SECOND, s);
 		if (Calendar.getInstance().compareTo(alarmTime) > 0) alarmTime.add(Calendar.HOUR_OF_DAY, 24);
-		System.out.println("sleep until " + alarmTime.toString());
+		System.out.println("sleep until " + alarmTime.getTime().toString());
 		try {
 			Thread.currentThread().sleep(alarmTime.getTimeInMillis()-Calendar.getInstance().getTimeInMillis());
 		} catch (Exception e) {
