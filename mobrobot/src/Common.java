@@ -20,6 +20,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.InputStream;
 import java.security.Security;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
@@ -90,6 +91,20 @@ public class Common {
 			addressY = Integer.parseInt(prop.getProperty("addressY"));
 			exitX = Integer.parseInt(prop.getProperty("exitX"));
 			exitY = Integer.parseInt(prop.getProperty("exitY"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void sleepUntil(int h, int m, int s) {
+		Calendar alarmTime = Calendar.getInstance();
+		alarmTime.set(Calendar.HOUR_OF_DAY, h);
+		alarmTime.set(Calendar.MINUTE, m);
+		alarmTime.set(Calendar.SECOND, s);
+		if (Calendar.getInstance().compareTo(alarmTime) > 0) alarmTime.add(Calendar.HOUR_OF_DAY, 24);
+		System.out.println("sleep until " + alarmTime.toString());
+		try {
+			Thread.currentThread().sleep(alarmTime.getTimeInMillis()-Calendar.getInstance().getTimeInMillis());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
