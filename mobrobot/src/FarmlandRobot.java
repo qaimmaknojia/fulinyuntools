@@ -16,10 +16,10 @@ public class FarmlandRobot {
 	public static void main(String[] args) {
 //		mainHarvest(args);
 //		mainMaintain(args);
-		simpleHarvest();
+//		simpleHarvest();
 //		simplePlant();
 //		mainObserve();
-//		fullView();
+		fullView();
 	}
 	
 	public static void fullView() {
@@ -33,7 +33,7 @@ public class FarmlandRobot {
 		
 		for (int i = 1; i < 9; i++) {
 			Common.robot.mouseMove(place[i].x, place[i].y);
-			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			String pic = "e:\\farmland\\fullview\\snapshot " + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 		}
 		
@@ -128,7 +128,7 @@ public class FarmlandRobot {
 	public static void mainObserve() {
 		
 		System.out.println("observe");
-		Common.sleepUntil(0, 30, 0);
+//		Common.sleepUntil(0, 30, 0);
 		
 		Common.notice("farmland observe", 300, 300);
 		Common.initRobot();
@@ -136,24 +136,19 @@ public class FarmlandRobot {
 		Common.robot.delay(30000);
 		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 		initPlace();
-		harvest();
-		scarify();
-		sellAll();
-		plant("e:\\farmland\\whiteInBag.bmp");
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		Common.exitFirefox();
+//		harvest();
+//		scarify();
+//		sellAll();
+//		buySeed("e:\\farmland\\white.bmp", 3);
+//		plant("e:\\farmland\\whiteInBag.bmp");
+//		String pic = picFilePrefix + "observe\\" + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		Common.exitFirefox();
 		
-		for (int i = 0; i < 10; i++) {
-			Common.notice("farmland observe", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
+		for (int i = 0; i < 8; i++) {
 			
 			Common.robot.mouseMove(place[1].x, place[1].y);
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			String pic = "e:\\farmland\\observe\\snapshot " + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " observe completed");
@@ -165,7 +160,17 @@ public class FarmlandRobot {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			
+			Common.notice("farmland observe", 300, 300);
+			Common.initRobot();
+			Common.enterGame(farmlandURL);
+			Common.robot.delay(30000);
+			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+			initPlace();
+
 		}
+		
+		Common.exitFirefox();
 		
 		System.exit(0);
 	}
