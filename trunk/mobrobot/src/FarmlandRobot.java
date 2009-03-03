@@ -14,12 +14,12 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		mainHarvest(args);
+		mainHarvest(args);
 //		mainMaintain(args);
 //		simpleHarvest();
 //		simplePlant();
 //		mainObserve();
-		fullView();
+//		fullView();
 	}
 	
 	public static void fullView() {
@@ -184,8 +184,8 @@ public class FarmlandRobot {
 //		} catch (Exception e) {
 //			e.printStackTrace();
 //		}
-		
-		Common.sleepUntil(22, 30, 0);
+
+//		preprocess();
 		
 		while (true) {
 	
@@ -245,7 +245,7 @@ public class FarmlandRobot {
 			mature();
 
 			try {
-				long sleep = 121*60*1000;
+				long sleep = 120*60*1000;
 				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
@@ -263,7 +263,7 @@ public class FarmlandRobot {
 			mature();
 
 			try {
-				long sleep = 118*60*1000;
+				long sleep = 120*60*1000;
 				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
 				Thread.currentThread().sleep(sleep);
 			} catch (Exception e) {
@@ -273,6 +273,52 @@ public class FarmlandRobot {
 		}
 	}
 	
+	private static void preprocess() {
+		
+		Common.notice("farmland harvest", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		harvest();
+		Common.exitFirefox();
+		
+		Common.sleepUntil(17, 33, 0);
+
+		Common.notice("farmland harvest", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		harvest();
+		Common.exitFirefox();
+		
+		Common.sleepUntil(18, 15, 0);
+		
+		Common.notice("farmland harvest", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		harvest();
+		Common.exitFirefox();
+		
+		Common.sleepUntil(20, 25, 0);
+		
+		Common.notice("farmland harvest", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		harvest();
+		Common.exitFirefox();
+
+	}
+
 	private static void mature() {
 		plant("e:\\farmland\\matureInBag.bmp");
 		
