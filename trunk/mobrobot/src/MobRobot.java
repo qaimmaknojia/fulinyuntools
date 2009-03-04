@@ -225,14 +225,7 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-//		try {
-//			long sleep = 25*5*60*1000;
-//			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-//			Thread.currentThread().sleep(sleep);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-		Common.sleepUntil(21, 30, 0);
+		Common.sleepUntil(16, 33, 0);
 		mainDoVeryRichTask();
 		mainPrepare();
 		mainDoVeryRichTask();

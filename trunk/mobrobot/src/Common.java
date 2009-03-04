@@ -211,7 +211,7 @@ public class Common {
 		new File(workingSign).delete();
 	}
 
-	public static Point findLandmark(String bmpLm, int sx, int sy) {
+	public static Point findLandmark(String bmpLm, int sx, int sy, boolean shouldFind) {
 		try {
 			robot.delay(2000);
 			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
@@ -219,7 +219,10 @@ public class Common {
 			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
 				for (int x = sx; x < screen.getWidth()-image.getWidth(); x++) {
 					if (match(screen, image, x, y)) {
-						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+						if (!shouldFind) {
+							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
 				}
@@ -227,7 +230,10 @@ public class Common {
 			for (int y = 0; y < sy; y++) {
 				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
 					if (match(screen, image, x, y)) {
-						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+						if (!shouldFind) {
+							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
 				}
@@ -235,15 +241,22 @@ public class Common {
 			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
 				for (int x = 0; x < sx; x++) {
 					if (match(screen, image, x, y)) {
-						System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+						if (!shouldFind) {
+							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
 				}
 			}
-			System.out.println("fail to find " + bmpLm);
+			if (shouldFind) {
+				System.out.println("fail to find " + bmpLm);
+				takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+			}
 			return new Point(-1, -1);
 		} catch (Exception e) {
 			System.out.println("fail to find " + bmpLm);
+			takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 			e.printStackTrace();
 			return new Point(-1, -1);
 		}
@@ -314,11 +327,11 @@ public class Common {
 	
 	public static void waitForLandmark(String landmark, int sx, int sy) {
 
-		Point p = findLandmark(landmark, sx, sy);
+		Point p = findLandmark(landmark, sx, sy, true);
 		int retry = 0;
 		while (p.x == -1 && p.y == -1) {
 			robot.delay(5000);
-			p = findLandmark(landmark, sx, sy);
+			p = findLandmark(landmark, sx, sy, true);
 			retry++;
 			if (retry == 10) break;
 		}
