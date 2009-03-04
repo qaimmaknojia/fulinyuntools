@@ -239,16 +239,10 @@ public class MobRobot {
 		mainPrepare();
 		
 		while (true) {
-			try {
-				mainDoVeryRichTask();
-				mainPrepare();
-				System.out.println("waiting for " + (50*5) + " minutes");
-				long sleep = 50 * 5 * 60 * 1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			mainDoVeryRichTask();
+			mainPrepare();
+			System.out.println("waiting for " + (50*5) + " minutes");
+			Common.sleep(50 * 5 * 60 * 1000);
 		}
 	}
 	
