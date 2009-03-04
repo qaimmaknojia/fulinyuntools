@@ -254,31 +254,31 @@ public class FarmlandRobot {
 //		finalize("stage 2 completed");
 		
 //		Common.sleepUntil(2, 10, 0);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 3 completed");
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 3 completed");
 		
-		Common.sleep(2*60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 4 mature completed");
+//		Common.sleep(2*60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 4 mature completed");
 
 		Common.sleep(60*60*1000);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
 		removeWorm();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 		finalize("stage 4 maintain completed");
 
