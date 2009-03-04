@@ -23,6 +23,15 @@ public class FarmlandRobot {
 //		simpleMaintain();
 //		testBuyMature();
 //		simpleMature();
+//		showBag();
+	}
+	
+	public static void showBag() {
+		initialize("farmland show bag");
+		findAndClick("e:\\farmland\\bag.bmp", true);
+		Common.takePic(picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg");
+		finalize("show bag completed");
+		System.exit(0);
 	}
 	
 	public static void fullView() {
@@ -46,7 +55,7 @@ public class FarmlandRobot {
 
 //		preprocess();
 		
-		Common.sleepUntil(19, 25, 0);
+		Common.sleepUntil(20, 25, 0);
 		
 //		initialize("farmland harvest");
 //		harvest();
@@ -60,22 +69,22 @@ public class FarmlandRobot {
 //		finalize("stage 1 completed");
 		
 //		Common.sleep(60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 2 completed");
+		
+//		Common.sleep(60*60*1000);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
 		removeWorm();
 		mature();
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 2 completed");
-		
-		Common.sleep(60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 		finalize("stage 3 completed");
 		
@@ -107,14 +116,14 @@ public class FarmlandRobot {
 			sellAll();
 			buySeed("e:\\farmland\\white.bmp", numAuto);
 			plant("e:\\farmland\\whiteInBag.bmp");
-			findAndClick("e:\\farmland\\matureInBag.bmp", true);
-			traverseLand(numAuto);
-
+			long plantTime = new Date().getTime();
+			buyMature(numAuto*4);
+			mature();
 			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			finalize("stage 1 completed");
 			
-			Common.sleep(60*60*1000);
+			Common.sleep(plantTime+60*60*1000-new Date().getTime()+1000);
 			initialize("farmland harvest");
 			water();
 			removeWeed();
@@ -152,7 +161,7 @@ public class FarmlandRobot {
 			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			finalize("stage 4 maintain completed");
-			Common.sleep(60*60*1000);
+			Common.sleep(plantTime+6*60*60*1000-new Date().getTime()+1000);
 		}
 	}
 
@@ -401,7 +410,11 @@ public class FarmlandRobot {
 	private static void plant(String seed) {
 		findAndClick("e:\\farmland\\bag.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick(seed, true);
+		if (!findAndClick(seed, true)) {
+			findAndClick("e:\\farmland\\bag.bmp", true);
+			Common.robot.delay(1000);
+			findAndClick(seed, true);
+		}
 		traverseLand(numAuto);
 	}
 
