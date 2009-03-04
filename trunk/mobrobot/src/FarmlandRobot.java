@@ -21,16 +21,45 @@ public class FarmlandRobot {
 //		mainObserve();
 //		fullView();
 //		simpleMaintain();
+//		testBuyMature();
+//		simpleMature();
 	}
 	
-	public static void fullView() {
-		
-		Common.notice("farmland full view", 300, 300);
+	public static void initialize(String msg) {
+		Common.notice(msg, 300, 300);
 		Common.initRobot();
 		Common.enterGame(farmlandURL);
 		Common.robot.delay(30000);
 		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
 		initPlace();
+	}
+
+	public static void finalize(String msg) {
+		Common.exitFirefox();
+		System.out.println(new Date().toString() + " " + msg);
+	}
+	
+	public static void simpleMature() {
+		initialize("farmland simple mature");
+		mature();
+		finalize("simple mature completed");
+		System.exit(0);
+	}
+	
+	public static void testBuyMature() {
+		Common.notice("farmland buy mature test", 300, 300);
+		Common.initRobot();
+		Common.enterGame(farmlandURL);
+		Common.robot.delay(30000);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		initPlace();
+		
+		buyMature(2);
+	}
+	
+	public static void fullView() {
+		
+		initialize("farmland full view");
 		
 		for (int i = 1; i < 9; i++) {
 			Common.robot.mouseMove(place[i].x, place[i].y);
@@ -38,8 +67,7 @@ public class FarmlandRobot {
 			Common.takePic(pic);
 		}
 		
-		Common.exitFirefox();
-		System.out.println(new Date().toString() + " full view completed");
+		finalize("full view completed");
 
 		System.exit(0);
 
@@ -198,99 +226,114 @@ public class FarmlandRobot {
 	
 	public static void mainHarvest(String[] args) {
 		System.out.println("harvest");
-//		try {
-//			long sleep = 9*60*60*1000;
-//			System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-//			Thread.currentThread().sleep(sleep);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 
-		preprocess();
+//		preprocess();
 		
-		while (true) {
-	
-			Common.notice("farmland harvest", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
+		Common.sleepUntil(11, 50, 0);
+		
+		initialize("farmland harvest");
+		harvest();
+		scarify();
+		sellAll();
+		buySeed("e:\\farmland\\white.bmp", numAuto);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		mature();
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 1 completed");
+		
+		Common.sleep(60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 2 completed");
+		
+		Common.sleep(60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 3 completed");
+		
+		Common.sleep(2*60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 4 mature completed");
 
+		Common.sleep(60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 4 maintain completed");
+
+		while (true) {
+
+			Common.sleep(60*60*1000);
+			initialize("farmland harvest");
 			harvest();
 			scarify();
 			sellAll();
-			buySeed("e:\\farmland\\white.bmp", numAuto);//white carrot, actually
-			buyMature(numAuto*4);
+			buySeed("e:\\farmland\\white.bmp", numAuto);
 			plant("e:\\farmland\\whiteInBag.bmp");
 			mature();
-			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
-			Common.exitFirefox();
-			System.out.println(new Date().toString() + " harvest completed");
+			finalize("stage 1 completed");
 			
-			try {
-				long sleep = 60*60*1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Common.notice("farmland harvest", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
+			Common.sleep(60*60*1000);
+			initialize("farmland harvest");
 			water();
 			removeWeed();
 			removeWorm();
 			mature();
-			harvest();
-
-			try {
-				long sleep = 60*60*1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Common.notice("farmland harvest", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+			finalize("stage 2 completed");
+			
+			Common.sleep(60*60*1000);
+			initialize("farmland harvest");
 			water();
 			removeWeed();
 			removeWorm();
 			mature();
-
-			try {
-				long sleep = 120*60*1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			Common.notice("farmland harvest", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+			finalize("stage 3 completed");
+			
+			Common.sleep(2*60*60*1000);
+			initialize("farmland harvest");
 			water();
 			removeWeed();
 			removeWorm();
 			mature();
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+			finalize("stage 4 mature completed");
 
-			try {
-				long sleep = 120*60*1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			Common.sleep(60*60*1000);
+			initialize("farmland harvest");
+			water();
+			removeWeed();
+			removeWorm();
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			Common.takePic(pic);
+			finalize("stage 4 maintain completed");
+
 		}
 	}
 	
@@ -391,6 +434,8 @@ public class FarmlandRobot {
 			findAndClick("e:\\farmland\\confirmBuy2.bmp");
 			Common.robot.delay(1000);
 			findAndClick("e:\\farmland\\confirmNoMoney.bmp");
+			Common.robot.mouseMove(0, 0);
+			Common.robot.delay(1000);
 		}
 		findAndClick("e:\\farmland\\quitShop.bmp");
 	}
@@ -403,9 +448,9 @@ public class FarmlandRobot {
 		for (int i = 0; i < num; i++) {
 			findAndClick("e:\\farmland\\mature.bmp");
 			Common.robot.delay(1000);
-			findAndClick("e:\\farmland\\confirmBuy.bmp");
+			findAndClick("e:\\farmland\\confirmBuyMature.bmp");
 			Common.robot.delay(2000);
-			findAndClick("e:\\farmland\\confirmBuy2.bmp");
+			findAndClick("e:\\farmland\\confirmBuyMature2.bmp");
 			Common.robot.delay(1000);
 			findAndClick("e:\\farmland\\confirmNoMoney.bmp");
 		}

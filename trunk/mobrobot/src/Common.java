@@ -240,8 +240,10 @@ public class Common {
 					}
 				}
 			}
+			System.out.println("fail to find " + bmpLm);
 			return new Point(-1, -1);
 		} catch (Exception e) {
+			System.out.println("fail to find " + bmpLm);
 			e.printStackTrace();
 			return new Point(-1, -1);
 		}
@@ -353,5 +355,14 @@ public class Common {
 		}
 		System.out.println(str);
 		return str;
+	}
+
+	public static void sleep(long i) {
+		try {
+			System.out.println("sleep until " + new Date(new Date().getTime()+i).toString());
+			Thread.currentThread().sleep(i);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

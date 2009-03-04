@@ -26,17 +26,13 @@ public class CardRobot {
 		Common.sleepUntil(2, 0, 0);
 		while (true) {
 
-			Date start = new Date();
-			long startms = start.getTime();
 			Common.notice("card", 300, 300);
 			Common.enterGame(cardURL);
 			Common.robot.delay(10000);
-			Common.takePic(picFilePrefix + start.toString().replaceAll(":", "_") + ".jpg");
+			Common.takePic(picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg");
 			Common.exitFirefox();
 			
-			Date end = new Date();
-			long timeConsumption = end.getTime()-startms;
-			System.out.println(end.toString() + " logged in card");
+			System.out.println(new Date().toString() + " logged in card");
 			Common.sleepUntil(2, 0, 0);
 		}
 	}
