@@ -42,6 +42,7 @@ public class FarmlandRobot {
 	public static void simpleMature() {
 		initialize("farmland simple mature");
 		mature();
+		Common.takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
 		finalize("simple mature completed");
 		System.exit(0);
 	}
@@ -229,36 +230,36 @@ public class FarmlandRobot {
 
 //		preprocess();
 		
-		Common.sleepUntil(11, 50, 0);
+//		Common.sleepUntil(13, 8, 0);
 		
+//		initialize("farmland harvest");
+//		harvest();
+//		scarify();
+//		sellAll();
+//		buySeed("e:\\farmland\\white.bmp", numAuto);
+//		plant("e:\\farmland\\whiteInBag.bmp");
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 1 completed");
+		
+//		Common.sleep(60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 2 completed");
+		
+//		Common.sleepUntil(2, 10, 0);
 		initialize("farmland harvest");
-		harvest();
-		scarify();
-		sellAll();
-		buySeed("e:\\farmland\\white.bmp", numAuto);
-		plant("e:\\farmland\\whiteInBag.bmp");
+		water();
+		removeWeed();
+		removeWorm();
 		mature();
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 1 completed");
-		
-		Common.sleep(60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 2 completed");
-		
-		Common.sleep(60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 		finalize("stage 3 completed");
 		
@@ -379,29 +380,31 @@ public class FarmlandRobot {
 	}
 
 	private static void removeWorm() {
-		findAndClick("e:\\farmland\\removeWorm.bmp");
+		findAndClick("e:\\farmland\\removeWorm.bmp", true);
+		traverseLand(numPlace);
 		traverseLand(numPlace);
 	}
 
 	private static void removeWeed() {
-		findAndClick("e:\\farmland\\removeWeed.bmp");
+		findAndClick("e:\\farmland\\removeWeed.bmp", true);
+		traverseLand(numPlace);
 		traverseLand(numPlace);
 	}
 
 	private static void water() {
-		findAndClick("e:\\farmland\\water.bmp");
+		findAndClick("e:\\farmland\\water.bmp", true);
 		traverseLand(numPlace);
 	}
 
 	private static void plant(String seed) {
-		findAndClick("e:\\farmland\\bag.bmp");
+		findAndClick("e:\\farmland\\bag.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick(seed);
+		findAndClick(seed, true);
 		traverseLand(numAuto);
 	}
 
-	private static boolean findAndClick(String target) {
-		Point tar = Common.findLandmark(target, 400, 300);
+	private static boolean findAndClick(String target, boolean shouldFind) {
+		Point tar = Common.findLandmark(target, 400, 300, shouldFind);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;
@@ -410,55 +413,55 @@ public class FarmlandRobot {
 	}
 
 	private static void sellAll() {
-		findAndClick("e:\\farmland\\storeHouse.bmp");
+		findAndClick("e:\\farmland\\storeHouse.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\sell.bmp");
+		findAndClick("e:\\farmland\\sell.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\confirmSell.bmp");
+		findAndClick("e:\\farmland\\confirmSell.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\confirmSell2.bmp");
+		findAndClick("e:\\farmland\\confirmSell2.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\quitStoreHouse.bmp");
+		findAndClick("e:\\farmland\\quitStoreHouse.bmp", true);
 	}
 
 	private static void buySeed(String seed, int num) {
-		findAndClick("e:\\farmland\\shop.bmp");
+		findAndClick("e:\\farmland\\shop.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\seedTab.bmp");
+		findAndClick("e:\\farmland\\seedTab.bmp", false);
 		Common.robot.delay(1000);
 		for (int i = 0; i < num; i++) {
-			findAndClick(seed);
+			findAndClick(seed, true);
 			Common.robot.delay(1000);
-			findAndClick("e:\\farmland\\confirmBuy.bmp");
+			findAndClick("e:\\farmland\\confirmBuy.bmp", true);
 			Common.robot.delay(2000);
-			findAndClick("e:\\farmland\\confirmBuy2.bmp");
+			findAndClick("e:\\farmland\\confirmBuy2.bmp", true);
 			Common.robot.delay(1000);
-			findAndClick("e:\\farmland\\confirmNoMoney.bmp");
+			findAndClick("e:\\farmland\\confirmNoMoney.bmp", false);
 			Common.robot.mouseMove(0, 0);
 			Common.robot.delay(1000);
 		}
-		findAndClick("e:\\farmland\\quitShop.bmp");
+		findAndClick("e:\\farmland\\quitShop.bmp", true);
 	}
 	
 	private static void buyMature(int num) {
-		findAndClick("e:\\farmland\\shop.bmp");
+		findAndClick("e:\\farmland\\shop.bmp", true);
 		Common.robot.delay(1000);
-		findAndClick("e:\\farmland\\toolTab.bmp");
+		findAndClick("e:\\farmland\\toolTab.bmp", true);
 		Common.robot.delay(1000);
 		for (int i = 0; i < num; i++) {
-			findAndClick("e:\\farmland\\mature.bmp");
+			findAndClick("e:\\farmland\\mature.bmp", true);
 			Common.robot.delay(1000);
-			findAndClick("e:\\farmland\\confirmBuyMature.bmp");
+			findAndClick("e:\\farmland\\confirmBuyMature.bmp", true);
 			Common.robot.delay(2000);
-			findAndClick("e:\\farmland\\confirmBuyMature2.bmp");
+			findAndClick("e:\\farmland\\confirmBuyMature2.bmp", true);
 			Common.robot.delay(1000);
-			findAndClick("e:\\farmland\\confirmNoMoney.bmp");
+			findAndClick("e:\\farmland\\confirmNoMoney.bmp", false);
 		}
-		findAndClick("e:\\farmland\\quitShop.bmp");
+		findAndClick("e:\\farmland\\quitShop.bmp", true);
 	}
 	
 	private static void harvest() {
-		findAndClick("e:\\farmland\\harvest.bmp");
+		findAndClick("e:\\farmland\\harvest.bmp", true);
 		traverseLand(numPlace);
 	}
 	
@@ -466,18 +469,18 @@ public class FarmlandRobot {
 		for (int i = 1; i <= np; i++) {
 			Common.robot.delay(3000);
 			Common.moveAndClick(place[i].x, place[i].y);
-			findAndClick("e:\\farmland\\confirmUpgrade.bmp");
+			findAndClick("e:\\farmland\\confirmUpgrade.bmp", false);
 		}
 	}
 
 	private static void scarify() {
-		findAndClick("e:\\farmland\\scarify.bmp");
+		findAndClick("e:\\farmland\\scarify.bmp", true);
 		
 		for (int i = 1; i <= numAuto; i++) {
 			Common.robot.delay(2000);
 			Common.moveAndClick(place[i].x, place[i].y);
 			Common.robot.delay(2000);
-			findAndClick("e:\\farmland\\cancelScarify.bmp");
+			findAndClick("e:\\farmland\\cancelScarify.bmp", false);
 		}
 
 	}
@@ -492,7 +495,7 @@ public class FarmlandRobot {
 	public static void initPlace() {
 		place = new Point[20];
 		for (int i = 0; i < 20; i++) place[i] = new Point();
-		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310, true);
 		place[1].x = shopPlace.x+place1offsetX;
 		place[1].y = shopPlace.y+place1offsetY;
 		for (int i = 2; i < 19; i++) {
