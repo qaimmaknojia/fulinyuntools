@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -94,6 +95,13 @@ public class Common {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void main(String[] args) {
+		initRobot();
+		robot.delay(5000);
+		Point p = findLandmarkPartial("e:\\test.bmp", 300, 300, 500, 500);
+		robot.mouseMove(p.x, p.y);
 	}
 	
 	public static void sleepUntil(int h, int m, int s) {
@@ -282,6 +290,78 @@ public class Common {
 		return true;
 	}
 
+	public static Point findLandmarkFuzzy(String bmpLm, int x1, int y1, int x2, int y2) {
+		try {
+			robot.delay(2000);
+			BufferedImage screen = robot.createScreenCapture(new Rectangle(x1, y1, x2-x1, y2-y1));
+			BufferedImage image = ImageIO.read(new File(bmpLm));
+			double minDiff = image.getWidth()*image.getHeight()*255.0*255.0*3;
+			int minX = 0, minY = 0;
+			for (int y = 0; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
+					double diff = matchFuzzy(screen, image, x, y);
+					if (diff < minDiff) {
+						minDiff = diff;
+						minX = x;
+						minY = y;
+					}
+				}
+			}
+			return new Point(x1+minX+image.getWidth()/2, y1+minY+image.getHeight()/2);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Point(-1, -1);
+		}
+	}
+	
+	private static double matchFuzzy(BufferedImage screen, BufferedImage image, int sx, int sy) {
+		double ret = 0;
+		for (int x = sx, ix = 0; ix < image.getWidth(); x++, ix++) for (int y = sy, iy = 0; iy < image.getHeight(); y++, iy++) {
+			Color sc = new Color(screen.getRGB(x, y));
+			int r = sc.getRed();
+			int g = sc.getGreen();
+			int b = sc.getBlue();
+			Color ic = new Color(image.getRGB(ix, iy));
+			int ir = ic.getRed();
+			int ig = ic.getGreen();
+			int ib = ic.getBlue();
+			ret += (r-ir)*(r-ir)+(g-ig)*(g-ig)+(b-ib)*(b-ib);
+		}
+		return ret;
+	}
+
+	public static Point findLandmarkPartial(String bmpLm, int x1, int y1, int x2, int y2) {
+		try {
+			robot.delay(2000);
+			BufferedImage screen = robot.createScreenCapture(new Rectangle(x1, y1, x2-x1, y2-y1));
+			BufferedImage image = ImageIO.read(new File(bmpLm));
+			int maxMatch = 0;
+			int maxX = 0, maxY = 0;
+			for (int y = 0; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
+					int match = matchPartial(screen, image, x, y);
+					if (match > maxMatch) {
+						maxMatch = match;
+						maxX = x;
+						maxY = y;
+					}
+				}
+			}
+			return new Point(x1+maxX+image.getWidth()/2, y1+maxY+image.getHeight()/2);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Point(-1, -1);
+		}
+	}
+	
+	private static int matchPartial(BufferedImage screen, BufferedImage image, int sx, int sy) {
+		int ret = 0;
+		for (int x = sx, ix = 0; ix < image.getWidth(); x++, ix++) for (int y = sy, iy = 0; iy < image.getHeight(); y++, iy++) {
+			if (screen.getRGB(x, y) == image.getRGB(ix, iy)) ret++;
+		}
+		return ret;
+	}
+	
 	public static void sendMail(String type, String msgText, String attach) {
 		try {
 			Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());

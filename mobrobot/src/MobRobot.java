@@ -225,11 +225,11 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-		Common.sleepUntil(16, 33, 0);
-		mainDoVeryRichTask();
-		mainPrepare();
-		mainDoVeryRichTask();
-		mainPrepare();
+//		Common.sleepUntil(16, 33, 0);
+//		mainDoVeryRichTask();
+//		mainPrepare();
+//		mainDoVeryRichTask();
+//		mainPrepare();
 		
 		while (true) {
 			mainDoVeryRichTask();

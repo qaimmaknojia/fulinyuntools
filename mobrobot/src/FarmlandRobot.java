@@ -68,7 +68,7 @@ public class FarmlandRobot {
 //		Common.takePic(pic);
 //		finalize("stage 1 completed");
 		
-//		Common.sleepUntil(11, 55, 0);
+		Common.sleepUntil(19, 38, 0);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
@@ -78,7 +78,7 @@ public class FarmlandRobot {
 		Common.takePic(pic);
 		finalize("stage 2 completed");
 		
-		Common.sleep(16*60*1000);
+		Common.sleep(60*60*1000-300000);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
@@ -88,7 +88,7 @@ public class FarmlandRobot {
 		Common.takePic(pic);
 		finalize("stage 3 completed");
 		
-		Common.sleep(2*60*60*1000);
+		Common.sleep(2*60*60*1000-300000);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
@@ -98,7 +98,7 @@ public class FarmlandRobot {
 		Common.takePic(pic);
 		finalize("stage 4 mature completed");
 
-		Common.sleep(60*60*1000);
+		Common.sleep(60*60*1000-300000);
 		initialize("farmland harvest");
 		water();
 		removeWeed();
@@ -106,7 +106,7 @@ public class FarmlandRobot {
 		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 		finalize("stage 4 maintain completed");
-		Common.sleep(60*60*1000);
+		Common.sleep(60*60*1000-300000);
 
 		while (true) {
 
@@ -392,22 +392,25 @@ public class FarmlandRobot {
 
 	private static void removeWorm() {
 		findAndClick("e:\\farmland\\removeWorm.bmp", true);
-		traverseLand(numPlace);
-		traverseLand(numPlace);
+		traverseLand(numPlace, 1000);
+		traverseLand(numPlace, 1000);
 	}
 
 	private static void removeWeed() {
 		findAndClick("e:\\farmland\\removeWeed.bmp", true);
-		traverseLand(numPlace);
-		traverseLand(numPlace);
+		traverseLand(numPlace, 1000);
+		traverseLand(numPlace, 1000);
 	}
 
 	private static void water() {
 		findAndClick("e:\\farmland\\water.bmp", true);
-		traverseLand(numPlace);
+		traverseLand(numPlace, 1000);
 	}
 
 	private static void plant(String seed) {
+		
+		Common.robot.mouseMove(0, 0);
+		Common.robot.delay(1000);
 		findAndClick("e:\\farmland\\bag.bmp", true);
 		Common.robot.delay(1000);
 		if (!findAndClick(seed, true)) {
@@ -417,7 +420,7 @@ public class FarmlandRobot {
 			Common.robot.delay(1000);
 			findAndClick(seed, true);
 		}
-		traverseLand(numAuto);
+		traverseLand(numAuto, 2000);
 	}
 
 	private static boolean findAndClick(String target, boolean shouldFind) {
@@ -479,12 +482,12 @@ public class FarmlandRobot {
 	
 	private static void harvest() {
 		findAndClick("e:\\farmland\\harvest.bmp", true);
-		traverseLand(numPlace);
+		traverseLand(numPlace, 10000);
 	}
 	
-	private static void traverseLand(int np) {
+	private static void traverseLand(int np, int delay) {
 		for (int i = 1; i <= np; i++) {
-			Common.robot.delay(3000);
+			Common.robot.delay(delay);
 			Common.moveAndClick(place[i].x, place[i].y);
 			findAndClick("e:\\farmland\\confirmUpgrade.bmp", false);
 		}
