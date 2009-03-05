@@ -29,7 +29,7 @@ public class FarmlandRobot {
 	public static void showBag() {
 		initialize("farmland show bag");
 		findAndClick("e:\\farmland\\bag.bmp", true);
-		Common.takePic(picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg");
+		Common.takePic(getPicName());
 		finalize("show bag completed");
 		System.exit(0);
 	}
@@ -64,7 +64,7 @@ public class FarmlandRobot {
 //		buySeed("e:\\farmland\\white.bmp", numAuto);
 //		plant("e:\\farmland\\whiteInBag.bmp");
 //		mature();
-//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		String pic = getPicName();
 //		Common.takePic(pic);
 //		finalize("stage 1 completed");
 		
@@ -74,7 +74,7 @@ public class FarmlandRobot {
 		removeWeed();
 		removeWorm();
 		mature();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		String pic = getPicName();
 		Common.takePic(pic);
 		finalize("stage 2 completed");
 		
@@ -84,7 +84,7 @@ public class FarmlandRobot {
 		removeWeed();
 		removeWorm();
 		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		pic = getPicName();
 		Common.takePic(pic);
 		finalize("stage 3 completed");
 		
@@ -94,7 +94,7 @@ public class FarmlandRobot {
 		removeWeed();
 		removeWorm();
 		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		pic = getPicName();
 		Common.takePic(pic);
 		finalize("stage 4 mature completed");
 
@@ -103,7 +103,7 @@ public class FarmlandRobot {
 		water();
 		removeWeed();
 		removeWorm();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		pic = getPicName();
 		Common.takePic(pic);
 		finalize("stage 4 maintain completed");
 		Common.sleep(60*60*1000-300000);
@@ -119,7 +119,7 @@ public class FarmlandRobot {
 			long plantTime = new Date().getTime();
 			buyMature(numAuto*4);
 			mature();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = getPicName();
 			Common.takePic(pic);
 			finalize("stage 1 completed");
 			
@@ -129,7 +129,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			mature();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = getPicName();
 			Common.takePic(pic);
 			finalize("stage 2 completed");
 			
@@ -139,7 +139,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			mature();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = getPicName();
 			Common.takePic(pic);
 			finalize("stage 3 completed");
 			
@@ -149,7 +149,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			mature();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = getPicName();
 			Common.takePic(pic);
 			finalize("stage 4 mature completed");
 
@@ -158,11 +158,15 @@ public class FarmlandRobot {
 			water();
 			removeWeed();
 			removeWorm();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = getPicName();
 			Common.takePic(pic);
 			finalize("stage 4 maintain completed");
 			Common.sleep(plantTime+6*60*60*1000-new Date().getTime()+1000);
 		}
+	}
+
+	private static String getPicName() {
+		return picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg";
 	}
 
 	public static void initialize(String msg) {
@@ -182,7 +186,7 @@ public class FarmlandRobot {
 	public static void simpleMature() {
 		initialize("farmland simple mature");
 		mature();
-		Common.takePic(picFilePrefix+new Date().toString().replaceAll(":", "_")+".jpg");
+		Common.takePic(getPicName());
 		finalize("simple mature completed");
 		System.exit(0);
 	}
@@ -210,7 +214,7 @@ public class FarmlandRobot {
 		water();
 		removeWeed();
 		removeWorm();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		String pic = getPicName();
 		Common.takePic(pic);
 		Common.exitFirefox();
 		System.out.println(new Date().toString() + " maintain completed");
@@ -232,7 +236,7 @@ public class FarmlandRobot {
 		buySeed("e:\\farmland\\white.bmp", 7);
 		plant("e:\\farmland\\whiteInBag.bmp");
 		
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		String pic = getPicName();
 		Common.takePic(pic);
 		Common.exitFirefox();
 		System.out.println(new Date().toString() + " simple plant completed");
@@ -261,7 +265,7 @@ public class FarmlandRobot {
 			water();
 			removeWeed();
 			removeWorm();
-			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			String pic = getPicName();
 			Common.takePic(pic);
 			Common.exitFirefox();
 			System.out.println(new Date().toString() + " maintain completed");
@@ -291,7 +295,7 @@ public class FarmlandRobot {
 		harvest();
 		scarify();
 		sellAll();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		String pic = getPicName();
 		Common.takePic(pic);
 		Common.exitFirefox();
 		System.out.println(new Date().toString() + " simple harvest completed");
