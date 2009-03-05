@@ -265,7 +265,7 @@ public class Common {
 	private static void takePicHQ(String fn) {
 		
 		robot.delay(2000);
-		BufferedImage image = robot.createScreenCapture(new Rectangle(166, 222, 945, 845));
+		BufferedImage image = robot.createScreenCapture(new Rectangle(166, 222, 945-166, 845-222));
 		try {
 			ImageIO.write(image, "BMP", new File(fn));
 		} catch (Exception e) {

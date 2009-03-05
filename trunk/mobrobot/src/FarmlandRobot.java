@@ -55,7 +55,7 @@ public class FarmlandRobot {
 
 //		preprocess();
 		
-		Common.sleepUntil(10, 45, 0);
+//		Common.sleepUntil(10, 45, 0);
 		
 //		initialize("farmland harvest");
 //		harvest();
@@ -68,45 +68,45 @@ public class FarmlandRobot {
 //		Common.takePic(pic);
 //		finalize("stage 1 completed");
 		
-//		Common.sleep(60*60*1000);
-//		initialize("farmland harvest");
-//		water();
-//		removeWeed();
-//		removeWorm();
-//		mature();
-//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//		Common.takePic(pic);
-//		finalize("stage 2 completed");
+//		Common.sleepUntil(11, 55, 0);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 2 completed");
 		
-//		Common.sleep(60*60*1000);
-//		initialize("farmland harvest");
-//		water();
-//		removeWeed();
-//		removeWorm();
-//		mature();
-//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//		Common.takePic(pic);
-//		finalize("stage 3 completed");
-//		
-//		Common.sleep(2*60*60*1000);
-//		initialize("farmland harvest");
-//		water();
-//		removeWeed();
-//		removeWorm();
-//		mature();
-//		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//		Common.takePic(pic);
-//		finalize("stage 4 mature completed");
-//
-//		Common.sleep(60*60*1000);
-//		initialize("farmland harvest");
-//		water();
-//		removeWeed();
-//		removeWorm();
-//		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-//		Common.takePic(pic);
-//		finalize("stage 4 maintain completed");
-//		Common.sleep(60*60*1000);
+		Common.sleep(16*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 3 completed");
+		
+		Common.sleep(2*60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		mature();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 4 mature completed");
+
+		Common.sleep(60*60*1000);
+		initialize("farmland harvest");
+		water();
+		removeWeed();
+		removeWorm();
+		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+		Common.takePic(pic);
+		finalize("stage 4 maintain completed");
+		Common.sleep(60*60*1000);
 
 		while (true) {
 
@@ -119,7 +119,7 @@ public class FarmlandRobot {
 			long plantTime = new Date().getTime();
 			buyMature(numAuto*4);
 			mature();
-			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			finalize("stage 1 completed");
 			
@@ -411,6 +411,8 @@ public class FarmlandRobot {
 		findAndClick("e:\\farmland\\bag.bmp", true);
 		Common.robot.delay(1000);
 		if (!findAndClick(seed, true)) {
+			Common.robot.mouseMove(0, 0);
+			Common.robot.delay(1000);
 			findAndClick("e:\\farmland\\bag.bmp", true);
 			Common.robot.delay(1000);
 			findAndClick(seed, true);
