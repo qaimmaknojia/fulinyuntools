@@ -55,7 +55,7 @@ public class FarmlandRobot {
 
 //		preprocess();
 		
-		Common.sleepUntil(20, 25, 0);
+		Common.sleepUntil(10, 45, 0);
 		
 //		initialize("farmland harvest");
 //		harvest();
@@ -79,34 +79,34 @@ public class FarmlandRobot {
 //		finalize("stage 2 completed");
 		
 //		Common.sleep(60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 3 completed");
-		
-		Common.sleep(2*60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		mature();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 4 mature completed");
-
-		Common.sleep(60*60*1000);
-		initialize("farmland harvest");
-		water();
-		removeWeed();
-		removeWorm();
-		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
-		finalize("stage 4 maintain completed");
-		Common.sleep(60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 3 completed");
+//		
+//		Common.sleep(2*60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		mature();
+//		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 4 mature completed");
+//
+//		Common.sleep(60*60*1000);
+//		initialize("farmland harvest");
+//		water();
+//		removeWeed();
+//		removeWorm();
+//		pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+//		Common.takePic(pic);
+//		finalize("stage 4 maintain completed");
+//		Common.sleep(60*60*1000);
 
 		while (true) {
 
@@ -119,7 +119,7 @@ public class FarmlandRobot {
 			long plantTime = new Date().getTime();
 			buyMature(numAuto*4);
 			mature();
-			pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
+			String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
 			finalize("stage 1 completed");
 			

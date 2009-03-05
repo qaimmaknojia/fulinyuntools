@@ -221,7 +221,7 @@ public class Common {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
 							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
-							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
@@ -232,7 +232,7 @@ public class Common {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
 							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
-							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
@@ -243,7 +243,7 @@ public class Common {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
 							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
-							takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
 					}
@@ -251,17 +251,28 @@ public class Common {
 			}
 			if (shouldFind) {
 				System.out.println("fail to find " + bmpLm);
-				takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+				takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 			}
 			return new Point(-1, -1);
 		} catch (Exception e) {
 			System.out.println("fail to find " + bmpLm);
-			takePic("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
+			takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".jpg");
 			e.printStackTrace();
 			return new Point(-1, -1);
 		}
 	}
 
+	private static void takePicHQ(String fn) {
+		
+		robot.delay(2000);
+		BufferedImage image = robot.createScreenCapture(new Rectangle(166, 222, 945, 845));
+		try {
+			ImageIO.write(image, "BMP", new File(fn));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private static boolean match(BufferedImage screen, BufferedImage image, int x, int y) {
 		for (int sy = y, iy = 0; iy < image.getHeight(); sy++, iy++) {
 			for (int sx = x, ix = 0; ix < image.getWidth(); sx++, ix++) {
