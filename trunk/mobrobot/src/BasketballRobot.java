@@ -14,9 +14,10 @@ import javax.swing.JLabel;
 public class BasketballRobot {
 
 	public static double sqrtG = 3.07;
-	public static int x2 = 629, y2 = 535;
+	public static int x2 = 629, y2 = 535;	//todo
 	public static Dialog calcDialog = new Dialog((Frame)null, "");
-
+	public static int boundaryX = 135;	//todo
+	
 	public static double calcPower(int x1, int y1, int angle) {
 		double theta = (angle+0.0)/180.0*Math.PI;
 		return sqrtG*(x2-x1)/Math.sqrt(Math.sin(2.0*theta)*(x2-x1)
@@ -27,11 +28,23 @@ public class BasketballRobot {
 		main75();
 	}
 	
+	public static void hardShot(int x1, int y1, int bx) {
+		x1 = bx*2-x1;
+		listPowersReverse(x1, y1);
+	}
+	
 	public static void listPowers(int x1, int y1) {
 		System.out.println(x1 + "," + y1);
 		int startAngle = (int)(Math.atan2(y1-y2, x2-x1))+1;
 		for (int angle = startAngle; angle < 90; angle++) 
 			System.out.println(angle + " : " + calcPower(x1, y1, angle));
+	}
+	
+	public static void listPowersReverse(int x1, int y1) {
+		System.out.println(x1 + "," + y1);
+		int startAngle = (int)(Math.atan2(y1-y2, x2-x1))+1;
+		for (int angle = startAngle; angle < 90; angle++) 
+			System.out.println("" + (180-angle) + " : " + calcPower(x1, y1, angle));
 	}
 	
 	public static void main75() {
@@ -46,17 +59,27 @@ public class BasketballRobot {
 		JButton calc = new JButton("calc");
 		final JLabel power = new JLabel("100");
 		
-		calc.addActionListener(new ActionListener(){
+		calc.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
 				power.setText("" + (int)(calcPower(p.x, p.y, 75)+0.5));
 			}
 			
 		});
 		calcDialog.add(calc);
 		calcDialog.add(power);
+		
+		JButton hard = new JButton("hard");
+		hard.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
+				hardShot(p.x, p.y, boundaryX);
+			}
+		});
+		calcDialog.add(hard);
 		calcDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
