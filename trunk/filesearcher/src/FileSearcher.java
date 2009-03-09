@@ -57,7 +57,7 @@ public class FileSearcher {
 				}
 			}
 			pw = new PrintWriter(new FileWriter(favoriteFile));
-			for (String s : fs) pw.println(s);
+			for (String s : fs) if (new File(s).exists()) pw.println(s);
 			pw.close();
 			System.out.println("cleaned");
 		} catch (Exception e) {
