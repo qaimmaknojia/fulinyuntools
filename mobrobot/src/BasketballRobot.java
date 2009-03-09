@@ -80,7 +80,7 @@ public class BasketballRobot {
 		JButton init = new JButton("init");
 		init.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);
+				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);	//todo
 				x2 = p.x;
 				y2 = p.y;
 				boundaryX = x2-494;	//todo
@@ -100,7 +100,7 @@ public class BasketballRobot {
 				Common.robot.delay(1000);
 				double theta = 75.0/180.0*Math.PI;
 				Common.robot.mouseMove(p.x+(int)(pow*pixPerPower*Math.cos(theta)), 
-						(int)(p.y+pow*pixPerPower*Math.sin(theta)));
+						(int)(p.y-pow*pixPerPower*Math.sin(theta)));
 			}
 		});
 		calcDialog.add(calc);
