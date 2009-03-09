@@ -20,6 +20,7 @@ public class BasketballRobot {
 	public static int x2 = 629, y2 = 535;	//todo
 	public static Dialog calcDialog = new Dialog((Frame)null, "");
 	public static int boundaryX = x2-629+135;	//todo
+	public static double pixPerPower = 1.0;	//todo
 	
 	public static void main(String[] args) {
 		extractImageCenter("e:\\basketballBig.bmp", "e:\\basketball.bmp");
@@ -93,8 +94,13 @@ public class BasketballRobot {
 		calc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
-				power.setText("" + (int)(calcPower(p.x, p.y, 75)+0.5));
+				double pow = calcPower(p.x, p.y, 75);
+				power.setText("" + (int)(pow+0.5));
 				Common.robot.mouseMove(p.x, p.y);
+				Common.robot.delay(1000);
+				double theta = 75.0/180.0*Math.PI;
+				Common.robot.mouseMove(p.x+(int)(pow*pixPerPower*Math.cos(theta)), 
+						(int)(p.y+pow*pixPerPower*Math.sin(theta)));
 			}
 		});
 		calcDialog.add(calc);
