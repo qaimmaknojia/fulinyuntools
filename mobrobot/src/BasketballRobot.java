@@ -6,7 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
@@ -16,16 +19,32 @@ public class BasketballRobot {
 	public static double sqrtG = 3.07;
 	public static int x2 = 629, y2 = 535;	//todo
 	public static Dialog calcDialog = new Dialog((Frame)null, "");
-	public static int boundaryX = 135;	//todo
+	public static int boundaryX = x2-629+135;	//todo
+	
+	public static void main(String[] args) {
+		extractImageCenter("e:\\basketballBig.bmp", "e:\\basketball.bmp");
+//		main75();
+	}
+	
+	public static void extractImageCenter(String input, String output) {
+		try {
+			BufferedImage bi = ImageIO.read(new File(input));
+			BufferedImage bio = new BufferedImage(3, 3, BufferedImage.TYPE_INT_RGB);
+			for (int i = bi.getWidth()/2-1, j = 0; j < 3; i++, j++) {
+				for (int ii = bi.getHeight()/2-1, jj = 0; jj < 3; ii++, jj++) {
+					bio.setRGB(j, jj, bi.getRGB(i, ii));
+				}
+			}
+			ImageIO.write(bio, "BMP", new File(output));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	
 	public static double calcPower(int x1, int y1, int angle) {
 		double theta = (angle+0.0)/180.0*Math.PI;
 		return sqrtG*(x2-x1)/Math.sqrt(Math.sin(2.0*theta)*(x2-x1)
 				+(y2-y1)*(1+Math.cos(2.0*theta)));
-	}
-	
-	public static void main(String[] args) {
-		main75();
 	}
 	
 	public static void hardShot(int x1, int y1, int bx) {
@@ -56,30 +75,40 @@ public class BasketballRobot {
 //		}
 		Common.initRobot();
 		calcDialog.setLayout(new FlowLayout());
+		
+		JButton init = new JButton("init");
+		init.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);
+				x2 = p.x;
+				y2 = p.y;
+				boundaryX = x2-494;	//todo
+				Common.robot.mouseMove(p.x, p.y);
+			}
+		});
+		calcDialog.add(init);
+		
 		JButton calc = new JButton("calc");
 		final JLabel power = new JLabel("100");
-		
 		calc.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
 				power.setText("" + (int)(calcPower(p.x, p.y, 75)+0.5));
+				Common.robot.mouseMove(p.x, p.y);
 			}
-			
 		});
 		calcDialog.add(calc);
 		calcDialog.add(power);
 		
 		JButton hard = new JButton("hard");
 		hard.addActionListener(new ActionListener() {
-			
 			public void actionPerformed(ActionEvent arg0) {
 				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
 				hardShot(p.x, p.y, boundaryX);
 			}
 		});
 		calcDialog.add(hard);
+		
 		calcDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
