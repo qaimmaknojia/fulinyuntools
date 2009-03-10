@@ -16,15 +16,15 @@ import javax.swing.JLabel;
 
 public class BasketballRobot {
 
-	public static double sqrtG = 3.07;
+	public static double sqrtG = 3.04;
 	public static int x2 = 629, y2 = 535;	//todo
 	public static Dialog calcDialog = new Dialog((Frame)null, "");
 	public static int boundaryX = x2-629+135;	//todo
-	public static double pixPerPower = 1.0;	//todo
+	public static double pixPerPower = 2.45;	//todo
 	
 	public static void main(String[] args) {
-		extractImageCenter("e:\\basketballBig.bmp", "e:\\basketball.bmp");
-//		main75();
+//		extractImageCenter("e:\\basketballBig.bmp", "e:\\basketball.bmp");
+		main75();
 	}
 	
 	public static void extractImageCenter(String input, String output) {
@@ -80,7 +80,7 @@ public class BasketballRobot {
 		JButton init = new JButton("init");
 		init.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);	//todo
+				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);	//todo ok
 				x2 = p.x;
 				y2 = p.y;
 				boundaryX = x2-494;	//todo
@@ -93,7 +93,7 @@ public class BasketballRobot {
 		final JLabel power = new JLabel("100");
 		calc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 909);	//todo
 				double pow = calcPower(p.x, p.y, 75);
 				power.setText("" + (int)(pow+0.5));
 				Common.robot.mouseMove(p.x, p.y);
@@ -106,14 +106,19 @@ public class BasketballRobot {
 		calcDialog.add(calc);
 		calcDialog.add(power);
 		
+		JButton list = new JButton("list");	////////////////////////
+		
 		JButton hard = new JButton("hard");
 		hard.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 809);	//todo
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 909);	//todo
 				hardShot(p.x, p.y, boundaryX);
 			}
 		});
 		calcDialog.add(hard);
+		
+		JButton veryHard = new JButton("very hard");	////////////////////////
+		
 		
 		calcDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -121,7 +126,7 @@ public class BasketballRobot {
 			}
 		});
 		calcDialog.setLocation(new Point(700, 600));
-		calcDialog.setSize(200, 70);
+		calcDialog.setSize(300, 70);
 		calcDialog.setAlwaysOnTop(true);
 		calcDialog.setVisible(true);
 
