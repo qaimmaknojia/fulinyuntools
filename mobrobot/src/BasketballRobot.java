@@ -19,7 +19,8 @@ public class BasketballRobot {
 	public static double sqrtG = 3.04;
 	public static int x2 = 629, y2 = 535;	//todo
 	public static Dialog calcDialog = new Dialog((Frame)null, "");
-	public static int boundaryX = x2-629+135;	//todo
+	public static int leftX = x2-629+135;	//todo
+	public static int rightX = x2-629+745;	//todo
 	public static double pixPerPower = 2.45;	//todo
 	
 	public static void main(String[] args) {
@@ -48,9 +49,15 @@ public class BasketballRobot {
 				+(y2-y1)*(1+Math.cos(2.0*theta)));
 	}
 	
-	public static void hardShot(int x1, int y1, int bx) {
+	public static void leftShot(int x1, int y1, int bx) {
 		x1 = bx*2-x1;
 		listPowersReverse(x1, y1);
+	}
+	
+	public static void rightShot(int x1, int y1, int bx) {
+		x1 = bx*2-x1;
+		x1 = x2*2-x1;
+		listPowers(x1, y1);
 	}
 	
 	public static void listPowers(int x1, int y1) {
@@ -83,7 +90,8 @@ public class BasketballRobot {
 				Point p = Common.findLandmark("e:\\basket.bmp", 0, 0, true);	//todo ok
 				x2 = p.x;
 				y2 = p.y;
-				boundaryX = x2-494;	//todo
+				leftX = x2-494;	//todo
+				rightX = x2+116;	//todo
 				Common.robot.mouseMove(p.x, p.y);
 			}
 		});
@@ -106,19 +114,32 @@ public class BasketballRobot {
 		calcDialog.add(calc);
 		calcDialog.add(power);
 		
-		JButton list = new JButton("list");	////////////////////////
-		
-		JButton hard = new JButton("hard");
-		hard.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		JButton list = new JButton("list");
+		list.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
 				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 909);	//todo
-				hardShot(p.x, p.y, boundaryX);
+				listPowers(p.x, p.y);
 			}
 		});
-		calcDialog.add(hard);
+		calcDialog.add(list);
 		
-		JButton veryHard = new JButton("very hard");	////////////////////////
+		JButton left = new JButton("left");
+		left.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 909);	//todo
+				leftShot(p.x, p.y, leftX);
+			}
+		});
+		calcDialog.add(left);
 		
+		JButton right = new JButton("right");
+		right.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				Point p = Common.findLandmarkPartial("e:\\basketball.bmp", 160, 500, 721, 909);	//todo
+				rightShot(p.x, p.y, rightX);
+			}
+		});
+		calcDialog.add(right);
 		
 		calcDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
