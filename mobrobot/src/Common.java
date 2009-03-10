@@ -66,7 +66,7 @@ public class Common {
 		try {
 			
 			noticeDialog.setLayout(new FlowLayout());
-			noticeDialog.add(new Label("task begins!"));
+			noticeDialog.add(new Label("drop your mouse!"));
 			delay.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					countdown += 60;
