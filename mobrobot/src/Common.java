@@ -99,9 +99,9 @@ public class Common {
 
 	public static void main(String[] args) {
 		initRobot();
-		robot.delay(5000);
-		Point p = findLandmarkPartial("e:\\test.bmp", 300, 300, 500, 500);
-		robot.mouseMove(p.x, p.y);
+//		robot.delay(5000);
+//		Point p = findLandmarkPartial("e:\\test.bmp", 300, 300, 500, 500);
+//		robot.mouseMove(p.x, p.y);
 	}
 	
 	public static void sleepUntil(int h, int m, int s) {
