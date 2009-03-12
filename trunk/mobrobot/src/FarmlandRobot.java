@@ -15,6 +15,7 @@ public class FarmlandRobot {
 
 	public static void main(String[] args) {
 		pumpkinRush();
+//		pumpkinAt9();
 //		mainHarvest(args);
 //		mainMaintain(args);
 //		simpleHarvest();
@@ -25,6 +26,8 @@ public class FarmlandRobot {
 //		testBuyMature();
 //		simpleMature();
 //		showBag();
+//		initialize("test");
+//		finalize("test finished");
 	}
 	
 	public static void pumpkinAt9() {
@@ -61,31 +64,31 @@ public class FarmlandRobot {
 	public static void pumpkinRush() {
 		System.out.println("pumpkin rush");
 		long plantTime = new Date().getTime();
-		for (int i = 2; i < 6; i++) {
-			Common.sleep(8*60*60*1000);
-			initialize("pumpkin rush");
-			water();
-			removeWeed();
-			removeWorm();
-			mature();
-			Common.takePic(getPicName());
-			finalize("pumpkin stage "+i+" completed");
-		}
-		for (int i = 0; i < 7; i++) {
-			Common.sleep(60*60*1000);
-			initialize("pumpkin rush");
-			water();
-			removeWeed();
-			removeWorm();
-			finalize("maintain "+(i+1)+" completed");
-		}
-		Common.sleep(plantTime+40*60*60*1000-new Date().getTime());
-		initialize("pumpkin rush");
-		harvest();
-		sellAll();
-		mature();
-		Common.takePic(getPicName());
-		finalize("pumpkin season 2 stage 1 completed");
+//		for (int i = 2; i < 6; i++) {
+//			Common.sleep(8*60*60*1000);
+//			initialize("pumpkin rush");
+//			water();
+//			removeWeed();
+//			removeWorm();
+//			mature();
+//			Common.takePic(getPicName());
+//			finalize("pumpkin stage "+i+" completed");
+//		}
+//		for (int i = 0; i < 7; i++) {
+//			Common.sleep(60*60*1000);
+//			initialize("pumpkin rush");
+//			water();
+//			removeWeed();
+//			removeWorm();
+//			finalize("maintain "+(i+1)+" completed");
+//		}
+//		Common.sleep(plantTime+40*60*60*1000-new Date().getTime());
+//		initialize("pumpkin rush");
+//		harvest();
+//		sellAll();
+//		mature();
+//		Common.takePic(getPicName());
+//		finalize("pumpkin season 2 stage 1 completed");
 		
 		Common.sleep(8*60*60*1000);
 		initialize("pumpkin rush");
@@ -104,7 +107,7 @@ public class FarmlandRobot {
 			removeWorm();
 			finalize("maintain "+(i+1)+" completed");
 		}
-		Common.sleep(plantTime+56*60*60*1000-new Date().getTime());
+		Common.sleep(plantTime+(15*60+41)*60*1000-new Date().getTime());
 		initialize("pumpkin rush");
 		harvest();
 		sellAll();
@@ -129,7 +132,7 @@ public class FarmlandRobot {
 			removeWorm();
 			finalize("maintain "+(i+1)+" completed");
 		}
-		Common.sleep(plantTime+72*60*60*1000-new Date().getTime());
+		Common.sleep(plantTime+(31*60+41)*60*1000-new Date().getTime());
 		initialize("pumpkin rush");
 		harvest();
 		sellAll();
