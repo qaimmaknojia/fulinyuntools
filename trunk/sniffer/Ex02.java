@@ -1,6 +1,7 @@
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.PostMethod;
 
 public class Ex02 {
 
@@ -10,17 +11,28 @@ public class Ex02 {
 	public static void main(String[] args) throws Exception {
 
 		HttpClient client = new HttpClient();
-		GetMethod method = new GetMethod("http://hk-in-f99.google.com/bookmarks/?output=xml&num=10000&zx=7186");
-		method.setRequestHeader("Accept", "*/*");
+		PostMethod method = new PostMethod("http://happyfarm.fivminutes.com/api.php?mod=farmlandstatus" +
+				"&act=scarify&farmKey=f00210a319ab66eb5af37773bb1da01c&farmTime=1234953447");
+		method.setRequestHeader("Host", "happyfarm.fivminutes.com");
+		method.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.6) Gecko/2009011913 Firefox/3.0.6");
+		method.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+		method.setRequestHeader("Accept-Language", "zh-cn");	
 		method.setRequestHeader("Accept-Encoding", "gzip, deflate");
-		method.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; Maxthon; POTU(RR:27011715:0); InfoPath.2)");
-		method.setRequestHeader("Host", "www.google.com");
-		method.setRequestHeader("Connection", "Keep-Alive");
-		method.setRequestHeader("Cookie", "PREF=ID=ba43e3277f6d3a20:TB=2:LD=en:NW=1:CR=2:TM=1203824609:LM=1204441623:DV=AA:GM=1:S=b0FaCd4xfAEcMaxs; SID=DQAAAHgAAAB2raUwW4_Z8MwBnZH-4aEmyXVMGphMG0N6IE8rpSul3ZXSHNf2S5vdr61cJx2DyPU--zXdZPOuiQ0mmvsLM2_E1xe7k9ldiDDLj0cMfWTVPKwHix9SgZE5CYhfe5xC_Wj9KrHBNMBks-BmL-u8mPDEmNOu8_a178nIj4y6mK0q8w");
-//		NameValuePair[] data = { new NameValuePair("email", "fulinyun@gmail.com"),
-//				new NameValuePair("id", "aedf313041aad334444e82c941d92b67"),
-//				new NameValuePair("persistent_google_user", "1") };
-//		method.setRequestBody(data);
+		method.setRequestHeader("Accept-Charset", "gb2312,utf-8;q=0.7,*;q=0.7");
+		method.setRequestHeader("Keep-Alive", "300");
+		method.setRequestHeader("Connection", "keep-alive");
+		method.setRequestHeader("Cookie", "__utma=47175358.1516047794638148900.1234661515.1234879203.1234952649.9; " +
+				"__utmz=47175358.1234952649.9.9.utmcsr=apps.xiaonei.com|utmccn=(referral)|utmcmd=referral|utmcct=/happyfarm; " +
+				"PHPSESSID=qjovg2jhv6pdv5c54iln8r3fj2; __utmc=47175358; __utmb=47175358.1.10.1234952649");
+		method.setRequestHeader("Referer", "http://xnimg.cn/xcube/app/23163/xn30/grange.swf?v=inu29");
+		method.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		method.setRequestHeader("Content-length", "25");
+		
+		NameValuePair[] data = { 
+				new NameValuePair("ownerId", "223741527"),
+				new NameValuePair("place", "0")
+				};
+		method.setRequestBody(data);
 //		method.setRequestBody("9f\n"
 //		+ "<?xml version=\"1.0\"?>\n"
 //		+ "<toplevel>\n"
@@ -30,15 +42,15 @@ public class Ex02 {
 //		+ "</toplevel>\n\n0");
 
 		client.executeMethod(method);
-		Header[] responseHeaders = method.getResponseHeaders();
-		for (int i = 0; i < responseHeaders.length; i++) {
-			System.out.println(responseHeaders[i].getName() + " = "
-					+ responseHeaders[i].getValue());
-		}
-		System.out.println("----------- end of header -------------");
-		//			byte[] responseBody = method.getResponseBody();
-		//			System.out.println(new String(responseBody));
-		System.out.println(method.getResponseBodyAsString());
+//		Header[] responseHeaders = method.getResponseHeaders();
+//		for (int i = 0; i < responseHeaders.length; i++) {
+//			System.out.println(responseHeaders[i].getName() + " = "
+//					+ responseHeaders[i].getValue());
+//		}
+//		System.out.println("----------- end of header -------------");
+//		//			byte[] responseBody = method.getResponseBody();
+//		//			System.out.println(new String(responseBody));
+//		System.out.println(method.getResponseBodyAsString());
 	}
 }
 
