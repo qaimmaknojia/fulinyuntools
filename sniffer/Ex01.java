@@ -23,11 +23,11 @@ public class Ex01 {
 		}
 		JpcapCaptor captor = JpcapCaptor.openDevice(devices[1], 65535, true, 20);
 		captor.setFilter(
-				"src host 192.168.3.14 and " +
+				"src host 192.168.3.14 and dst host 222.73.180.73"
 //				"dst host 60.28.212.248"
-				"not host 192.168.3.253 and " +
-				"not host 192.168.3.249 and " +
-				"not host 192.168.3.246 and " +
+//				"not host 192.168.3.253 and " +
+//				"not host 192.168.3.249 and " +
+//				"not host 192.168.3.246 and " +
 //				"not host 222.202.96.176 and " +
 //				"not host 65.54.228.18 and " +
 //				"not host 65.54.228.33 and " + 
@@ -35,8 +35,8 @@ public class Ex01 {
 //				"not host 207.46.107.108 and " +
 //				"not host 60.29.242.246 and " +
 //				"not host 202.108.53.179 and " +
-				"not host 192.168.3.255 and " +
-				"not host 202.120.61.3"
+//				"not host 192.168.3.255 and " +
+//				"not host 202.120.61.3"
 //				"not host 207.46.26.50 and " +
 //				"not host 64.4.36.48 and " +
 //				"not host 207.46.26.30 and " +
