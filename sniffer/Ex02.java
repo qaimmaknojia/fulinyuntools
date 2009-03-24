@@ -9,6 +9,26 @@ public class Ex02 {
 	}
 
 	public static void main(String[] args) throws Exception {
+		
+	}
+	
+//	GET /api.php?mod=user&act=run&new=1&farmKey=b047c6585103748547f050865825fa50&farmTime=1237320766 HTTP/1.1
+//			Host: happyfarm.fivminutes.com
+//			User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7
+//			Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//			Accept-Language: zh-cn
+//			Accept-Encoding: gzip,deflate
+//			Accept-Charset: gb2312,utf-8;q=0.7,*;q=0.7
+//			Keep-Alive: 300
+//			Connection: keep-alive
+//			Cookie: __utma=47175358.2657063400261054000.1236674460.1237313265.1237320754.122; __utmz=47175358.1237320754.122.122.utmcsr=apps.xiaonei.com|utmccn=(referral)|utmcmd=referral|utmcct=/happyfarm; PHPSESSID=5a691d35cea4cbfee0089cdbe8fbb941; __utmc=47175358; __utmb=47175358.1.10.1237320754
+	public static void getInfo() throws Exception {
+//		HttpClient client = new HttpClient();
+//		
+//		GetMethod method = new GetMethod("http://happyfarm.fivminutes.com)
+	}
+	
+	public static void main1(String[] args) throws Exception {
 
 		HttpClient client = new HttpClient();
 		PostMethod method = new PostMethod("http://happyfarm.fivminutes.com/api.php?mod=farmlandstatus" +
@@ -145,6 +165,66 @@ public class Ex02 {
 //
 //			ownerId=223741527&place=6
 	public static void harvest(int place) {
+		
+	}
+	
+//	222.73.180.73/222.73.180.73
+//	POST /api.php?mod=farmlandstatus&act=fertilize&farmKey=a8804dddaa4b27b7f8eee3a154cd63c1&farmTime=1237609117 HTTP/1.1
+//	Host: happyfarm.fivminutes.com
+//	User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7
+//	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//	Accept-Language: zh-cn
+//	Accept-Encoding: gzip,deflate
+//	Accept-Charset: gb2312,utf-8;q=0.7,*;q=0.7
+//	Keep-Alive: 300
+//	Connection: keep-alive
+//	Cookie: __utma=47175358.2657063400261054000.1236674460.1237605202.1237608796.165; __utmz=47175358.1237608796.165.165.utmcsr=apps.xiaonei.com|utmccn=(referral)|utmcmd=referral|utmcct=/happyfarm; PHPSESSID=5a691d35cea4cbfee0089cdbe8fbb941; __utmc=47175358; __utmb=47175358.1.10.1237608796
+//	Referer: http://xnimg.cn/xcube/app/23163/xn30/grange.swf?v=inu29
+//	Content-type: application/x-www-form-urlencoded
+//	Content-length: 31
+//
+//	ownerId=223741527&tId=1&place=6
+	public static void fertilize(int place) {
+		
+	}
+	
+//	222.73.180.73/222.73.180.73
+//	POST /api.php?mod=farmlandstatus&act=clearWeed&farmKey=7188d6041806cbdf30d85cd69b0f4bce&farmTime=1237328327 HTTP/1.1
+//	Host: happyfarm.fivminutes.com
+//	User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7
+//	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//	Accept-Language: zh-cn
+//	Accept-Encoding: gzip,deflate
+//	Accept-Charset: gb2312,utf-8;q=0.7,*;q=0.7
+//	Keep-Alive: 300
+//	Connection: keep-alive
+//	Cookie: __utma=47175358.2657063400261054000.1236674460.1237320754.1237328243.123; __utmz=47175358.1237328243.123.123.utmcsr=apps.xiaonei.com|utmccn=(referral)|utmcmd=referral|utmcct=/happyfarm; PHPSESSID=5a691d35cea4cbfee0089cdbe8fbb941; __utmc=47175358; __utmb=47175358.1.10.1237328243
+//	Referer: http://xnimg.cn/xcube/app/23163/xn30/grange.swf?v=inu29
+//	Content-type: application/x-www-form-urlencoded
+//	Content-length: 25
+//
+//	ownerId=223741527&place=0
+	public static void clearWeed(int place) {
+		
+	}
+	
+//	222.73.180.73/222.73.180.73
+//	POST /api.php?mod=farmlandstatus&act=spraying&farmKey=0b314d9258f0064bdb375ce64e717a7b&farmTime=1237523969 HTTP/1.1
+//	Host: happyfarm.fivminutes.com
+//	User-Agent: Mozilla/5.0 (Windows; U; Windows NT 5.1; zh-CN; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7
+//	Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+//	Accept-Language: zh-cn
+//	Accept-Encoding: gzip,deflate
+//	Accept-Charset: gb2312,utf-8;q=0.7,*;q=0.7
+//	Keep-Alive: 300
+//	Connection: keep-alive
+//	Cookie: __utma=47175358.2657063400261054000.1236674460.1237516122.1237523810.153; __utmz=47175358.1237523810.153.153.utmcsr=apps.xiaonei.com|utmccn=(referral)|utmcmd=referral|utmcct=/happyfarm; PHPSESSID=5a691d35cea4cbfee0089cdbe8fbb941; __utmc=47175358; __utmb=47175358.1.10.1237523810
+//	Referer: http://xnimg.cn/xcube/app/23163/xn30/grange.swf?v=inu29
+//	Content-type: application/x-www-form-urlencoded
+//	Content-length: 25
+//
+//	ownerId=223741527&place=0
+	public static void removeWorm(int place) {
 		
 	}
 }
