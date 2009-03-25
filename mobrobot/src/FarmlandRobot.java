@@ -735,6 +735,7 @@ public class FarmlandRobot {
 	}
 
 	private static boolean findAndClick(String target, boolean shouldFind) {
+		Common.robot.delay(1000);
 		Common.robot.mouseMove(200, 300);
 		Point tar = Common.findLandmark(target, 400, 300, shouldFind);
 		if (tar.x != -1 && tar.y != -1) {
@@ -784,7 +785,7 @@ public class FarmlandRobot {
 		for (int i = 1; i <= np; i++) {
 			Common.robot.delay(delay);
 			Common.moveAndClick(place[i].x, place[i].y);
-			findAndClick("e:\\farmland\\confirmUpgrade.bmp", false);
+			findAndClick("e:\\farmland\\confirm.bmp", false);
 		}
 	}
 
@@ -795,9 +796,8 @@ public class FarmlandRobot {
 			Common.robot.delay(2000);
 			Common.moveAndClick(place[i].x, place[i].y);
 			Common.robot.delay(2000);
-			findAndClick("e:\\farmland\\cancelScarify.bmp", false);
+			findAndClick("e:\\farmland\\cancel.bmp", false);
 		}
-
 	}
 	
 	private static void testPlacePos() {
