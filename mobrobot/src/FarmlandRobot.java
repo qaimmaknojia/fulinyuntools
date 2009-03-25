@@ -4,20 +4,20 @@ import java.util.Date;
 
 public class FarmlandRobot {
 
-	public static int place1offsetX = -390;
+	public static int place1offsetX = -450;
 	public static int place1offsetY = 160;
 	public static Point[] place = null;
 	public static Point shopPlace = null;
 	public static int numPlace = 10;
-	public static int numAuto = 6;
+	public static int numAuto = 10;
 	public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		mainMaintain();		//running
-//		strawberryRush();	//running
-//		strawberryAt9();	//running
-		mainHarvest(args);
+//		mainMaintain();		
+//		strawberryRush();	
+//		strawberryAt9();	
+//		mainHarvest(args);
 //		simpleMaintain();
 //		simpleHarvest();
 //		simplePlant();
@@ -34,6 +34,164 @@ public class FarmlandRobot {
 //		buyManure(10);
 //		finalize("test finished");
 //		System.exit(0);
+//		browseShop();
+//		harvestSchedule();	//running
+		initialize("test");
+		findAndClick("e:\\farmland\\harvest.bmp", true);
+		findAndClick("e:\\farmland\\scarify.bmp", true);
+		findAndClick("e:\\farmland\\bag.bmp", true);
+		Common.robot.delay(5000);
+		findAndClick("e:\\farmland\\whiteInBag.bmp", true);
+		finalize("test finished");
+		System.exit(0);
+	}
+	
+	private static void harvestSchedule() {
+		System.out.println("harvest");
+		
+		Common.sleepUntil(13, 14, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+		
+		Common.sleepUntil(14, 23, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+		
+		Common.sleepUntil(15, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(15, 14, 0);
+		Common.sleep(24*60*60*1000);
+		initialize("harvest");
+		harvest();
+		scarify(6);
+		scarify(10);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+
+		Common.sleepUntil(20, 23, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+		
+		Common.sleepUntil(22, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(15, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(17, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(19, 14, 0);
+		initialize("harvest");
+		harvest();
+		scarify(7);
+		scarify(8);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+
+		Common.sleepUntil(23, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(2, 23, 0);
+		initialize("harvest");
+		harvest();
+		scarify(9);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+
+		Common.sleepUntil(5, 14, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+		
+		Common.sleepUntil(12, 23, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(21, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(23, 7, 0);
+		initialize("harvest");
+		harvest();
+		finalize("harvest finished");
+
+		Common.sleepUntil(0, 7, 0);
+		initialize("harvest");
+		harvest();
+		scarify(4);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+		
+		Common.sleepUntil(3, 7, 0);
+		Common.sleep(24*60*60*1000);
+		initialize("harvest");
+		harvest();
+		scarify(5);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+
+		Common.sleepUntil(5, 7, 0);
+		initialize("harvest");
+		harvest();
+		scarify(1);
+		scarify(2);
+		scarify(3);
+		plant("e:\\farmland\\whiteInBag.bmp");
+		finalize("harvest finished");
+
+		System.exit(0);
+	}
+
+	private static void scarify(int i) {
+		Common.robot.delay(5000);
+		findAndClick("e:\\farmland\\scarify.bmp", true);
+		Common.robot.delay(5000);
+		Common.moveAndClick(place[i].x, place[i].y);
+		Common.robot.delay(5000);
+	}
+
+	public static void browseShop()	 {
+		Point begin = new Point(360, 500);
+		initialize("browse shop");
+		findAndClick("e:\\farmland\\shop.bmp", true);
+//		for (int i = 0; i < 15; i++) {
+//			Common.robot.delay(5000);
+//			int x = begin.x+i%5*90;
+//			int y = begin.y+i/5*100;
+//			Common.moveAndClick(x, y);
+//			Common.takePic("e:\\farmland\\info\\" + i + ".jpg");
+//			findAndClick("e:\\farmland\\cancel.bmp", true);
+//		}
+		Common.robot.delay(5000);
+		Common.moveAndClick(792, 742);
+		for (int i = 15, j = 10; i < 20; i++, j++) {
+			Common.robot.delay(5000);
+			int x = begin.x+j%5*90;
+			int y = begin.y+j/5*100;
+			Common.moveAndClick(x, y);
+			Common.takePic("e:\\farmland\\info\\" + i + ".jpg");
+			findAndClick("e:\\farmland\\cancel.bmp", true);
+		}
+		finalize("browse shop completed");
+		System.exit(0);
 	}
 	
 	public static void mainMaintain() {
@@ -160,21 +318,21 @@ public class FarmlandRobot {
 //		Common.takePic(getPicName());
 //		finalize("stage 4 maintain completed");
 //		
-//		Common.sleepUntil(11, 0, 0);
-//		Common.sleep(3*24*60*60*1000);
+//		Common.sleepUntil(6, 0, 0);
+//		Common.sleep(24*60*60*1000);
 		while (true) {
 
 			initialize("farmland harvest");
 			harvest();
 			scarify();
 			sellWhite(300);
-			buySeed("e:\\farmland\\white.bmp", numAuto-1);
+			buySeed("e:\\farmland\\white.bmp", numAuto-1);	// 1 less than needed
 			plant("e:\\farmland\\whiteInBag.bmp");
 			long plantTime = new Date().getTime();
 			finalize("plant completed");
 			
 			initialize("farmland harvest");
-			buyManure(numAuto*4-1);
+			buyManure(numAuto*4-1);	// 1 less than needed
 			manure();
 			Common.takePic(getPicName());
 			finalize("stage 1 completed");
@@ -477,50 +635,14 @@ public class FarmlandRobot {
 	public static void mainObserve() {
 		
 		System.out.println("observe");
-//		Common.sleepUntil(0, 30, 0);
+		initialize("farmland observe");
 		
-		Common.notice("farmland observe", 300, 300);
-		Common.initRobot();
-		Common.enterGame(farmlandURL);
-		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-		initPlace();
-//		harvest();
-//		scarify();
-//		sellAll();
-//		buySeed("e:\\farmland\\white.bmp", 3);
-//		plant("e:\\farmland\\whiteInBag.bmp");
-//		String pic = picFilePrefix + "observe\\" + new Date().toString().replaceAll(":", "_")+".jpg";
-//		Common.takePic(pic);
-//		Common.exitFirefox();
-		
-		for (int i = 0; i < 8; i++) {
-			
-			Common.robot.mouseMove(place[1].x, place[1].y);
+		for (int i = 1; i <= numPlace; i++) {
+			Common.robot.mouseMove(place[i].x, place[i].y);
 			String pic = "e:\\farmland\\observe\\snapshot " + new Date().toString().replaceAll(":", "_")+".jpg";
 			Common.takePic(pic);
-			Common.exitFirefox();
-			System.out.println(new Date().toString() + " observe completed");
-			
-			try {
-				long sleep = 60*60*1000;
-				System.out.println("sleep until " + new Date(new Date().getTime()+sleep).toString());
-				Thread.currentThread().sleep(sleep);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			Common.notice("farmland observe", 300, 300);
-			Common.initRobot();
-			Common.enterGame(farmlandURL);
-			Common.robot.delay(30000);
-			Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
-			initPlace();
-
 		}
-		
-		Common.exitFirefox();
-		
+		finalize("observe completed");
 		System.exit(0);
 	}
 	
@@ -601,6 +723,7 @@ public class FarmlandRobot {
 	}
 
 	private static boolean findAndClick(String target, boolean shouldFind) {
+		Common.robot.mouseMove(0, 0);
 		Point tar = Common.findLandmark(target, 400, 300, shouldFind);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
