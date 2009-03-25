@@ -60,7 +60,7 @@ public class Common {
 
 	public static Robot robot = null;
 	
-	public static String workingSign = "E:\\mobtemp\\robotworking";
+	public static String workingSign = "E:\\robotworking";
 
 	static {
 		try {
