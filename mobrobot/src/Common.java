@@ -421,17 +421,13 @@ public class Common {
 		Point p = findLandmark(landmark, sx, sy, true);
 		int retry = 0;
 		while (p.x == -1 && p.y == -1) {
-			robot.delay(5000);
-			p = findLandmark(landmark, sx, sy, true);
 			retry++;
 			if (retry == 10) break;
-		}
-		
-		if (retry == 10) {
 			robot.keyPress(KeyEvent.VK_F5);
 			robot.keyRelease(KeyEvent.VK_F5);
-			robot.delay(30000);
-		}		
+			robot.delay(15000);
+			p = findLandmark(landmark, sx, sy, true);
+		}
 	}
 
 	public static void copyString(int x, int beginY, int endY) {
