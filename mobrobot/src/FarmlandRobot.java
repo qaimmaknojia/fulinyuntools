@@ -14,11 +14,11 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		mainMaintain();		
+//		mainMaintain();		//running		
 //		strawberryRush();	
 //		strawberryAt9();	
 //		mainHarvest(args);
-//		simpleMaintain();
+		simpleMaintain();
 //		simpleHarvest();
 //		simplePlant();
 //		mainObserve();
@@ -36,14 +36,14 @@ public class FarmlandRobot {
 //		System.exit(0);
 //		browseShop();
 //		harvestSchedule();	//running
-		initialize("test");
-		findAndClick("e:\\farmland\\harvest.bmp", true);
-		findAndClick("e:\\farmland\\scarify.bmp", true);
-		findAndClick("e:\\farmland\\bag.bmp", true);
-		Common.robot.delay(5000);
-		findAndClick("e:\\farmland\\whiteInBag.bmp", true);
-		finalize("test finished");
-		System.exit(0);
+//		initialize("test");
+//		findAndClick("e:\\farmland\\water.bmp", true);
+//		findAndClick("e:\\farmland\\removeWeed.bmp", true);
+//		findAndClick("e:\\farmland\\removeWorm.bmp", true);
+//		Common.robot.delay(5000);
+//		findAndClick("e:\\farmland\\whiteInBag.bmp", true);
+//		finalize("test finished");
+//		System.exit(0);
 	}
 	
 	private static void harvestSchedule() {
@@ -196,17 +196,29 @@ public class FarmlandRobot {
 	
 	public static void mainMaintain() {
 		System.out.println("maintain");
-		Common.sleepUntil(23, 0, 0);
-		for (int i = 0; i < 54; i++) {
+		while (true) {
+			Common.sleepUntil(8, 0, 0);
 			initialize("maintain");		
 			water();
 			removeWeed();
 			removeWorm();
 			Common.takePic(getPicName());
 			finalize("maintain completed");
-			Common.sleep(2*60*60*1000);
+			Common.sleepUntil(11, 30, 0);
+			initialize("maintain");		
+			water();
+			removeWeed();
+			removeWorm();
+			Common.takePic(getPicName());
+			finalize("maintain completed");
+			Common.sleepUntil(17, 30, 0);
+			initialize("maintain");		
+			water();
+			removeWeed();
+			removeWorm();
+			Common.takePic(getPicName());
+			finalize("maintain completed");
 		}
-		System.exit(0);
 	}
 	
 	public static void strawberryRush() {
@@ -723,7 +735,7 @@ public class FarmlandRobot {
 	}
 
 	private static boolean findAndClick(String target, boolean shouldFind) {
-		Common.robot.mouseMove(0, 0);
+		Common.robot.mouseMove(200, 300);
 		Point tar = Common.findLandmark(target, 400, 300, shouldFind);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
