@@ -99,6 +99,8 @@ public class Common {
 
 	public static void main(String[] args) {
 		initRobot();
+		enterGame("about:blank");
+		exitFirefox();
 //		robot.delay(5000);
 //		Point p = findLandmarkPartial("e:\\test.bmp", 300, 300, 500, 500);
 //		robot.mouseMove(p.x, p.y);
@@ -173,10 +175,10 @@ public class Common {
 		robot.delay(2000);
 		moveAndClick(startX, startY);
 
-		robot.delay(2000);
+		robot.delay(5000);
 		moveAndClick(firefoxX, firefoxY);
 		
-		robot.delay(5000);
+		robot.delay(7000);
 		moveAndClick(addressX, addressY);
 
 		robot.delay(2000);
