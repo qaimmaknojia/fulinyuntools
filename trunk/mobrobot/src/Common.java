@@ -427,7 +427,7 @@ public class Common {
 			if (retry == 10) break;
 			robot.keyPress(KeyEvent.VK_F5);
 			robot.keyRelease(KeyEvent.VK_F5);
-			robot.delay(15000);
+			robot.delay(30000);
 			p = findLandmark(landmark, sx, sy, true);
 		}
 	}
