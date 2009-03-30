@@ -195,9 +195,11 @@ public class MobRobot {
 		try {
 			Common.initRobot();
 //			mainFight(args);
-			mainVeryRich(args);
+			mainVeryRich(args);		//running
 //			mainCheck(args);
 //			notice();
+//			mainDoVeryRichTask();
+//			mainPrepare();
 //			System.exit(0);
 		} catch (Exception e) {
 			new File(Common.workingSign).delete();
@@ -225,24 +227,27 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-		Common.sleepUntil(11, 45, 0);
+//		Common.sleepUntil(11, 45, 0);
 //		mainDoVeryRichTask();
 //		mainPrepare();
 //		mainDoVeryRichTask();
 //		mainPrepare();
 		
 		while (true) {
-			mainDoVeryRichTask();
-			mainPrepare();
 			Common.sleepUntil(17, 45, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
 			Common.sleepUntil(22, 45, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
-			Common.sleepUntil(11, 45, 0);
+			Common.sleepUntil(7, 0, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
+			mainDoVeryRichTask();
+			mainPrepare();
+			mainDoVeryRichTask();
+			mainPrepare();
+			Common.sleepUntil(11, 45, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
 		}
