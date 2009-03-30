@@ -14,14 +14,9 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
+		haste();			//running
 //		newHarvest();		//running
-		mainMaintain();		//running
-//		harvestSchedule();	
-//		forPlace6();		
-//		forPlace10();		
-//		forPlace4();		
-//		forPlace123();		
-//		forPlace5789();		
+//		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
 //		strawberryRush();
@@ -52,9 +47,60 @@ public class FarmlandRobot {
 //		System.exit(0);
 	}
 	
+	public static void haste() {
+		System.out.println("haste");
+		Common.sleepUntil(4, 34, 35);
+		Common.sleep(4*25*60*60*1000);
+		
+		while (true) {
+			Common.sleepUntil(1, 30, 0);
+			initialize("haste");
+			harvest();
+			scarify();
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(10*60*60*1000);	//11:30:00
+			initialize("haste");
+			harvest();
+			scarify();
+			plant("e:\\farmland\\cornInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(20*60*60*1000);	//7:30:00
+			initialize("haste");
+			harvest();
+			scarify();
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+
+			Common.sleep(10*60*60*1000);	//17:30:00
+			initialize("haste");
+			harvest();
+			scarify();
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(10*60*60*1000);	//3:30:00
+			initialize("haste");
+			harvest();
+			scarify();
+			plant("e:\\farmland\\cornInBag.bmp");
+			finalize("haste completed");
+
+			Common.sleep(20*60*60*1000);	//23:30:00
+			initialize("haste");
+			harvest();
+			scarify();
+			finalize("haste completed");
+
+		}
+	}
+	
 	private static void newHarvest() {
 		
-		Common.sleep(20*60*60*1000);
+		System.out.println("new harvest");
+		Common.sleepUntil(4, 34, 35);
 		initialize("new harvest");
 		harvest();
 		scarify();
@@ -70,401 +116,6 @@ public class FarmlandRobot {
 			finalize("new harvest finished");
 		}
 		
-	}
-
-	private static void forPlace5789() {
-		System.out.println("place 5 7 8 9");
-		
-		Common.sleepUntil(14, 32, 0);
-		Common.sleep(4*24*60*60*1000);
-		
-		Common.sleep(10*60*60*1000);
-		initialize("place 5 7 8 9");
-		harvest();
-		scarify(5);
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\potatoInBag.bmp");
-		finalize("place 5 7 8 9 finished");
-		
-		while (true) {
-			for (int i = 0; i < 3; i++) {
-				Common.sleep(25*60*60*1000);
-				initialize("place 5 7 8 9");
-				harvest();
-				scarify(5);
-				scarify(7);
-				scarify(8);
-				scarify(9);
-				plant("e:\\farmland\\potatoInBag.bmp");
-				finalize("place 5 7 8 9 finished");
-			}
-			Common.sleep(25*60*60*1000);
-			initialize("place 5 7 8 9");
-			harvest();
-			scarify(5);
-			scarify(7);
-			scarify(8);
-			scarify(9);
-			plant("e:\\farmland\\cornInBag.bmp");
-			finalize("place 5 7 8 9 finished");
-			
-			Common.sleep(20*60*60*1000);
-			initialize("place 5 7 8 9");
-			harvest();
-			scarify(5);
-			scarify(7);
-			scarify(8);
-			scarify(9);
-			plant("e:\\farmland\\potatoInBag.bmp");
-			finalize("place 5 7 8 9 finished");
-		}
-	}
-
-	private static void forPlace123() {
-		System.out.println("place 1 2 3");
-		
-		Common.sleepUntil(16, 7, 0);
-		Common.sleep(4*24*60*60*1000);
-		
-		Common.sleep(10*60*60*1000);
-		initialize("place 1 2 3");
-		harvest();
-		scarify(1);
-		scarify(2);
-		scarify(3);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("place 1 2 3 finished");
-		
-		while (true) {
-			for (int i = 0; i < 3; i++) {
-				Common.sleep(25*60*60*1000);
-				initialize("place 5 7 8 9");
-				harvest();
-				scarify(1);
-				scarify(2);
-				scarify(3);
-				plant("e:\\farmland\\potatoInBag.bmp");
-				finalize("place 1 2 3 finished");
-			}
-			Common.sleep(25*60*60*1000);
-			initialize("place 1 2 3");
-			harvest();
-			scarify(1);
-			scarify(2);
-			scarify(3);
-			plant("e:\\farmland\\cornInBag.bmp");
-			finalize("place 1 2 3 finished");
-			
-			Common.sleep(20*60*60*1000);
-			initialize("place 1 2 3");
-			harvest();
-			scarify(1);
-			scarify(2);
-			scarify(3);
-			plant("e:\\farmland\\potatoInBag.bmp");
-			finalize("place 1 2 3 finished");
-		}
-		
-	}
-
-	private static void forPlace4() {
-		System.out.println("place 4");
-		
-		Common.sleepUntil(7, 10, 0);
-		Common.sleep(3*24*60*60*1000);
-		
-		initialize("place 4");
-		harvest();
-		scarify(4);
-		plant("e:\\farmland\\cornInBag.bmp");
-		finalize("place 4 finished");
-
-		while (true) {
-			
-			Common.sleep(20*60*60*1000);
-			initialize("place 4");
-			harvest();
-			scarify(4);
-			plant("e:\\farmland\\potatoInBag.bmp");
-			finalize("place 4 finished");
-
-			for (int i = 0; i < 3; i++) {
-				Common.sleep(25*60*60*1000);
-				initialize("place 4");
-				harvest();
-				scarify(4);
-				plant("e:\\farmland\\potatoInBag.bmp");
-				finalize("place 5 7 8 9 finished");
-			}
-			
-			Common.sleep(25*60*60*1000);
-			initialize("place 4");
-			harvest();
-			scarify(4);
-			plant("e:\\farmland\\cornInBag.bmp");
-			finalize("place 4 finished");
-
-		}
-		
-	}
-
-	public static void forPlace6() {
-		System.out.println("place 6");
-		
-		Common.sleepUntil(20, 39, 0);
-
-		while (true) {
-			initialize("place 6");
-			harvest();
-			scarify(6);
-			plant("e:\\farmland\\whiteInBag.bmp");
-			finalize("place 6 finished");
-			Common.sleep(10*60*60*1000);
-		}
-	}
-	
-	public static void forPlace10() {
-		System.out.println("place 10");
-		
-		Common.sleepUntil(15, 17, 0);
-		
-		for (int i = 0; i < 13; i++) {
-			initialize("place 10");
-			harvest();
-			scarify(10);
-			plant("e:\\farmland\\whiteInBag.bmp");
-			finalize("place 10 finished");
-			Common.sleep(10*60*60*1000);
-		}
-		
-		initialize("place 10");
-		harvest();
-		scarify(10);
-		plant("e:\\farmland\\potatoInBag.bmp");
-		finalize("place 10 finished");
-
-		while (true) {
-			for (int i = 0; i < 3; i++) {
-				Common.sleep(25*60*60*1000);
-				initialize("place 10");
-				harvest();
-				scarify(10);
-				plant("e:\\farmland\\potatoInBag.bmp");
-				finalize("place 5 7 8 9 finished");
-			}
-			Common.sleep(25*60*60*1000);
-			initialize("place 10");
-			harvest();
-			scarify(10);
-			plant("e:\\farmland\\cornInBag.bmp");
-			finalize("place 10 finished");
-			
-			Common.sleep(20*60*60*1000);
-			initialize("place 10");
-			harvest();
-			scarify(10);
-			plant("e:\\farmland\\potatoInBag.bmp");
-			finalize("place 10 finished");
-
-		}
-	}
-
-	private static void harvestSchedule() {
-		System.out.println("harvest");
-		
-//		Common.sleepUntil(13, 14, 0);
-//		initialize("harvest");
-//		harvest();
-//		finalize("harvest finished");
-//		
-//		Common.sleepUntil(14, 23, 0);
-//		initialize("harvest");
-//		harvest();
-//		finalize("harvest finished");
-//		
-//		Common.sleepUntil(15, 7, 0);
-//		initialize("harvest");
-//		harvest();
-//		finalize("harvest finished");
-
-//		Common.sleepUntil(15, 17, 0);
-//		Common.sleep(24*60*60*1000);
-//		initialize("harvest");
-//		harvest();
-//		scarify(10);
-//		plant("e:\\farmland\\whiteInBag.bmp");
-//		finalize("harvest finished");
-
-		Common.sleepUntil(19, 21, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(20, 25, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-		
-		Common.sleepUntil(23, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-
-		Common.sleepUntil(4, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-		
-		Common.sleepUntil(6, 6, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(16, 7, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(0, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-
-		Common.sleepUntil(2, 25, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(8, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-
-		Common.sleepUntil(12, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-
-		Common.sleepUntil(12, 26, 0);
-		initialize("harvest");
-		harvest();
-		scarify(9);
-		scarify(8);
-		scarify(7);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(22, 27, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-		
-		Common.sleepUntil(1, 6, 0);
-		initialize("harvest");
-		harvest();
-		scarify(4);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(8, 28, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(11, 7, 0);
-		initialize("harvest");
-		harvest();
-		scarify(4);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(12, 6, 0);
-		initialize("harvest");
-		harvest();
-		finalize("harvest finished");
-
-		Common.sleepUntil(18, 6, 0);
-		initialize("harvest");
-		harvest();
-		scarify(5);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(18, 29, 0);
-		initialize("harvest");
-		harvest();
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-		
-		Common.sleepUntil(21, 8, 0);
-		initialize("harvest");
-		harvest();
-		scarify(4);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(4, 30, 0);
-		initialize("harvest");
-		harvest();
-		scarify(5);
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(7, 9, 0);
-		initialize("harvest");
-		harvest();
-		scarify(4);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(14, 31, 0);
-		initialize("harvest");
-		harvest();
-		scarify(5);
-		scarify(7);
-		scarify(8);
-		scarify(9);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
-		Common.sleepUntil(16, 6, 0);
-		initialize("harvest");
-		harvest();
-		scarify(1);
-		scarify(2);
-		scarify(3);
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("harvest finished");
-
 		System.exit(0);
 	}
 
@@ -504,22 +155,6 @@ public class FarmlandRobot {
 	
 	public static void mainMaintain() {
 		System.out.println("maintain");
-		Common.sleepUntil(11, 30, 0);
-		initialize("maintain");
-		harvest();
-		water();
-		removeWeed();
-		removeWorm();
-		Common.takePic(getPicName());
-		finalize("maintain completed");
-		Common.sleepUntil(17, 30, 0);
-		initialize("maintain");
-		harvest();
-		water();
-		removeWeed();
-		removeWorm();
-		Common.takePic(getPicName());
-		finalize("maintain completed");
 		while (true) {
 			Common.sleepUntil(8, 0, 0);
 			initialize("maintain");
@@ -527,22 +162,27 @@ public class FarmlandRobot {
 			water();
 			removeWeed();
 			removeWorm();
+			Common.robot.mouseMove(place[5].x, place[5].y);
 			Common.takePic(getPicName());
 			finalize("maintain completed");
+
 			Common.sleepUntil(11, 30, 0);
 			initialize("maintain");
 			harvest();
 			water();
 			removeWeed();
 			removeWorm();
+			Common.robot.mouseMove(place[5].x, place[5].y);
 			Common.takePic(getPicName());
 			finalize("maintain completed");
+
 			Common.sleepUntil(17, 30, 0);
 			initialize("maintain");
 			harvest();
 			water();
 			removeWeed();
 			removeWorm();
+			Common.robot.mouseMove(place[5].x, place[5].y);
 			Common.takePic(getPicName());
 			finalize("maintain completed");
 		}
