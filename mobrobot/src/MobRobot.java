@@ -225,7 +225,7 @@ public class MobRobot {
 	public static void mainVeryRich(String[] args) {
 		
 		System.out.println("task");
-//		Common.sleepUntil(16, 33, 0);
+		Common.sleepUntil(11, 45, 0);
 //		mainDoVeryRichTask();
 //		mainPrepare();
 //		mainDoVeryRichTask();
@@ -234,8 +234,17 @@ public class MobRobot {
 		while (true) {
 			mainDoVeryRichTask();
 			mainPrepare();
-			System.out.println("waiting for " + (50*5) + " minutes");
-			Common.sleep(50 * 5 * 60 * 1000);
+			Common.sleepUntil(17, 45, 0);
+			mainDoVeryRichTask();
+			mainPrepare();
+			Common.sleepUntil(22, 45, 0);
+			mainDoVeryRichTask();
+			mainPrepare();
+			Common.sleepUntil(11, 45, 0);
+			mainDoVeryRichTask();
+			mainPrepare();
+			mainDoVeryRichTask();
+			mainPrepare();
 		}
 	}
 	
@@ -347,7 +356,7 @@ public class MobRobot {
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
-		Common.sendMail("prepare", new Date().toString(), pic);
+//		Common.sendMail("prepare", new Date().toString(), pic);
 
 		Common.exitFirefox();
 	}
@@ -386,7 +395,7 @@ public class MobRobot {
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
-		Common.sendMail("task", new Date().toString(), pic);
+//		Common.sendMail("task", new Date().toString(), pic);
 		
 		Common.exitFirefox();
 	}
