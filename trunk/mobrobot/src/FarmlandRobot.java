@@ -14,8 +14,8 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-		haste();			//running
-//		newHarvest();		//running
+//		haste();			//running, embedded in newHarvest()
+		newHarvest();		//running
 //		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
@@ -49,8 +49,6 @@ public class FarmlandRobot {
 	
 	public static void haste() {
 		System.out.println("haste");
-		Common.sleepUntil(4, 34, 35);
-		Common.sleep(4*25*60*60*1000);
 		
 		while (true) {
 			Common.sleepUntil(1, 30, 0);
@@ -94,13 +92,14 @@ public class FarmlandRobot {
 			scarify();
 			finalize("haste completed");
 
+			//todo: sellAll, buy 3*numAuto whites and 2*numAuto corns
 		}
 	}
 	
 	private static void newHarvest() {
 		
 		System.out.println("new harvest");
-		Common.sleepUntil(4, 34, 35);
+		Common.sleepUntil(5, 40, 0);
 		initialize("new harvest");
 		harvest();
 		scarify();
@@ -116,7 +115,7 @@ public class FarmlandRobot {
 			finalize("new harvest finished");
 		}
 		
-		System.exit(0);
+		haste();
 	}
 
 	private static void scarify(int i) {
