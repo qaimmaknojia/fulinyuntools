@@ -234,10 +234,9 @@ public class MobRobot {
 //		mainPrepare();
 		
 		while (true) {
-			Common.sleepUntil(17, 45, 0);
+			Common.sleepUntil(22, 45, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
-			Common.sleepUntil(22, 45, 0);
 			mainDoVeryRichTask();
 			mainPrepare();
 			Common.sleepUntil(7, 0, 0);
@@ -303,7 +302,7 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		findAndClick("e:\\mobtemp\\gotoTask.bmp", true);
+		findAndClick("e:\\mobtemp\\gotoTask.bmp", 0, 0, true);
 
 		Common.robot.delay(5000);
 		Common.waitForLandmark(taskLandmark, 150, 340);
@@ -356,7 +355,7 @@ public class MobRobot {
 		Common.moveAndClick(scrollX, scrollY);
 
 		Common.robot.delay(5000);
-		Common.moveAndClick(prepareX, prepareY);
+		findAndClick("e:\\mobtemp\\prepare.bmp", 800, 300, true);
 
 		Common.robot.delay(5000);
 		Common.moveAndClick(scrollupX, scrollupY);
@@ -390,7 +389,7 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		findAndClick("e:\\mobtemp\\gotoTask.bmp", true);
+		findAndClick("e:\\mobtemp\\gotoTask.bmp", 0, 0, true);
 
 		Common.robot.delay(5000);
 		Common.waitForLandmark(taskLandmark, 150, 340);
@@ -399,7 +398,7 @@ public class MobRobot {
 		Common.moveAndClick(scrollX, scrollY);
 		
 		Common.robot.delay(5000);
-		Common.moveAndClick(veryRichTaskX, veryRichTaskY);
+		findAndClick("e:\\mobtemp\\do.bmp", 800, 300, true);
 		
 		Common.robot.delay(5000);
 		Common.moveAndClick(scrollupX, scrollupY);
@@ -413,10 +412,10 @@ public class MobRobot {
 		Common.exitFirefox();
 	}
 
-	private static boolean findAndClick(String target, boolean shouldFind) {
+	private static boolean findAndClick(String target, int startx, int starty, boolean shouldFind) {
 		Common.robot.delay(1000);
 		Common.robot.mouseMove(0, 0);
-		Point tar = Common.findLandmark(target, 0, 0, shouldFind);
+		Point tar = Common.findLandmark(target, startx, starty, shouldFind);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;
