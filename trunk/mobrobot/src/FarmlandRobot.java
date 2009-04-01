@@ -49,7 +49,7 @@ public class FarmlandRobot {
 	
 	public static void haste() {
 		System.out.println("haste");
-		
+		numAuto = 5;
 		while (true) {
 			Common.sleepUntil(1, 30, 0);
 			initialize("haste");
@@ -99,14 +99,14 @@ public class FarmlandRobot {
 	private static void newHarvest() {
 		
 		System.out.println("new harvest");
-		Common.sleepUntil(5, 40, 0);
+		Common.sleepUntil(6, 51, 53);
 		initialize("new harvest");
 		harvest();
 		scarify();
 		plant("e:\\farmland\\potatoInBag.bmp");
 		finalize("new harvest finished");
 		
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			Common.sleep(25*60*60*1000);
 			initialize("new harvest");
 			harvest();

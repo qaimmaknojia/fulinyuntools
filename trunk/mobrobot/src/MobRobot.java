@@ -303,7 +303,7 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		Common.moveAndClick(taskX, taskY);
+		findAndClick("e:\\mobtemp\\gotoTask.bmp", true);
 
 		Common.robot.delay(5000);
 		Common.waitForLandmark(taskLandmark, 150, 340);
@@ -352,11 +352,15 @@ public class MobRobot {
 //		}
 
 		Common.moveAndClick(scrollX, scrollY);
+		Common.robot.delay(1000);
+		Common.moveAndClick(scrollX, scrollY);
 
 		Common.robot.delay(5000);
 		Common.moveAndClick(prepareX, prepareY);
 
 		Common.robot.delay(5000);
+		Common.moveAndClick(scrollupX, scrollupY);
+		Common.robot.delay(1000);
 		Common.moveAndClick(scrollupX, scrollupY);
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
@@ -386,23 +390,38 @@ public class MobRobot {
 //			robot.delay(5000);
 //			waitForLandmark(enterLandmark);
 //		}
-		Common.moveAndClick(taskX, taskY);
+		findAndClick("e:\\mobtemp\\gotoTask.bmp", true);
 
 		Common.robot.delay(5000);
 		Common.waitForLandmark(taskLandmark, 150, 340);
 		Common.moveAndClick(scrollX, scrollY);
-
+		Common.robot.delay(1000);
+		Common.moveAndClick(scrollX, scrollY);
+		
 		Common.robot.delay(5000);
 		Common.moveAndClick(veryRichTaskX, veryRichTaskY);
 		
 		Common.robot.delay(5000);
 		Common.moveAndClick(scrollupX, scrollupY);
-
+		Common.robot.delay(1000);
+		Common.moveAndClick(scrollupX, scrollupY);
+		
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
 		Common.takePic(pic);
 //		Common.sendMail("task", new Date().toString(), pic);
 		
 		Common.exitFirefox();
+	}
+
+	private static boolean findAndClick(String target, boolean shouldFind) {
+		Common.robot.delay(1000);
+		Common.robot.mouseMove(0, 0);
+		Point tar = Common.findLandmark(target, 0, 0, shouldFind);
+		if (tar.x != -1 && tar.y != -1) {
+			Common.moveAndClick(tar.x, tar.y);
+			return true;
+		}
+		return false;
 	}
 
 //	public static void mainRich(String[] args) {
