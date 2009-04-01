@@ -15,8 +15,8 @@ public class FarmlandRobot {
 
 	public static void main(String[] args) {
 //		haste();			//running, embedded in newHarvest()
-		newHarvest();		//running
-//		mainMaintain();		//running
+//		newHarvest();		//running
+		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
 //		strawberryRush();
@@ -155,6 +155,17 @@ public class FarmlandRobot {
 	public static void mainMaintain() {
 		System.out.println("maintain");
 		while (true) {
+			
+			Common.sleepUntil(23, 0, 0);
+			initialize("maintain");
+			harvest();
+			water();
+			removeWeed();
+			removeWorm();
+			Common.robot.mouseMove(place[5].x, place[5].y);
+			Common.takePic(getPicName());
+			finalize("maintain completed");
+
 			Common.sleepUntil(8, 0, 0);
 			initialize("maintain");
 			harvest();
