@@ -49,7 +49,13 @@ public class FarmlandRobot {
 	
 	public static void haste() {
 		System.out.println("haste");
-		numAuto = 5;
+		numAuto = 3;
+		initialize("haste");
+		harvest();
+		scarify();
+		plant("e:\\farmland\\cornInBag.bmp");
+		finalize("haste completed");
+
 		while (true) {
 			Common.sleepUntil(1, 30, 0);
 			initialize("haste");
@@ -99,7 +105,7 @@ public class FarmlandRobot {
 	private static void newHarvest() {
 		
 		System.out.println("new harvest");
-		Common.sleepUntil(6, 51, 53);
+		Common.sleep(15*60*60*1000);
 		initialize("new harvest");
 		harvest();
 		scarify();
@@ -155,6 +161,15 @@ public class FarmlandRobot {
 	public static void mainMaintain() {
 		System.out.println("maintain");
 		while (true) {
+			Common.sleepUntil(17, 30, 0);
+			initialize("maintain");
+			harvest();
+			water();
+			removeWeed();
+			removeWorm();
+			Common.robot.mouseMove(place[5].x, place[5].y);
+			Common.takePic(getPicName());
+			finalize("maintain completed");
 			
 			Common.sleepUntil(23, 0, 0);
 			initialize("maintain");
@@ -186,15 +201,6 @@ public class FarmlandRobot {
 			Common.takePic(getPicName());
 			finalize("maintain completed");
 
-			Common.sleepUntil(17, 30, 0);
-			initialize("maintain");
-			harvest();
-			water();
-			removeWeed();
-			removeWorm();
-			Common.robot.mouseMove(place[5].x, place[5].y);
-			Common.takePic(getPicName());
-			finalize("maintain completed");
 		}
 	}
 	
