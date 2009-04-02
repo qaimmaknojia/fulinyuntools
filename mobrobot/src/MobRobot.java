@@ -239,11 +239,12 @@ public class MobRobot {
 			mainPrepare();
 			mainDoVeryRichTask();
 			mainPrepare();
+			mainDoVeryRichTask();
+			mainPrepare();
+			Common.sleepUntil(4, 45, 0);
+			mainDoVeryRichTask();
+			mainPrepare();
 			Common.sleepUntil(7, 0, 0);
-			mainDoVeryRichTask();
-			mainPrepare();
-			mainDoVeryRichTask();
-			mainPrepare();
 			mainDoVeryRichTask();
 			mainPrepare();
 			Common.sleepUntil(11, 45, 0);
