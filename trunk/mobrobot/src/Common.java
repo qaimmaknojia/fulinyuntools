@@ -230,7 +230,7 @@ public class Common {
 				for (int x = sx; x < screen.getWidth()-image.getWidth(); x++) {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
-							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							System.out.println(new Date().toString() + " find landmark " + bmpLm + " at " + x + "," + y);
 							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".bmp");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
@@ -241,7 +241,7 @@ public class Common {
 				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
-							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							System.out.println(new Date().toString() + " find landmark " + bmpLm + " at " + x + "," + y);
 							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".bmp");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
@@ -252,7 +252,7 @@ public class Common {
 				for (int x = 0; x < sx; x++) {
 					if (match(screen, image, x, y)) {
 						if (!shouldFind) {
-							System.out.println("find landmark " + bmpLm + " at " + x + "," + y);
+							System.out.println(new Date().toString() + " find landmark " + bmpLm + " at " + x + "," + y);
 							takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".bmp");
 						}
 						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
@@ -260,12 +260,12 @@ public class Common {
 				}
 			}
 			if (shouldFind) {
-				System.out.println("fail to find " + bmpLm);
+				System.out.println(new Date().toString() + " fail to find " + bmpLm);
 				takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".bmp");
 			}
 			return new Point(-1, -1);
 		} catch (Exception e) {
-			System.out.println("fail to find " + bmpLm);
+			System.out.println(new Date().toString() + " fail to find " + bmpLm);
 			takePicHQ("e:\\unexpected\\"+new Date().toString().replaceAll(":", "_")+".bmp");
 			e.printStackTrace();
 			return new Point(-1, -1);
