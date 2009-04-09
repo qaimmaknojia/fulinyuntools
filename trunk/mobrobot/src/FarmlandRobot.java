@@ -8,15 +8,15 @@ public class FarmlandRobot {
 	public static int place1offsetY = 180;
 	public static Point[] place = null;
 	public static Point shopPlace = null;
-	public static int numPlace = 11;
-	public static int numAuto = 11;
+	public static int numPlace = 12;
+	public static int numAuto = 12;
 	public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-		haste();			//running
+//		haste();			//running
 //		newHarvest();
-//		mainMaintain();		//running
+		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
 //		strawberryRush();
@@ -64,32 +64,32 @@ public class FarmlandRobot {
 //		plant("e:\\farmland\\cornInBag.bmp");
 //		finalize("haste completed");
 		
-		Common.sleepUntil(7, 47, 0);
-		initialize("haste");
-		harvest();
-		scarify();
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("haste completed");
+//		Common.sleepUntil(7, 47, 0);
+//		initialize("haste");
+//		harvest();
+//		scarify();
+//		plant("e:\\farmland\\whiteInBag.bmp");
+//		finalize("haste completed");
 
-		Common.sleep(10*60*60*1000);
-		initialize("haste");
-		harvest();
-		scarify();
-		plant("e:\\farmland\\whiteInBag.bmp");
-		finalize("haste completed");
+//		Common.sleep(10*60*60*1000);
+//		initialize("haste");
+//		harvest();
+//		scarify();
+//		plant("e:\\farmland\\whiteInBag.bmp");
+//		finalize("haste completed");
 		
-		Common.sleep(10*60*60*1000);
-		initialize("haste");
-		harvest();
-		scarify();
-		plant("e:\\farmland\\cornInBag.bmp");
-		finalize("haste completed");
+//		Common.sleep(10*60*60*1000);
+//		initialize("haste");
+//		harvest();
+//		scarify();
+//		plant("e:\\farmland\\cornInBag.bmp");
+//		finalize("haste completed");
 
-		Common.sleep(20*60*60*1000);
-		initialize("haste");
-		harvest();
-		scarify();
-		finalize("haste completed");
+//		Common.sleep(20*60*60*1000);
+//		initialize("haste");
+//		harvest();
+//		scarify();
+//		finalize("haste completed");
 
 		while (true) {
 			Common.sleepUntil(1, 30, 0);
@@ -653,10 +653,10 @@ public class FarmlandRobot {
 	public static void simpleHarvest() {
 		
 		System.out.println("simple harvest");
-		
+		Common.sleep(7*60*60*1000);
 		initialize("farmland simple harvest");
 		harvest();
-		Common.takePic(getPicName());
+//		Common.takePic(getPicName());
 		finalize("simple harvest completed");
 
 		System.exit(0);
