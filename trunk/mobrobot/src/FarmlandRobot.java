@@ -14,9 +14,10 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
+		haste12();			//running
 //		haste();			//running
 //		newHarvest();
-		mainMaintain();		//running
+//		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
 //		strawberryRush();
@@ -55,6 +56,60 @@ public class FarmlandRobot {
 
 	}
 	
+	public static void haste12() {
+		System.out.println("haste12");
+
+		while (true) {
+			Common.sleepUntil(1, 40, 0);
+			initialize("haste12");
+			harvest();
+			scarify(12);
+			findAndClick("e:\\farmland\\harvest.bmp", true);
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(10*60*60*1000);	//11:40:00
+			initialize("haste");
+			harvest();
+			scarify(12);
+			findAndClick("e:\\farmland\\harvest.bmp", true);
+			plant("e:\\farmland\\cornInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(20*60*60*1000);	//7:40:00
+			initialize("haste");
+			harvest();
+			scarify(12);
+			findAndClick("e:\\farmland\\harvest.bmp", true);
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+
+			Common.sleep(10*60*60*1000);	//17:40:00
+			initialize("haste");
+			harvest();
+			scarify(12);
+			findAndClick("e:\\farmland\\harvest.bmp", true);
+			plant("e:\\farmland\\whiteInBag.bmp");
+			finalize("haste completed");
+			
+			Common.sleep(10*60*60*1000);	//3:40:00
+			initialize("haste");
+			harvest();
+			scarify(12);
+			findAndClick("e:\\farmland\\harvest.bmp", true);
+			plant("e:\\farmland\\cornInBag.bmp");
+			finalize("haste completed");
+
+			Common.sleep(20*60*60*1000);	//23:40:00
+			initialize("haste");
+			harvest();
+			scarify(12);
+			finalize("haste completed");
+
+			//todo: sellAll, buy 3*numAuto whites and 2*numAuto corns
+		}
+	}
+
 	public static void haste() {
 		System.out.println("haste");
 		numAuto = 3;
