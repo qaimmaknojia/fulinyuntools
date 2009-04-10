@@ -14,7 +14,7 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-		haste12();			//running
+//		haste12();			//running
 //		haste();			//running
 //		newHarvest();
 //		mainMaintain();		//running
@@ -24,7 +24,7 @@ public class FarmlandRobot {
 //		strawberryAt9();
 //		mainHarvest(args);
 //		simpleMaintain();
-//		simpleHarvest();
+		simpleHarvest();
 //		simplePlant();
 //		fullView();
 //		testBuyManure();
@@ -708,7 +708,7 @@ public class FarmlandRobot {
 	public static void simpleHarvest() {
 		
 		System.out.println("simple harvest");
-		Common.sleep(7*60*60*1000);
+		Common.sleepUntil(14, 57, 0);
 		initialize("farmland simple harvest");
 		harvest();
 //		Common.takePic(getPicName());
