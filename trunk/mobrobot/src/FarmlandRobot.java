@@ -1,4 +1,5 @@
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.util.Date;
 
 
@@ -14,17 +15,15 @@ public class FarmlandRobot {
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
 
 	public static void main(String[] args) {
-//		haste12();			//running
 //		haste();			//running
-//		newHarvest();
-//		mainMaintain();		//running
+		mainMaintain();		//running
 //		browseShop();
 //		mainObserve();
 //		strawberryRush();
 //		strawberryAt9();
 //		mainHarvest(args);
 //		simpleMaintain();
-		simpleHarvest();
+//		simpleHarvest();
 //		simplePlant();
 //		fullView();
 //		testBuyManure();
@@ -38,18 +37,14 @@ public class FarmlandRobot {
 //		buyManure(10);
 //		finalize("test finished");
 //		System.exit(0);
-//		initialize("test");
-//		findAndClick("e:\\farmland\\water.bmp", true);
-//		findAndClick("e:\\farmland\\removeWeed.bmp", true);
-//		findAndClick("e:\\farmland\\removeWorm.bmp", true);
 //		Common.robot.delay(5000);
 //		findAndClick("e:\\farmland\\whiteInBag.bmp", true);
 //		finalize("test finished");
 //		System.exit(0);
 //		initialize("test");
 //		for (int i = 1; i <= numPlace; i++) {
-//			Common.moveAndClick(place[i].x, place[i].y);
-//			Common.robot.delay(1000);
+//			Common.robot.mouseMove(place[i].x, place[i].y);
+//			Common.takePic("e:\\farmland\\observe"+i+".jpg");
 //		}
 //		finalize("test finished");
 //		System.exit(0);
@@ -112,40 +107,7 @@ public class FarmlandRobot {
 
 	public static void haste() {
 		System.out.println("haste");
-		numAuto = 3;
-//		initialize("haste");
-//		harvest();
-//		scarify();
-//		plant("e:\\farmland\\cornInBag.bmp");
-//		finalize("haste completed");
 		
-//		Common.sleepUntil(7, 47, 0);
-//		initialize("haste");
-//		harvest();
-//		scarify();
-//		plant("e:\\farmland\\whiteInBag.bmp");
-//		finalize("haste completed");
-
-//		Common.sleep(10*60*60*1000);
-//		initialize("haste");
-//		harvest();
-//		scarify();
-//		plant("e:\\farmland\\whiteInBag.bmp");
-//		finalize("haste completed");
-		
-//		Common.sleep(10*60*60*1000);
-//		initialize("haste");
-//		harvest();
-//		scarify();
-//		plant("e:\\farmland\\cornInBag.bmp");
-//		finalize("haste completed");
-
-//		Common.sleep(20*60*60*1000);
-//		initialize("haste");
-//		harvest();
-//		scarify();
-//		finalize("haste completed");
-
 		while (true) {
 			Common.sleepUntil(1, 30, 0);
 			initialize("haste");
@@ -886,6 +848,12 @@ public class FarmlandRobot {
 		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310, true);
 		place[1].x = shopPlace.x+place1offsetX;
 		place[1].y = shopPlace.y+place1offsetY;
+		Common.robot.mouseMove(place[1].x, place[1].y);
+		Common.robot.mousePress(InputEvent.BUTTON1_MASK);
+		Common.robot.mouseMove(450, 500);
+		Common.robot.mouseRelease(InputEvent.BUTTON1_MASK);
+		place[1].x = 450;
+		place[1].y = 500;
 		for (int i = 2; i < 19; i++) {
 			place[i].x = place[1].x+(i-1)/3*100-(i-1)%3*100;
 			place[i].y = place[1].y+(i-1)/3*50+(i-1)%3*50;
