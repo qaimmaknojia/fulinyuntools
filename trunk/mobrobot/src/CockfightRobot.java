@@ -1,3 +1,5 @@
+import java.util.Date;
+
 
 public class CockfightRobot {
 
@@ -5,18 +7,15 @@ public class CockfightRobot {
 		while (true) {
 			train();
 		}
+//		observe();
+//		feed();	//running
 	}
 	
 	public static void train() {
+		System.out.println("train");
 		Common.initRobot();
-		Common.sleepUntil(23, 0, 0);
-		Common.enterGame("http://apps.xiaonei.com/cockfight");
-		Common.robot.delay(30000);
-		Common.moveAndClick(1270, 927);	//scroll down
-		Common.robot.delay(2000);
-		Common.moveAndClick(788, 164);	//flight training
-		Common.exitFirefox();
-		for (int i = 25; i < 33; i += 2) {
+		Common.sleepUntil(20, 50, 0);
+		for (int i = 0; i < 5; i++) {
 			Common.sleep(2*60*60*1000);
 			Common.enterGame("http://apps.xiaonei.com/cockfight");
 			Common.robot.delay(30000);
@@ -25,5 +24,30 @@ public class CockfightRobot {
 			Common.moveAndClick(788, 164);	//flight training
 			Common.exitFirefox();
 		}
+	}
+	
+	public static void feed() {
+		System.out.println("feed");
+		Common.initRobot();
+		Common.sleepUntil(22, 40, 0);
+		while (true) {
+			Common.enterGame("http://apps.xiaonei.com/cockfight");
+			Common.robot.delay(30000);
+			Common.moveAndClick(367, 745);
+			Common.exitFirefox();
+			Common.sleep(24*60*60*1000);
+		}
+	}
+	
+	public static void observe() {
+		Common.initRobot();
+		for (int i = 0; i < 5; i++) {
+			Common.sleep(2*60*60*1000);
+			Common.enterGame("http://apps.xiaonei.com/cockfight");
+			Common.robot.delay(30000);
+			Common.takePic("e:\\cockfight " + new Date().toString().replaceAll(":", "_") + ".jpg");
+			Common.exitFirefox();
+		}
+		System.exit(0);
 	}
 }
