@@ -1,4 +1,4 @@
-package org.ateam.xxplore.core.service.mappingA;
+package basic;
 
 
 import java.io.BufferedReader;

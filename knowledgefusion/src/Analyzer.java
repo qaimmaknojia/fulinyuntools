@@ -7,10 +7,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import org.ateam.xxplore.core.service.mappingA.GzReader;
-import org.ateam.xxplore.core.service.mappingA.IDataSourceReader;
-import org.ateam.xxplore.core.service.mappingA.TarGzReader;
-import org.ateam.xxplore.core.service.mappingA.WarcReader;
+import basic.GzReader;
+import basic.IDataSourceReader;
+import basic.TarGzReader;
+import basic.WarcReader;
 
 
 public class Analyzer {
