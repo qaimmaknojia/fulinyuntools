@@ -1,4 +1,4 @@
-package org.ateam.xxplore.core.service.mappingA;
+package basic;
 
 /**
  * Used to extract the local name from a DBLP URI

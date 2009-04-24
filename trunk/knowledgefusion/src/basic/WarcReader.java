@@ -1,4 +1,4 @@
-package org.ateam.xxplore.core.service.mappingA;
+package basic;
 
 import it.unimi.dsi.fastutil.io.FastBufferedInputStream;
 import it.unimi.dsi.law.warc.filters.Filter;

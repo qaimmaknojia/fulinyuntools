@@ -1,8 +1,8 @@
 import java.io.PrintWriter;
 import java.util.Date;
 
-import org.ateam.xxplore.core.service.mappingA.IDataSourceReader;
-import org.ateam.xxplore.core.service.mappingA.IOFactory;
+import basic.IDataSourceReader;
+import basic.IOFactory;
 
 
 public class Formatter {
