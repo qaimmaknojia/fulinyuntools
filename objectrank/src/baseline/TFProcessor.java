@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -25,13 +26,14 @@ public class TFProcessor {
 				return f.getName().endsWith(".htm");
 			}
 		});
-		PrintWriter pw = new PrintWriter(new FileWriter(projectFolder+"tuning\\baseline.txt", true));
+		PrintWriter pw = new PrintWriter(new FileWriter(projectFolder+"tuning\\baseline.txt"));
 		for (int i = 0; i < fn.length; i++) {
 			File f = fn[i];
 			String[] names = selectTop(f.getAbsolutePath(), 10);
 			pw.println(f.getName());
 			for (String s : names) pw.println(s);
 			pw.println();
+			System.out.println(new Date().toString() + " finished " + f.getName());
 		}
 		pw.close();
 	}
