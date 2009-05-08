@@ -1,17 +1,22 @@
 package basic;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class IOFactory {
 
 	// get the buffered PrintWriter for the gz formatted file, encoded in UTF-8 
 	public static PrintWriter getGzPrintWriter(String filename) throws Exception {
 		return new PrintWriter(new BufferedWriter(
-				new OutputStreamWriter(new FileOutputStream(filename), "UTF-8")));
+				new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(filename)), "UTF-8")));
 	}
 	
 	// get the buffered data source reader, the specific return type depends on the file name 
@@ -24,5 +29,16 @@ public class IOFactory {
 		else if (fn.endsWith(".bz2")) return new Bz2Reader(filename);
 		else if (new File(filename).isDirectory()) return new DirZipReader(filename);
 		else return new TxtReader(filename);
+	}
+	
+	// get the buffered reader for the gz file, encoded in UTF-8
+	public static BufferedReader getGzBufferedReader(String filename) throws Exception {
+		return new BufferedReader(new InputStreamReader(new GZIPInputStream(
+				new FileInputStream(filename)), "UTF-8"));
+	}
+	
+	public static PrintWriter getPrintWriter(String filename) throws Exception {
+		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(filename), "UTF-8")));
 	}
 }
