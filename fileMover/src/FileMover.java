@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.RandomAccessFile;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -79,26 +80,29 @@ public class FileMover {
 	 * @throws Exception
 	 */
 	public static void download(String netfile, File dst) throws Exception {
-		DataInputStream dis = new DataInputStream(new BufferedInputStream(
-				new URL(netfile).openStream()));
+		
 		dst.createNewFile();
 		long downloaded = dst.length();
 		System.out.println("downloaded: " + downloaded + " bytes");
-		DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(
-				new FileOutputStream(dst, true)));
-		for (int i = 0; i < downloaded; i++) dis.read();
+		HttpURLConnection httpConnection = (HttpURLConnection)new URL(netfile).openConnection();
+		httpConnection.setRequestProperty("User-Agent", "NetFox");
+		httpConnection.setRequestProperty("RANGE", "bytes=" + downloaded + "-");
+		DataInputStream dis = new DataInputStream(httpConnection.getInputStream());
+		RandomAccessFile rafdst = new RandomAccessFile(dst, "rw");
+		rafdst.seek(downloaded);
 		int byteRead;
+		int count = 0;
 		for (byteRead = dis.read(); byteRead != -1; byteRead = dis.read()) {
-			dos.write(byteRead);
-			if (dos.size() % 10000000 == 0) {
-				dos.flush();
-				System.out.println(new Date().toString() + " 10000000 new bytes downloaded," 
+			rafdst.write(byteRead);
+			count++;
+			if (count % 100000 == 0) {
+				System.out.println(new Date().toString() + " 100000 new bytes downloaded," 
 					+ " dst file length: " + dst.length());
 			}
 		}
 		System.out.println(new Date().toString() + " download completed," 
 				+ " dst file length: " + dst.length());
-		dos.close();
+		rafdst.close();
 		dis.close();
 	}
 	
