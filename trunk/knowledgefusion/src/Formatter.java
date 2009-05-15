@@ -1,3 +1,4 @@
+import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Date;
 
@@ -48,7 +49,32 @@ public class Formatter {
 		System.out.println(count + " lines in all");
 	}
 	
+	/**
+	 * remove empty lines in input and write the normal lines to output, both input and output are in gz format
+	 * @param input
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void removeEmptyLines(String input, String output) throws Exception {
+		System.out.println("removing empty lines from " + input);
+		BufferedReader br = IOFactory.getGzBufferedReader(input);
+		PrintWriter pw = IOFactory.getGzPrintWriter(output);
+		int count = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) { 
+			if (!line.equals("")) pw.println(line);
+			count++;
+			if (count%3000000 == 0) System.out.println(count);
+		}
+		pw.close();
+		br.close();
+	}
+	
 	public static void main(String[] args) throws Exception {
+//		removeEmptyLines(Common.dbpedia, Common.gzFolder + "dbpediaNoEmptyLines.gz"); // done
+//		removeEmptyLines(Common.geonames, Common.gzFolder + "geonamesNoEmptyLines.gz"); // done
+//		removeEmptyLines(Common.uscensus, Common.gzFolder + "uscensusNoEmptyLines.gz"); // done
+//		removeEmptyLines(Common.foaf, Common.gzFolder + "foafNoEmptyLines.gz"); // done
+		
 //		String workingDir = "\\\\poseidon\\team\\semantic search\\BillionTripleData\\";
 //		String dbpedia = "dbpedia-v3.nt.tar.gz";
 //		String dblp = "swetodblp_noblank.gz";
@@ -62,7 +88,7 @@ public class Formatter {
 //		String wordnet = "wordnet.nt.tar.gz";
 //		clean(workingDir+wordnet, workingDir+"gz\\wordnet.gz");
 		
-		String foaf = "\\\\poseidon\\team\\semantic search\\data\\foaf\\foafNTRIPLE.gz";
-		clean(foaf, "\\\\poseidon\\team\\semantic search\\data\\foaf\\foaf.gz", 54000000);
+//		String foaf = "\\\\poseidon\\team\\semantic search\\data\\foaf\\foafNTRIPLE.gz";
+//		clean(foaf, "\\\\poseidon\\team\\semantic search\\data\\foaf\\foaf.gz", 54000000);
 	}
 }

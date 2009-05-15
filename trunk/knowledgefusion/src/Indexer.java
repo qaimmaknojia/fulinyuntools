@@ -37,7 +37,7 @@ public class Indexer {
 	 * @throws Exception
 	 */
 	public static void lap1index() throws Exception {
-		System.out.println(new Date().toString() + " : start indexing");
+		System.out.println(new Date().toString() + " : start lap 1 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
 
 				// Store the index in memory:
@@ -77,15 +77,26 @@ public class Indexer {
 	 * during clustering result analysis. Relation targets/sources and attribute values are still 
 	 * not indexed. 
 	 */
+	public static void lap2index() throws Exception {
+		System.out.println(new Date().toString() + " : start lap 2 indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
+		Directory directory = FSDirectory.getDirectory(lap2index);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		IndexSearcher isearcher = new IndexSearcher(lap1index);
+		
+	}
 	
 	/**
 	 * based on the 2nd-lap index, merge each individual's attribute values into its "basic" field. 
-	 * Attribute values are tokenized and indexed.
+	 * Attribute values are tokenized and indexed. URIs with "<rdf:type>from", "<owl:class>from" or 
+	 * "<skos:subject>from" fields (i.e. classes) are not contained in the index.
 	 */ 
 	
 	/**
 	 * based on the 2nd- and 3rd- lap indexes, for each individual, merge its attribute values and 
 	 * its neighbors' attribute values into its "extended" field. This field is tokenized and indexed.
+	 * URIs with "<rdf:type>from", "<owl:class>from" or "<skos:subject>from" fields (i.e. classes) are 
+	 * not contained in the index.
 	 */
 	
 	/**
