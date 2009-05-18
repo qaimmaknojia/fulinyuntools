@@ -9,6 +9,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -26,7 +27,7 @@ public class Indexer {
 	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
 	
 	public static void main(String[] args) throws Exception {
-		lap1index();
+		lap1index(new String[]{Common.wordnet});
 	}
 	
 	/**
@@ -36,7 +37,7 @@ public class Indexer {
 	 * relation targets/sources and attribute values are not indexed.
 	 * @throws Exception
 	 */
-	public static void lap1index() throws Exception {
+	public static void lap1index(String[] toIndex) throws Exception {
 		System.out.println(new Date().toString() + " : start lap 1 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
 
@@ -45,30 +46,34 @@ public class Indexer {
 		// To store an index on disk, use this instead:
 		Directory directory = FSDirectory.getDirectory(lap1index);
 		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
-		BufferedReader br = IOFactory.getGzBufferedReader(Common.wordnet);
-		int count = 0;
-		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			String[] parts = line.split(" ");
-			for (int i = 3; i < parts.length-1; i++) parts[2] += (" "+parts[i]); // get whole attribute value
-			Document doc = new Document();
-			doc.add(new Field("URI", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
-			if (parts[2].startsWith("<")) { // relation
-				doc.add(new Field(parts[1]+"to", parts[2], Field.Store.YES, Field.Index.NO));
-			} else { // attribute
-				doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
+		for (String s : toIndex) {
+			System.out.println(new Date().toString() + " : start indexing " + s);
+			BufferedReader br = IOFactory.getGzBufferedReader(s);
+			int count = 0;
+			for (String line = br.readLine(); line != null; line = br.readLine()) {
+				String[] parts = line.split(" ");
+				for (int i = 3; i < parts.length-1; i++) parts[2] += (" "+parts[i]); // get whole attribute value
+				Document doc = new Document();
+				doc.add(new Field("URI", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
+				if (parts[2].startsWith("<")) { // relation
+					doc.add(new Field(parts[1]+"to", parts[2], Field.Store.YES, Field.Index.NO));
+				} else { // attribute
+					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
+				}
+				iwriter.addDocument(doc);
+				if (parts[2].startsWith("<")) { // relation
+					Document docRev = new Document();
+					docRev.add(new Field("URI", parts[2], Field.Store.YES, Field.Index.NOT_ANALYZED));
+					docRev.add(new Field(parts[1]+"from", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
+				}
+				count++;
+				if (count % 1000000 == 0) System.out.println(new Date().toString() + " : " + count);
 			}
-			iwriter.addDocument(doc);
-			if (parts[2].startsWith("<")) { // relation
-				Document docRev = new Document();
-				docRev.add(new Field("URI", parts[2], Field.Store.YES, Field.Index.NOT_ANALYZED));
-				docRev.add(new Field(parts[1]+"from", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
-			}
-			count++;
-			if (count % 1000000 == 0) System.out.println(new Date().toString() + " : " + count);
+			System.out.println(new Date().toString() + " : " + count + " lines in all");
 		}
 		iwriter.optimize();
 		iwriter.close();
-		System.out.println(new Date().toString() + " : " + count + " lines in all");
+
 	}
 	
 	/**
@@ -82,8 +87,9 @@ public class Indexer {
 		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
 		Directory directory = FSDirectory.getDirectory(lap2index);
 		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		IndexReader ireader = IndexReader.open(lap1index);
 		IndexSearcher isearcher = new IndexSearcher(lap1index);
-		
+		TermQuery q = new TermQuery(new Term);
 	}
 	
 	/**
