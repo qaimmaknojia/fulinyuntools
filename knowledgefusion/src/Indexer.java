@@ -1,12 +1,16 @@
 import java.io.BufferedReader;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.HitCollector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -27,7 +31,9 @@ public class Indexer {
 	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
 	
 	public static void main(String[] args) throws Exception {
-		lap1index(new String[]{Common.wordnet});
+//		lap1index(new String[]{Common.wordnet});
+//		lap2index();
+		observeLap1index();
 	}
 	
 	/**
@@ -64,7 +70,7 @@ public class Indexer {
 				if (parts[2].startsWith("<")) { // relation
 					Document docRev = new Document();
 					docRev.add(new Field("URI", parts[2], Field.Store.YES, Field.Index.NOT_ANALYZED));
-					docRev.add(new Field(parts[1]+"from", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
+					docRev.add(new Field(parts[1]+"from", parts[0], Field.Store.YES, Field.Index.NO));
 				}
 				count++;
 				if (count % 1000000 == 0) System.out.println(new Date().toString() + " : " + count);
@@ -73,7 +79,31 @@ public class Indexer {
 		}
 		iwriter.optimize();
 		iwriter.close();
-
+		directory.close();
+	}
+	
+	/**
+	 * have a look at whether the "<predicate>from" fields have been stored - no!!!
+	 * already known they are not indexed
+	 * @throws Exception
+	 */
+	public static void observeLap1index() throws Exception {
+		IndexReader ireader = IndexReader.open(lap1index);
+		int count = 0;
+		System.out.println(ireader.maxDoc());
+		for (int i = 0; i < ireader.maxDoc(); i++) {
+			Document doc = ireader.document(i);
+			List fields = doc.getFields();
+			for (Object o : fields) {
+				Field f = (Field)o;
+				if (f.name().endsWith("from")) {
+					System.out.println(doc.toString());
+					count++;
+					break;
+				}
+			}
+			if (count > 0 && count%50 == 0) System.in.read();
+		}
 	}
 	
 	/**
@@ -86,10 +116,50 @@ public class Indexer {
 		System.out.println(new Date().toString() + " : start lap 2 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
 		Directory directory = FSDirectory.getDirectory(lap2index);
-		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
-		IndexReader ireader = IndexReader.open(lap1index);
+		final IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		final IndexReader ireader = IndexReader.open(lap1index);
 		IndexSearcher isearcher = new IndexSearcher(lap1index);
-		TermQuery q = new TermQuery(new Term);
+		
+		// had a look at the terms in the "URI" field; they are in ascending lexical order 
+		TermEnum te = ireader.terms();
+		int count = 0;
+		while (te.next()) {
+			Term term = te.term();
+			if (term.field().equals("URI")) { // always true
+				final Document d = new Document();
+				d.add(new Field("URI", term.text(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+				isearcher.search(new TermQuery(term), new HitCollector() {
+					@Override
+					public void collect(int doc, float score) {
+						try {
+							List fieldList = ireader.document(doc).getFields();
+							for (Object o : fieldList) {
+								Field f = (Field)o;
+								d.add(f);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+				});
+				iwriter.addDocument(d);
+				count++; // number of URIs aggregated
+				if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count);
+			}
+		}
+		System.out.println(new Date().toString() + " : " + count + " URIs aggregated");
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		ireader.close();
+		isearcher.close();
+		
+	}
+	
+	public static void observeLap2index() throws Exception {
+		IndexReader ireader = IndexReader.open(lap2index);
+		
 	}
 	
 	/**

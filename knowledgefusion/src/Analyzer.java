@@ -350,6 +350,7 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		mainObserve(Common.wordnet);
 //		String wordnet = "wordnet.gz", dblp = "dblp.gz", dbpedia = "dbpedia.gz", 
 //		geonames = "geonames.gz", uscensus = "uscensus.gz", foaf = "foaf.gz";
 		
@@ -366,20 +367,20 @@ public class Analyzer {
 //				Common.gzFolder+"dblp.individual.gz");
 		
 //		extractURIWithLucene(Common.dbpedia, Common.gzFolder+"dbpedia.uri.gz");
-		diff(Common.gzFolder+"dbpedia.uri.gz", Common.gzFolder+"dbpedia.concept.txt", 0, 
-				Common.gzFolder+"dbpedia.individual.gz");
-		
-		extractURIWithLucene(Common.geonames, Common.gzFolder+"geonames.uri.gz");
-		diff(Common.gzFolder+"geonames.uri.gz", Common.gzFolder+"geonames.concept.txt", 0, 
-				Common.gzFolder+"geonames.individual.gz");
-
-		extractURIWithLucene(Common.uscensus, Common.gzFolder+"uscensus.uri.gz");
-		diff(Common.gzFolder+"uscensus.uri.gz", Common.gzFolder+"uscensus.concept.txt", 0, 
-				Common.gzFolder+"uscensus.individual.gz");
-
-		extractURIWithLucene(Common.foaf, Common.gzFolder+"foaf.uri.gz");
-		diff(Common.gzFolder+"foaf.uri.gz", Common.gzFolder+"foaf.concept.txt", 0, 
-				Common.gzFolder+"foaf.individual.gz");
+//		diff(Common.gzFolder+"dbpedia.uri.gz", Common.gzFolder+"dbpedia.concept.txt", 0, 
+//				Common.gzFolder+"dbpedia.individual.gz");
+//		
+//		extractURIWithLucene(Common.geonames, Common.gzFolder+"geonames.uri.gz");
+//		diff(Common.gzFolder+"geonames.uri.gz", Common.gzFolder+"geonames.concept.txt", 0, 
+//				Common.gzFolder+"geonames.individual.gz");
+//
+//		extractURIWithLucene(Common.uscensus, Common.gzFolder+"uscensus.uri.gz");
+//		diff(Common.gzFolder+"uscensus.uri.gz", Common.gzFolder+"uscensus.concept.txt", 0, 
+//				Common.gzFolder+"uscensus.individual.gz");
+//
+//		extractURIWithLucene(Common.foaf, Common.gzFolder+"foaf.uri.gz");
+//		diff(Common.gzFolder+"foaf.uri.gz", Common.gzFolder+"foaf.concept.txt", 0, 
+//				Common.gzFolder+"foaf.individual.gz");
 		
 //		extractURIPartial(workFolder+dbpedia, 12500000, 7500000, workFolder+"dbpedia.temp2.gz");
 //		extractURIMultiLap(workFolder+dbpedia, 2500000, workFolder+"dbpedia.uri.gz");
