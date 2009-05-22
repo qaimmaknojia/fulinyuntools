@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -32,9 +33,14 @@ public class Indexer {
 	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
 	
 	public static void main(String[] args) throws Exception {
-//		lap1index(new String[]{Common.wordnet});
+//		lap1index(new String[]{Common.dbpedia
+//				, Common.wordnet, Common.dblp, Common.foaf, Common.geonames, 
+//				Common.mba, Common.mbi, Common.mbr, Common.uscensus
+//				}, true);
+		lap1index(new String[]{Common.uscensus}, false);
+//		observeLap1index();
 //		lap2index();
-		observeLap1index();
+//		observeLap2index();
 	}
 	
 	/**
@@ -42,17 +48,22 @@ public class Indexer {
 	 * and each relation statement as two documents (one for each direction) with two fields named "URI" 
 	 * and "<predicateURI>to" or "<predicateURI>from", only the "URI" field is indexed and not tokenized, 
 	 * relation targets/sources and attribute values are not indexed.
+	 * time consumption: 97 sec for 1942887 lines, -> 36732sec (10 hr) to index 735737515 triples
 	 * @throws Exception
 	 */
-	public static void lap1index(String[] toIndex) throws Exception {
+	public static void lap1index(String[] toIndex, boolean deleteOld) throws Exception {
 		System.out.println(new Date().toString() + " : start lap 1 indexing");
-		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 
 				// Store the index in memory:
 				// Directory directory = new RAMDirectory();
 		// To store an index on disk, use this instead:
 		Directory directory = FSDirectory.getDirectory(lap1index);
-		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, deleteOld, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(800); // this could make the indexing process faster, 
+		                                 // at the risk of OutOfMemory Exception when dealing 
+		                                 // with a large data set
 		for (String s : toIndex) {
 			System.out.println(new Date().toString() + " : start indexing " + s);
 			BufferedReader br = IOFactory.getGzBufferedReader(s);
@@ -62,25 +73,28 @@ public class Indexer {
 				for (int i = 3; i < parts.length-1; i++) parts[2] += (" "+parts[i]); // get whole attribute value
 				Document doc = new Document();
 				doc.add(new Field("URI", parts[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
-				if (parts[2].startsWith("<")) { // relation
+				if (!parts[2].startsWith("\"")) { // relation
 					doc.add(new Field(parts[1]+"to", parts[2], Field.Store.YES, Field.Index.NO));
 				} else { // attribute
 					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
 				}
 				iwriter.addDocument(doc);
-				if (parts[2].startsWith("<")) { // relation
+				if (!parts[2].startsWith("\"")) { // relation
 					Document docRev = new Document();
 					docRev.add(new Field("URI", parts[2], Field.Store.YES, Field.Index.NOT_ANALYZED));
 					docRev.add(new Field(parts[1]+"from", parts[0], Field.Store.YES, Field.Index.NO));
+					iwriter.addDocument(docRev);
 				}
 				count++;
 				if (count % 1000000 == 0) System.out.println(new Date().toString() + " : " + count);
 			}
+			br.close();
 			System.out.println(new Date().toString() + " : " + count + " lines in all");
 		}
 		iwriter.optimize();
 		iwriter.close();
 		directory.close();
+		System.out.println(new Date().toString() + " : optimized");
 	}
 	
 	/**
@@ -112,12 +126,15 @@ public class Indexer {
 	 * information of an individual in one posting list for further indexing and easy browsing 
 	 * during clustering result analysis. Relation targets/sources and attribute values are still 
 	 * not indexed. 
+	 * speed: 24hr to index all the data sets
 	 */
 	public static void lap2index() throws Exception {
 		System.out.println(new Date().toString() + " : start lap 2 indexing");
-		org.apache.lucene.analysis.Analyzer analyzer = new StandardAnalyzer();
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 		Directory directory = FSDirectory.getDirectory(lap2index);
-		final IndexWriter iwriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		final IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+		iwriter.setRAMBufferSizeMB(1200);
 		final IndexReader ireader = IndexReader.open(lap1index);
 		IndexSearcher isearcher = new IndexSearcher(lap1index);
 		
@@ -136,7 +153,7 @@ public class Indexer {
 							List fieldList = ireader.document(doc).getFields();
 							for (Object o : fieldList) {
 								Field f = (Field)o;
-								d.add(f);
+								if (!f.name().equals("URI")) d.add(f);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -155,12 +172,20 @@ public class Indexer {
 		directory.close();
 		ireader.close();
 		isearcher.close();
-		
+		System.out.println(new Date().toString() + " : optimized");
 	}
 	
 	public static void observeLap2index() throws Exception {
 		IndexReader ireader = IndexReader.open(lap2index);
-		
+		System.out.println(ireader.maxDoc());
+		for (int i = 0; i < 40; i++) System.out.println(ireader.document(i).toString());
+		System.out.println();
+		TermEnum te = ireader.terms();
+		for (int i = 0; i < 40; i++) {
+			te.next();
+			Term term = te.term();
+			System.out.println(term.toString());
+		}
 	}
 	
 	/**
@@ -168,6 +193,11 @@ public class Indexer {
 	 * Attribute values are tokenized and indexed. URIs with "<rdf:type>from", "<owl:class>from" or 
 	 * "<skos:subject>from" fields (i.e. classes) are not contained in the index.
 	 */ 
+	public static void lap3index() throws Exception {
+		System.out.println(new Date().toString() + " : start lap 1 indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+
+	}
 	
 	/**
 	 * based on the 2nd- and 3rd- lap indexes, for each individual, merge its attribute values and 
