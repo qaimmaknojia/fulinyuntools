@@ -83,26 +83,24 @@ public class FileMover {
 		
 		dst.createNewFile();
 		long downloaded = dst.length();
-		System.out.println("downloaded: " + downloaded + " bytes");
+		System.out.println(new Date().toString() + " downloaded: " + downloaded + " bytes");
 		HttpURLConnection httpConnection = (HttpURLConnection)new URL(netfile).openConnection();
 		httpConnection.setRequestProperty("User-Agent", "NetFox");
 		httpConnection.setRequestProperty("RANGE", "bytes=" + downloaded + "-");
-		DataInputStream dis = new DataInputStream(httpConnection.getInputStream());
-		RandomAccessFile rafdst = new RandomAccessFile(dst, "rw");
-		rafdst.seek(downloaded);
+		DataInputStream dis = new DataInputStream(new BufferedInputStream(httpConnection.getInputStream()));
+		DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(dst, true)));
 		int byteRead;
-		int count = 0;
 		for (byteRead = dis.read(); byteRead != -1; byteRead = dis.read()) {
-			rafdst.write(byteRead);
-			count++;
-			if (count % 100000 == 0) {
+			dos.write(byteRead);
+			if (dos.size() % 100000 == 0) {
+				dos.flush();
 				System.out.println(new Date().toString() + " 100000 new bytes downloaded," 
 					+ " dst file length: " + dst.length());
 			}
 		}
 		System.out.println(new Date().toString() + " download completed," 
 				+ " dst file length: " + dst.length());
-		rafdst.close();
+		dos.close();
 		dis.close();
 	}
 	
@@ -111,7 +109,7 @@ public class FileMover {
 			new File("\\\\poseidon\\team\\semantic search\\data\\wikipedia-en-html-08-june.tar.7z") 
 			); // running
 //		download("http://apache.etoak.com/lucene/java/lucene-2.4.1-src.zip", 
-//				new File("d:\\javalib\\lucene-2.4.1-src.zip"));
+//				new File("e:\\users\\fulinyun\\javalib\\lucene-2.4.1-src.zip"));
 //		copy(new File("\\\\192.168.3.246\\d$\\wikipediaArticle_bak\\b.rar"), 
 //				new File("E:\\wikipediaArticle\\b.rar"), true); done
 //		copy(new File("\\\\192.168.3.246\\d$\\wikipediaArticle_bak\\c.rar"), 
