@@ -27,6 +27,7 @@ public class IOFactory {
 		else if (fn.endsWith(".warc")) return new WarcReader(filename);
 		else if (fn.endsWith(".zip")) return new ZipReader(filename);
 		else if (fn.endsWith(".bz2")) return new Bz2Reader(filename);
+		else if (fn.endsWith(".tar")) return new TarReader(filename);
 		else if (new File(filename).isDirectory()) return new DirZipReader(filename);
 		else return new TxtReader(filename);
 	}
