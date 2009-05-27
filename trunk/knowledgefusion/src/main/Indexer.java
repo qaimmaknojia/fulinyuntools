@@ -42,7 +42,7 @@ public class Indexer {
 		lap1index(new String[]{Common.geonames, Common.dblp}, lap1index+"\\geonames&dblp", true); // to run
 //		lap1index(new String[]{Common.uscensus}, false);
 //		observeLap1index();
-//		lap2index();
+//		lap2index(new String[]{lap1index+"\\dbpedia", lap1index+"\\geonames&dblp"}); // to run
 //		observeLap2index();
 	}
 	
@@ -102,7 +102,7 @@ public class Indexer {
 	}
 	
 	/**
-	 * have a look at whether the "<predicate>from" fields have been stored - no!!!
+	 * have a look at whether the "<predicate>from" fields have been stored
 	 * already known they are not indexed
 	 * @throws Exception
 	 */
@@ -140,25 +140,23 @@ public class Indexer {
 				IndexWriter.MaxFieldLength.UNLIMITED);
 //		iwriter.setRAMBufferSizeMB(1200);
 		iwriter.setMergeFactor(2);
-		final IndexReader[] ireader = new IndexReader[lap1indices.length];
-		for (int i = 0; i < ireader.length; i++) ireader[i] = IndexReader.open(lap1indices[i]);
-		IndexSearcher[] isearcher = new IndexSearcher[ireader.length];
-		for (int i = 0; i < ireader.length; i++) isearcher[i] = new IndexSearcher(ireader[i]);
-		
-		// had a look at the terms in the "URI" field; they are in ascending lexical order 
 		int count = 0;
-		for (int i = 0; i < ireader.length; i++) {
-			TermEnum te = ireader[i].terms();
+		for (int i = 0; i < lap1indices.length; i++) {
+			final IndexReader ireader = IndexReader.open(lap1indices[i]);
+			IndexSearcher isearcher = new IndexSearcher(lap1indices[i]);
+			
+			// had a look at the terms in the "URI" field; they are in ascending lexical order 
+			TermEnum te = ireader.terms();
 			while (te.next()) {
 				Term term = te.term();
 				if (term.field().equals("URI")) { // always true
 					final Document d = new Document();
 					d.add(new Field("URI", term.text(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-					isearcher[i].search(new TermQuery(term), new HitCollector() {
+					isearcher.search(new TermQuery(term), new HitCollector() {
 						@Override
 						public void collect(int doc, float score) {
 							try {
-								List fieldList = ireader[i].document(doc).getFields();
+								List fieldList = ireader.document(doc).getFields();
 								for (Object o : fieldList) {
 									Field f = (Field)o;
 									if (!f.name().equals("URI")) d.add(f);
@@ -174,13 +172,13 @@ public class Indexer {
 					if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count);
 				}
 			}
+			ireader.close();
+			isearcher.close();
 		}
 		System.out.println(new Date().toString() + " : " + count + " URIs aggregated");
 		iwriter.optimize();
 		iwriter.close();
 		directory.close();
-		for (int i = 0; i < ireader.length; i++) ireader[i].close();
-		for (int i = 0; i < isearcher.length; i++) isearcher[i].close();
 		System.out.println(new Date().toString() + " : optimized");
 	}
 	
