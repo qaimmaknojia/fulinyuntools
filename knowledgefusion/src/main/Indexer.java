@@ -1,5 +1,6 @@
 package main;
 import java.io.BufferedReader;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -33,11 +34,13 @@ public class Indexer {
 	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
 	
 	public static void main(String[] args) throws Exception {
-//		lap1index(new String[]{Common.dbpedia
-//				, Common.wordnet, Common.dblp, Common.foaf, Common.geonames, 
-//				Common.mba, Common.mbi, Common.mbr, Common.uscensus
-//				}, true);
-		lap1index(new String[]{Common.uscensus}, false);
+//		System.out.println(sortUnique("as soon as possible! yes, as soon as possible!!"));
+//		lap1index(new String[]{Common.uscensus, Common.dbpedia, Common.geonames, Common.foaf,
+//				Common.wordnet, Common.dblp,  
+//				Common.mba, Common.mbi, Common.mbr}, true);
+		lap1index(new String[]{Common.dbpedia}, lap1index+"\\dbpedia", true); // running
+		lap1index(new String[]{Common.geonames, Common.dblp}, lap1index+"\\geonames&dblp", true); // to run
+//		lap1index(new String[]{Common.uscensus}, false);
 //		observeLap1index();
 //		lap2index();
 //		observeLap2index();
@@ -51,19 +54,20 @@ public class Indexer {
 	 * time consumption: 97 sec for 1942887 lines, -> 36732sec (10 hr) to index 735737515 triples
 	 * @throws Exception
 	 */
-	public static void lap1index(String[] toIndex, boolean deleteOld) throws Exception {
+	public static void lap1index(String[] toIndex, String targetFolder, boolean deleteOld) throws Exception {
 		System.out.println(new Date().toString() + " : start lap 1 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 
 				// Store the index in memory:
 				// Directory directory = new RAMDirectory();
 		// To store an index on disk, use this instead:
-		Directory directory = FSDirectory.getDirectory(lap1index);
+		Directory directory = FSDirectory.getDirectory(targetFolder);
 		IndexWriter iwriter = new IndexWriter(directory, analyzer, deleteOld, 
 				IndexWriter.MaxFieldLength.UNLIMITED);
 //		iwriter.setRAMBufferSizeMB(800); // this could make the indexing process faster, 
 		                                 // at the risk of OutOfMemory Exception when dealing 
 		                                 // with a large data set
+		iwriter.setMergeFactor(2); // hope this can help avoid "background merge hit exception"~~ failed!!!
 		for (String s : toIndex) {
 			System.out.println(new Date().toString() + " : start indexing " + s);
 			BufferedReader br = IOFactory.getGzBufferedReader(s);
@@ -128,50 +132,55 @@ public class Indexer {
 	 * not indexed. 
 	 * speed: 24hr to index all the data sets
 	 */
-	public static void lap2index() throws Exception {
+	public static void lap2index(String[] lap1indices) throws Exception {
 		System.out.println(new Date().toString() + " : start lap 2 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 		Directory directory = FSDirectory.getDirectory(lap2index);
 		final IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
 				IndexWriter.MaxFieldLength.UNLIMITED);
-		iwriter.setRAMBufferSizeMB(1200);
-		final IndexReader ireader = IndexReader.open(lap1index);
-		IndexSearcher isearcher = new IndexSearcher(lap1index);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		final IndexReader[] ireader = new IndexReader[lap1indices.length];
+		for (int i = 0; i < ireader.length; i++) ireader[i] = IndexReader.open(lap1indices[i]);
+		IndexSearcher[] isearcher = new IndexSearcher[ireader.length];
+		for (int i = 0; i < ireader.length; i++) isearcher[i] = new IndexSearcher(ireader[i]);
 		
 		// had a look at the terms in the "URI" field; they are in ascending lexical order 
-		TermEnum te = ireader.terms();
 		int count = 0;
-		while (te.next()) {
-			Term term = te.term();
-			if (term.field().equals("URI")) { // always true
-				final Document d = new Document();
-				d.add(new Field("URI", term.text(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-				isearcher.search(new TermQuery(term), new HitCollector() {
-					@Override
-					public void collect(int doc, float score) {
-						try {
-							List fieldList = ireader.document(doc).getFields();
-							for (Object o : fieldList) {
-								Field f = (Field)o;
-								if (!f.name().equals("URI")) d.add(f);
+		for (int i = 0; i < ireader.length; i++) {
+			TermEnum te = ireader[i].terms();
+			while (te.next()) {
+				Term term = te.term();
+				if (term.field().equals("URI")) { // always true
+					final Document d = new Document();
+					d.add(new Field("URI", term.text(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					isearcher[i].search(new TermQuery(term), new HitCollector() {
+						@Override
+						public void collect(int doc, float score) {
+							try {
+								List fieldList = ireader[i].document(doc).getFields();
+								for (Object o : fieldList) {
+									Field f = (Field)o;
+									if (!f.name().equals("URI")) d.add(f);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
 						}
-					}
-					
-				});
-				iwriter.addDocument(d);
-				count++; // number of URIs aggregated
-				if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count);
+						
+					});
+					iwriter.addDocument(d);
+					count++; // number of URIs aggregated
+					if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count);
+				}
 			}
 		}
 		System.out.println(new Date().toString() + " : " + count + " URIs aggregated");
 		iwriter.optimize();
 		iwriter.close();
 		directory.close();
-		ireader.close();
-		isearcher.close();
+		for (int i = 0; i < ireader.length; i++) ireader[i].close();
+		for (int i = 0; i < isearcher.length; i++) isearcher[i].close();
 		System.out.println(new Date().toString() + " : optimized");
 	}
 	
@@ -186,6 +195,7 @@ public class Indexer {
 			Term term = te.term();
 			System.out.println(term.toString());
 		}
+		ireader.close();
 	}
 	
 	/**
@@ -194,9 +204,43 @@ public class Indexer {
 	 * "<skos:subject>from" fields (i.e. classes) are not contained in the index.
 	 */ 
 	public static void lap3index() throws Exception {
-		System.out.println(new Date().toString() + " : start lap 1 indexing");
+		System.out.println(new Date().toString() + " : start lap 3 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
-
+		Directory directory = FSDirectory.getDirectory(lap3index);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		IndexReader ireader = IndexReader.open(lap2index);
+		for (int i = 0; i < ireader.maxDoc(); i++) {
+			Document doc = ireader.document(i);
+			List fieldList = doc.getFields();
+			String basic = "";
+			boolean isIndividual = true;
+			for (Object o : fieldList) {
+				Field f = (Field)o;
+				String fn = f.name();
+				if (fn.equals(Common.rdfType+"from") || fn.equals(Common.owlClass+"from") || 
+						fn.equals(Common.dbpediaSubject+"from")) {
+					isIndividual = false;
+					break;
+				} else if (!fn.equals("URI") && !fn.endsWith("from") && !fn.endsWith("to")) {
+					basic += " " + f.stringValue();
+				}
+			}
+			if (isIndividual) {
+				Document odoc = new Document();
+				odoc.add(new Field("URI", doc.get("URI"), Field.Store.YES, Field.Index.NOT_ANALYZED));
+				odoc.add(new Field("basic", basic, Field.Store.YES, Field.Index.ANALYZED));
+				iwriter.addDocument(odoc);
+			}
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		ireader.close();
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		System.out.println(new Date().toString() + " : optimized");
 	}
 	
 	/**
@@ -205,13 +249,114 @@ public class Indexer {
 	 * URIs with "<rdf:type>from", "<owl:class>from" or "<skos:subject>from" fields (i.e. classes) are 
 	 * not contained in the index.
 	 */
+	public static void lap4index() throws Exception {
+		System.out.println(new Date().toString() + " : start lap 4 indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+		Directory directory = FSDirectory.getDirectory(lap4index);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		IndexReader ireader2 = IndexReader.open(lap2index);
+		IndexReader ireader3 = IndexReader.open(lap3index);
+		IndexSearcher isearcher3 = new IndexSearcher(ireader3);
+		for (int i = 0; i < ireader3.maxDoc(); i++) {
+			Document doc = ireader3.document(i);
+			String uri = doc.get("URI");
+			String extended = doc.get("basic");
+//			TopDocs td = isearcher2.search(new TermQuery(new Term("URI", uri)), 1);
+//			Document toExtend = ireader2.document(td.scoreDocs[0].doc);
+			Document toExtend = ireader2.document(i);
+			if (!toExtend.get("URI").equals(doc.get("URI"))) {
+				System.out.println("URI not matched!!!");
+				System.exit(1);
+			}
+			List fieldList = toExtend.getFields();
+			for (Object o : fieldList) {
+				Field f = (Field)o;
+				if (f.name().endsWith("from") || f.name().endsWith("to")) {
+					TopDocs tdbasic = isearcher3.search(new TermQuery(new Term("URI", 
+							f.stringValue())), 1);
+					Document dbasic = ireader3.document(tdbasic.scoreDocs[0].doc);
+					extended += dbasic.get("basic");
+				}
+			}
+			Document odoc = new Document();
+			odoc.add(new Field("URI", uri, Field.Store.YES, Field.Index.NOT_ANALYZED));
+			odoc.add(new Field("extended", extended, Field.Store.YES, Field.Index.ANALYZED));
+			iwriter.addDocument(odoc);
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		isearcher3.close();
+		ireader2.close();
+		ireader3.close();
+		System.out.println(new Date().toString() + " : optimized");
+
+	}
 	
 	/**
 	 * for terms in the 3rd- and 4th- lap indexes whose term frequencies are more than 1, split them 
-	 * into different terms such as "term", "term.1", "term.2" ... to meet the requirement of applying 
-	 * the C. Xiao et al. WWW09 positional prefix filtering technique.
+	 * into different terms such as "term", "term.1", "term.2" ... and sort all the terms according 
+	 * to the lexical order to meet the requirement of applying the C. Xiao et al. WWW09 positional 
+	 * prefix filtering technique.
 	 */
+	public static void lap5index() throws Exception {
+		System.out.println(new Date().toString() + " : start lap 5 indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+		Directory directory = FSDirectory.getDirectory(lap5index);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		IndexReader ireader4 = IndexReader.open(lap4index);
+		IndexReader ireader3 = IndexReader.open(lap3index);
+		for (int i = 0; i < ireader3.maxDoc(); i++) {
+			Document dbasic = ireader3.document(i);
+			String uri = dbasic.get("URI");
+			String basic = dbasic.get("basic");
+			Document dextended = ireader4.document(i);
+			String uriex = dextended.get("URI");
+			if (!uri.equals(uriex)) {
+				System.out.println("URI not matched!!!");
+				System.exit(1);
+			}
+			String extended = dextended.get("extended");
+			String basicsorted = sortUnique(basic);
+			String extendedsorted = sortUnique(extended);
+			Document odoc = new Document();
+			odoc.add(new Field("URI", uri, Field.Store.YES, Field.Index.NOT_ANALYZED));
+			odoc.add(new Field("basic", basicsorted, Field.Store.YES, Field.Index.ANALYZED));
+			odoc.add(new Field("extended", extendedsorted, Field.Store.YES, Field.Index.ANALYZED));
+			iwriter.addDocument(odoc);
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		ireader4.close();
+		ireader3.close();
+		System.out.println(new Date().toString() + " : optimized");
+		
+	}
 	
+	/**
+	 * sort and unique tokens in str, duplicated tokens are assigned unique aliases
+	 * @param str
+	 * @return
+	 */
+	private static String sortUnique(String str) {
+		String[] tokens = str.split(" ");
+		Arrays.sort(tokens);
+		for (int i = 0; i < tokens.length; i++) 
+			for (int j = i+1; j < tokens.length && tokens[j].equals(tokens[i]); j++) tokens[j] += (j-i);
+		String ret = tokens[0];
+		for (int i = 1; i < tokens.length; i++) ret += " " + tokens[i];
+		return ret;
+	}
+
 	/**
 	 * test similarity calculation
 	 */

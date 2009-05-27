@@ -26,13 +26,42 @@ public class Analyzer {
 	// group the col-th column of input (.gz file) and count the size of each group
 	public static void summarize(String input, int col, String output) throws Exception {
 		System.out.println("summarize to " + output);
-		BufferedReader br = IOFactory.getGzBufferedReader(input);
+		IDataSourceReader br = IOFactory.getReader(input);
 		HashMap<String, Integer> summaryTable = new HashMap<String, Integer>();
 		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] parts = line.split(" ");
 			if (parts.length > 2) {
 				String toSum = parts[col];
+				if (summaryTable.containsKey(toSum)) 
+					summaryTable.put(toSum, summaryTable.get(toSum)+1);
+				else summaryTable.put(toSum, 1);
+			}
+			count++;
+			if (count % 3000000 == 0) System.out.println(
+					new Date().toString() + " : " + count);
+		}
+		br.close();
+		System.out.println(count + " lines in all");
+		writeSummaryTable(summaryTable, output);
+	}
+	
+	// group the input sameAs statements by http domain pairs and count the size of each group
+	public static void sumDomain(String input, String output) throws Exception {
+		System.out.println("summarize to " + output);
+		IDataSourceReader br = IOFactory.getReader(input);
+		HashMap<String, Integer> summaryTable = new HashMap<String, Integer>();
+		int count = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			if (parts.length > 2) {
+				String o1 = parts[0];
+				String o2 = parts[2];
+				String[] uriparts = o1.split("/");
+				if (uriparts.length > 2) o1 = uriparts[2];
+				uriparts = o2.split("/");
+				if (uriparts.length > 2) o2 = uriparts[2];
+				String toSum = o1+"->"+o2;
 				if (summaryTable.containsKey(toSum)) 
 					summaryTable.put(toSum, summaryTable.get(toSum)+1);
 				else summaryTable.put(toSum, 1);
@@ -350,8 +379,76 @@ public class Analyzer {
 		return count;
 	}
 	
+	/**
+	 * extract sameAs statements
+	 * @param input
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void extractSameAs(String input, String output) throws Exception {
+		IDataSourceReader idsr = IOFactory.getReader(input);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		int count = 0;
+		for (String line = idsr.readLine(); line != null; line = idsr.readLine()) {
+			if (line.contains("sameAs")) pw.println(line);
+			count++;
+			if (count%10000000 == 0) System.out.println(new Date().toString() + " : " + count);
+		}
+		pw.close();
+		idsr.close();
+	}
+	
 	public static void main(String[] args) throws Exception {
-		mainObserve(Common.wordnet);
+		
+		diff(Common.gzFolder+"dblp.individual.gz", Common.gzFolder+"dblp.attribute.txt", 0, 
+				Common.gzFolder+"dblp.individual-a.gz");
+		
+		diff(Common.gzFolder+"dblp.individual-a.gz", Common.gzFolder+"dblp.relation.txt", 0, 
+				Common.gzFolder+"dblp.individual-a-r.gz");
+		
+		diff(Common.gzFolder+"dbpedia.individual.gz", Common.gzFolder+"dbpedia.attribute.txt", 0, 
+				Common.gzFolder+"dbpedia.individual-a.gz");
+		
+		diff(Common.gzFolder+"dbpedia.individual-a.gz", Common.gzFolder+"dbpedia.relation.txt", 0, 
+				Common.gzFolder+"dbpedia.individual-a-r.gz");
+
+		diff(Common.gzFolder+"foaf.individual.gz", Common.gzFolder+"foaf.attribute.txt", 0, 
+				Common.gzFolder+"foaf.individual-a.gz");
+		
+		diff(Common.gzFolder+"foaf.individual-a.gz", Common.gzFolder+"foaf.relation.txt", 0, 
+				Common.gzFolder+"foaf.individual-a-r.gz");
+
+		diff(Common.gzFolder+"geonames.individual.gz", Common.gzFolder+"geonames.attribute.txt", 0, 
+				Common.gzFolder+"geonames.individual-a.gz");
+		
+		diff(Common.gzFolder+"geonames.individual-a.gz", Common.gzFolder+"geonames.relation.txt", 0, 
+				Common.gzFolder+"geonames.individual-a-r.gz");
+
+		diff(Common.gzFolder+"uscensus.individual.gz", Common.gzFolder+"uscensus.attribute.txt", 0, 
+				Common.gzFolder+"uscensus.individual-a.gz");
+		
+		diff(Common.gzFolder+"uscensus.individual-a.gz", Common.gzFolder+"uscensus.relation.txt", 0, 
+				Common.gzFolder+"uscensus.individual-a-r.gz");
+
+		diff(Common.gzFolder+"wordnet.individual.gz", Common.gzFolder+"wordnet.attribute.txt", 0, 
+				Common.gzFolder+"wordnet.individual-a.gz");
+		
+		diff(Common.gzFolder+"wordnet.individual-a.gz", Common.gzFolder+"wordnet.relation.txt", 0, 
+				Common.gzFolder+"wordnet.individual-a-r.gz");
+
+//		String sameAsFolder = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\crude\\";
+//		String dbpediaSameAs = sameAsFolder+"dbpedia-v3.equ";
+//		String geonamesSameAs = sameAsFolder+"geonames.equ";
+//		String dblpSameAs = sameAsFolder+"swetodblp.equ";
+//		String foafSameAs = sameAsFolder+"foaf.equ";
+
+//		sumDomain(foafSameAs, sameAsFolder+"foafSum.txt"); // do not need to run
+//		extractSameAs(Common.foaf, foafSameAs); // run, no sameAs triples found!!!
+//		sumDomain(dbpediaSameAs, sameAsFolder+"dbpediaSum.txt");
+//		sumDomain(geonamesSameAs, sameAsFolder+"geonamesSum.txt");
+//		sumDomain(dblpSameAs, sameAsFolder+"dblpSum.txt");
+
+//		mainObserve(Common.wordnet);
 //		String wordnet = "wordnet.gz", dblp = "dblp.gz", dbpedia = "dbpedia.gz", 
 //		geonames = "geonames.gz", uscensus = "uscensus.gz", foaf = "foaf.gz";
 		
