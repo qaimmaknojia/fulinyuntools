@@ -1,6 +1,7 @@
 package main;
 import java.io.BufferedReader;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -28,10 +29,11 @@ import basic.IOFactory;
 public class Indexer {
 
 	public static String lap1index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap1";
-	public static String lap2index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap2";
-	public static String lap3index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap3";
-	public static String lap4index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap4";
-	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
+	public static String lap2index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\refIndex";
+	public static String lap3index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\basicFeatureIndex";
+	public static String lap4index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap4ext";
+	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5ext";
+	public static String lap6index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\extendedFeatureIndex";
 	
 	public static void main(String[] args) throws Exception {
 //		System.out.println(sortUnique("as soon as possible! yes, as soon as possible!!"));
@@ -44,6 +46,7 @@ public class Indexer {
 //		observeLap1index();
 //		lap2index(new String[]{lap1index+"\\dbpedia", lap1index+"\\geonames&dblp"}); // to run
 //		observeLap2index();
+//		System.out.println(sortUnique("mary mary peter peter"));
 	}
 	
 	/**
@@ -197,6 +200,7 @@ public class Indexer {
 	}
 	
 	/**
+	 * basic feature index
 	 * based on the 2nd-lap index, merge each individual's attribute values into its "basic" field. 
 	 * Attribute values are tokenized and indexed. URIs with "<rdf:type>from", "<owl:class>from" or 
 	 * "<skos:subject>from" fields (i.e. classes) are not contained in the index.
@@ -242,6 +246,7 @@ public class Indexer {
 	}
 	
 	/**
+	 * extended feature index
 	 * based on the 2nd- and 3rd- lap indexes, for each individual, merge its attribute values and 
 	 * its neighbors' attribute values into its "extended" field. This field is tokenized and indexed.
 	 * URIs with "<rdf:type>from", "<owl:class>from" or "<skos:subject>from" fields (i.e. classes) are 
@@ -296,7 +301,8 @@ public class Indexer {
 	}
 	
 	/**
-	 * for terms in the 3rd- and 4th- lap indexes whose term frequencies are more than 1, split them 
+	 * unique extended feature index
+	 * for terms in the 4th-lap indexes ("extended" field) whose term frequencies are more than 1, split them 
 	 * into different terms such as "term", "term.1", "term.2" ... and sort all the terms according 
 	 * to the lexical order to meet the requirement of applying the C. Xiao et al. WWW09 positional 
 	 * prefix filtering technique.
@@ -310,23 +316,13 @@ public class Indexer {
 //		iwriter.setRAMBufferSizeMB(1200);
 		iwriter.setMergeFactor(2);
 		IndexReader ireader4 = IndexReader.open(lap4index);
-		IndexReader ireader3 = IndexReader.open(lap3index);
-		for (int i = 0; i < ireader3.maxDoc(); i++) {
-			Document dbasic = ireader3.document(i);
-			String uri = dbasic.get("URI");
-			String basic = dbasic.get("basic");
+		for (int i = 0; i < ireader4.maxDoc(); i++) {
 			Document dextended = ireader4.document(i);
 			String uriex = dextended.get("URI");
-			if (!uri.equals(uriex)) {
-				System.out.println("URI not matched!!!");
-				System.exit(1);
-			}
 			String extended = dextended.get("extended");
-			String basicsorted = sortUnique(basic);
 			String extendedsorted = sortUnique(extended);
 			Document odoc = new Document();
-			odoc.add(new Field("URI", uri, Field.Store.YES, Field.Index.NOT_ANALYZED));
-			odoc.add(new Field("basic", basicsorted, Field.Store.YES, Field.Index.ANALYZED));
+			odoc.add(new Field("URI", uriex, Field.Store.YES, Field.Index.NOT_ANALYZED));
 			odoc.add(new Field("extended", extendedsorted, Field.Store.YES, Field.Index.ANALYZED));
 			iwriter.addDocument(odoc);
 			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
@@ -335,7 +331,6 @@ public class Indexer {
 		iwriter.close();
 		directory.close();
 		ireader4.close();
-		ireader3.close();
 		System.out.println(new Date().toString() + " : optimized");
 		
 	}
@@ -349,12 +344,61 @@ public class Indexer {
 		String[] tokens = str.split(" ");
 		Arrays.sort(tokens);
 		for (int i = 0; i < tokens.length; i++) 
-			for (int j = i+1; j < tokens.length && tokens[j].equals(tokens[i]); j++) tokens[j] += (j-i);
+			for (int j = i+1; j < tokens.length && tokens[j].equals(tokens[i]); j++) tokens[j] += ("."+(j-i));
 		String ret = tokens[0];
 		for (int i = 1; i < tokens.length; i++) ret += " " + tokens[i];
 		return ret;
 	}
 
+	/**
+	 * sorted extended feature index
+	 * sort the terms in 5th-lap index according to document frequency ordering
+	 * @throws Exception
+	 */
+	public static void lap6index() throws Exception {
+		System.out.println(new Date().toString() + " : start lap 6 indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+		Directory directory = FSDirectory.getDirectory(lap6index);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		final IndexReader ireader5 = IndexReader.open(lap5index);
+		for (int i = 0; i < ireader5.maxDoc(); i++) {
+			String ext = ireader5.document(i).get("extended");
+			String[] words = ext.split(" ");
+			Arrays.sort(words, new Comparator<String>() {
+
+				@Override
+				public int compare(String a, String b) {
+					try {
+						int dfa = ireader5.terms(new Term("extended", a)).docFreq();
+						int dfb = ireader5.terms(new Term("extended", b)).docFreq();
+						if (dfa > dfb) return 1;
+						else if (dfa == dfb) return 0;
+						return -1;
+					} catch (Exception e) {
+						e.printStackTrace();
+						return 0;
+					}
+					
+				}
+				
+			});
+			String extSorted = words[0];
+			for (int j = 1; j < words.length; j++) extSorted += " " + words[j];
+			Document doc = new Document();
+			doc.add(new Field("extended", extSorted, Field.Store.YES, Field.Index.ANALYZED));
+			iwriter.addDocument(doc);
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		ireader5.close();
+		System.out.println(new Date().toString() + " : optimized");
+	}
+	
 	/**
 	 * test similarity calculation
 	 */
