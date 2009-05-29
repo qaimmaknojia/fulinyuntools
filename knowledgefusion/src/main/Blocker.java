@@ -8,6 +8,8 @@ package main;
  */
 public class Blocker {
 
+	public static String ppIndex = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\ppIndex";
+	
 	/**
 	 * index contains a set of records
 	 * t is a Jaccard similarity threshold
