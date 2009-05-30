@@ -1,5 +1,6 @@
 package main;
 import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -31,9 +32,10 @@ public class Indexer {
 	public static String lap1index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap1";
 	public static String lap2index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\refIndex";
 	public static String lap3index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\basicFeatureIndex";
-	public static String lap4index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap4ext";
-	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5ext";
-	public static String lap6index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\extendedFeatureIndex";
+	public static String lap4index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\extendedFeatureIndex";
+	public static String lap5index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap5";
+	public static String lap6index = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\lap6";
+	public static String classBasicIndex = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\classBasicIndex";
 	
 	public static void main(String[] args) throws Exception {
 //		System.out.println(sortUnique("as soon as possible! yes, as soon as possible!!"));
@@ -246,6 +248,49 @@ public class Indexer {
 	}
 	
 	/**
+	 * index class basic features
+	 * @throws Exception
+	 */
+	public static void classBasicIndex() throws Exception {
+		System.out.println(new Date().toString() + " : start class basic feature indexing");
+		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+		Directory directory = FSDirectory.getDirectory(classBasicIndex);
+		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+				IndexWriter.MaxFieldLength.UNLIMITED);
+//		iwriter.setRAMBufferSizeMB(1200);
+		iwriter.setMergeFactor(2);
+		IndexReader ireader = IndexReader.open(lap2index);
+		for (int i = 0; i < ireader.maxDoc(); i++) {
+			Document doc = ireader.document(i);
+			List fieldList = doc.getFields();
+			String basic = "";
+			boolean isIndividual = true;
+			for (Object o : fieldList) {
+				Field f = (Field)o;
+				String fn = f.name();
+				if (fn.equals(Common.rdfType+"from") || fn.equals(Common.owlClass+"from") || 
+						fn.equals(Common.dbpediaSubject+"from")) {
+					isIndividual = false;
+				} else if (!fn.equals("URI") && !fn.endsWith("from") && !fn.endsWith("to")) {
+					basic += " " + f.stringValue();
+				}
+			}
+			if (!isIndividual) {
+				Document odoc = new Document();
+				odoc.add(new Field("URI", doc.get("URI"), Field.Store.YES, Field.Index.NOT_ANALYZED));
+				odoc.add(new Field("basic", basic, Field.Store.YES, Field.Index.ANALYZED));
+				iwriter.addDocument(odoc);
+			}
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		ireader.close();
+		iwriter.optimize();
+		iwriter.close();
+		directory.close();
+		System.out.println(new Date().toString() + " : optimized");
+	}
+
+	/**
 	 * extended feature index
 	 * based on the 2nd- and 3rd- lap indexes, for each individual, merge its attribute values and 
 	 * its neighbors' attribute values into its "extended" field. This field is tokenized and indexed.
@@ -298,6 +343,20 @@ public class Indexer {
 		ireader3.close();
 		System.out.println(new Date().toString() + " : optimized");
 
+	}
+	
+	/**
+	 * dump basic or extended features of individuals or classes to output, one record per line
+	 */
+	public static void dumpFeature(String index, String field, String output) throws Exception {
+		IndexReader ireader = IndexReader.open(index);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (int i = 0; i < ireader.maxDoc(); i++) {
+			pw.println(ireader.document(i).get(field));
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		pw.close();
+		ireader.close();
 	}
 	
 	/**
