@@ -399,42 +399,43 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		
-		diff(Common.gzFolder+"dblp.individual.gz", Common.gzFolder+"dblp.attribute.txt", 0, 
-				Common.gzFolder+"dblp.individual-a.gz");
-		
-		diff(Common.gzFolder+"dblp.individual-a.gz", Common.gzFolder+"dblp.relation.txt", 0, 
-				Common.gzFolder+"dblp.individual-a-r.gz");
-		
-		diff(Common.gzFolder+"dbpedia.individual.gz", Common.gzFolder+"dbpedia.attribute.txt", 0, 
-				Common.gzFolder+"dbpedia.individual-a.gz");
-		
-		diff(Common.gzFolder+"dbpedia.individual-a.gz", Common.gzFolder+"dbpedia.relation.txt", 0, 
-				Common.gzFolder+"dbpedia.individual-a-r.gz");
-
-		diff(Common.gzFolder+"foaf.individual.gz", Common.gzFolder+"foaf.attribute.txt", 0, 
-				Common.gzFolder+"foaf.individual-a.gz");
-		
-		diff(Common.gzFolder+"foaf.individual-a.gz", Common.gzFolder+"foaf.relation.txt", 0, 
-				Common.gzFolder+"foaf.individual-a-r.gz");
-
-		diff(Common.gzFolder+"geonames.individual.gz", Common.gzFolder+"geonames.attribute.txt", 0, 
-				Common.gzFolder+"geonames.individual-a.gz");
-		
-		diff(Common.gzFolder+"geonames.individual-a.gz", Common.gzFolder+"geonames.relation.txt", 0, 
-				Common.gzFolder+"geonames.individual-a-r.gz");
-
-		diff(Common.gzFolder+"uscensus.individual.gz", Common.gzFolder+"uscensus.attribute.txt", 0, 
-				Common.gzFolder+"uscensus.individual-a.gz");
-		
-		diff(Common.gzFolder+"uscensus.individual-a.gz", Common.gzFolder+"uscensus.relation.txt", 0, 
-				Common.gzFolder+"uscensus.individual-a-r.gz");
-
-		diff(Common.gzFolder+"wordnet.individual.gz", Common.gzFolder+"wordnet.attribute.txt", 0, 
-				Common.gzFolder+"wordnet.individual-a.gz");
-		
-		diff(Common.gzFolder+"wordnet.individual-a.gz", Common.gzFolder+"wordnet.relation.txt", 0, 
-				Common.gzFolder+"wordnet.individual-a-r.gz");
+		find(Common.dbpedia, "!!! (three exclamation marks,");
+//		mainObserve("e:\\user\\fulinyun\\dbpediaPreprocessed.gz");
+//		diff(Common.gzFolder+"dblp.individual.gz", Common.gzFolder+"dblp.attribute.txt", 0, 
+//				Common.gzFolder+"dblp.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"dblp.individual-a.gz", Common.gzFolder+"dblp.relation.txt", 0, 
+//				Common.gzFolder+"dblp.individual-a-r.gz");
+//		
+//		diff(Common.gzFolder+"dbpedia.individual.gz", Common.gzFolder+"dbpedia.attribute.txt", 0, 
+//				Common.gzFolder+"dbpedia.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"dbpedia.individual-a.gz", Common.gzFolder+"dbpedia.relation.txt", 0, 
+//				Common.gzFolder+"dbpedia.individual-a-r.gz");
+//
+//		diff(Common.gzFolder+"foaf.individual.gz", Common.gzFolder+"foaf.attribute.txt", 0, 
+//				Common.gzFolder+"foaf.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"foaf.individual-a.gz", Common.gzFolder+"foaf.relation.txt", 0, 
+//				Common.gzFolder+"foaf.individual-a-r.gz");
+//
+//		diff(Common.gzFolder+"geonames.individual.gz", Common.gzFolder+"geonames.attribute.txt", 0, 
+//				Common.gzFolder+"geonames.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"geonames.individual-a.gz", Common.gzFolder+"geonames.relation.txt", 0, 
+//				Common.gzFolder+"geonames.individual-a-r.gz");
+//
+//		diff(Common.gzFolder+"uscensus.individual.gz", Common.gzFolder+"uscensus.attribute.txt", 0, 
+//				Common.gzFolder+"uscensus.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"uscensus.individual-a.gz", Common.gzFolder+"uscensus.relation.txt", 0, 
+//				Common.gzFolder+"uscensus.individual-a-r.gz");
+//
+//		diff(Common.gzFolder+"wordnet.individual.gz", Common.gzFolder+"wordnet.attribute.txt", 0, 
+//				Common.gzFolder+"wordnet.individual-a.gz");
+//		
+//		diff(Common.gzFolder+"wordnet.individual-a.gz", Common.gzFolder+"wordnet.relation.txt", 0, 
+//				Common.gzFolder+"wordnet.individual-a-r.gz");
 
 //		String sameAsFolder = "\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\crude\\";
 //		String dbpediaSameAs = sameAsFolder+"dbpedia-v3.equ";
