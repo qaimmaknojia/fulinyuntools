@@ -40,61 +40,27 @@ public class Indexer {
 	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
-//		lookBasicFeature();
-//		observeLap3index(); // to run
-//		checkIndex(lap2index+"\\dbpedia");
-//		observeLap2index();
-		// waiting for dbpediaPreprocessed.gz...
-//		lap2indexFromPreprocessed("e:\\user\\fulinyun\\dbpediaPreprocessed.gz", lap2index+"\\dbpedia"); // running
-		// copy geonames&dblp index fragments to lap2index (refIndex)
-//		mergeIndex(lap2index, "e:\\user\\fulinyun\\refIndexAll"); // running
-		// delete refIndex folder
+//		preprocess(indexFolder+"geonames.gz", indexFolder+"geonames.dump"); // done
+		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
+		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // to run
+		// sort -S 512m -T . --compress-program=gzip dblp.dump | gzip > dblpPreprocessed.gz
+		lap2indexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
+				lap2index+"\\dbpedia"); // to run
+		lap2indexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
+				lap2index+"\\geonames"); // to run
+		lap2indexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
+				lap2index+"\\dblp"); // to run
+		mergeIndex(lap2index, indexFolder+"refIndexAll"); // to run
+		// copy refIndex subfolders to poseidon
+		// delete refIndex
 		// rename refIndexAll to refIndex
-//		lap3index(); // running
-//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // done
-//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // done
+		
+//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // to run
+//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // to run
 //		String lineList = indexFolder+"nonNullClass.txt";
 //		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
-//				indexFolder+"classFeatureDump.txt"); // done
-//		String lineListFile = indexFolder+"nonNullInd.txt";
-//		dumpFeature(lap3index, "basic", getLineList(lineListFile, nonNullIndNum), 0, 
-//				500000, 500000, 1000000, indexFolder+"testPartitionDump.raw"); // to run
-//		String lineListFile = indexFolder+"nonNullInd.txt";
-//		partition4ppjoin(lineListFile, Analyzer.countLines(lineListFile), indexFolder+"partition\\", 
-//				1000000); // to run
+//				indexFolder+"classFeatureDump.txt"); // to run
 		
-		
-//		dumpFeature(lap3index, "basic", indexFolder+"basicDump.txt"); // to run
-//		lap4indexWithCache(0, 4000000, lap4index+"\\0-400w"); // running
-//		lap4index(0, 4000000, lap4index+"\\0-400w"); // running
-//		dumpFeature(lap4index, "extended", 
-//				"E:\\User\\fulinyun\\iswc2009cluster\\binary-win32\\extended.txt"); // to run
-		// run "tokenizer extended.txt"
-		// run "ppjoin j t extended.txt.bin > blockResult.txt", t being the threshold try 0.1, 0.3, 0.5
-		
-//		preprocess("e:\\user\\fulinyun\\dbpedia.gz", "e:\\user\\fulinyun\\dbpediaDump.txt"); // done
-//		System.out.println(sortUnique("as soon as possible! yes, as soon as possible!!"));
-//		lap1index(new String[]{Common.uscensus, Common.dbpedia, Common.geonames, Common.foaf,
-//				Common.wordnet, Common.dblp,  
-//				Common.mba, Common.mbi, Common.mbr}, true);
-//		lap1index(new String[]{Common.dbpedia}, lap1index+"\\dbpedia", true); // done
-//		lap1index(new String[]{Common.geonames, Common.dblp}, lap1index+"\\geonames&dblp", true); // done
-//		lap1index(new String[]{Common.uscensus}, false); // failed
-//		observeLap1index(); // done
-//		lap2index(new String[]{lap1index+"\\dbpedia", lap1index+"\\geonames&dblp"}); // too slow
-//		lap2index(lap1index+"\\geonames&dblp", lap2index+"\\geonames&dblp1-1500w", 10000000, 
-//				15000000, true); // done
-//		lap2index(lap1index+"\\geonames&dblp", lap2index+"\\geonames&dblp1500w-1507w", 15000000, 
-//				15070000, true); // running
-//		lap2index(lap1index+"\\geonames&dblp", lap2index+"\\geonames&dblp1507w-", 15070000, 
-//		20070000, true); // running
-//		lap2indexDebug(lap1index+"\\geonames&dblp", lap2index+"\\geonames&dblp1507w-debug", 15070000, 
-//		20070000, true); // running
-//		Thread.currentThread().sleep(4*60*60*1000);
-//		lap2index(lap1index+"\\dbpedia", lap2index+"\\dbpedia300w-400w", 3000000, 4000000, true); // to run
-//		lap2index(new String[]{lap1index+"\\dbpedia"}, false); // to run
-//		observeLap2index();
-//		System.out.println(sortUnique("mary mary peter peter"));
 	}
 	
 	public static void lookBasicFeature() throws Exception {
@@ -107,7 +73,27 @@ public class Indexer {
 		}
 	}
 	
-	public static void lap2indexFromPreprocessed(String input, String target) throws Exception {
+	public static void lookRefIndex() throws Exception {
+		Scanner sc = new Scanner(System.in);
+		IndexReader ireader = IndexReader.open(lap2index);
+		while (true) {
+			int n = sc.nextInt();
+			List fieldList = ireader.document(n).getFields();
+			for (Object obj : fieldList) {
+				Field field = (Field)obj;
+				System.out.println(field.name() + " : " + field.stringValue());
+			}
+		}
+	}
+	
+	/**
+	 * index all information of individuals of a given domain
+	 * @param domain
+	 * @param input
+	 * @param target
+	 * @throws Exception
+	 */
+	public static void lap2indexFromPreprocessed(String domain, String input, String target) throws Exception {
 		System.out.println(new Date().toString() + " : start lap 2 indexing based on preprocessed file");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 		Directory directory = FSDirectory.getDirectory(target);
@@ -123,7 +109,7 @@ public class Indexer {
 		    String[] parts = line.split(" ");
 		    for (int i = 3; i < parts.length; i++) parts[2] += (" "+parts[i]); // get whole attribute value
 			if (!parts[0].equals(currentURI)) {
-				if (!currentURI.equals("")) {
+				if (!currentURI.equals("") && currentURI.contains(domain)) {
 					iwriter.addDocument(doc);
 					count++;
 					if (count%100000 == 0) System.out.println(new Date().toString() + " : " + count);
@@ -131,12 +117,14 @@ public class Indexer {
 				currentURI = parts[0];
 				doc = new Document();
 				doc.add(new Field("URI", currentURI, Field.Store.YES, Field.Index.NOT_ANALYZED));
-				doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
+				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from"))
+					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
 			} else {
-				doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
+				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from"))
+					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
 			}
 		}
-		iwriter.addDocument(doc);
+		if (currentURI.contains(domain)) iwriter.addDocument(doc);
 		count++;
 		System.out.println(new Date().toString() + " : " + count);
 		iwriter.optimize();

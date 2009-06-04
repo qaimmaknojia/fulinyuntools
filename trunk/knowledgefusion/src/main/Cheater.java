@@ -29,6 +29,7 @@ public class Cheater {
 	public static int cheatLineNum = 89746;
 //	public static int stdAnsSize = 88867;
 //	public static int stdAnsSize = 2318;
+	public static int r03resultSize = 23359103;
 	
 	public static void main(String[] args) throws Exception {
 //		extractSameAsByDomain(dbpediaSameAs, domainDBpedia, domainGeonames, 
@@ -37,22 +38,72 @@ public class Cheater {
 //				Indexer.indexFolder+"geonames2dbpedia.equ");
 //		extractSameAsByDomain(dblpSameAs, domainDblp, domainDblp, 
 //				Indexer.indexFolder+"dblp.equ");
-//		toID(new String[]{Indexer.indexFolder+"dbpedia2geonames.equ", 
-//				Indexer.indexFolder+"geonames2dbpedia.equ", 
-//				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"sameAsID.txt");
-//		getNonNullSameAsInd(Indexer.indexFolder+"nonNullInd.txt", Indexer.indexFolder+"sameAsID.txt", 
-//				Indexer.indexFolder+"nonNullSameAsInd.txt");
-//		normSameAsID(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"sameAsIDNorm.txt"); // done
-		// sort sameAsIDNorm.txt | uniq > sameAsIDNonDup.txt and rename sameAsIDNonDup.txt to sameAsID.txt
+		toIDNonNull(new String[]{Indexer.indexFolder+"dbpedia2geonames.equ", 
+				Indexer.indexFolder+"geonames2dbpedia.equ", 
+				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // to run
+		// sort -n nonNullSameAsID.txt | uniq > nonNullNoDupSameAsID.txt // to run
+		// rename nonNullNoDupSameAsID.txt to sameAsID.txt
+		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // to run
+		
+		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
+				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+				Blocker.workFolder+"cheatBasicFeature.txt"); // to run
+		// tokenizer cheatBasicFeature.txt // to run
+		// ppjoin j 0.5 cheatBasicFeature.txt.bin > r0.5.txt // to run
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+//				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt"); // to run
+		// sort -n r0.5translated.txt > r0.5sorted.txt // to run
+		
+		
 //		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
 //				Indexer.indexFolder+"ppjoin\\r0.3.txt",
 //				Indexer.indexFolder+"sameAsID.txt"); // done
-//		removeNullSameAsPairs(Indexer.indexFolder+"sameAsID.txt", 
-//				Indexer.indexFolder+"nonNullSameAsInd.txt", Indexer.indexFolder+"nonNullSameAs.txt");
 //		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
 //				Indexer.indexFolder+"ppjoin\\r0.3.txt",
 //				Indexer.indexFolder+"nonNullSameAs.txt"); // done
-		getIndFromPairs(Indexer.indexFolder+"nonNullSameAs.txt", Indexer.indexFolder+"keyInd.txt");
+//		getIndFromPairs(Indexer.indexFolder+"nonNullSameAs.txt", Indexer.indexFolder+"keyInd.txt");
+//		translateDocNum(Indexer.indexFolder+"nonNullSameAsInd.txt", cheatLineNum, 
+//				Indexer.indexFolder+"ppjoin\\r0.3.txt", Indexer.indexFolder+"ppjoin\\r0.3translated.txt");
+		// sort -n r0.3translated.txt > r0.3sorted.txt
+		// ppjoin j 0.4 cheatBasicFeature.txt.bin > r0.4.txt
+		// finished in 139s
+//		evaluate(Blocker.workFolder+"nonNullSameAsInd.txt", cheatLineNum, 
+//				Blocker.workFolder+"r0.4.txt", Blocker.workFolder+"nonNullSameAs.txt");
+		// sort -n temp.txt > ppjoin\r0.4sorted.txt
+//		translateDocNum(Blocker.workFolder+"nonNullSameAsInd.txt", cheatLineNum, 
+//				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt");
+		// sort -n r0.5translated.txt > r0.5sorted.txt
+	}
+	
+	/**
+	 * translate the result of ppjoin, replace line# with individual IDs, and remove similarity values
+	 * @param lineListFile
+	 * @param ppjoinResult
+	 * @param output
+	 */
+	public static void translateDocNum(String lineListFile, int lineNum, String ppjoinResult, 
+			String output) throws Exception {
+		int[] lineList = new int[lineNum+1];
+		BufferedReader br = new BufferedReader(new FileReader(lineListFile));
+		for (int i = 1; i <= lineNum; i++) lineList[i] = Integer.parseInt(br.readLine());
+		br.close();
+		br = new BufferedReader(new FileReader(ppjoinResult));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			int line1 = lineList[Integer.parseInt(parts[0])];
+			int line2 = lineList[Integer.parseInt(parts[1])];
+			if (line1 < line2) {
+				int tmp = line1;
+				line1 = line2;
+				line2 = tmp;
+			}
+			String ans = line1 + " " + line2;
+			pw.println(ans);
+		}
+		pw.close();
+		br.close();
 	}
 	
 	/**
@@ -84,7 +135,7 @@ public class Cheater {
 	 */
 	public static void removeNullSameAsPairs(String sameAsID, String nonNullInd, 
 			String output) throws Exception {
-		HashSet<Integer> indSet = getSet(nonNullInd);
+		HashSet<Integer> indSet = Common.getIntSet(nonNullInd);
 		BufferedReader br = new BufferedReader(new FileReader(sameAsID));
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -98,7 +149,7 @@ public class Cheater {
 	}
 	
 	/**
-	 * estimate precision and recall of the blocking result
+	 * estimate precision and recall of the blocking result, temp.txt recording doc#s of the candidate pairs
 	 * @param lineListFile
 	 * @param lineNum
 	 * @param ppJoinResult
@@ -130,13 +181,7 @@ public class Cheater {
 		}
 		pw.close();
 		br.close();
-		System.out.println(count + " lines overlap");
-		int stdSize = Analyzer.countLines(stdAns);
-		System.out.println("standard answer size: " + stdSize);
-		System.out.println("recall: " + (count+0.0)/stdSize);
-		int resultSize = Analyzer.countLines(ppJoinResult);
-		System.out.println("result size: " + resultSize);
-		System.out.println("precision: " + (count+0.0)/resultSize);
+		Common.printResult(count, stdAns, Analyzer.countLines(ppJoinResult));
 	}
 	
 	private static HashSet<String> getLines(String stdAns) throws Exception {
@@ -191,7 +236,7 @@ public class Cheater {
 	 */
 	public static void getNonNullSameAsInd(String nonNullInd, String sameAsID, 
 			String output) throws Exception {
-		HashSet<Integer> nonNullIndSet = getSet(nonNullInd);
+		HashSet<Integer> nonNullIndSet = Common.getIntSet(nonNullInd);
 		TreeSet<Integer> ret = new TreeSet<Integer>();
 		BufferedReader br = new BufferedReader(new FileReader(sameAsID));
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -209,14 +254,6 @@ public class Cheater {
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		for (Integer i : ret) pw.println(i.intValue());
 		pw.close();
-	}
-
-	private static HashSet<Integer> getSet(String input) throws Exception {
-		HashSet<Integer> ret = new HashSet<Integer>();
-		BufferedReader br = new BufferedReader(new FileReader(input));
-		for (String line = br.readLine(); line != null; line = br.readLine()) 
-			ret.add(Integer.parseInt(line));
-		return ret;
 	}
 
 	/**
@@ -255,7 +292,7 @@ public class Cheater {
 	 * @param output
 	 * @throws Exception
 	 */
-	public static void toID(String[] inputs, String output) throws Exception {
+	public static void toIDNonNull(String[] inputs, String output) throws Exception {
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		IndexReader ireader = IndexReader.open(Indexer.lap3index);
 		int count = 0;
@@ -263,7 +300,17 @@ public class Cheater {
 			IDataSourceReader br = IOFactory.getReader(fn);
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
 				String[] parts = line.split(" ");
-				pw.println(getDocNum(ireader, parts[0]) + " " + getDocNum(ireader, parts[1]));
+				int x = getDocNum(ireader, parts[0]);
+				int y = getDocNum(ireader, parts[1]);
+				if (ireader.document(x).get("basic").equals("") || 
+						ireader.document(y).get("basic").equals(""))
+					continue;
+				if (x < y) {
+					int t = x;
+					x = y;
+					y = t;
+				}
+				pw.println(x + " " + y);
 				count++;
 				if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count);
 			}

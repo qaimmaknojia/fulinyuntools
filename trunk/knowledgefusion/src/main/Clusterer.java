@@ -1,9 +1,12 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 
 import org.apache.lucene.index.IndexReader;
@@ -14,15 +17,37 @@ import basic.IOFactory;
 public class Clusterer {
 
 	public static void main(String[] args) throws Exception {
-		NN me = new NN(0, 0);
-		NN a = new NN(1, 50);
-		NN b = new NN(2, 75);
-		NN c = new NN(3, 101);
-		NN d = new NN(4, 102);
-		NNListAndNG listAndNg = new NNListAndNG(new NN[]{me, a, b, c, d}, 2);
 		
-		System.out.println(calcNg(new NN[]{me, a, b, c, d}));
-		
+//		NN me = new NN(0, 0);
+//		NN a = new NN(1, 50);
+//		NN b = new NN(2, 75);
+//		NN c = new NN(3, 101);
+//		NN d = new NN(4, 102);
+//		NNListAndNG listAndNg = new NNListAndNG(new NN[]{me, a, b, c, d}, 2);
+//		
+//		System.out.println(calcNg(new NN[]{me, a, b, c, d}));
+		cluster(Blocker.workFolder+"r0.5block.txt", Blocker.workFolder+"r0.5cluster.txt", 3);
+	}
+	
+	public static void evaluate(String clusterFile, String stdAns) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		int count = 0;
+		int resultCount = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] parts = Common.getNumsInLineSorted(line);
+			resultCount += parts.length*(parts.length-1)/2;
+			for (int i = 0; i < parts.length; i++) for (int j = i+1; j < parts.length; j++) {
+				if (stdSet.contains(parts[j] + " " + parts[i])) count++;
+			}
+		}
+		br.close();
+		System.out.println(count + " lines overlap");
+		int stdSize = stdSet.size();
+		System.out.println("standard answer size: " + stdSize);
+		System.out.println("recall: " + (count+0.0)/stdSize);
+		System.out.println("result size: " + resultCount);
+		System.out.println("precision: " + (count+0.0)/resultCount);
 	}
 	
 	/**
@@ -34,11 +59,15 @@ public class Clusterer {
 	 */
 	public static void cluster(String input, String output, float tsn) throws Exception {
 		IDataSourceReader br = IOFactory.getReader(input);
+		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] records = line.split(" ");
+			System.out.println(records.length);
 			int[] docNums = new int[records.length];
 			for (int i = 0; i < records.length; i++) docNums[i] = Integer.parseInt(records[i]);
 			cluster(docNums, output, tsn);
+			count++;
+			if (count%100 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
 		}
 		br.close();
 	}
@@ -49,9 +78,11 @@ public class Clusterer {
 	 * @param output
 	 */
 	private static void cluster(int[] docNums, String output, float tsn) throws Exception {
+		String[] basicFeatures = new String[docNums.length];
+		getBasicFeatures(docNums, basicFeatures);
 		NN[][] nnList = new NN[docNums.length][docNums.length];
 		for (int i = 0; i < docNums.length; i++) for (int j = i+1; j < docNums.length; j++) {
-			nnList[i][j] = new NN(j, hamming(docNums[i], docNums[j]));
+			nnList[i][j] = new NN(j, hamming(basicFeatures, i, j));
 		}
 		for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) { 
 			nnList[i][j] = new NN(j, nnList[j][i].distance);
@@ -75,10 +106,16 @@ public class Clusterer {
 			cluster(docNums, records, i, tsn, output, clustered);
 	}
 
-	private static float hamming(int i, int j) throws Exception {
+	private static void getBasicFeatures(int[] docNums, String[] basicFeatures) throws Exception {
 		IndexReader ireader = IndexReader.open(Indexer.lap3index);
-		String[] r1 = ireader.document(i).get("basic").split(" ");
-		String[] r2 = ireader.document(j).get("basic").split(" ");
+		for (int i = 0; i < docNums.length; i++) basicFeatures[i] = 
+			ireader.document(docNums[i]).get("basic");
+		ireader.close();
+	}
+
+	private static float hamming(String[] basicFeatures, int i, int j) throws Exception {
+		String[] r1 = basicFeatures[i].split(" ");
+		String[] r2 = basicFeatures[j].split(" ");
 		HashSet<String> tokenSet = new HashSet<String>();
 		for (String s : r1) tokenSet.add(s);
 		for (String s : r2) tokenSet.add(s);
