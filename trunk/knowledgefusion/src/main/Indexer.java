@@ -29,6 +29,7 @@ public class Indexer {
 //	public static String lap2index = indexFolder+"refIndex";
 	public static String lap1index = indexFolder+"lap1"; // local
 	public static String lap2index = indexFolder+"refIndex"; // local
+	public static String lap2indexParts = indexFolder+"refIndexParts";
 	public static String lap3index = indexFolder+"basicFeatureIndex"; // local
 	public static String lap4index = indexFolder+"extendedFeatureIndex"; // local
 	public static String lap3indexNotNull = indexFolder+"basicFeatureNotNullIndex"; // local
@@ -42,24 +43,27 @@ public class Indexer {
 	public static void main(String[] args) throws Exception {
 //		preprocess(indexFolder+"geonames.gz", indexFolder+"geonames.dump"); // done
 		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
-		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // to run
-		// sort -S 512m -T . --compress-program=gzip dblp.dump | gzip > dblpPreprocessed.gz
-		lap2indexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
-				lap2index+"\\dbpedia"); // to run
-		lap2indexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
-				lap2index+"\\geonames"); // to run
-		lap2indexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
-				lap2index+"\\dblp"); // to run
-		mergeIndex(lap2index, indexFolder+"refIndexAll"); // to run
+//		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // done at gaea
+		// sort -S 512m -T . --compress-program=gzip dblp.dump | gzip > dblpPreprocessed.gz // done at gaea
+		// copy dbpediaPreprocessed.gz to gaea // done
+//		lap2indexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
+//				lap2indexParts+"\\dbpedia"); // done
+//		lap2indexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
+//				lap2indexParts+"\\geonames"); // done
+//		lap2indexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
+//				lap2index+"\\dblp"); // done at gaea
+		// copy dblp index folder from gaea to refIndex
+		// copy dbpedia index folder from gaea to refIndex
+		mergeIndex(lap2indexParts, lap2index); // running
 		// copy refIndex subfolders to poseidon
 		// delete refIndex
 		// rename refIndexAll to refIndex
-		
-//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // to run
-//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // to run
-//		String lineList = indexFolder+"nonNullClass.txt";
-//		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
-//				indexFolder+"classFeatureDump.txt"); // to run
+		lap3index(); // running
+		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // running
+		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // running
+		String lineList = indexFolder+"nonNullClass.txt";
+		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
+				indexFolder+"classFeatureDump.txt"); // running
 		
 	}
 	
@@ -109,7 +113,8 @@ public class Indexer {
 		    String[] parts = line.split(" ");
 		    for (int i = 3; i < parts.length; i++) parts[2] += (" "+parts[i]); // get whole attribute value
 			if (!parts[0].equals(currentURI)) {
-				if (!currentURI.equals("") && currentURI.contains(domain)) {
+				if (!currentURI.equals("") && currentURI.contains(domain) && 
+						!currentURI.equals("<http://www.geonames.org/ontology#Feature>")) {
 					iwriter.addDocument(doc);
 					count++;
 					if (count%100000 == 0) System.out.println(new Date().toString() + " : " + count);
@@ -117,10 +122,12 @@ public class Indexer {
 				currentURI = parts[0];
 				doc = new Document();
 				doc.add(new Field("URI", currentURI, Field.Store.YES, Field.Index.NOT_ANALYZED));
-				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from"))
+				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from") &&
+						!currentURI.equals("<http://www.geonames.org/ontology#Feature>"))
 					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
 			} else {
-				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from"))
+				if (!parts[1].equals(Common.sameAs+"to") && !parts[1].equals(Common.sameAs+"from") &&
+						!currentURI.equals("<http://www.geonames.org/ontology#Feature>"))
 					doc.add(new Field(parts[1], parts[2], Field.Store.YES, Field.Index.NO));
 			}
 		}
