@@ -49,9 +49,30 @@ public class Cheater {
 //				Indexer.indexFolder+"sameAsID.txt"); // done
 //		removeNullSameAsPairs(Indexer.indexFolder+"sameAsID.txt", 
 //				Indexer.indexFolder+"nonNullSameAsInd.txt", Indexer.indexFolder+"nonNullSameAs.txt");
-		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
-				Indexer.indexFolder+"ppjoin\\r0.3.txt",
-				Indexer.indexFolder+"nonNullSameAs.txt"); // done
+//		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
+//				Indexer.indexFolder+"ppjoin\\r0.3.txt",
+//				Indexer.indexFolder+"nonNullSameAs.txt"); // done
+		getIndFromPairs(Indexer.indexFolder+"nonNullSameAs.txt", Indexer.indexFolder+"keyInd.txt");
+	}
+	
+	/**
+	 * get all distinct ids from an id pair file, used to get key individuals 
+	 * @param input
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void getIndFromPairs(String input, String output) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		TreeSet<Integer> ret = new TreeSet<Integer>();
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			int x = Integer.parseInt(parts[0]);
+			int y = Integer.parseInt(parts[1]);
+			ret.add(x);
+			ret.add(y);
+		}
+		br.close();
+		writeSet(ret, output);
 	}
 	
 	/**
