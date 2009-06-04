@@ -40,8 +40,6 @@ public class Indexer {
 	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
-		dumpClassFeature(indexFolder+"nonNullSameAsInd.txt", Cheater.cheatLineNum, 
-				indexFolder+"cheatBasicFeature.txt");
 //		lookBasicFeature();
 //		observeLap3index(); // to run
 //		checkIndex(lap2index+"\\dbpedia");
