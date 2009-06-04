@@ -1,6 +1,9 @@
 package main;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -21,8 +24,39 @@ import basic.IOFactory;
  */
 public class Blocker {
 	
+	public static String workFolder = "E:\\User\\fulinyun\\ppjoin\\";
+	
 	public static void main(String[] args) throws Exception {
-		findBlock("e:\\user\\fulinyun\\findBlockTestIn.txt", "e:\\user\\fulinyun\\findBlockTestOut.txt");
+//		findBlock(workFolder+"r0.3sorted.txt", workFolder+"r0.3block.txt");
+//		findBlock(workFolder+"r0.4sorted.txt", workFolder+"r0.4block.txt");
+//		evaluate(workFolder+"r0.3block.txt", workFolder+"nonNullSameAs.txt");
+//		evaluate(workFolder+"r0.4block.txt", workFolder+"nonNullSameAs.txt");
+		
+		findBlock(workFolder+"r0.5sorted.txt", workFolder+"r0.5block.txt"); // to run
+		evaluate(workFolder+"r0.5block.txt", workFolder+"nonNullSameAs.txt"); // to run
+
+	}
+	
+	/**
+	 * evaluate recall of blocking
+	 * @param blockFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void evaluate(String blockFile, String stdAns) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		BufferedReader br = new BufferedReader(new FileReader(blockFile));
+		int canSize = 0;
+		int overlap = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			System.out.println(docNums.length);
+			canSize += docNums.length*(docNums.length-1)/2;
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
+				if (stdSet.contains(docNums[i] + " " + docNums[j])) overlap++;
+		}
+		br.close();
+		Common.printResult(overlap, stdAns, canSize);
 	}
 	
 	/**
@@ -35,12 +69,13 @@ public class Blocker {
 	public static void findBlock(String input, String output) throws Exception {
 		IDataSourceReader br = IOFactory.getReader(input);
 		HashSet<HashSet<Integer>> blocks = new HashSet<HashSet<Integer>>();
+		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] parts = line.split(" ");
 			
 			// get document numbers
-			int ix = Integer.parseInt(parts[0])-1;
-			int iy = Integer.parseInt(parts[1])-1;
+			int ix = Integer.parseInt(parts[0]);
+			int iy = Integer.parseInt(parts[1]);
 
 			if (blocks.size() == 0) {
 				HashSet<Integer> block = new HashSet<Integer>();
@@ -67,6 +102,8 @@ public class Blocker {
 					blocks.add(block);
 				}
 			}
+			count++;
+			if (count%1000000 == 0) System.out.println(new Date().toString() + " : " + count);
 		}
 		br.close();
 		PrintWriter pw = IOFactory.getPrintWriter(output);
