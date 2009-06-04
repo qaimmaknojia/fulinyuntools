@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.Document;
@@ -36,9 +37,13 @@ public class Indexer {
 	public static String lap6index = indexFolder+"extendedSortedUniqueIndex";
 	public static String classBasicIndex = indexFolder+"classBasicIndex";
 	public static String classBasicIndexNotNull = indexFolder+"classBasicNotNullIndex";
+	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
-		observeLap3index(); // to run
+		dumpClassFeature(indexFolder+"nonNullSameAsInd.txt", Cheater.cheatLineNum, 
+				indexFolder+"cheatBasicFeature.txt");
+//		lookBasicFeature();
+//		observeLap3index(); // to run
 //		checkIndex(lap2index+"\\dbpedia");
 //		observeLap2index();
 		// waiting for dbpediaPreprocessed.gz...
@@ -48,16 +53,17 @@ public class Indexer {
 		// delete refIndex folder
 		// rename refIndexAll to refIndex
 //		lap3index(); // running
-//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // to run
-//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // to run
+//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // done
+//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // done
 //		String lineList = indexFolder+"nonNullClass.txt";
-//		dumpClassFeature(lineList, Analyzer.countLines(lineList), indexFolder+"classFeatureDump.txt"); // to run
+//		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
+//				indexFolder+"classFeatureDump.txt"); // done
 //		String lineListFile = indexFolder+"nonNullInd.txt";
-//		dumpFeature(lap3index, "basic", getLineList(lineListFile, Analyzer.countLines(lineListFile)), 0, 
-//				350000, 350000, 700000, indexFolder+"testPartitionDump.txt"); // to run
+//		dumpFeature(lap3index, "basic", getLineList(lineListFile, nonNullIndNum), 0, 
+//				500000, 500000, 1000000, indexFolder+"testPartitionDump.raw"); // to run
 //		String lineListFile = indexFolder+"nonNullInd.txt";
 //		partition4ppjoin(lineListFile, Analyzer.countLines(lineListFile), indexFolder+"partition\\", 
-//				700000); // to run
+//				1000000); // to run
 		
 		
 //		dumpFeature(lap3index, "basic", indexFolder+"basicDump.txt"); // to run
@@ -91,6 +97,16 @@ public class Indexer {
 //		lap2index(new String[]{lap1index+"\\dbpedia"}, false); // to run
 //		observeLap2index();
 //		System.out.println(sortUnique("mary mary peter peter"));
+	}
+	
+	public static void lookBasicFeature() throws Exception {
+		Scanner sc = new Scanner(System.in);
+		IndexReader ireader = IndexReader.open(lap3index);
+		while (true) {
+			int n = sc.nextInt();
+			System.out.println(ireader.document(n).get("URI"));
+			System.out.println(ireader.document(n).get("basic"));
+		}
 	}
 	
 	public static void lap2indexFromPreprocessed(String input, String target) throws Exception {
