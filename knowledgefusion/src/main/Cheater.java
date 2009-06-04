@@ -30,7 +30,8 @@ public class Cheater {
 //	public static int stdAnsSize = 88867;
 //	public static int stdAnsSize = 2318;
 	public static int r03resultSize = 23359103;
-	
+	public static String keyInd = Indexer.indexFolder+"keyInd.txt";
+		
 	public static void main(String[] args) throws Exception {
 //		extractSameAsByDomain(dbpediaSameAs, domainDBpedia, domainGeonames, 
 //				Indexer.indexFolder+"dbpedia2geonames.equ");
@@ -42,9 +43,10 @@ public class Cheater {
 				Indexer.indexFolder+"geonames2dbpedia.equ", 
 				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // to run
 		// sort -n nonNullSameAsID.txt | uniq > nonNullNoDupSameAsID.txt // to run
-		// rename nonNullNoDupSameAsID.txt to sameAsID.txt
+		// rename nonNullNoDupSameAsID.txt to sameAsID.txt // to run
+		// sameAsID.txt: no duplicate pairs, larger doc# comes first, sorted in ascending order
 		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // to run
-		
+		// keyInd.txt: all doc#s of individuals appear in some sameAs pair, sorted in ascending order
 		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
 				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
 				Blocker.workFolder+"cheatBasicFeature.txt"); // to run
