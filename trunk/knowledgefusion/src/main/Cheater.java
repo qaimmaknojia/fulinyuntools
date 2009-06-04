@@ -7,6 +7,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeSet;
 
+import main.Analyzer;
+import main.Blocker;
+import main.Common;
+import main.Indexer;
+
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
