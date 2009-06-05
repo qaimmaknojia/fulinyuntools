@@ -45,25 +45,22 @@ public class Indexer {
 		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
 //		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // done at gaea
 		// sort -S 512m -T . --compress-program=gzip dblp.dump | gzip > dblpPreprocessed.gz // done at gaea
-		// copy dbpediaPreprocessed.gz to gaea // done
 //		lap2indexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
 //				lap2indexParts+"\\dbpedia"); // done
 //		lap2indexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
 //				lap2indexParts+"\\geonames"); // done
 //		lap2indexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
 //				lap2index+"\\dblp"); // done at gaea
-		// copy dblp index folder from gaea to refIndex
-		// copy dbpedia index folder from gaea to refIndex
-		mergeIndex(lap2indexParts, lap2index); // running
+//		mergeIndex(lap2indexParts, lap2index); // done
 		// copy refIndex subfolders to poseidon
 		// delete refIndex
 		// rename refIndexAll to refIndex
-		lap3index(); // running
-		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // running
-		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // running
-		String lineList = indexFolder+"nonNullClass.txt";
-		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
-				indexFolder+"classFeatureDump.txt"); // running
+//		lap3index(); // done
+//		extractNonNullIndividuals(indexFolder+"nonNullInd.txt"); // done
+//		extractNonNullClasses(indexFolder+"nonNullClass.txt"); // done
+//		String lineList = indexFolder+"nonNullClass.txt";
+//		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
+//				indexFolder+"classFeatureDump.txt"); // done
 		
 	}
 	

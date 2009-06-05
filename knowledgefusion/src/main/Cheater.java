@@ -31,10 +31,10 @@ public class Cheater {
 	public static String domainDBpedia = "dbpedia.org";
 	public static String domainGeonames = "sws.geonames.org";
 	public static String domainDblp = "www.informatik.uni-trier.de";
-	public static int cheatLineNum = 89746;
+//	public static int cheatLineNum = 89746;
 //	public static int stdAnsSize = 88867;
 //	public static int stdAnsSize = 2318;
-	public static int r03resultSize = 23359103;
+//	public static int r03resultSize = 23359103;
 	public static String keyInd = Indexer.indexFolder+"keyInd.txt";
 		
 	public static void main(String[] args) throws Exception {
@@ -46,15 +46,14 @@ public class Cheater {
 //				Indexer.indexFolder+"dblp.equ");
 		toIDNonNull(new String[]{Indexer.indexFolder+"dbpedia2geonames.equ", 
 				Indexer.indexFolder+"geonames2dbpedia.equ", 
-				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // to run
-		// sort -n nonNullSameAsID.txt | uniq > nonNullNoDupSameAsID.txt // to run
-		// rename nonNullNoDupSameAsID.txt to sameAsID.txt // to run
+				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // running
+		// sort -n nonNullSameAsID.txt | uniq > sameAsID.txt // to run
 		// sameAsID.txt: no duplicate pairs, larger doc# comes first, sorted in ascending order
-		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // to run
+//		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // to run
 		// keyInd.txt: all doc#s of individuals appear in some sameAs pair, sorted in ascending order
-		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
-				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
-				Blocker.workFolder+"cheatBasicFeature.txt"); // to run
+//		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+//				Blocker.workFolder+"cheatBasicFeature.txt"); // to run
 		// tokenizer cheatBasicFeature.txt // to run
 		// ppjoin j 0.5 cheatBasicFeature.txt.bin > r0.5.txt // to run
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
