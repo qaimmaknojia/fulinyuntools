@@ -22,6 +22,80 @@ import basic.IOFactory;
  */
 public class ClassMapper {
 
+	public static void main(String[] args) throws Exception {
+		collectInstance(Indexer.indexFolder+"classInd.txt"); // running
+		collectInstance(Indexer.indexFolder+"nonNullClass.txt", 
+				Indexer.indexFolder+"nonNullClassInd.txt"); // to run
+	}
+	
+	public static void collectInstance(String classList, String output) throws Exception {
+		IndexReader ireader = IndexReader.open(Indexer.lap2index);
+		TreeMap<Integer, HashSet<Integer>> ret = new TreeMap<Integer, HashSet<Integer>>();
+		BufferedReader br = new BufferedReader(new FileReader(classList));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int i = Integer.parseInt(line);
+			Document doc = ireader.document(i);
+			String[] instances = doc.getValues(Common.dbpediaSubject+"from");
+			String[] subclasses = doc.getValues(Common.dbpediaSubclass+"from");
+			String[] instances1 = doc.getValues(Common.rdfType+"from");
+			String[] instances2 = doc.getValues(Common.owlClass+"from");
+			String[] all = new String[instances.length+subclasses.length+
+			                          instances1.length+instances2.length];
+			if (all.length != 0) {
+				if (ret.containsKey(i)) {
+					for (String uri : all) {
+						try {
+							TermDocs td = ireader.termDocs(new Term("URI", uri));
+							td.next();
+							ret.get(i).add(td.doc());
+						} catch (Exception e) {
+							System.out.print("*");
+						}
+					}
+				} else {
+					HashSet<Integer> docNumSet = new HashSet<Integer>();
+					for (String uri : all) {
+						try {
+							TermDocs td = ireader.termDocs(new Term("URI", uri));
+							td.next();
+							docNumSet.add(td.doc());
+						} catch (Exception e) {
+							System.out.print("*");
+						}
+					}
+					ret.put(i, docNumSet);
+				}
+			}
+			if ((i+1)%10000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		br.close();
+		System.out.println(new Date().toString() + " : read all!");
+		boolean cont = true;
+		int maxLap = 1000;
+		int lap = 0;
+		while (cont && lap < maxLap) {
+			cont = false;
+			for (Integer key : ret.keySet()) {
+				HashSet<Integer> containList = ret.get(key);
+				for (Integer i : containList) if (ret.containsKey(i)) {
+					if (containList.addAll(ret.get(i)))	{
+						cont = true;
+						break;
+					}
+				}
+			}
+			lap++;
+			System.out.println(new Date().toString() + " : " + lap + " laps finished");
+		}
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (Integer key : ret.keySet()) {
+			pw.print(key.intValue());
+			for (Integer value : ret.get(key)) if (!ret.containsKey(value)) pw.print(" " + value);
+			pw.println();
+		}
+		pw.close();
+	}
+
 	public static void collectInstance(String output) throws Exception {
 		IndexReader ireader = IndexReader.open(Indexer.lap2index);
 		TreeMap<Integer, HashSet<Integer>> ret = new TreeMap<Integer, HashSet<Integer>>();
@@ -36,21 +110,29 @@ public class ClassMapper {
 			if (all.length != 0) {
 				if (ret.containsKey(i)) {
 					for (String uri : all) {
-						TermDocs td = ireader.termDocs(new Term("URI", uri));
-						td.next();
-						ret.get(i).add(td.doc());
+						try {
+							TermDocs td = ireader.termDocs(new Term("URI", uri));
+							td.next();
+							ret.get(i).add(td.doc());
+						} catch (Exception e) {
+							System.out.print("*");
+						}
 					}
 				} else {
 					HashSet<Integer> docNumSet = new HashSet<Integer>();
 					for (String uri : all) {
-						TermDocs td = ireader.termDocs(new Term("URI", uri));
-						td.next();
-						docNumSet.add(td.doc());
+						try {
+							TermDocs td = ireader.termDocs(new Term("URI", uri));
+							td.next();
+							docNumSet.add(td.doc());
+						} catch (Exception e) {
+							System.out.print("*");
+						}
 					}
 					ret.put(i, docNumSet);
 				}
 			}
-			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+			if ((i+1)%10000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
 		}
 		System.out.println(new Date().toString() + " : read all!");
 		boolean cont = true;
@@ -84,7 +166,7 @@ public class ClassMapper {
 	 * @param indCluster individual clusters, one per line, numbered from 0
 	 * @param classInd class owned individuals, one class per line, first class doc# then a list of 
 	 * individual doc#s
-	 * @param output class features, one per line, first class doc# then a list of cluster#s
+	 * @param output class features, one per line, first class doc# then a list of cluster#s (classCluster)
 	 */
 	public static void classFeatureExtraction(String indCluster, String classInd, 
 			String output) throws Exception {

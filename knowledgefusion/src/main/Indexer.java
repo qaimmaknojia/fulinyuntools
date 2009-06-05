@@ -41,6 +41,7 @@ public class Indexer {
 	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
+		lookBasicFeature();
 //		preprocess(indexFolder+"geonames.gz", indexFolder+"geonames.dump"); // done
 		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
 //		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // done at gaea

@@ -32,8 +32,8 @@ public class Blocker {
 //		evaluate(workFolder+"r0.3block.txt", workFolder+"nonNullSameAs.txt");
 //		evaluate(workFolder+"r0.4block.txt", workFolder+"nonNullSameAs.txt");
 		
-		findBlock(workFolder+"r0.5sorted.txt", workFolder+"r0.5block.txt"); // to run
-		evaluate(workFolder+"r0.5block.txt", workFolder+"nonNullSameAs.txt"); // to run
+//		findBlock(workFolder+"r0.5sorted.txt", workFolder+"r0.5block.txt"); // done
+		evaluate(workFolder+"r0.5block.txt", Indexer.indexFolder+"sameAsID.txt"); // done
 
 	}
 	
@@ -102,7 +102,7 @@ public class Blocker {
 				}
 			}
 			count++;
-			if (count%1000000 == 0) System.out.println(new Date().toString() + " : " + count);
+			if (count%100000 == 0) System.out.println(new Date().toString() + " : " + count);
 		}
 		br.close();
 		PrintWriter pw = IOFactory.getPrintWriter(output);
