@@ -78,7 +78,13 @@ public class Cheater {
 //				Blocker.workFolder+"rare1.txt", Blocker.workFolder+"rare1translated.txt"); // done
 		// sort -n rare1translated.txt > rare1sorted.txt // done
 //		evaluate(Blocker.workFolder+"rare1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-		
+		// qtokenizer 5 cheatBasicFeatureU.txt // done
+		// ppjoin j 0.5 cheatBasicFeatureU.txt.5gram.bin > u5j0.5.txt // done
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+//				Blocker.workFolder+"u5j0.5.txt", Blocker.workFolder+"u5j0.5translated.txt"); // done
+		// sort -n u5j0.5translated.txt > u5j0.5sorted.txt // done
+//		evaluate(Blocker.workFolder+"u5j0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
