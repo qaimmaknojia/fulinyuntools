@@ -1,6 +1,7 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -145,7 +146,7 @@ public class Clusterer {
 		for (int j = records.length-1; j >= 1; j--) {
 			if (equalSet(theOne.nnList, nn.nnList, j) && 
 					avgNg(records, theOne.nnList, j) < tsn) {
-				PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(output, true)));
 				pw.print(docNums[theOne.nnList[0].neighbor]);
 				for (int k = 1; k <= j; k++) pw.print(" " + docNums[theOne.nnList[k].neighbor]);
 				pw.println();
