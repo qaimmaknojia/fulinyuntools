@@ -1,16 +1,14 @@
 package main;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.TreeSet;
-
-import main.Analyzer;
-import main.Blocker;
-import main.Common;
-import main.Indexer;
 
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -44,44 +42,104 @@ public class Cheater {
 //				Indexer.indexFolder+"geonames2dbpedia.equ");
 //		extractSameAsByDomain(dblpSameAs, domainDblp, domainDblp, 
 //				Indexer.indexFolder+"dblp.equ");
-		toIDNonNull(new String[]{Indexer.indexFolder+"dbpedia2geonames.equ", 
-				Indexer.indexFolder+"geonames2dbpedia.equ", 
-				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // running
-		// sort -n nonNullSameAsID.txt | uniq > sameAsID.txt // to run
+//		toIDNonNull(new String[]{Indexer.indexFolder+"dbpedia2geonames.equ", 
+//				Indexer.indexFolder+"geonames2dbpedia.equ", 
+//				Indexer.indexFolder+"dblp.equ"}, Indexer.indexFolder+"nonNullSameAsID.txt"); // done
+		// sort -n nonNullSameAsID.txt | uniq > sameAsID.txt // done
 		// sameAsID.txt: no duplicate pairs, larger doc# comes first, sorted in ascending order
-//		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // to run
+//		getIndFromPairs(Indexer.indexFolder+"sameAsID.txt", Indexer.indexFolder+"keyInd.txt"); // done
 		// keyInd.txt: all doc#s of individuals appear in some sameAs pair, sorted in ascending order
 //		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
-//				Blocker.workFolder+"cheatBasicFeature.txt"); // to run
-		// tokenizer cheatBasicFeature.txt // to run
-		// ppjoin j 0.5 cheatBasicFeature.txt.bin > r0.5.txt // to run
+//				Blocker.workFolder+"cheatBasicFeature.txt"); // done
+		// tokenizer cheatBasicFeature.txt // done
+		// ppjoin j 0.5 cheatBasicFeature.txt.bin > r0.5.txt // done in 40s
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
-//				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt"); // to run
-		// sort -n r0.5translated.txt > r0.5sorted.txt // to run
+//				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt"); // done
+		// sort -n r0.5translated.txt > r0.5sorted.txt // done
+//		evaluate(Blocker.workFolder+"r0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
+//		getFailed(Blocker.workFolder+"r0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"r0.5failed.txt");
+//		blockByRareWords(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 3, 
+//				Blocker.workFolder+"rare3.txt"); // done
+//		readBinaryFile(Blocker.workFolder+"cheatBasicFeature.txt.bin"); // unexpected byte order!!!
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//		Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+//		Blocker.workFolder+"rare3.txt", Blocker.workFolder+"rare3translated.txt"); // done
+		// sort -n rare3translated.txt > rare3sorted.txt // done
+//		evaluate(Blocker.workFolder+"rare3sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
+//		blockByRareWords(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 1, 
+//				Blocker.workFolder+"rare1.txt"); // done
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
+//				Blocker.workFolder+"rare1.txt", Blocker.workFolder+"rare1translated.txt"); // done
+		// sort -n rare1translated.txt > rare1sorted.txt // done
+//		evaluate(Blocker.workFolder+"rare1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
 		
-		
-//		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
-//				Indexer.indexFolder+"ppjoin\\r0.3.txt",
-//				Indexer.indexFolder+"sameAsID.txt"); // done
-//		evaluate(Indexer.indexFolder+"NonNullSameAsInd.txt", cheatLineNum, 
-//				Indexer.indexFolder+"ppjoin\\r0.3.txt",
-//				Indexer.indexFolder+"nonNullSameAs.txt"); // done
-//		getIndFromPairs(Indexer.indexFolder+"nonNullSameAs.txt", Indexer.indexFolder+"keyInd.txt");
-//		translateDocNum(Indexer.indexFolder+"nonNullSameAsInd.txt", cheatLineNum, 
-//				Indexer.indexFolder+"ppjoin\\r0.3.txt", Indexer.indexFolder+"ppjoin\\r0.3translated.txt");
-		// sort -n r0.3translated.txt > r0.3sorted.txt
-		// ppjoin j 0.4 cheatBasicFeature.txt.bin > r0.4.txt
-		// finished in 139s
-//		evaluate(Blocker.workFolder+"nonNullSameAsInd.txt", cheatLineNum, 
-//				Blocker.workFolder+"r0.4.txt", Blocker.workFolder+"nonNullSameAs.txt");
-		// sort -n temp.txt > ppjoin\r0.4sorted.txt
-//		translateDocNum(Blocker.workFolder+"nonNullSameAsInd.txt", cheatLineNum, 
-//				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt");
-		// sort -n r0.5translated.txt > r0.5sorted.txt
 	}
 	
+	public static void readBinaryFile(String input) throws Exception {
+		DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
+		while (true) {
+			System.out.println(dis.readUnsignedByte());
+			System.in.read();
+			System.in.read();
+		}
+	}
+	
+	/**
+	 * words in each records in input is sorted by document frequency, if the first n words of two records
+	 * are the same, block them
+	 * @param input
+	 * @param n
+	 * @param output
+	 * @throws Exception
+	 */
+	private static void blockByRareWords(String input, int lines, int n, String output) throws Exception {
+		int[][] feature = new int[lines+1][];
+		getBinaryFeature(input, lines, feature);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (int i = 1; i <= lines; i++) for (int j = 1; j < i; j++) 
+			if (firstNSame(feature[i], feature[j], n)) pw.println(i + " " + j);
+		pw.close();
+	}
+	
+	private static boolean firstNSame(int[] a, int[] b, int n) throws Exception {
+		for (int i = 0; i < n && i < a.length && i < b.length; i++) if (a[i] != b[i]) return false;
+		return true;
+	}
+
+	private static void getBinaryFeature(String input, int lines,
+			int[][] feature) throws Exception {
+		DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
+		for (int i = 1; i <= lines; i++) {
+			int idx = readBigEndianInt(dis);
+			int n = readBigEndianInt(dis);
+			feature[idx] = new int[n];
+			for (int j = 0; j < n; j++) feature[idx][j] = readBigEndianInt(dis);
+		}
+		dis.close();
+	}
+
+	private static int readBigEndianInt(DataInputStream dis) throws Exception {
+		return dis.readUnsignedByte()+(dis.readUnsignedByte()<<8)+(dis.readUnsignedByte()<<16)+
+			(dis.readUnsignedByte()<<24);
+	}
+
+	private static void getFailed(String result, String ans, String output) throws Exception {
+		HashSet<String> resultSet = Common.getStringSet(result);
+		BufferedReader br = new BufferedReader(new FileReader(ans));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			if (!resultSet.contains(line)) pw.println(line);
+		}
+		pw.close();
+		br.close();
+	}
+
 	/**
 	 * translate the result of ppjoin, replace line# with individual IDs, and remove similarity values
 	 * @param lineListFile
@@ -155,39 +213,22 @@ public class Cheater {
 	}
 	
 	/**
-	 * estimate precision and recall of the blocking result, temp.txt recording doc#s of the candidate pairs
+	 * estimate precision and recall of the blocking result according to ppjoin output pairs
 	 * @param lineListFile
 	 * @param lineNum
 	 * @param ppJoinResult
 	 * @param stdAns
 	 * @throws Exception
 	 */
-	public static void evaluate(String lineListFile, int lineNum, String ppJoinResult, 
-			String stdAns) throws Exception {
-		int[] lineList = new int[lineNum+1];
-		BufferedReader br = new BufferedReader(new FileReader(lineListFile));
-		for (int i = 1; i <= lineNum; i++) lineList[i] = Integer.parseInt(br.readLine());
-		br.close();
+	public static void evaluate(String ppJoinResultTranslated, String stdAns) throws Exception {
 		HashSet<String> stdAnswers = getLines(stdAns);
-		br = new BufferedReader(new FileReader(ppJoinResult));
+		BufferedReader br = new BufferedReader(new FileReader(ppJoinResultTranslated));
 		int count = 0;
-		PrintWriter pw = IOFactory.getPrintWriter(Indexer.indexFolder+"temp.txt");
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			String[] parts = line.split(" ");
-			int line1 = lineList[Integer.parseInt(parts[0])];
-			int line2 = lineList[Integer.parseInt(parts[1])];
-			if (line1 < line2) {
-				int tmp = line1;
-				line1 = line2;
-				line2 = tmp;
-			}
-			String ans = line1 + " " + line2;
-			pw.println(ans);
-			if (stdAnswers.contains(ans)) count++;
+			if (stdAnswers.contains(line)) count++;
 		}
-		pw.close();
 		br.close();
-		Common.printResult(count, stdAns, Analyzer.countLines(ppJoinResult));
+		Common.printResult(count, stdAns, Analyzer.countLines(ppJoinResultTranslated));
 	}
 	
 	private static HashSet<String> getLines(String stdAns) throws Exception {
