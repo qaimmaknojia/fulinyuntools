@@ -24,8 +24,8 @@ public class ClassMapper {
 
 	public static void main(String[] args) throws Exception {
 		collectInstance(Indexer.indexFolder+"classInd.txt"); // running
-		collectInstance(Indexer.indexFolder+"nonNullClass.txt", 
-				Indexer.indexFolder+"nonNullClassInd.txt"); // to run
+//		collectInstance(Indexer.indexFolder+"nonNullClass.txt", 
+//				Indexer.indexFolder+"nonNullClassInd.txt"); // to run
 	}
 	
 	public static void collectInstance(String classList, String output) throws Exception {
@@ -49,7 +49,7 @@ public class ClassMapper {
 							td.next();
 							ret.get(i).add(td.doc());
 						} catch (Exception e) {
-							System.out.print("*");
+							//System.out.print("*");
 						}
 					}
 				} else {
@@ -60,7 +60,7 @@ public class ClassMapper {
 							td.next();
 							docNumSet.add(td.doc());
 						} catch (Exception e) {
-							System.out.print("*");
+							//System.out.print("*");
 						}
 					}
 					ret.put(i, docNumSet);
@@ -115,7 +115,7 @@ public class ClassMapper {
 							td.next();
 							ret.get(i).add(td.doc());
 						} catch (Exception e) {
-							System.out.print("*");
+							//System.out.print("*");
 						}
 					}
 				} else {
@@ -126,13 +126,13 @@ public class ClassMapper {
 							td.next();
 							docNumSet.add(td.doc());
 						} catch (Exception e) {
-							System.out.print("*");
+							//System.out.print("*");
 						}
 					}
 					ret.put(i, docNumSet);
 				}
 			}
-			if ((i+1)%10000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+			if ((i+1)%100000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
 		}
 		System.out.println(new Date().toString() + " : read all!");
 		boolean cont = true;
