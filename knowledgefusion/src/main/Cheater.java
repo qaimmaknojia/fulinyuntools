@@ -85,6 +85,14 @@ public class Cheater {
 //				Blocker.workFolder+"u5j0.5.txt", Blocker.workFolder+"u5j0.5translated.txt"); // done
 		// sort -n u5j0.5translated.txt > u5j0.5sorted.txt // done
 //		evaluate(Blocker.workFolder+"u5j0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
+		blockByPrefix(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+				Blocker.workFolder+"prefix0.1.txt");
+		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
+				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // done
+		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt
+//		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt");
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
@@ -96,6 +104,31 @@ public class Cheater {
 		}
 	}
 	
+	/**
+	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
+	 * at least one token, block them 
+	 * @param input
+	 * @param lines
+	 * @param prefix
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void blockByPrefix(String input, int lines, float prefix, String output) throws Exception {
+		int[][] feature = new int[lines+1][];
+		getBinaryFeature(input, lines, feature);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (int i = 1; i <= lines; i++) for (int j = 1; j < i; j++) 
+			if (prefixOverlap(feature[i], feature[j], prefix)) pw.println(i + " " + j);
+		pw.close();
+	}
+	
+	private static boolean prefixOverlap(int[] a, int[] b, float prefix) {
+		HashSet<Integer> fa = new HashSet<Integer>();
+		for (int i = 0; i < (int)Math.ceil(a.length*prefix); i++) fa.add(a[i]);
+		for (int i = 0; i < (int)Math.ceil(b.length*prefix); i++) if (fa.contains(b[i])) return true;
+		return false;
+	}
+
 	/**
 	 * words in each records in input is sorted by document frequency, if the first n words of two records
 	 * are the same, block them
@@ -113,7 +146,7 @@ public class Cheater {
 		pw.close();
 	}
 	
-	private static boolean firstNSame(int[] a, int[] b, int n) throws Exception {
+	private static boolean firstNSame(int[] a, int[] b, int n) {
 		for (int i = 0; i < n && i < a.length && i < b.length; i++) if (a[i] != b[i]) return false;
 		return true;
 	}
