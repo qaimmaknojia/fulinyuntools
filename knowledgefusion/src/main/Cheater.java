@@ -6,7 +6,9 @@ import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 
@@ -87,12 +89,20 @@ public class Cheater {
 //		evaluate(Blocker.workFolder+"u5j0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
 		blockByPrefix(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
 				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
-				Blocker.workFolder+"prefix0.1.txt");
+				Blocker.workFolder+"prefix0.1.txt"); // running
 		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
-				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // done
-		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt
-//		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt");
+				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // running
+		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt // to run
+//		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // to run
+//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//				Blocker.workFolder+"prefix0.1f.txt"); // to run
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
+//				Blocker.workFolder + "prefix0.1f.txt", Blocker.workFolder+"prefix0.1ftranslated.txt"); // to run
+		// sort -n prefix0.1ftranslated.txt > prefix0.1fsorted.txt // to run
+		// diff prefix0.1sorted.txt prefix0.1fsorted.txt // to run
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
@@ -104,6 +114,27 @@ public class Cheater {
 		}
 	}
 	
+	public static void blockByPrefixFast(String input, int lines, float prefix, String output) throws Exception {
+		int[][] feature = new int[lines+1][];
+		getBinaryFeature(input, lines, feature);
+		HashMap<Integer, ArrayList<Integer>> token2rec = new HashMap<Integer, ArrayList<Integer>>();
+		for (int i = 1; i <= lines; i++) for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix); j++) {
+			if (token2rec.containsKey(feature[i][j])) token2rec.get(feature[i][j]).add(i);
+			else {
+				ArrayList<Integer> value = new ArrayList<Integer>();
+				value.add(i);
+				token2rec.put(feature[i][j], value);
+			}
+		}
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (Integer i : token2rec.keySet()) {
+			ArrayList<Integer> recs = token2rec.get(i);
+			for (int j = 0; j < recs.size(); j++) for (int k = j+1; k < recs.size(); k++) 
+				pw.println(recs.get(j).intValue() + " " + recs.get(k).intValue());
+		}
+		pw.close();
+	}
+
 	/**
 	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
 	 * at least one token, block them 
