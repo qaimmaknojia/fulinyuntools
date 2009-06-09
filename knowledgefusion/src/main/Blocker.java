@@ -3,6 +3,7 @@ package main;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,8 +34,91 @@ public class Blocker {
 //		evaluate(workFolder+"r0.4block.txt", workFolder+"nonNullSameAs.txt");
 		
 //		findBlock(workFolder+"r0.5sorted.txt", workFolder+"r0.5block.txt"); // done
-		evaluate(workFolder+"r0.5block.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-
+//		evaluate(workFolder+"r0.5block.txt", Indexer.indexFolder+"sameAsID.txt"); // done
+//		prefixBlocking(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.2f, 
+//				Blocker.workFolder+"prefix0.2block.txt"); // done
+//		translateBlock(workFolder+"prefix0.2block.txt", Indexer.indexFolder+"keyInd.txt", workFolder+"prefix0.2blockTranslated.txt");
+		evaluate(workFolder+"prefix0.2blockTranslated.txt", Indexer.indexFolder+"sameAsID.txt");
+	}
+	
+	/**
+	 * translate line#s in the block file to doc#s of individuals
+	 * @param input
+	 * @param keyIndList
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void translateBlock(String input, String keyIndList, String output) throws Exception {
+		int lineNum = Analyzer.countLines(keyIndList);
+		int[] lineList = new int[lineNum+1];
+		BufferedReader br = new BufferedReader(new FileReader(keyIndList));
+		for (int i = 1; i <= lineNum; i++) lineList[i] = Integer.parseInt(br.readLine());
+		br.close();
+		br = new BufferedReader(new FileReader(input));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			boolean first = true;
+			for (String s : parts) {
+				if (first) {
+					pw.print(lineList[Integer.parseInt(s)]);
+					first = false;
+				} else {
+					pw.print(" " + lineList[Integer.parseInt(s)]);
+				}
+			}
+			pw.println();
+		}
+		pw.close();
+		br.close();
+	}
+	
+	/**
+	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
+	 * at least one token, block them 
+	 * @param input
+	 * @param lines
+	 * @param prefix
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void prefixBlocking(String input, int lines, float prefix, String output) throws Exception {
+		int[][] feature = new int[lines+1][];
+		Common.getBinaryFeature(input, lines, feature);
+		HashMap<Integer, ArrayList<Integer>> token2rec = new HashMap<Integer, ArrayList<Integer>>();
+		for (int i = 1; i <= lines; i++) {
+			for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix); j++) {
+				if (token2rec.containsKey(feature[i][j])) token2rec.get(feature[i][j]).add(i);
+				else {
+					ArrayList<Integer> value = new ArrayList<Integer>();
+					value.add(i);
+					token2rec.put(feature[i][j], value);
+				}
+			}
+			if (i%10000 == 0) System.out.println(new Date().toString() + " : " + i + " lines indexed");
+		}
+		System.out.println(token2rec.size() + " blocks in all");
+		int maxBlockSize = 0;
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (Integer i : token2rec.keySet()) {
+			ArrayList<Integer> recs = token2rec.get(i);
+			if (recs.size() == 1) continue;
+			if (recs.size() > maxBlockSize) maxBlockSize = recs.size();
+//			System.out.println(recs.size());
+			boolean first = true;
+			for (Integer j : recs) {
+				if (first) {
+					pw.print(j);
+					first = false;
+				} else {
+					pw.print(" " + j);
+				}
+			}
+			pw.println();
+		}
+		pw.close();
+		System.out.println("max block size: " + maxBlockSize);
 	}
 	
 	/**
@@ -45,18 +129,29 @@ public class Blocker {
 	 */
 	public static void evaluate(String blockFile, String stdAns) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		HashSet<String> resSet = new HashSet<String>();
 		BufferedReader br = new BufferedReader(new FileReader(blockFile));
-		int canSize = 0;
 		int overlap = 0;
+		int maxBlockSize = 0;
+		int blockNum = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
+			if (docNums.length > maxBlockSize) maxBlockSize = docNums.length;
 			System.out.println(docNums.length);
-			canSize += docNums.length*(docNums.length-1)/2;
-			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
-				if (stdSet.contains(docNums[i] + " " + docNums[j])) overlap++;
+			blockNum++;
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String toTest = docNums[i] + " " + docNums[j];
+				if (stdSet.contains(toTest)) {
+					overlap++;
+					stdSet.remove(toTest); // to avoid duplicate counting
+				}
+				resSet.add(toTest);
+			}
 		}
 		br.close();
-		Common.printResult(overlap, stdAns, canSize);
+		Common.printResult(overlap, stdAns, resSet.size());
+		System.out.println("max block size: " + maxBlockSize + " ; #block: " + blockNum);
+		
 	}
 	
 	/**

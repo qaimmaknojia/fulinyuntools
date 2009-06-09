@@ -27,28 +27,35 @@ public class Clusterer {
 //		NNListAndNG listAndNg = new NNListAndNG(new NN[]{me, a, b, c, d}, 2);
 //		
 //		System.out.println(calcNg(new NN[]{me, a, b, c, d}));
-		cluster(Blocker.workFolder+"r0.5block.txt", Blocker.workFolder+"r0.5cluster.txt", 3);
+		cluster(Blocker.workFolder+"prefix0.2blockTranslated.txt", 
+				Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 2, 1.1f);
+		evaluate(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt");
 	}
 	
 	public static void evaluate(String clusterFile, String stdAns) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		HashSet<String> resSet = new HashSet<String>();
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
-		int count = 0;
-		int resultCount = 0;
+		int overlap = 0;
+		int maxClusterSize = 0;
+		int clusterNum = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			int[] parts = Common.getNumsInLineSorted(line);
-			resultCount += parts.length*(parts.length-1)/2;
-			for (int i = 0; i < parts.length; i++) for (int j = i+1; j < parts.length; j++) {
-				if (stdSet.contains(parts[j] + " " + parts[i])) count++;
+			int[] docNums = Common.getNumsInLineSorted(line);
+			if (docNums.length > maxClusterSize) maxClusterSize = docNums.length;
+//			System.out.println(docNums.length);
+			clusterNum++;
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String toTest = docNums[i] + " " + docNums[j];
+				if (stdSet.contains(toTest)) {
+					overlap++;
+					stdSet.remove(toTest); // to avoid duplicate counting
+				}
+				resSet.add(toTest);
 			}
 		}
 		br.close();
-		System.out.println(count + " lines overlap");
-		int stdSize = stdSet.size();
-		System.out.println("standard answer size: " + stdSize);
-		System.out.println("recall: " + (count+0.0)/stdSize);
-		System.out.println("result size: " + resultCount);
-		System.out.println("precision: " + (count+0.0)/resultCount);
+		Common.printResult(overlap, stdAns, resSet.size());
+		System.out.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
 	}
 	
 	/**
@@ -58,19 +65,20 @@ public class Clusterer {
 	 * @param tsn threshold for SN criteria
 	 * @throws Exception
 	 */
-	public static void cluster(String input, String output, float tsn) throws Exception {
+	public static void cluster(String input, String output, int ngRadius, float tsn) throws Exception {
 		IDataSourceReader br = IOFactory.getReader(input);
 		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] records = line.split(" ");
-			System.out.println(records.length);
+//			if (records.length > 10) System.out.println(records.length);
 			int[] docNums = new int[records.length];
 			for (int i = 0; i < records.length; i++) docNums[i] = Integer.parseInt(records[i]);
-			cluster(docNums, output, tsn);
+			cluster(docNums, output, ngRadius, tsn);
 			count++;
-			if (count%100 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
+			if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
 		}
 		br.close();
+		System.out.println(new Date().toString() + " : clustering finished");
 	}
 
 	/**
@@ -78,8 +86,8 @@ public class Clusterer {
 	 * @param docNums map from internal index (0-n) to doc# of index
 	 * @param output
 	 */
-	private static void cluster(int[] docNums, String output, float tsn) throws Exception {
-		String[] basicFeatures = new String[docNums.length];
+	private static void cluster(int[] docNums, String output, int ngRadius, float tsn) throws Exception {
+		String[][] basicFeatures = new String[docNums.length][];
 		getBasicFeatures(docNums, basicFeatures);
 		NN[][] nnList = new NN[docNums.length][docNums.length];
 		for (int i = 0; i < docNums.length; i++) for (int j = i+1; j < docNums.length; j++) {
@@ -98,36 +106,56 @@ public class Clusterer {
 				return -1;
 			}
 		});
+		for (int i = 0; i < docNums.length; i++) for (int j = 0; j < docNums.length; j++) 
+			if (nnList[i][j].distance < 0) {
+				System.out.println(i + " : " + basicFeatures[i]);
+				System.out.println(nnList[i][j].neighbor + " : " + basicFeatures[nnList[i][j].neighbor]);
+				System.exit(0);
+			}
 		NNListAndNG[] records = new NNListAndNG[docNums.length];
 		for (int i = 0; i < docNums.length; i++) { 
-			records[i] = new NNListAndNG(nnList[i], calcNg(nnList[i]));
+			records[i] = new NNListAndNG(nnList[i], calcNg(nnList[i], ngRadius));
 		}
 		boolean[] clustered = new boolean[docNums.length];
 		for (int i = 0; i < docNums.length; i++) if (!clustered[i]) 
 			cluster(docNums, records, i, tsn, output, clustered);
 	}
 
-	private static void getBasicFeatures(int[] docNums, String[] basicFeatures) throws Exception {
+	private static void getBasicFeatures(int[] docNums, String[][] basicFeatures) throws Exception {
 		IndexReader ireader = IndexReader.open(Indexer.lap3index);
 		for (int i = 0; i < docNums.length; i++) basicFeatures[i] = 
-			ireader.document(docNums[i]).get("basic");
+			sortUnique(ireader.document(docNums[i]).get("basic"));
 		ireader.close();
 	}
 
-	private static float hamming(String[] basicFeatures, int i, int j) throws Exception {
-		String[] r1 = basicFeatures[i].split(" ");
-		String[] r2 = basicFeatures[j].split(" ");
+	private static float hamming(String[][] basicFeatures, int i, int j) throws Exception {
+		String[] r1 = basicFeatures[i];
+		String[] r2 = basicFeatures[j];
 		HashSet<String> tokenSet = new HashSet<String>();
 		for (String s : r1) tokenSet.add(s);
 		for (String s : r2) tokenSet.add(s);
 		int intersection = r1.length+r2.length-tokenSet.size();
-		return (float)(tokenSet.size()-intersection+0.0)/tokenSet.size();
+		float ret = (float)(tokenSet.size()-intersection+0.0)/tokenSet.size();
+		return ret;
 	}
 
-	private static float calcNg(NN[] nn) {
+	/**
+	 * sort and unique tokens in str, duplicated tokens are assigned unique aliases
+	 * @param str
+	 * @return
+	 */
+	private static String[] sortUnique(String str) {
+		String[] tokens = str.split(" ");
+		Arrays.sort(tokens);
+		for (int i = 0; i < tokens.length; i++) 
+			for (int j = i+1; j < tokens.length && tokens[j].equals(tokens[i]); j++) tokens[j] += ("."+(j-i));
+		return tokens;
+	}
+	
+	private static float calcNg(NN[] nn, int radius) {
 		float nnDistance = nn[1].distance;
 		int i;
-		for (i = 2; i < nn.length; i++) if (nn[i].distance > 2*nnDistance) break;
+		for (i = 2; i < nn.length; i++) if (nn[i].distance > radius*nnDistance) break;
 		return i-1;
 	}
 
