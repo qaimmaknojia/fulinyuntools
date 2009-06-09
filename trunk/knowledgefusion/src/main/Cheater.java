@@ -87,22 +87,33 @@ public class Cheater {
 //				Blocker.workFolder+"u5j0.5.txt", Blocker.workFolder+"u5j0.5translated.txt"); // done
 		// sort -n u5j0.5translated.txt > u5j0.5sorted.txt // done
 //		evaluate(Blocker.workFolder+"u5j0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-		blockByPrefix(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
-				Blocker.workFolder+"prefix0.1.txt"); // running
-		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
-				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
-				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // running
-		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt // to run
-//		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // to run
+//		blockByPrefix(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//				Blocker.workFolder+"prefix0.1.txt"); // too slow, aborted
 //		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
 //				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
-//				Blocker.workFolder+"prefix0.1f.txt"); // to run
+//				Blocker.workFolder+"prefix0.1.txt"); // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
-//				Blocker.workFolder + "prefix0.1f.txt", Blocker.workFolder+"prefix0.1ftranslated.txt"); // to run
-		// sort -n prefix0.1ftranslated.txt > prefix0.1fsorted.txt // to run
-		// diff prefix0.1sorted.txt prefix0.1fsorted.txt // to run
+//				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // done
+		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt // done
+//		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 5364/672897
+//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.2f, 
+//				Blocker.workFolder+"prefix0.2.txt"); // done
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
+//				Blocker.workFolder + "prefix0.2.txt", Blocker.workFolder+"prefix0.2translated.txt"); // done
+		// sort -n prefix0.2translated.txt > prefix0.2sorted.txt // done
+		evaluate(Blocker.workFolder+"prefix0.2sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 32156/10936070
+//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeatureU.txt.5gram.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//				Blocker.workFolder+"prefixU5gram0.1.txt"); // done
+//		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
+//				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
+//				Blocker.workFolder + "prefixU5gram0.1.txt", Blocker.workFolder+"prefixU5gram0.1translated.txt"); // done
+		// sort -n prefixU5gram0.1translated.txt | uniq > prefixU5gram0.1sorted.txt // done
+//		evaluate(Blocker.workFolder+"prefixU5gram0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 37904/11922201
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
@@ -114,27 +125,6 @@ public class Cheater {
 		}
 	}
 	
-	public static void blockByPrefixFast(String input, int lines, float prefix, String output) throws Exception {
-		int[][] feature = new int[lines+1][];
-		getBinaryFeature(input, lines, feature);
-		HashMap<Integer, ArrayList<Integer>> token2rec = new HashMap<Integer, ArrayList<Integer>>();
-		for (int i = 1; i <= lines; i++) for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix); j++) {
-			if (token2rec.containsKey(feature[i][j])) token2rec.get(feature[i][j]).add(i);
-			else {
-				ArrayList<Integer> value = new ArrayList<Integer>();
-				value.add(i);
-				token2rec.put(feature[i][j], value);
-			}
-		}
-		PrintWriter pw = IOFactory.getPrintWriter(output);
-		for (Integer i : token2rec.keySet()) {
-			ArrayList<Integer> recs = token2rec.get(i);
-			for (int j = 0; j < recs.size(); j++) for (int k = j+1; k < recs.size(); k++) 
-				pw.println(recs.get(j).intValue() + " " + recs.get(k).intValue());
-		}
-		pw.close();
-	}
-
 	/**
 	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
 	 * at least one token, block them 
@@ -144,20 +134,29 @@ public class Cheater {
 	 * @param output
 	 * @throws Exception
 	 */
-	public static void blockByPrefix(String input, int lines, float prefix, String output) throws Exception {
+	public static void blockByPrefixFast(String input, int lines, float prefix, String output) throws Exception {
 		int[][] feature = new int[lines+1][];
-		getBinaryFeature(input, lines, feature);
+		Common.getBinaryFeature(input, lines, feature);
+		HashMap<Integer, ArrayList<Integer>> token2rec = new HashMap<Integer, ArrayList<Integer>>();
+		for (int i = 1; i <= lines; i++) {
+			for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix); j++) {
+				if (token2rec.containsKey(feature[i][j])) token2rec.get(feature[i][j]).add(i);
+				else {
+					ArrayList<Integer> value = new ArrayList<Integer>();
+					value.add(i);
+					token2rec.put(feature[i][j], value);
+				}
+			}
+			if (i%10000 == 0) System.out.println(new Date().toString() + " : " + i + " lines indexed");
+		}
 		PrintWriter pw = IOFactory.getPrintWriter(output);
-		for (int i = 1; i <= lines; i++) for (int j = 1; j < i; j++) 
-			if (prefixOverlap(feature[i], feature[j], prefix)) pw.println(i + " " + j);
+		for (Integer i : token2rec.keySet()) {
+			ArrayList<Integer> recs = token2rec.get(i);
+			for (int j = 0; j < recs.size(); j++) for (int k = j+1; k < recs.size(); k++) 
+				pw.println(recs.get(j).intValue() + " " + recs.get(k).intValue());
+//			System.out.println(new Date().toString() + " : " + i + " lines written");
+		}
 		pw.close();
-	}
-	
-	private static boolean prefixOverlap(int[] a, int[] b, float prefix) {
-		HashSet<Integer> fa = new HashSet<Integer>();
-		for (int i = 0; i < (int)Math.ceil(a.length*prefix); i++) fa.add(a[i]);
-		for (int i = 0; i < (int)Math.ceil(b.length*prefix); i++) if (fa.contains(b[i])) return true;
-		return false;
 	}
 
 	/**
@@ -170,7 +169,7 @@ public class Cheater {
 	 */
 	private static void blockByRareWords(String input, int lines, int n, String output) throws Exception {
 		int[][] feature = new int[lines+1][];
-		getBinaryFeature(input, lines, feature);
+		Common.getBinaryFeature(input, lines, feature);
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		for (int i = 1; i <= lines; i++) for (int j = 1; j < i; j++) 
 			if (firstNSame(feature[i], feature[j], n)) pw.println(i + " " + j);
@@ -180,23 +179,6 @@ public class Cheater {
 	private static boolean firstNSame(int[] a, int[] b, int n) {
 		for (int i = 0; i < n && i < a.length && i < b.length; i++) if (a[i] != b[i]) return false;
 		return true;
-	}
-
-	private static void getBinaryFeature(String input, int lines,
-			int[][] feature) throws Exception {
-		DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(input)));
-		for (int i = 1; i <= lines; i++) {
-			int idx = readBigEndianInt(dis);
-			int n = readBigEndianInt(dis);
-			feature[idx] = new int[n];
-			for (int j = 0; j < n; j++) feature[idx][j] = readBigEndianInt(dis);
-		}
-		dis.close();
-	}
-
-	private static int readBigEndianInt(DataInputStream dis) throws Exception {
-		return dis.readUnsignedByte()+(dis.readUnsignedByte()<<8)+(dis.readUnsignedByte()<<16)+
-			(dis.readUnsignedByte()<<24);
 	}
 
 	private static void getFailed(String result, String ans, String output) throws Exception {

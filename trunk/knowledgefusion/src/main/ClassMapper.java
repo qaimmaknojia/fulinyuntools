@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
@@ -24,9 +25,12 @@ public class ClassMapper {
 
 	public static void main(String[] args) throws Exception {
 //		collectInstancePre(Indexer.indexFolder+"classIndTemp.txt"); // done
-		collectInstanceFromClassInfo(Indexer.indexFolder+"classIndTemp.txt", Indexer.indexFolder+"classInd.txt"); // running
+//		collectInstanceFromClassInfo(Indexer.indexFolder+"classIndTemp.txt", Indexer.indexFolder+"classInd.txt"); // done
 //		collectInstance(Indexer.indexFolder+"nonNullClass.txt", 
 //				Indexer.indexFolder+"nonNullClassInd.txt"); // to run
+//		findIndWith2Classes(Indexer.indexFolder+"classInd.txt"); // done
+		indClusterFeatureExtraction(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 
+				Indexer.indexFolder+"classInd.txt", Indexer.indexFolder+"clusterClass.txt"); // running
 	}
 	
 	public static void collectInstance(String classList, String output) throws Exception {
@@ -262,9 +266,91 @@ public class ClassMapper {
 			pw.print(parts[0]); // class doc#
 			for (int n = 0; n < indclusters.size(); n++) {
 				HashSet<Integer> cluster = indclusters.get(n);
-				for (int i = 1; i < parts.length; i++) if (cluster.contains(Integer.parseInt(parts[i]))) {
-					pw.print(" " + n);
-					break;
+				int count = 0;
+				for (int i = 1; i < parts.length; i++) if (cluster.contains(Integer.parseInt(parts[i]))) 
+					count++;
+				if (count != 0) pw.print(" " + n + " " + (count+0.0)/(parts.length-1));
+			}
+			pw.println();
+		}
+		br.close();
+		pw.close();
+	}
+	
+	/**
+	 * find whether classes share individuals; due to the existence of subclasses, they do!
+	 * @param classInd
+	 * @throws Exception
+	 */
+	public static void findIndWith2Classes(String classInd) throws Exception {
+		HashSet<Integer> indSet = new HashSet<Integer>();
+		BufferedReader br = new BufferedReader(new FileReader(classInd));
+		int count = 0;
+		int lineCount = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			for (int i = 1; i < parts.length; i++) {
+				int indID = Integer.parseInt(parts[i]);
+				if (indSet.contains(indID)) count++;
+				indSet.add(indID);
+			}
+			lineCount++;
+			if (lineCount%10000 == 0) System.out.println(new Date().toString() + " : " + lineCount);
+		}
+		System.out.println(count);
+	}
+	
+	/**
+	 * extract individual cluster features, which are sets of classes they belong to, along with cluster-class 
+	 * association coefficients
+	 * @param indCluster individual clusters, one per line, numbered from 0
+	 * @param classInd class owned individuals, one class per line, first class doc# then a list of 
+	 * individual doc#s
+	 * @param output class features, one per line, first class doc# then a list of cluster#s (classCluster)
+	 */
+	public static void indClusterFeatureExtraction(String indCluster, String classInd, 
+			String output) throws Exception {
+		HashMap<Integer, ArrayList<Integer>> indClass = new HashMap<Integer, ArrayList<Integer>>();
+		BufferedReader br = new BufferedReader(new FileReader(classInd));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			int classID = Integer.parseInt(parts[0]);
+			for (int i = 1; i < parts.length; i++) {
+				int indID = Integer.parseInt(parts[i]);
+				if (indClass.containsKey(indID)) indClass.get(indID).add(classID);
+				else {
+					ArrayList<Integer> classList = new ArrayList<Integer>();
+					classList.add(classID);
+					indClass.put(indID, classList);
+				}
+			}
+		}
+		br.close();
+		System.out.println(new Date().toString() + " : ind-class information obtained");
+		
+		br = new BufferedReader(new FileReader(indCluster));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			HashMap<Integer, Integer> classOwnCount = new HashMap<Integer, Integer>();
+			for (String s : parts) {
+				int indID = Integer.parseInt(s);
+				if (indClass.containsKey(indID)) {
+					ArrayList<Integer> classList = indClass.get(indID);
+					for (Integer c : classList) {
+						if (classOwnCount.containsKey(c)) classOwnCount.put(c, classOwnCount.get(c)+1);
+						else classOwnCount.put(c, 1);
+					}
+				}
+			}
+			boolean first = true;
+			for (Integer c : classOwnCount.keySet()) {
+				float coefficient = (float)(classOwnCount.get(c)+0.0)/parts.length;
+				if (first) {
+					pw.print(c + " " + coefficient);
+					first = false;
+				} else {
+					pw.print(" " + c + " " + coefficient);
 				}
 			}
 			pw.println();
@@ -272,4 +358,5 @@ public class ClassMapper {
 		br.close();
 		pw.close();
 	}
+	
 }
