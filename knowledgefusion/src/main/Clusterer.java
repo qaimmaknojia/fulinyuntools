@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.apache.lucene.index.IndexReader;
 
@@ -27,11 +28,50 @@ public class Clusterer {
 //		NNListAndNG listAndNg = new NNListAndNG(new NN[]{me, a, b, c, d}, 2);
 //		
 //		System.out.println(calcNg(new NN[]{me, a, b, c, d}));
-		cluster(Blocker.workFolder+"prefix0.2blockTranslated.txt", 
-				Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 2, 1.1f);
-		evaluate(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt");
+//		cluster(Blocker.workFolder+"prefix0.2blockTranslated.txt", 
+//				Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 2, 1.1f); // done
+//		evaluate(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt"); // done
+		getClusterWrong(Blocker.workFolder+"prefix0.2cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt", 
+				Blocker.workFolder+"cluster2&2tolabel.txt");
 	}
 	
+	/**
+	 * extract pairs found by clusterer but are not contained in stdAns and write the result to output
+	 * output need manual labeling
+	 * @param clusterFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void getClusterWrong(String clusterFile, String stdAns, String output) throws Exception {
+		TreeSet<String> resSet = new TreeSet<String>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String toTest = docNums[i] + " " + docNums[j];
+				resSet.add(toTest);
+			}
+		}
+		br.close();
+		System.out.println(new Date().toString() + " : all clusters read");
+		
+		br = new BufferedReader(new FileReader(stdAns));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			resSet.remove(line);
+		}
+		br.close();
+		
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String s : resSet) pw.println(s);
+		pw.close();
+	}
+	
+	/**
+	 * evaluate individual clusters in clusterFile in terms of precision and recall w.r.t. stdAns
+	 * @param clusterFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
 	public static void evaluate(String clusterFile, String stdAns) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
 		HashSet<String> resSet = new HashSet<String>();
