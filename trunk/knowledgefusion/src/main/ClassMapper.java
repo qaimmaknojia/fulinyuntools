@@ -23,14 +23,33 @@ import basic.IOFactory;
  */
 public class ClassMapper {
 
+	public static String workFolder = "e:\\user\\fulinyun\\classCluster\\";
+	
 	public static void main(String[] args) throws Exception {
 //		collectInstancePre(Indexer.indexFolder+"classIndTemp.txt"); // done
 //		collectInstanceFromClassInfo(Indexer.indexFolder+"classIndTemp.txt", Indexer.indexFolder+"classInd.txt"); // done
 //		collectInstance(Indexer.indexFolder+"nonNullClass.txt", 
 //				Indexer.indexFolder+"nonNullClassInd.txt"); // to run
 //		findIndWith2Classes(Indexer.indexFolder+"classInd.txt"); // done
-		indClusterFeatureExtraction(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 
-				Indexer.indexFolder+"classInd.txt", Indexer.indexFolder+"clusterClass.txt"); // running
+//		indClusterFeatureExtraction(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 
+//				Indexer.indexFolder+"classInd.txt", Indexer.indexFolder+"clusterClass.txt"); // running
+		findClassOutsideDBpedia(workFolder+"cluster.txt", workFolder+"nonDBpediaClass.txt");
+	}
+	
+	public static void findClassOutsideDBpedia(String clusterFile, String output) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] parts = line.split(" ");
+			if (parts[1].equals("-1")) {
+				String uri = ireader.document(Integer.parseInt(parts[0])).get("URI");
+				if (!uri.contains(Cheater.domainDBpedia)) pw.println(parts[0] + " " + uri);
+			}
+		}
+		pw.close();
+		br.close();
+		ireader.close();
 	}
 	
 	public static void collectInstance(String classList, String output) throws Exception {

@@ -2,15 +2,17 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.index.TermPositions;
+import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.index.TermEnum;
 
 import basic.IDataSourceReader;
 import basic.IOFactory;
@@ -25,7 +27,7 @@ import basic.IOFactory;
  */
 public class Blocker {
 	
-	public static String workFolder = "E:\\User\\fulinyun\\ppjoin\\";
+	public static String workFolder = "E:\\User\\fulinyun\\blocker\\";
 	
 	public static void main(String[] args) throws Exception {
 //		findBlock(workFolder+"r0.3sorted.txt", workFolder+"r0.3block.txt");
@@ -39,9 +41,86 @@ public class Blocker {
 //				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.2f, 
 //				Blocker.workFolder+"prefix0.2block.txt"); // done
 //		translateBlock(workFolder+"prefix0.2block.txt", Indexer.indexFolder+"keyInd.txt", workFolder+"prefix0.2blockTranslated.txt");
-		evaluate(workFolder+"prefix0.2blockTranslated.txt", Indexer.indexFolder+"sameAsID.txt");
+//		evaluate(workFolder+"prefix0.2blockTranslated.txt", Indexer.indexFolder+"sameAsID.txt");
+//		prefixBlocking(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.2f, 
+//				Blocker.workFolder+"prefix0.2&3block.txt"); // done
+//		translateBlock(workFolder+"prefix0.2&3block.txt", Indexer.indexFolder+"keyInd.txt", 
+//				workFolder+"prefix0.2&3blockTranslated.txt"); // done
+//		evaluate(workFolder+"prefix0.2&3blockTranslated.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"prefix0.2&3blockEval.txt"); // done
+		
+		// part of impact of mutual enhancement mechanism test, block classes
+//		prefixBlocking(workFolder+"classFeatureDump.txt.bin", 
+//				Analyzer.countLines(workFolder+"classFeatureDump.txt"), 0.2f, 
+//				workFolder+"prefix0.2classBlock.txt"); // done
+//		translateBlock(workFolder+"prefix0.2classBlock.txt", workFolder+"nonNullClass.txt", 
+//				workFolder+"prefix0.2classBlockTranslated.txt"); // done
+
+//		prefixBlocking(workFolder+"classFeatureDump.txt.bin", 
+//				Analyzer.countLines(workFolder+"classFeatureDump.txt"), 0.1f, 
+//				workFolder+"prefix0.1classBlock.txt"); // done
+//		translateBlock(workFolder+"prefix0.1classBlock.txt", workFolder+"nonNullClass.txt", 
+//				workFolder+"prefix0.1classBlockTranslated.txt"); // done
+
+//		prefixBlocking(workFolder+"classFeatureDump.txt.bin", 
+//				Analyzer.countLines(workFolder+"classFeatureDump.txt"), 0.05f, 
+//				workFolder+"prefix0.05classBlock.txt"); // done
+//		translateBlock(workFolder+"prefix0.05classBlock.txt", workFolder+"nonNullClass.txt", 
+//				workFolder+"prefix0.05classBlockTranslated.txt"); // done
+//		for (int p = 10; p <= 30; p += 5) for (int n = 10000; n <= 160000; n *= 2) {
+//			prefixBlockingWithLucene(workFolder+"cheatBasicFeature"+n+".txt.bin", n, 
+//					p/100.0f, workFolder+"temp"+p+"-"+n, 
+//				workFolder+"temp.txt", workFolder+"blockP="+p+"n="+n+"speed.txt");
+//		}
+//		prefixBlocking(workFolder+"cheatBasicFeature10000.txt.bin", 10000, 0.1f, 
+//				workFolder+"blockTemp.txt", workFolder+"tempReport.txt");
+//		for (int p = 10; p <= 30; p += 5) for (int n = 10000; n <= 160000; n *= 2) {
+//			prefixBlocking(workFolder+"cheatBasicFeature"+n+".txt.bin", n, p/100.0f, 
+//					workFolder+"blockSpec\\blockP="+p+"n="+n+".txt", workFolder+"report\\blockP="+p+"n="+n+"memSpeed.txt");
+//		}
+		
+//		for (int p = 10; p <= 30; p += 5) getBlockSizeDistribution(workFolder+"blockSpec\\blockP="+p+"n=160000.txt",
+//				workFolder+"blockSizeDistribution\\blockSizeDistributionP="+p+"n=160000.txt");
+//		for (int p = 10; p <= 30; p += 5) {
+//			prefixBlocking(workFolder+"cheatBasicFeature.txt.bin", 
+//					Analyzer.countLines(workFolder+"cheatBasicFeature.txt"), p/100.0f, 
+//					workFolder+"blockP="+p+".txt", workFolder+"blockP="+p+"memSpeed.txt"); 
+//		}
+		
+//		for (int p = 10; p <= 30; p += 5) {
+//			translateBlock(workFolder+"blockP="+p+".txt", Indexer.indexFolder+"keyInd.txt", 
+//					workFolder+"blockP="+p+"translated.txt"); 
+//		}
+		
+		for (int p = 10; p <= 30; p += 5) {
+			dumpCanPairs(workFolder+"blockP="+p+"translated.txt", workFolder+"blockP="+p+"dump.txt");
+		}
+		
+//		evaluate(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"pr\\blockP="+p+"eval.txt"); 
+
 	}
 	
+	/**
+	 * for each n get how many blocks is of size n
+	 * @param input
+	 * @param output
+	 */
+	private static void getBlockSizeDistribution(String input, String output) throws Exception {
+		TreeMap<Integer, Integer> size2num = new TreeMap<Integer, Integer>();
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int key = line.split(" ").length;
+			if (!size2num.containsKey(key)) size2num.put(key, 0);
+			size2num.put(key, size2num.get(key)+1);
+		}
+		br.close();
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (Integer key : size2num.keySet()) pw.println(key + " " + size2num.get(key));
+		pw.close();
+	}
+
 	/**
 	 * translate line#s in the block file to doc#s of individuals
 	 * @param input
@@ -83,12 +162,79 @@ public class Blocker {
 	 * @param output
 	 * @throws Exception
 	 */
-	public static void prefixBlocking(String input, int lines, float prefix, String output) throws Exception {
+	public static void prefixBlockingWithLucene(String input, int lines, float prefix, String indexFolder, 
+			String output, String report) throws Exception {
+		long startTime = new Date().getTime();
+		Common.indexBinaryFeature(input, lines, prefix, indexFolder);
+		
+//		IndexReader ireader = IndexReader.open(indexFolder);
+//		TermEnum te = ireader.terms();
+//		int count = 0;
+//		while (te.next()) if (te.docFreq() > 1) {
+//			System.out.println(te.docFreq());
+//			System.out.println(te.term());
+//			TermDocs td = ireader.termDocs(te.term());
+//			while (td.next()) System.out.print(" " + td.doc());
+//			System.out.println();
+//			count++;
+//			if (count == 10) break;
+//		}
+		
+		IndexReader ireader = IndexReader.open(indexFolder);
+		TermEnum te = ireader.terms();
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		int maxBlockSize = 0;
+		int totalBlockSize = 0;
+		int blockCount = 0;
+		while (te.next() && te.docFreq() > 1) {
+			if (te.docFreq() > maxBlockSize) maxBlockSize = te.docFreq();
+			totalBlockSize += te.docFreq();
+			blockCount++;
+			TermDocs td = ireader.termDocs(te.term());
+			td.next();
+			pw.print(ireader.document(td.doc()).get("line"));
+			while (td.next()) {
+				pw.print(" " + ireader.document(td.doc()).get("line"));
+			}
+			pw.println();
+			if (blockCount%10000 == 0) System.out.println(new Date().toString() + " : " + blockCount + " blocks");
+		}
+		pw.close();
+		ireader.close();
+		long time = new Date().getTime()-startTime;
+		pw = IOFactory.getPrintWriter(report);
+		pw.println("#individual: " + lines);
+		pw.println("blocking parameter: " + prefix);
+		pw.println("time: " + time);
+		pw.println("#block: " + blockCount);
+		pw.println("max block size: " + maxBlockSize);
+		pw.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
+		pw.close();
+		System.out.println("#individual:" + lines);
+		System.out.println("blocking parameter: " + prefix);
+		System.out.println("time: " + time);
+		System.out.println("#block: " + blockCount);
+		System.out.println("max block size: " + maxBlockSize);
+		System.out.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
+	}
+
+	/**
+	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
+	 * at least one token, block them 
+	 * @param input
+	 * @param lines
+	 * @param prefix
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void prefixBlocking(String input, int lines, float prefix, String output, 
+			String report) throws Exception {
+		long startTime = new Date().getTime();
 		int[][] feature = new int[lines+1][];
 		Common.getBinaryFeature(input, lines, feature);
 		HashMap<Integer, ArrayList<Integer>> token2rec = new HashMap<Integer, ArrayList<Integer>>();
 		for (int i = 1; i <= lines; i++) {
-			for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix); j++) {
+			for (int j = 0; j < (int)Math.ceil(feature[i].length*prefix) || (j < 3 && j < feature[i].length); j++) {
 				if (token2rec.containsKey(feature[i][j])) token2rec.get(feature[i][j]).add(i);
 				else {
 					ArrayList<Integer> value = new ArrayList<Integer>();
@@ -98,14 +244,16 @@ public class Blocker {
 			}
 			if (i%10000 == 0) System.out.println(new Date().toString() + " : " + i + " lines indexed");
 		}
-		System.out.println(token2rec.size() + " blocks in all");
 		int maxBlockSize = 0;
+		int totalBlockSize = 0;
+		int blockCount = 0;
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		for (Integer i : token2rec.keySet()) {
 			ArrayList<Integer> recs = token2rec.get(i);
 			if (recs.size() == 1) continue;
 			if (recs.size() > maxBlockSize) maxBlockSize = recs.size();
-//			System.out.println(recs.size());
+			totalBlockSize += recs.size();
+			blockCount++;
 			boolean first = true;
 			for (Integer j : recs) {
 				if (first) {
@@ -118,16 +266,50 @@ public class Blocker {
 			pw.println();
 		}
 		pw.close();
+		long time = new Date().getTime()-startTime;
+		pw = IOFactory.getPrintWriter(report);
+		pw.println("#individual: " + lines);
+		pw.println("blocking parameter: " + prefix);
+		pw.println("time: " + time);
+		pw.println("#block: " + blockCount);
+		pw.println("max block size: " + maxBlockSize);
+		pw.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
+		pw.close();
+		System.out.println("#individual:" + lines);
+		System.out.println("blocking parameter: " + prefix);
+		System.out.println("time: " + time);
+		System.out.println("#block: " + blockCount);
 		System.out.println("max block size: " + maxBlockSize);
+		System.out.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
 	}
 	
+	/**
+	 * dump candidate pairs in blocks to evaluate recall of blocking
+	 * @param blockFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void dumpCanPairs(String blockFile, String output) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(blockFile));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String toTest = docNums[i] + " " + docNums[j];
+				pw.println(toTest);
+			}
+		}
+		br.close();
+		pw.close();
+	}
+
 	/**
 	 * evaluate recall of blocking
 	 * @param blockFile
 	 * @param stdAns
 	 * @throws Exception
 	 */
-	public static void evaluate(String blockFile, String stdAns) throws Exception {
+	public static void evaluate(String blockFile, String stdAns, String output) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
 		HashSet<String> resSet = new HashSet<String>();
 		BufferedReader br = new BufferedReader(new FileReader(blockFile));
@@ -137,7 +319,7 @@ public class Blocker {
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
 			if (docNums.length > maxBlockSize) maxBlockSize = docNums.length;
-			System.out.println(docNums.length);
+//			System.out.println(docNums.length);
 			blockNum++;
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
 				String toTest = docNums[i] + " " + docNums[j];
@@ -149,9 +331,7 @@ public class Blocker {
 			}
 		}
 		br.close();
-		Common.printResult(overlap, stdAns, resSet.size());
-		System.out.println("max block size: " + maxBlockSize + " ; #block: " + blockNum);
-		
+		Common.printResult(overlap, stdAns, resSet.size(), output);
 	}
 	
 	/**
