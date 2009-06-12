@@ -399,7 +399,8 @@ public class Analyzer {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		find(Common.geonames, "<http://sws.geonames.org/1000023/>");
+		
+//		find(Common.geonames, "<http://sws.geonames.org/1000023/>");
 //		find(Common.dbpedia, "!!! (three exclamation marks,");
 //		mainObserve("e:\\user\\fulinyun\\dbpediaPreprocessed.gz");
 //		diff(Common.gzFolder+"dblp.individual.gz", Common.gzFolder+"dblp.attribute.txt", 0, 

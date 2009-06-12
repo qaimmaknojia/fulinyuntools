@@ -105,7 +105,8 @@ public class Cheater {
 //				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
 //				Blocker.workFolder + "prefix0.2.txt", Blocker.workFolder+"prefix0.2translated.txt"); // done
 		// sort -n prefix0.2translated.txt > prefix0.2sorted.txt // done
-		evaluate(Blocker.workFolder+"prefix0.2sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 32156/10936070
+//		evaluate(Blocker.workFolder+"prefix0.2sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"prefix0.2eval.txt"); // done: 32156/10936070
 //		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeatureU.txt.5gram.bin", 
 //				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
 //				Blocker.workFolder+"prefixU5gram0.1.txt"); // done
@@ -114,6 +115,11 @@ public class Cheater {
 //				Blocker.workFolder + "prefixU5gram0.1.txt", Blocker.workFolder+"prefixU5gram0.1translated.txt"); // done
 		// sort -n prefixU5gram0.1translated.txt | uniq > prefixU5gram0.1sorted.txt // done
 //		evaluate(Blocker.workFolder+"prefixU5gram0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 37904/11922201
+		evaluate(Blocker.workFolder+"blockP=25sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+				Blocker.workFolder+"pr\\blockP=25eval.txt");
+		evaluate(Blocker.workFolder+"blockP=30sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+				Blocker.workFolder+"pr\\blockP=30eval.txt");
+		
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
@@ -272,7 +278,7 @@ public class Cheater {
 	 * @param stdAns
 	 * @throws Exception
 	 */
-	public static void evaluate(String ppJoinResultTranslated, String stdAns) throws Exception {
+	public static void evaluate(String ppJoinResultTranslated, String stdAns, String output) throws Exception {
 		HashSet<String> stdAnswers = getLines(stdAns);
 		BufferedReader br = new BufferedReader(new FileReader(ppJoinResultTranslated));
 		int count = 0;
@@ -280,7 +286,7 @@ public class Cheater {
 			if (stdAnswers.contains(line)) count++;
 		}
 		br.close();
-		Common.printResult(count, stdAns, Analyzer.countLines(ppJoinResultTranslated));
+		Common.printResult(count, stdAns, Analyzer.countLines(ppJoinResultTranslated), output);
 	}
 	
 	private static HashSet<String> getLines(String stdAns) throws Exception {

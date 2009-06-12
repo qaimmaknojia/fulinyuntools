@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeSet;
 
@@ -18,6 +19,9 @@ import basic.IOFactory;
 
 public class Clusterer {
 
+	public static String workFolder = "e:\\user\\fulinyun\\clusterer\\";
+	public static String classFolder = "e:\\user\\fulinyun\\classCluster\\";
+	
 	public static void main(String[] args) throws Exception {
 		
 //		NN me = new NN(0, 0);
@@ -31,10 +35,327 @@ public class Clusterer {
 //		cluster(Blocker.workFolder+"prefix0.2blockTranslated.txt", 
 //				Blocker.workFolder+"prefix0.2cluster2&1.1.txt", 2, 1.1f); // done
 //		evaluate(Blocker.workFolder+"prefix0.2cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-		getClusterWrong(Blocker.workFolder+"prefix0.2cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt", 
-				Blocker.workFolder+"cluster2&2tolabel.txt");
+//		getClusterWrong(Blocker.workFolder+"prefix0.2cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"cluster2&2tolabel.txt");
+//		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt",
+//				Blocker.workFolder+"prefix0.2&3cluster2&2.txt", 2, 2); // done
+//		evaluate(Blocker.workFolder+"prefix0.2&3cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt"); // to run
+//		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt",
+//				Blocker.workFolder+"prefix0.2&3cluster2&1.5.txt", 2, 1.5f);
+//		evaluate(Blocker.workFolder+"prefix0.2&3cluster2&1.5.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"prefix0.2&3cluster2&1.5eval.txt"); // done 
+//		evaluate(Blocker.workFolder+"prefix0.2&3cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"prefix0.2&3cluster2&2eval.txt"); // done
+//		getClusterWrong(workFolder+"prefix0.2&3cluster2&2.txt", Indexer.indexFolder+"sameAsID.txt",
+//				workFolder+"prefix0.2&3cluster2&2tolabel.txt");
+//		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", 
+//				workFolder+"prefix0.2&3cluster2&1.1.txt", 2, 1.1f);
+//		evaluate(workFolder+"prefix0.2&3cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt",
+//				workFolder+"prefix0.2&3cluster2&1.1eval.txt");
+		// for drawing P-R curve for CS&SN cluster
+//		for (int i = 3; i < 6; i++) {
+//			float th = 2.5f+i*0.5f;
+//			String clusterResult = workFolder+"prefix0.2&3cluster2&"+th;
+//			cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", 
+//					clusterResult+".txt", 2, th);
+//			evaluate(clusterResult+".txt", Indexer.indexFolder+"sameAsID.txt",
+//					clusterResult+"eval.txt");
+//		} // done
+		
+		// to show the cluster complexity, to show the impact of blocking
+//		generateTestFiles();
+//		for (int i = 100; i < 2000; i += 100) {
+//			long startTimeMs = new Date().getTime();
+//			cluster(workFolder+"test"+i+".txt", workFolder+"test"+i+"result.txt", 2, 1.5f);
+//			long timeMs = new Date().getTime()-startTimeMs;
+//			System.out.println(i + " : " + timeMs);
+//			PrintWriter pw = new PrintWriter(new FileWriter(workFolder+"clusterTime.txt", true));
+//			pw.println(i + " : " + timeMs);
+//			pw.close();
+//		} // done
+
+		// for P-R curve for jaccard constraint cluster
+//		for (int i = 0; i < 9; i++) {
+//			float jth = 0.1f+i*0.1f;
+//			String clusterResult = workFolder+"j"+jth+".txt";
+//			jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", clusterResult, jth);
+//		} // done
+		
+		// sort -n jX.X.txt | uniq > jX.Xsorted.txt // done
+		
+//		for (int i = 0; i < 9; i++) {
+//			String clusterResult = workFolder+"j0."+(i+1);
+//			Cheater.evaluate(clusterResult+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", clusterResult+"eval.txt");
+//		} // done
+		
+//		for (int i = 2; i < 10; i++) {
+//			float th = 1.0f+i*0.5f;
+//			int th10 = 10+5*i;
+//			String clusterResult = workFolder+"prefix0.2&3classCluster2&"+th10/10+"."+th10%10;
+//			cluster(Blocker.workFolder+"prefix0.05classBlockTranslated.txt", 
+//					clusterResult+".txt", 2, th);
+//		} // to run need 3 hr for each i
+
+//		evaluateWithDomain(workFolder+"prefix0.2&3cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"cluster2&1.1domainEval.txt"); // running
+//		for (int i = 20; i < 55; i += 5) {
+//			evaluateWithDomain(workFolder+"prefix0.2&3cluster2&"+i/10+"."+i%10+".txt", 
+//					Indexer.indexFolder+"sameAsID.txt", 
+//					workFolder+"cluster2&"+i/10+"."+i%10+"domainEval.txt"); 
+//		} // done
+//		getClusterWrongWithDomain(workFolder+"prefix0.2&3cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"cluster2&1.1domain2label.txt");
+//		getCrossDomainClassMatching(classFolder+"prefix0.2&3classCluster2&1.5.txt", 
+//				classFolder+"prefix0.2&3classCluster2&1.5domain.txt");
+//		getCrossDomainClassMatching(classFolder+"prefix0.2cluster2&1.1class_Th0.05.txt", 
+//				classFolder+"prefix0.2cluster2&1.1class_th0.05domain.txt");
+		getClusterDomainDistribution(workFolder+"prefix0.2cluster2&1.1.txt", 
+				workFolder+"cluster2&1.1domainDistributionOld.txt");
 	}
 	
+	
+	public static void getClusterDomainDistribution(String clusterFile,
+			String output) throws Exception {
+		HashMap<Integer, String> indURI = new HashMap<Integer, String>();
+		HashMap<String, Integer> domainDistribution = new HashMap<String, Integer>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		int clusterNum = 0;
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			String[] uris = getURIs(ireader, docNums, indURI);
+			clusterNum++;
+			if (clusterNum % 10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String key = getDomain(uris[i])+"->"+getDomain(uris[j]);
+				if (domainDistribution.containsKey(key)) domainDistribution.put(key, domainDistribution.get(key)+1);
+				else domainDistribution.put(key, 1);
+			}
+		}
+		br.close();
+		ireader.close();
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (String key : domainDistribution.keySet()) 
+			pw.println(key + " " + domainDistribution.get(key));
+		pw.close();
+	}
+
+
+	private static String getDomain(String uri) {
+		String start = "<http://";
+		int end = uri.indexOf("/", start.length());
+		return uri.substring(start.length(), end);
+	}
+
+
+	/**
+	 * 
+	 * @param clusterFile
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void getCrossDomainClassMatching(String clusterFile, String output) throws Exception {
+		HashMap<Integer, String> classURI = new HashMap<Integer, String>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		int clusterNum = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			String[] uris = getURIs(ireader, docNums, classURI);
+			clusterNum++;
+			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainDBpedia)) continue;
+				if (uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainGeonames)) continue;
+				if (uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) continue;
+				pw.println(docNums[i] + " " + docNums[j]);
+			}
+		}
+		br.close();
+		pw.close();
+		ireader.close();
+	}
+	
+	/**
+	 * evaluate individual clusters of size 2 in clusterFile in terms of precision and recall w.r.t. stdAns, 
+	 * consider only 
+	 * individual pairs from dbpedia<->geonames and dblp<->dblp
+	 * @param clusterFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void evaluateSize2withDomain(String clusterFile, String stdAns, String output) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		HashSet<String> resSet = new HashSet<String>();
+		HashMap<Integer, String> indURI = new HashMap<Integer, String>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		int overlap = 0;
+		int maxClusterSize = 0;
+		int clusterNum = 0;
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			String[] uris = getURIs(ireader, docNums, indURI);
+			if (docNums.length > maxClusterSize) maxClusterSize = docNums.length;
+//			System.out.println(docNums.length);
+			clusterNum++;
+			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			if (docNums.length == 2)
+				if (uris[0].contains(Cheater.domainDBpedia) && uris[1].contains(Cheater.domainGeonames) 
+					|| uris[0].contains(Cheater.domainGeonames) && uris[1].contains(Cheater.domainDBpedia)
+					|| uris[0].contains(Cheater.domainDblp) && uris[1].contains(Cheater.domainDblp)) {
+				String toTest = docNums[1] + " " + docNums[0];
+				if (stdSet.contains(toTest)) {
+					overlap++;
+					stdSet.remove(toTest); // to avoid duplicate counting
+				}
+				resSet.add(toTest);
+			}
+		}
+		br.close();
+		Common.printResult(overlap, stdAns, resSet.size(), output);
+		System.out.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+		pw.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		pw.close();
+		ireader.close();
+	}
+	
+	/**
+	 * evaluate individual clusters in clusterFile in terms of precision and recall w.r.t. stdAns, consider only 
+	 * individual pairs from dbpedia<->geonames and dblp<->dblp
+	 * @param clusterFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void getClusterWrongWithDomain(String clusterFile, String stdAns, String output) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		HashMap<Integer, String> indURI = new HashMap<Integer, String>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		int clusterNum = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			String[] uris = getURIs(ireader, docNums, indURI);
+			clusterNum++;
+			if (clusterNum % 10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
+				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
+					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
+					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) {
+				String toTest = docNums[i] + " " + docNums[j];
+				if (!stdSet.contains(toTest)) pw.println(toTest);
+			}
+		}
+		br.close();
+		pw.close();
+		ireader.close();
+	}
+	
+	/**
+	 * evaluate individual clusters in clusterFile in terms of precision and recall w.r.t. stdAns, consider only 
+	 * individual pairs from dbpedia<->geonames and dblp<->dblp
+	 * @param clusterFile
+	 * @param stdAns
+	 * @throws Exception
+	 */
+	public static void evaluateWithDomain(String clusterFile, String stdAns, String output) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		HashSet<String> resSet = new HashSet<String>();
+		HashMap<Integer, String> indURI = new HashMap<Integer, String>();
+		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
+		int overlap = 0;
+		int maxClusterSize = 0;
+		int clusterNum = 0;
+		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			String[] uris = getURIs(ireader, docNums, indURI);
+			if (docNums.length > maxClusterSize) maxClusterSize = docNums.length;
+//			System.out.println(docNums.length);
+			clusterNum++;
+			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
+				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
+					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
+					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) {
+				String toTest = docNums[i] + " " + docNums[j];
+				if (stdSet.contains(toTest)) {
+					overlap++;
+					stdSet.remove(toTest); // to avoid duplicate counting
+				}
+				resSet.add(toTest);
+			}
+		}
+		br.close();
+		Common.printResult(overlap, stdAns, resSet.size(), output);
+		System.out.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+		pw.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		pw.close();
+	}
+	
+	private static String[] getURIs(IndexReader ireader, int[] docNums, 
+			HashMap<Integer, String> indURI) throws Exception {
+		String[] ret = new String[docNums.length];
+		for (int i = 0; i < docNums.length; i++) {
+			if (indURI.containsKey(docNums[i])) ret[i] = indURI.get(docNums[i]);
+			else {
+				ret[i] = ireader.document(docNums[i]).get("URI");
+				indURI.put(docNums[i], ret[i]);
+			}
+		}
+		return ret;
+	}
+
+	public static void generateTestFiles() throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(Indexer.indexFolder+"keyInd.txt"));
+		int[] docNums = new int[1900];
+		for (int i = 0; i < 1900; i++) docNums[i] = Integer.parseInt(br.readLine());
+		br.close();
+		for (int i = 100; i < 2000; i += 100) {
+			PrintWriter pw = IOFactory.getPrintWriter(workFolder+"test"+i+".txt");
+			pw.print(docNums[0]);
+			for (int j = 0; j < i; j++) pw.print(" " + docNums[j]);
+			pw.println();
+			pw.close();
+		}
+	}
+	
+	/**
+	 * cluster by jaccard constraint
+	 * @param blockFile
+	 * @param output
+	 * @param jth
+	 * @throws Exception
+	 */
+	public static void jaccardCluster(String blockFile, String output, float jth) throws Exception {
+		IDataSourceReader br = IOFactory.getReader(blockFile);
+		int count = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] records = line.split(" ");
+			int[] docNums = new int[records.length];
+			for (int i = 0; i < records.length; i++) docNums[i] = Integer.parseInt(records[i]);
+			jaccardCluster(docNums, output, jth);
+			count++;
+			if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
+		}
+		br.close();
+		System.out.println(new Date().toString() + " : clustering finished");
+	}
+	
+	private static void jaccardCluster(int[] docNums, String output, float jth) throws Exception {
+		String[][] basicFeatures = new String[docNums.length][];
+		getBasicFeatures(docNums, basicFeatures);
+		PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+		for (int i = 0; i < basicFeatures.length; i++) for (int j = 0; j < i; j++) {
+			if (1-hamming(basicFeatures, i, j) > jth) pw.println(docNums[i] + " " + docNums[j]);
+		}
+		pw.close();
+	}
+
 	/**
 	 * extract pairs found by clusterer but are not contained in stdAns and write the result to output
 	 * output need manual labeling
@@ -72,7 +393,7 @@ public class Clusterer {
 	 * @param stdAns
 	 * @throws Exception
 	 */
-	public static void evaluate(String clusterFile, String stdAns) throws Exception {
+	public static void evaluate(String clusterFile, String stdAns, String output) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
 		HashSet<String> resSet = new HashSet<String>();
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
@@ -94,8 +415,11 @@ public class Clusterer {
 			}
 		}
 		br.close();
-		Common.printResult(overlap, stdAns, resSet.size());
+		Common.printResult(overlap, stdAns, resSet.size(), output);
 		System.out.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		PrintWriter pw = new PrintWriter(new FileWriter(output, true));
+		pw.println("max cluster size: " + maxClusterSize + " ; #cluster: " + clusterNum);
+		pw.close();
 	}
 	
 	/**
@@ -168,6 +492,14 @@ public class Clusterer {
 		ireader.close();
 	}
 
+	/**
+	 * jaccard distance, actually
+	 * @param basicFeatures
+	 * @param i
+	 * @param j
+	 * @return
+	 * @throws Exception
+	 */
 	private static float hamming(String[][] basicFeatures, int i, int j) throws Exception {
 		String[] r1 = basicFeatures[i];
 		String[] r2 = basicFeatures[j];
