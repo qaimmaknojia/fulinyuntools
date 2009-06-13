@@ -5,9 +5,9 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
@@ -99,6 +99,9 @@ public class Common {
 		pw.println("recall: " + (overlap+0.0)/stdSize);
 		pw.println("result size: " + canSize);
 		pw.println("precision: " + (overlap+0.0)/canSize);
+		pw.close();
+		pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+		pw.println((overlap+0.0)/canSize + "\t" + (overlap+0.0)/stdSize);
 		pw.close();
 	}
 

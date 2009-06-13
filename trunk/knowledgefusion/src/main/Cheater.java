@@ -115,11 +115,24 @@ public class Cheater {
 //				Blocker.workFolder + "prefixU5gram0.1.txt", Blocker.workFolder+"prefixU5gram0.1translated.txt"); // done
 		// sort -n prefixU5gram0.1translated.txt | uniq > prefixU5gram0.1sorted.txt // done
 //		evaluate(Blocker.workFolder+"prefixU5gram0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 37904/11922201
-		evaluate(Blocker.workFolder+"blockP=25sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
-				Blocker.workFolder+"pr\\blockP=25eval.txt");
-		evaluate(Blocker.workFolder+"blockP=30sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
-				Blocker.workFolder+"pr\\blockP=30eval.txt");
-		
+//		evaluate(Blocker.workFolder+"blockP=25sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"pr\\blockP=25eval.txt");
+//		evaluate(Blocker.workFolder+"blockP=30sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				Blocker.workFolder+"pr\\blockP=30eval.txt");
+
+		getAvgFeatureLength(Blocker.workFolder+"cheatBasicFeature.txt");
+	}
+	
+	public static void getAvgFeatureLength(String input) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		int lineCount = 0;
+		int featureLength = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			lineCount++;
+			featureLength += line.split(" ").length;
+		}
+		br.close();
+		System.out.println((featureLength+0.0)/lineCount);
 	}
 	
 	public static void readBinaryFile(String input) throws Exception {
