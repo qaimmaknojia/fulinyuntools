@@ -540,7 +540,8 @@ public class Analyzer {
 		
 //		String dbpediaPredicates = workFolder + "dbpedia.property.txt"; // to run
 //		sort(dbpediaPredicates, 1, workFolder+"dbpedia.property.sorted.txt"); // to run
-		System.out.println(countLines(Blocker.workFolder+"r0.3block.txt"));
+//		System.out.println(countLines(Blocker.workFolder+"r0.3block.txt"));
+		mainObserve(Indexer.indexFolder+"dbpediaPreprocessed.gz");
 	}
 	
 	

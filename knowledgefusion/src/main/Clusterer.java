@@ -83,19 +83,6 @@ public class Clusterer {
 		
 		// sort -n jX.X.txt | uniq > jX.Xsorted.txt // done
 		
-//		for (int i = 0; i < 9; i++) {
-//			String clusterResult = workFolder+"j0."+(i+1);
-//			Cheater.evaluate(clusterResult+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", clusterResult+"eval.txt");
-//		} // done
-		
-//		for (int i = 2; i < 10; i++) {
-//			float th = 1.0f+i*0.5f;
-//			int th10 = 10+5*i;
-//			String clusterResult = workFolder+"prefix0.2&3classCluster2&"+th10/10+"."+th10%10;
-//			cluster(Blocker.workFolder+"prefix0.05classBlockTranslated.txt", 
-//					clusterResult+".txt", 2, th);
-//		} // to run need 3 hr for each i
-
 //		evaluateWithDomain(workFolder+"prefix0.2&3cluster2&1.1.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				workFolder+"cluster2&1.1domainEval.txt"); // running
 //		for (int i = 20; i < 55; i += 5) {
@@ -109,10 +96,54 @@ public class Clusterer {
 //				classFolder+"prefix0.2&3classCluster2&1.5domain.txt");
 //		getCrossDomainClassMatching(classFolder+"prefix0.2cluster2&1.1class_Th0.05.txt", 
 //				classFolder+"prefix0.2cluster2&1.1class_th0.05domain.txt");
-		getClusterDomainDistribution(workFolder+"prefix0.2cluster2&1.1.txt", 
-				workFolder+"cluster2&1.1domainDistributionOld.txt");
+//		getClusterDomainDistribution(workFolder+"prefix0.2cluster2&1.1.txt", 
+//				workFolder+"cluster2&1.1domainDistributionOld.txt");
+//		for (int i = 31; i <= 39; i++) {
+//			jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0."+i+".txt", i/100.0f);
+//		} // done
+		// sort -n jX.X.txt | uniq > jX.Xsorted.txt // done
+//		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString());
+//		pw.close();
+//		for (int i = 31; i < 40; i++) {
+//			evaluateWithDomain(workFolder+"j0."+i+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"clusterPR\\j0."+i+"domainEval.txt");
+//		}
+		
+//		for (int i = 41; i <= 49; i++) {
+//			jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0."+i+".txt", i/100.0f);
+//		} // done
+		// sort -n jX.X.txt | uniq > jX.Xsorted.txt
+//		pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString());
+//		pw.close();
+//		for (int i = 41; i < 50; i++) {
+//			evaluateWithDomain(workFolder+"j0."+i+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"clusterPR\\j0."+i+"domainEval.txt");
+//		}
+		
+//		for (int i = 391; i <= 399; i++) {
+//			jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0."+i+".txt", i/1000.0f);
+//		} // running
+		// sort -n j0.xxx.txt | uniq > j0.xxxsorted.txt // todo
+		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+		pw.println(new Date().toString() + " j=0.391-0.399");
+		pw.close();
+		for (int i = 391; i < 399; i++) {
+			evaluateWithDomain(workFolder+"j0."+i+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+				workFolder+"clusterPR\\j0."+i+"domainEval.txt");
+		} // todo
+		
+//		jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0.4.txt", 0.4f); // todo
+		// sort -n j0.4.txt | uniq > j0.4sorted.txt // todo
+//		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString() + " j=0.4");
+//		pw.close();
+//		evaluateWithDomain(workFolder+"j0.4sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//			workFolder+"clusterPR\\j0.4domainEval.txt"); // todo
+		
+		
 	}
-	
 	
 	public static void getClusterDomainDistribution(String clusterFile,
 			String output) throws Exception {
@@ -140,13 +171,11 @@ public class Clusterer {
 		pw.close();
 	}
 
-
 	private static String getDomain(String uri) {
 		String start = "<http://";
 		int end = uri.indexOf("/", start.length());
 		return uri.substring(start.length(), end);
 	}
-
 
 	/**
 	 * 
@@ -276,7 +305,7 @@ public class Clusterer {
 			if (docNums.length > maxClusterSize) maxClusterSize = docNums.length;
 //			System.out.println(docNums.length);
 			clusterNum++;
-			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
+			if (clusterNum%100000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
 				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
 					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
