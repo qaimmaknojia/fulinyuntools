@@ -32,12 +32,23 @@ public class IOFactory {
 		else return new TxtReader(filename);
 	}
 	
-	// get the buffered reader for the gz file, encoded in UTF-8
+	// get the buffered reader for the gz file, encoded in UTF-8, not encouraged to use
 	public static BufferedReader getGzBufferedReader(String filename) throws Exception {
 		return new BufferedReader(new InputStreamReader(new GZIPInputStream(
 				new FileInputStream(filename)), "UTF-8"));
 	}
 	
+	// get the buffered reader for the text file, encoded in UTF-8, not encouraged to use
+	public static BufferedReader getBufferedReader(String filename) throws Exception {
+		return new BufferedReader(new InputStreamReader(
+				new FileInputStream(filename), "UTF-8"));
+	}
+	
+	public static PrintWriter getPrintWriter(String filename, boolean append) throws Exception {
+		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(filename, append), "UTF-8")));
+	}
+
 	public static PrintWriter getPrintWriter(String filename) throws Exception {
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(filename), "UTF-8")));
