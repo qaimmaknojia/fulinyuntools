@@ -119,20 +119,21 @@ public class Common {
 		IndexWriter iwriter = new IndexWriter(dir, new WhitespaceAnalyzer(), true, 
 				IndexWriter.MaxFieldLength.UNLIMITED);
 		for (int i = 1; i <= lines; i++) {
-			int idx = readBigEndianInt(dis);
-			int n = readBigEndianInt(dis);
-//			if (n > 40) {
-//				System.out.println(n);
-//			}
-			String tokens = "";
-			int j;
-			for (j = 0; j < (int)Math.ceil(n*prefix) || (j < 3 && j < n); j++) tokens += " "+readBigEndianInt(dis);
-			for (; j < n; j++) readBigEndianInt(dis);
-			Document doc = new Document();
-			doc.add(new Field("line", ""+idx, Field.Store.YES, Field.Index.NO));
-			doc.add(new Field("words", tokens, Field.Store.YES, Field.Index.ANALYZED));
-			iwriter.addDocument(doc);
-//			if (i % 100 == 0) System.out.println(new Date().toString() + " : " + i + " lines indexed");
+			try {
+				int idx = readBigEndianInt(dis);
+				int n = readBigEndianInt(dis);
+				String tokens = "";
+				int j;
+				for (j = 0; j < (int)Math.ceil(n*prefix) || (j < 3 && j < n); j++) tokens += " "+readBigEndianInt(dis);
+				for (; j < n; j++) readBigEndianInt(dis);
+				Document doc = new Document();
+				doc.add(new Field("line", ""+idx, Field.Store.YES, Field.Index.NO));
+				doc.add(new Field("words", tokens, Field.Store.YES, Field.Index.ANALYZED));
+				iwriter.addDocument(doc);
+//				if (i % 100 == 0) System.out.println(new Date().toString() + " : " + i + " lines indexed");
+			} catch (Exception e) {
+				continue;
+			}
 		}
 		iwriter.optimize();
 		iwriter.close();

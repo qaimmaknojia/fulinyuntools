@@ -126,23 +126,34 @@ public class Clusterer {
 //			jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0."+i+".txt", i/1000.0f);
 //		} // running
 		// sort -n j0.xxx.txt | uniq > j0.xxxsorted.txt // todo
-		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
-		pw.println(new Date().toString() + " j=0.391-0.399");
-		pw.close();
-		for (int i = 391; i < 399; i++) {
-			evaluateWithDomain(workFolder+"j0."+i+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
-				workFolder+"clusterPR\\j0."+i+"domainEval.txt");
-		} // todo
-		
-//		jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0.4.txt", 0.4f); // todo
-		// sort -n j0.4.txt | uniq > j0.4sorted.txt // todo
+//		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString() + " j=0.391-0.399");
+//		pw.close();
+//		for (int i = 391; i < 399; i++) {
+//			evaluateWithDomain(workFolder+"j0."+i+"sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"clusterPR\\j0."+i+"domainEval.txt");
+//		} // done
+//		
+//		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString() + " theta=2.41-2.49");
+//		pw.close();
+//		for (int i = 241; i <= 249; i++) {
+//			cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster"+i/100+"."+i%100+".txt", 2, i/100.0f);
+//			evaluateWithDomain(workFolder+"cluster"+i/100+"."+i%100+".txt", Indexer.indexFolder+"sameAsID.txt", 
+//					workFolder+"clusterPR\\cluster"+i/100+"."+i%100+"domainEval.txt");
+//		} // running
+//		jaccardCluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"j0.4.txt", 0.4f); // running
+		// sort -n j0.4.txt | uniq > j0.4sorted.txt // done
 //		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
 //		pw.println(new Date().toString() + " j=0.4");
 //		pw.close();
 //		evaluateWithDomain(workFolder+"j0.4sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
-//			workFolder+"clusterPR\\j0.4domainEval.txt"); // todo
-		
-		
+//			workFolder+"clusterPR\\j0.4domainEval.txt"); // done
+//		getClusterDomainDistribution(Indexer.indexFolder+"sameAsID.txt", 
+//				Indexer.indexFolder+"sameAsIDdomainDistribution.txt"); // done
+		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster2.5.txt", 2, 2.5f);
+		evaluateWithDomain(workFolder+"cluster2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
+				workFolder+"clusterPR\\cluster2.5domainEval.txt");
 	}
 	
 	public static void getClusterDomainDistribution(String clusterFile,

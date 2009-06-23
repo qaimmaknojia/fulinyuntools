@@ -11,8 +11,10 @@ import java.util.HashSet;
 import java.util.TreeMap;
 
 import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.TermDocs;
 import org.apache.lucene.index.TermEnum;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 
 import basic.IDataSourceReader;
 import basic.IOFactory;
@@ -28,6 +30,7 @@ import basic.IOFactory;
 public class Blocker {
 	
 	public static String workFolder = "E:\\User\\fulinyun\\blocker\\";
+	public static String ppjoinFolder = "E:\\User\\fulinyun\\ppjoin\\";
 	
 	public static void main(String[] args) throws Exception {
 //		findBlock(workFolder+"r0.3sorted.txt", workFolder+"r0.3block.txt");
@@ -68,8 +71,8 @@ public class Blocker {
 //				workFolder+"prefix0.05classBlock.txt"); // done
 //		translateBlock(workFolder+"prefix0.05classBlock.txt", workFolder+"nonNullClass.txt", 
 //				workFolder+"prefix0.05classBlockTranslated.txt"); // done
-//		for (int p = 10; p <= 30; p += 5) for (int n = 10000; n <= 160000; n *= 2) {
-//			prefixBlockingWithLucene(workFolder+"cheatBasicFeature"+n+".txt.bin", n, 
+//		for (int p = 10; p <= 30; p += 5) for (int n = 10000; n <= 1250000; n *= 5) {
+//			prefixBlockingWithLucene(ppjoinFolder+"indFeature126w"+n+".txt.bin", n, 
 //					p/100.0f, workFolder+"temp"+p+"-"+n, 
 //				workFolder+"temp.txt", workFolder+"blockP="+p+"n="+n+"speed.txt");
 //		}
@@ -93,13 +96,20 @@ public class Blocker {
 //					workFolder+"blockP="+p+"translated.txt"); 
 //		}
 		
-		for (int p = 10; p <= 30; p += 5) {
-			dumpCanPairs(workFolder+"blockP="+p+"translated.txt", workFolder+"blockP="+p+"dump.txt");
-		}
+//		for (int p = 10; p <= 30; p += 5) {
+//			dumpCanPairs(workFolder+"blockP="+p+"translated.txt", workFolder+"blockP="+p+"dump.txt");
+//		}
 		
 //		evaluate(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				workFolder+"pr\\blockP="+p+"eval.txt"); 
+		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+		pw.println(new Date().toString() + " blockP=0.10-0.30");
+		pw.close();
 
+		for (int p = 10; p <= 30; p += 5) {
+			Clusterer.evaluateWithDomain(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
+					workFolder+"pr\\blockP="+p+"eval.txt");
+		}
 	}
 	
 	/**
@@ -181,23 +191,24 @@ public class Blocker {
 //		}
 		
 		IndexReader ireader = IndexReader.open(indexFolder);
+		IndexSearcher isearcher = new IndexSearcher(ireader);
 		TermEnum te = ireader.terms();
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		int maxBlockSize = 0;
 		int totalBlockSize = 0;
 		int blockCount = 0;
-		while (te.next() && te.docFreq() > 1) {
-			if (te.docFreq() > maxBlockSize) maxBlockSize = te.docFreq();
-			totalBlockSize += te.docFreq();
+		while (te.next()) {
+			TopDocs td = isearcher.search(new TermQuery(te.term()), 10000);
+			if (td.scoreDocs.length > maxBlockSize) maxBlockSize = td.scoreDocs.length;
+			if (td.scoreDocs.length <= 1) continue; 
+			totalBlockSize += td.scoreDocs.length;
 			blockCount++;
-			TermDocs td = ireader.termDocs(te.term());
-			td.next();
-			pw.print(ireader.document(td.doc()).get("line"));
-			while (td.next()) {
-				pw.print(" " + ireader.document(td.doc()).get("line"));
+			pw.print(ireader.document(td.scoreDocs[0].doc).get("line"));
+			for (int i = 0; i < td.scoreDocs.length; i++) {
+				pw.print(" " + ireader.document(td.scoreDocs[i].doc).get("line"));
 			}
 			pw.println();
-			if (blockCount%10000 == 0) System.out.println(new Date().toString() + " : " + blockCount + " blocks");
+//			if (blockCount%10000 == 0) System.out.println(new Date().toString() + " : " + blockCount + " blocks");
 		}
 		pw.close();
 		ireader.close();
@@ -210,12 +221,7 @@ public class Blocker {
 		pw.println("max block size: " + maxBlockSize);
 		pw.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
 		pw.close();
-		System.out.println("#individual:" + lines);
-		System.out.println("blocking parameter: " + prefix);
-		System.out.println("time: " + time);
-		System.out.println("#block: " + blockCount);
-		System.out.println("max block size: " + maxBlockSize);
-		System.out.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
+		System.out.println(prefix + "\t" + lines + "\t" + time);
 	}
 
 	/**
