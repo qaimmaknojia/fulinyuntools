@@ -13,13 +13,11 @@ import java.util.zip.GZIPInputStream;
  */
 public class GzReader implements IDataSourceReader {
 
-	private String fileName;
 	private BufferedReader br;
 	
 	public GzReader(String fn) {
-		fileName = fn;
 		try {
-			init();
+			init(fn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -30,7 +28,7 @@ public class GzReader implements IDataSourceReader {
 		br.close();
 	}
 
-	private void init() throws Exception {
+	private void init(String fileName) throws Exception {
 		br = new BufferedReader(new InputStreamReader(new GZIPInputStream(
 				new FileInputStream(fileName)), "UTF-8"));
 	}

@@ -8,13 +8,11 @@ import org.apache.tools.bzip2.CBZip2InputStream;
 
 public class Bz2Reader implements IDataSourceReader {
 
-	private String fileName;
 	private BufferedReader br;
 	
 	public Bz2Reader(String fn) {
-		fileName = fn;
 		try {
-			init();
+			init(fn);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -25,8 +23,8 @@ public class Bz2Reader implements IDataSourceReader {
 		br.close();
 	}
 
-	private void init() throws Exception {
-		FileInputStream fis = new FileInputStream(fileName);
+	private void init(String filename) throws Exception {
+		FileInputStream fis = new FileInputStream(filename);
 		
 		//read the initial "BZ" mark
 		fis.read();
