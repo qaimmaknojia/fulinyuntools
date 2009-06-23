@@ -41,7 +41,7 @@ public class Indexer {
 	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
-		lookBasicFeature();
+//		lookBasicFeature();
 //		preprocess(indexFolder+"geonames.gz", indexFolder+"geonames.dump"); // done
 		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
 //		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // done at gaea
@@ -62,7 +62,7 @@ public class Indexer {
 //		String lineList = indexFolder+"nonNullClass.txt";
 //		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
 //				indexFolder+"classFeatureDump.txt"); // done
-		
+//		dumpFeatureRandom(indexFolder+"nonNullInd.txt", 1260000, indexFolder+"indFeature126w.txt");
 	}
 	
 	public static void lookBasicFeature() throws Exception {
@@ -542,6 +542,30 @@ public class Indexer {
 	public static void dumpClassFeature(String nonNullClasses, int numLines, 
 			String target) throws Exception {
 		int[] lineList = getLineList(nonNullClasses, numLines);
+		IndexReader ireader = IndexReader.open(lap3index);
+		PrintWriter pw = IOFactory.getPrintWriter(target);
+		for (int i = 0; i < lineList.length; i++) 
+			pw.println(ireader.document(lineList[i]).get("basic"));
+		pw.close();
+		ireader.close();
+	}
+	
+	/**
+	 * dump basic features, should be handled by tokenizer & ppjoin as a whole
+	 * @param target
+	 * @throws Exception
+	 */
+	public static void dumpFeatureRandom(String indList, int numLines, 
+			String target) throws Exception {
+		int[] lineList = getLineList(indList, numLines);
+		Random r = new Random();
+		for (int i = 0; i < numLines; i++) {
+			int x = r.nextInt(1260000);
+			int y = r.nextInt(1260000);
+			int t = lineList[x];
+			lineList[x] = lineList[y];
+			lineList[y] = t;
+		}
 		IndexReader ireader = IndexReader.open(lap3index);
 		PrintWriter pw = IOFactory.getPrintWriter(target);
 		for (int i = 0; i < lineList.length; i++) 

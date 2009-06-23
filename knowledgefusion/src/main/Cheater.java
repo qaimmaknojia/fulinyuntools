@@ -120,7 +120,8 @@ public class Cheater {
 //		evaluate(Blocker.workFolder+"blockP=30sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				Blocker.workFolder+"pr\\blockP=30eval.txt");
 
-		getAvgFeatureLength(Blocker.workFolder+"cheatBasicFeature.txt");
+//		getAvgFeatureLength(Blocker.workFolder+"cheatBasicFeature.txt");
+		dumpFeature(Indexer.indexFolder+"nonNullInd.txt", 2560000, Indexer.indexFolder+"nonNullIndFeature.txt");
 	}
 	
 	public static void getAvgFeatureLength(String input) throws Exception {
