@@ -38,7 +38,7 @@ public class ClassMapper {
 	
 	public static void findClassOutsideDBpedia(String clusterFile, String output) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			String[] parts = line.split(" ");
@@ -53,7 +53,7 @@ public class ClassMapper {
 	}
 	
 	public static void collectInstance(String classList, String output) throws Exception {
-		IndexReader ireader = IndexReader.open(Indexer.lap2index);
+		IndexReader ireader = IndexReader.open(Indexer.refIndex);
 		TreeMap<Integer, HashSet<Integer>> ret = new TreeMap<Integer, HashSet<Integer>>();
 		BufferedReader br = new BufferedReader(new FileReader(classList));
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -121,7 +121,7 @@ public class ClassMapper {
 	}
 
 	public static void collectInstancePre(String output) throws Exception {
-		IndexReader ireader = IndexReader.open(Indexer.lap2index);
+		IndexReader ireader = IndexReader.open(Indexer.refIndex);
 		TreeMap<Integer, HashSet<Integer>> ret = new TreeMap<Integer, HashSet<Integer>>();
 		for (int i = 0; i < ireader.maxDoc(); i++) {
 			Document doc = ireader.document(i);
