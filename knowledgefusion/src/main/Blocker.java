@@ -1,20 +1,28 @@
 package main;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.TreeMap;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermEnum;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 
 import basic.IDataSourceReader;
 import basic.IOFactory;
@@ -102,14 +110,91 @@ public class Blocker {
 		
 //		evaluate(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				workFolder+"pr\\blockP="+p+"eval.txt"); 
-		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
-		pw.println(new Date().toString() + " blockP=0.10-0.30");
-		pw.close();
+//		PrintWriter pw = new PrintWriter(new FileWriter(Indexer.indexFolder+"pr.txt", true));
+//		pw.println(new Date().toString() + " blockP=0.10-0.30");
+//		pw.close();
 
-		for (int p = 10; p <= 30; p += 5) {
-			Clusterer.evaluateWithDomain(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
-					workFolder+"pr\\blockP="+p+"eval.txt");
+//		for (int p = 10; p <= 30; p += 5) {
+//			Clusterer.evaluateWithDomain(workFolder+"blockP="+p+"translated.txt", Indexer.indexFolder+"sameAsID.txt", 
+//					workFolder+"pr\\blockP="+p+"eval.txt");
+//		}
+		
+//		canonicalize(Indexer.indexFolder+"nonNullIndFeature.txt", workFolder+"tempIndex", 
+//				workFolder+"nonNullIndCaned.txt");
+		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 500, workFolder+"tempIndex", 
+				workFolder+"nonNullIndBlocks.txt", workFolder+"nonNullIndBlockingReport.txt"); // to run
+	}
+	
+	public static void canonicalize(String input, String indexFolder, String output) throws Exception {
+		canonicalize(input, Integer.MAX_VALUE, indexFolder, output);
+	}
+	
+	/**
+	 * Canonicalize the first maxLineNumber lines in input, i.e., sort the tokens by document frequency 
+	 * in ascending order
+	 * @param input
+	 * @param maxLineNumber
+	 * @param indexFolder
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void canonicalize(String input, int maxLineNumber, String indexFolder, String output) throws Exception {
+		Directory dir = FSDirectory.getDirectory(indexFolder);
+		IndexWriter iwriter = new IndexWriter(dir, null, true, IndexWriter.MaxFieldLength.UNLIMITED);
+		BufferedReader br = IOFactory.getBufferedReader(input);
+		int lineCount = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] tokens = Common.sortUnique(line, 1);
+			for (int i = 1; i < tokens.length; i++) {
+				String t = tokens[i];
+				Document doc = new Document();
+				doc.add(new Field("term", t, Field.Store.NO, Field.Index.NOT_ANALYZED));
+				iwriter.addDocument(doc);
+			}
+			lineCount++;
+			if (lineCount % 100000 == 0) 
+				System.out.println(new Date().toString() + " : " + lineCount + " lines indexed");
+			if (lineCount == maxLineNumber) break;
 		}
+		System.out.println(new Date().toString() + " : " + lineCount + " lines indexed");
+		br.close();
+		iwriter.optimize();
+		iwriter.close();
+		System.out.println(new Date().toString() + " : indexing finished");
+		final IndexReader ireader = IndexReader.open(dir);
+		br = IOFactory.getBufferedReader(input);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		lineCount = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			String[] tokens = Common.sortUnique(line, 1);
+			Arrays.sort(tokens, 1, tokens.length, new Comparator<String>() {
+				public int compare(String a, String b) {
+					try {
+						int fa = ireader.docFreq(new Term("term", a));
+						int fb = ireader.docFreq(new Term("term", b));
+						if (fa > fb) return 1;
+						else if (fa < fb) return -1;
+						return 0;
+					} catch (Exception e) {
+						e.printStackTrace();
+						return 0;
+					}
+				}
+			});
+			pw.print(tokens[0]);
+			for (int i = 1; i < tokens.length; i++) pw.print(" " + tokens[i]);
+			pw.println();
+			lineCount++;
+			if (lineCount%100000 == 0) 
+				System.out.println(new Date().toString() + " : " + lineCount + " lines output");
+		}
+		System.out.println(new Date().toString() + " : " + lineCount + " lines output");
+		pw.close();
+		br.close();
+		ireader.close();
+		dir.close();
+		Common.deleteFolder(new File(indexFolder));
+		System.out.println(new Date().toString() + " : canonicalization finished");
 	}
 	
 	/**
@@ -131,84 +216,49 @@ public class Blocker {
 		pw.close();
 	}
 
-	/**
-	 * translate line#s in the block file to doc#s of individuals
-	 * @param input
-	 * @param keyIndList
-	 * @param output
-	 * @throws Exception
-	 */
-	public static void translateBlock(String input, String keyIndList, String output) throws Exception {
-		int lineNum = Analyzer.countLines(keyIndList);
-		int[] lineList = new int[lineNum+1];
-		BufferedReader br = new BufferedReader(new FileReader(keyIndList));
-		for (int i = 1; i <= lineNum; i++) lineList[i] = Integer.parseInt(br.readLine());
-		br.close();
-		br = new BufferedReader(new FileReader(input));
-		PrintWriter pw = IOFactory.getPrintWriter(output);
-		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			String[] parts = line.split(" ");
-			boolean first = true;
-			for (String s : parts) {
-				if (first) {
-					pw.print(lineList[Integer.parseInt(s)]);
-					first = false;
-				} else {
-					pw.print(" " + lineList[Integer.parseInt(s)]);
-				}
-			}
-			pw.println();
-		}
-		pw.close();
-		br.close();
+	public static void prefixBlockingWithLucene(String input, float prefix, 
+			int maxBlockSize, String indexFolder, 
+			String output, String report) throws Exception {
+		prefixBlockingWithLucene(input, Integer.MAX_VALUE, prefix, maxBlockSize, indexFolder, output, report);
 	}
 	
 	/**
-	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
+ 	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
 	 * at least one token, block them 
 	 * @param input
 	 * @param lines
 	 * @param prefix
+	 * @param maxBlockSize
+	 * @param indexFolder
 	 * @param output
+	 * @param report
 	 * @throws Exception
 	 */
-	public static void prefixBlockingWithLucene(String input, int lines, float prefix, String indexFolder, 
+	public static void prefixBlockingWithLucene(String input, int lines, float prefix, 
+			int maxBlockSize, String indexFolder, 
 			String output, String report) throws Exception {
 		long startTime = new Date().getTime();
-		Common.indexBinaryFeature(input, lines, prefix, indexFolder);
-		
-//		IndexReader ireader = IndexReader.open(indexFolder);
-//		TermEnum te = ireader.terms();
-//		int count = 0;
-//		while (te.next()) if (te.docFreq() > 1) {
-//			System.out.println(te.docFreq());
-//			System.out.println(te.term());
-//			TermDocs td = ireader.termDocs(te.term());
-//			while (td.next()) System.out.print(" " + td.doc());
-//			System.out.println();
-//			count++;
-//			if (count == 10) break;
-//		}
+		Common.indexPrefix(input, lines, prefix, indexFolder);
 		
 		IndexReader ireader = IndexReader.open(indexFolder);
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		TermEnum te = ireader.terms();
 		PrintWriter pw = IOFactory.getPrintWriter(output);
-		int maxBlockSize = 0;
+		int actualMaxBlockSize = 0;
 		int totalBlockSize = 0;
 		int blockCount = 0;
 		while (te.next()) {
-			TopDocs td = isearcher.search(new TermQuery(te.term()), 10000);
-			if (td.scoreDocs.length > maxBlockSize) maxBlockSize = td.scoreDocs.length;
-			if (td.scoreDocs.length <= 1) continue; 
+			TopDocs td = isearcher.search(new TermQuery(te.term()), maxBlockSize);
+			if (td.scoreDocs.length <= 1) continue;
+			if (td.scoreDocs.length > actualMaxBlockSize) actualMaxBlockSize = td.scoreDocs.length;
 			totalBlockSize += td.scoreDocs.length;
 			blockCount++;
-			pw.print(ireader.document(td.scoreDocs[0].doc).get("line"));
-			for (int i = 0; i < td.scoreDocs.length; i++) {
-				pw.print(" " + ireader.document(td.scoreDocs[i].doc).get("line"));
+			pw.print(ireader.document(td.scoreDocs[0].doc).get("id"));
+			for (int i = 1; i < td.scoreDocs.length; i++) {
+				pw.print(" " + ireader.document(td.scoreDocs[i].doc).get("id"));
 			}
 			pw.println();
-//			if (blockCount%10000 == 0) System.out.println(new Date().toString() + " : " + blockCount + " blocks");
+			if (blockCount%1000000 == 0) System.out.println(new Date().toString() + " : " + blockCount + " blocks");
 		}
 		pw.close();
 		ireader.close();
@@ -218,10 +268,10 @@ public class Blocker {
 		pw.println("blocking parameter: " + prefix);
 		pw.println("time: " + time);
 		pw.println("#block: " + blockCount);
-		pw.println("max block size: " + maxBlockSize);
+		pw.println("max block size: " + actualMaxBlockSize);
 		pw.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
 		pw.close();
-		System.out.println(prefix + "\t" + lines + "\t" + time);
+		System.out.println(prefix + "\t" + lines + "\t" + time); // for speed test
 	}
 
 	/**
@@ -233,7 +283,7 @@ public class Blocker {
 	 * @param output
 	 * @throws Exception
 	 */
-	public static void prefixBlocking(String input, int lines, float prefix, String output, 
+	public static void prefixBlockingInMem(String input, int lines, float prefix, String output, 
 			String report) throws Exception {
 		long startTime = new Date().getTime();
 		int[][] feature = new int[lines+1][];
@@ -401,6 +451,8 @@ public class Blocker {
 		}
 		pw.close();
 	}
+	
+	// the end of this source file
 
 //	public static String ppIndex = 
 //		"\\\\poseidon\\team\\Semantic Search\\BillionTripleData\\index\\ppIndex";
@@ -448,4 +500,38 @@ public class Blocker {
 //			IndexReader ireader, String output) throws Exception {
 //		
 //	}
+	
+//	/**
+//	 * translate line#s in the block file to doc#s of individuals
+//	 * @param input
+//	 * @param keyIndList
+//	 * @param output
+//	 * @throws Exception
+//	 */
+//	public static void translateBlock(String input, String keyIndList, String output) throws Exception {
+//		int lineNum = Analyzer.countLines(keyIndList);
+//		int[] lineList = new int[lineNum+1];
+//		BufferedReader br = new BufferedReader(new FileReader(keyIndList));
+//		for (int i = 1; i <= lineNum; i++) lineList[i] = Integer.parseInt(br.readLine());
+//		br.close();
+//		br = new BufferedReader(new FileReader(input));
+//		PrintWriter pw = IOFactory.getPrintWriter(output);
+//		for (String line = br.readLine(); line != null; line = br.readLine()) {
+//			String[] parts = line.split(" ");
+//			boolean first = true;
+//			for (String s : parts) {
+//				if (first) {
+//					pw.print(lineList[Integer.parseInt(s)]);
+//					first = false;
+//				} else {
+//					pw.print(" " + lineList[Integer.parseInt(s)]);
+//				}
+//			}
+//			pw.println();
+//		}
+//		pw.close();
+//		br.close();
+//	}
+	
+
 }

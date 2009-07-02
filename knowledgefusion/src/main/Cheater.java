@@ -121,7 +121,7 @@ public class Cheater {
 //				Blocker.workFolder+"pr\\blockP=30eval.txt");
 
 //		getAvgFeatureLength(Blocker.workFolder+"cheatBasicFeature.txt");
-		dumpFeature(Indexer.indexFolder+"nonNullInd.txt", 2560000, Indexer.indexFolder+"nonNullIndFeature.txt");
+//		dumpFeature(Indexer.indexFolder+"nonNullInd.txt", 2560000, Indexer.indexFolder+"nonNullIndFeature.txt");
 	}
 	
 	public static void getAvgFeatureLength(String input) throws Exception {
@@ -336,16 +336,16 @@ public class Cheater {
 		pw.close();
 	}
 	
-	/**
-	 * dump basic features of individuals listed in the lineListfile
-	 * @param lineListFile
-	 * @param numLines
-	 * @param output
-	 * @throws Exception
-	 */
-	public static void dumpFeature(String lineListFile, int numLines, String output) throws Exception {
-		Indexer.dumpClassFeature(lineListFile, numLines, output);
-	}
+//	/**
+//	 * dump basic features of individuals listed in the lineListfile
+//	 * @param lineListFile
+//	 * @param numLines
+//	 * @param output
+//	 * @throws Exception
+//	 */
+//	public static void dumpFeature(String lineListFile, int numLines, String output) throws Exception {
+//		Indexer.dumpClassFeature(lineListFile, numLines, output);
+//	}
 	
 	/**
 	 * obtain IDs from sameAsID that have non-null basic features
@@ -413,7 +413,7 @@ public class Cheater {
 	 */
 	public static void toIDNonNull(String[] inputs, String output) throws Exception {
 		PrintWriter pw = IOFactory.getPrintWriter(output);
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		int count = 0;
 		for (String fn : inputs) {
 			IDataSourceReader br = IOFactory.getReader(fn);

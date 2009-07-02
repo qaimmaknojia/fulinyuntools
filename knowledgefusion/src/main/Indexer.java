@@ -24,20 +24,13 @@ import basic.IOFactory;
 
 public class Indexer {
 
+	public interface IFeatureFilter {
+		public boolean accept(int docNum, String feature);
+	}
+
 	public static String indexFolder = "e:\\user\\fulinyun\\";
-//	public static String lap1index = indexFolder + "lap1";
-//	public static String lap2index = indexFolder+"refIndex";
-	public static String lap1index = indexFolder+"lap1"; // local
-	public static String lap2index = indexFolder+"refIndex"; // local
-	public static String lap2indexParts = indexFolder+"refIndexParts";
-	public static String lap3index = indexFolder+"basicFeatureIndex"; // local
-	public static String lap4index = indexFolder+"extendedFeatureIndex"; // local
-	public static String lap3indexNotNull = indexFolder+"basicFeatureNotNullIndex"; // local
-	public static String lap4indexNotNull = indexFolder+"extendedFeatureNotNullIndex"; // local
-	public static String lap5index = indexFolder+"basicSortedUniqueIndex";
-	public static String lap6index = indexFolder+"extendedSortedUniqueIndex";
-	public static String classBasicIndex = indexFolder+"classBasicIndex";
-	public static String classBasicIndexNotNull = indexFolder+"classBasicNotNullIndex";
+	public static String refIndex = indexFolder+"refIndex"; // local
+	public static String basicFeatureIndex = indexFolder+"basicFeatureIndex"; // local
 	public static int nonNullIndNum = 11677397;
 	
 	public static void main(String[] args) throws Exception {
@@ -46,11 +39,11 @@ public class Indexer {
 		// sort -S 512m -T . --compress-program=gzip geonames.dump | gzip > geonamesPreprocessed.gz // running
 //		preprocess(indexFolder+"dblp.gz", indexFolder+"dblp.dump"); // done at gaea
 		// sort -S 512m -T . --compress-program=gzip dblp.dump | gzip > dblpPreprocessed.gz // done at gaea
-//		lap2indexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
+//		refIndexFromPreprocessed(Cheater.domainDBpedia, indexFolder+"dbpediaPreprocessed.gz", 
 //				lap2indexParts+"\\dbpedia"); // done
-//		lap2indexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
+//		refIndexFromPreprocessed(Cheater.domainGeonames, indexFolder+"geonamesPreprocessed.gz", 
 //				lap2indexParts+"\\geonames"); // done
-//		lap2indexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
+//		refIndexFromPreprocessed(Cheater.domainDblp, indexFolder+"dblpPreprocessed.gz", 
 //				lap2index+"\\dblp"); // done at gaea
 //		mergeIndex(lap2indexParts, lap2index); // done
 		// copy refIndex subfolders to poseidon
@@ -63,11 +56,80 @@ public class Indexer {
 //		dumpClassFeature(lineList, Analyzer.countLines(lineList), 
 //				indexFolder+"classFeatureDump.txt"); // done
 //		dumpFeatureRandom(indexFolder+"nonNullInd.txt", 1260000, indexFolder+"indFeature126w.txt");
+		final IndexReader refIndexReader = IndexReader.open(refIndex);
+		dumpFeature(basicFeatureIndex, "basic", new IFeatureFilter() {
+			public boolean accept(int docNum, String feature) {
+				return isIndividual(refIndexReader, docNum) && feature.length() != 0;
+			}
+			
+			/**
+			 * is ireader2.document(i) individual?
+			 * @param ireader2
+			 * @param i
+			 * @return
+			 */
+			private boolean isIndividual(IndexReader ireader2, int i) {
+				try {
+					Document doc = ireader2.document(i);
+					List fieldList = doc.getFields();
+					for (Object o : fieldList) {
+						Field f = (Field)o;
+						String fn = f.name();
+						if (fn.equals(Common.rdfType+"from") || fn.equals(Common.owlClass+"from") || 
+								fn.equals(Common.dbpediaSubject+"from")) {
+							return false;
+						}
+					}
+					return true;
+				} catch (Exception e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+
+		}, indexFolder+"nonNullIndFeature.txt");
+	}
+	
+	/**
+	 * dump feature like {@link #dumpFeature(String, String, int, main.Indexer.IFeatureFilter, String)} but
+	 * dump unlimited number of individuals
+	 * @param index
+	 * @param field
+	 * @param filter
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void dumpFeature(String index, String field, IFeatureFilter filter, 
+			String output) throws Exception {
+		dumpFeature(index, field, Integer.MAX_VALUE, filter, output);
+	}
+	
+	/**
+	 * dump feature from a field of an index, at most maxNum documents are read, filtered by filter, results
+	 * written to output
+	 * @param index
+	 * @param field
+	 * @param maxNum
+	 * @param filter
+	 * @param output
+	 * @throws Exception
+	 */
+	public static void dumpFeature(String index, String field, int maxNum, IFeatureFilter filter, 
+			String output) throws Exception {
+		IndexReader ireader = IndexReader.open(index);
+		PrintWriter pw = IOFactory.getPrintWriter(output);
+		for (int i = 0; i < ireader.maxDoc() && i < maxNum; i++) {
+			String feature = ireader.document(i).get(field);
+			if (filter.accept(i, feature)) pw.println(i + " " + feature);
+			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+		}
+		pw.close();
+		ireader.close();
 	}
 	
 	public static void lookBasicFeature() throws Exception {
 		Scanner sc = new Scanner(System.in);
-		IndexReader ireader = IndexReader.open(lap3index);
+		IndexReader ireader = IndexReader.open(basicFeatureIndex);
 		while (true) {
 			int n = sc.nextInt();
 			System.out.println(ireader.document(n).get("URI"));
@@ -77,7 +139,7 @@ public class Indexer {
 	
 	public static void lookRefIndex() throws Exception {
 		Scanner sc = new Scanner(System.in);
-		IndexReader ireader = IndexReader.open(lap2index);
+		IndexReader ireader = IndexReader.open(refIndex);
 		while (true) {
 			int n = sc.nextInt();
 			List fieldList = ireader.document(n).getFields();
@@ -95,8 +157,8 @@ public class Indexer {
 	 * @param target
 	 * @throws Exception
 	 */
-	public static void lap2indexFromPreprocessed(String domain, String input, String target) throws Exception {
-		System.out.println(new Date().toString() + " : start lap 2 indexing based on preprocessed file");
+	public static void refIndexFromPreprocessed(String domain, String input, String target) throws Exception {
+		System.out.println(new Date().toString() + " : start getting refIndex based on preprocessed file");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
 		Directory directory = FSDirectory.getDirectory(target);
 		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
@@ -159,23 +221,6 @@ public class Indexer {
 		breader.close();
 	}
 	
-	private static void mergeIndex(String source, String target) throws Exception {
-		System.out.println(new Date().toString() + " : start merging lap 2 indices");
-		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
-
-		Directory directory = FSDirectory.getDirectory(target);
-		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
-				IndexWriter.MaxFieldLength.UNLIMITED);
-		iwriter.setMergeFactor(2);
-		File[] parts = new File(source).listFiles();
-		IndexReader[] indexParts = new IndexReader[parts.length];
-		for (int i = 0; i < parts.length; i++) indexParts[i] = IndexReader.open(parts[i]);
-		iwriter.addIndexes(indexParts);
-		iwriter.close();
-		directory.close();
-		for (int i = 0; i < parts.length; i++) indexParts[i].close();
-	}
-
 	/**
 	 * treat each attribute statement as one document with two fields named "URI" and "<predicateURI>", 
 	 * and each relation statement as two documents (one for each direction) with two fields named "URI" 
@@ -229,43 +274,6 @@ public class Indexer {
 		iwriter.close();
 		directory.close();
 		System.out.println(new Date().toString() + " : optimized");
-	}
-	
-	/**
-	 * have a look at whether the "<predicate>from" fields have been stored
-	 * already known they are not indexed
-	 * @throws Exception
-	 */
-	public static void observeLap1index() throws Exception {
-		IndexReader ireader = IndexReader.open(lap1index+"\\dbpedia");
-		int count = 0;
-//		System.out.println(ireader.maxDoc());
-//		for (int i = 0; i < ireader.maxDoc(); i++) {
-//			Document doc = ireader.document(i);
-//			List fields = doc.getFields();
-//			for (Object o : fields) {
-//				Field f = (Field)o;
-//				if (f.name().endsWith("from")) {
-//					System.out.println(doc.toString());
-//					count++;
-//					break;
-//				}
-//			}
-//			if (count > 0 && count%50 == 0) System.in.read();
-//		}
-		TermEnum te = ireader.terms();
-		int countline = 0;
-		while (te.next()) {
-			TermDocs td = ireader.termDocs(te.term());
-			count = 0;
-			while (td.next()) count++;
-			if (count > 1) {
-				System.out.print(te.term().text() + " : ");
-				System.out.println(count);
-			}
-			countline++;
-			if (countline%1000 == 0) System.in.read();
-		}
 	}
 	
 	/**
@@ -355,8 +363,8 @@ public class Indexer {
 		ireader.close();
 	}
 	
-	public static void observeLap2index() throws Exception {
-		IndexReader ireader = IndexReader.open(lap2index);
+	public static void observeRefIndex() throws Exception {
+		IndexReader ireader = IndexReader.open(refIndex);
 		System.out.println(ireader.maxDoc());
 		for (int i = 0; i < ireader.maxDoc(); i++) {
 			String ab = ireader.document(i).get("<http://dbpedia.org/property/abstract>");
@@ -377,19 +385,19 @@ public class Indexer {
 	
 	/**
 	 * basic feature index
-	 * based on the 2nd-lap index, merge each individual's attribute values into its "basic" field. 
+	 * based on the refIndex, merge each individual's attribute values into its "basic" field. 
 	 * Attribute values are tokenized and indexed. URIs with "<rdf:type>from", "<owl:class>from" or 
 	 * "<skos:subject>from" fields (i.e. classes) are also contained in the index.
 	 */ 
-	public static void lap3index() throws Exception {
+	public static void basicFeatureIndex() throws Exception {
 		System.out.println(new Date().toString() + " : start lap 3 indexing");
 		org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
-		Directory directory = FSDirectory.getDirectory(lap3index);
+		Directory directory = FSDirectory.getDirectory(basicFeatureIndex);
 		IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
 				IndexWriter.MaxFieldLength.UNLIMITED);
 //		iwriter.setRAMBufferSizeMB(1200);
 		iwriter.setMergeFactor(2);
-		IndexReader ireader = IndexReader.open(lap2index);
+		IndexReader ireader = IndexReader.open(basicFeatureIndex);
 		for (int i = 0; i < ireader.maxDoc(); i++) {
 			Document doc = ireader.document(i);
 			List fieldList = doc.getFields();
@@ -425,8 +433,8 @@ public class Indexer {
 		System.out.println(new Date().toString() + " : optimized");
 	}
 	
-	public static void observeLap3index() throws Exception {
-		IndexReader ireader = IndexReader.open(lap3index);
+	public static void observeBasicFeatureIndex() throws Exception {
+		IndexReader ireader = IndexReader.open(basicFeatureIndex);
 		Random rand = new Random();
 		for (int i = 0; i < 40; i++) {
 			int n = rand.nextInt(ireader.maxDoc());
@@ -436,164 +444,34 @@ public class Indexer {
 		ireader.close();
 	}
 	
-	/**
-	 * dump basic or extended features of individuals or classes to output, one record per line
-	 */
-	public static void dumpFeature(String index, String field, String output) throws Exception {
-		IndexReader ireader = IndexReader.open(index);
-		PrintWriter pw = IOFactory.getPrintWriter(output);
-		for (int i = 0; i < ireader.maxDoc(); i++) {
-			pw.println(ireader.document(i).get(field));
-			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
-		}
-		pw.close();
-		ireader.close();
-	}
+	// the end of this source file
+	
+	
+//	private static int[] getLineList(String nonNullIndNums, int numLines) throws Exception {
+//		int[] ret = new int[numLines];
+//		BufferedReader br = new BufferedReader(new FileReader(nonNullIndNums));
+//		for (int i = 0; i < ret.length; i++) ret[i] = Integer.parseInt(br.readLine());
+//		br.close();
+//		return ret;
+//	}
 
-	/**
-	 * dump basic features of individuals in lineList to output, one record per line,
-	 * from start1 to end1, then from start2 to end2
-	 */
-	public static void dumpFeature(String index, String field, int[] lineList, 
-			int start1, int end1, int start2, int end2, String output) throws Exception {
-		IndexReader ireader = IndexReader.open(index);
-		PrintWriter pw = IOFactory.getPrintWriter(output);
-		for (int i = start1; i < end1; i++) 
-			pw.println(ireader.document(lineList[i]).get(field));
-		for (int i = start2; i < end2; i++)
-			pw.println(ireader.document(lineList[i]).get(field));
-		pw.close();
-		ireader.close();
-	}
-	
-	/**
-	 * partition non null individual basic features, to a lot of .raw files in partitionFolder,
-	 * each with linesPerFile lines, 
-	 * @param nonNullIndNums
-	 * @param numLines
-	 * @param partitionFolder
-	 * @param linesPerFile
-	 * @throws Exception
-	 */
-	public static void partition4ppjoin(String nonNullIndNums, int numLines, String partitionFolder, 
-			int linesPerFile) throws Exception {
-		int[] lineList = getLineList(nonNullIndNums, numLines);
-		int partitionSize = linesPerFile/2;
-		int partitionNum = numLines/partitionSize;
-		int[] start = new int[partitionNum+1];
-		int[] end = new int[partitionNum+1];
-		start[0] = 0;
-		for (int i = 1; i < start.length; i++) start[i] = start[i-1]+partitionSize;
-		for (int i = 0; i < start.length; i++) end[i] = start[i]+partitionSize;
-		end[end.length-1] = numLines;
-		for (int i = 0; i < start.length; i++) for (int j = i+1; j < start.length; j++) {
-			dumpFeature(lap3index, "basic", lineList, start[i], end[i], start[j], end[j], 
-					partitionFolder+start[i]+"-"+end[i]+"."+start[j]+"-"+end[j]+".raw");
-		}
-	}
-	
-	private static int[] getLineList(String nonNullIndNums, int numLines) throws Exception {
-		int[] ret = new int[numLines];
-		BufferedReader br = new BufferedReader(new FileReader(nonNullIndNums));
-		for (int i = 0; i < ret.length; i++) ret[i] = Integer.parseInt(br.readLine());
-		br.close();
-		return ret;
-	}
+//	/**
+//	 * record not null class lines in the basic feature index to nonNullNumbers, one doc# per line
+//	 * @param nonNullNumbers
+//	 */
+//	public static void extractNonNullClasses(String nonNullNumbers) throws Exception {
+//		IndexReader ireader3 = IndexReader.open(lap3index);
+//		IndexReader ireader2 = IndexReader.open(lap2index);
+//		PrintWriter pw = IOFactory.getPrintWriter(nonNullNumbers);
+//		for (int i = 0; i < ireader3.maxDoc(); i++) if (!isIndividual(ireader2, i) 
+//				&& !ireader3.document(i).get("basic").equals("")) {
+//			pw.println(i);
+//		}
+//		pw.close();
+//		ireader2.close();
+//		ireader3.close();
+//	}
 
-	/**
-	 * record not null individual lines in the basic feature index to nonNullNumbers, one doc# per line
-	 * @param nonNullNumbers
-	 */
-	public static void extractNonNullIndividuals(String nonNullNumbers) throws Exception {
-		IndexReader ireader3 = IndexReader.open(lap3index);
-		IndexReader ireader2 = IndexReader.open(lap2index);
-		PrintWriter pw = IOFactory.getPrintWriter(nonNullNumbers);
-		for (int i = 0; i < ireader3.maxDoc(); i++) if (isIndividual(ireader2, i) 
-				&& !ireader3.document(i).get("basic").equals("")) {
-			pw.println(i);
-		}
-		pw.close();
-		ireader2.close();
-		ireader3.close();
-	}
-
-	/**
-	 * record not null class lines in the basic feature index to nonNullNumbers, one doc# per line
-	 * @param nonNullNumbers
-	 */
-	public static void extractNonNullClasses(String nonNullNumbers) throws Exception {
-		IndexReader ireader3 = IndexReader.open(lap3index);
-		IndexReader ireader2 = IndexReader.open(lap2index);
-		PrintWriter pw = IOFactory.getPrintWriter(nonNullNumbers);
-		for (int i = 0; i < ireader3.maxDoc(); i++) if (!isIndividual(ireader2, i) 
-				&& !ireader3.document(i).get("basic").equals("")) {
-			pw.println(i);
-		}
-		pw.close();
-		ireader2.close();
-		ireader3.close();
-	}
-
-	/**
-	 * dump class basic features, should be handled by tokenizer & ppjoin as a whole
-	 * @param target
-	 * @throws Exception
-	 */
-	public static void dumpClassFeature(String nonNullClasses, int numLines, 
-			String target) throws Exception {
-		int[] lineList = getLineList(nonNullClasses, numLines);
-		IndexReader ireader = IndexReader.open(lap3index);
-		PrintWriter pw = IOFactory.getPrintWriter(target);
-		for (int i = 0; i < lineList.length; i++) 
-			pw.println(ireader.document(lineList[i]).get("basic"));
-		pw.close();
-		ireader.close();
-	}
-	
-	/**
-	 * dump basic features, should be handled by tokenizer & ppjoin as a whole
-	 * @param target
-	 * @throws Exception
-	 */
-	public static void dumpFeatureRandom(String indList, int numLines, 
-			String target) throws Exception {
-		int[] lineList = getLineList(indList, numLines);
-		Random r = new Random();
-		for (int i = 0; i < numLines; i++) {
-			int x = r.nextInt(1260000);
-			int y = r.nextInt(1260000);
-			int t = lineList[x];
-			lineList[x] = lineList[y];
-			lineList[y] = t;
-		}
-		IndexReader ireader = IndexReader.open(lap3index);
-		PrintWriter pw = IOFactory.getPrintWriter(target);
-		for (int i = 0; i < lineList.length; i++) 
-			pw.println(ireader.document(lineList[i]).get("basic"));
-		pw.close();
-		ireader.close();
-	}
-	
-	/**
-	 * is ireader2.document(i) individual?
-	 * @param ireader2
-	 * @param i
-	 * @return
-	 */
-	private static boolean isIndividual(IndexReader ireader2, int i) throws Exception {
-		Document doc = ireader2.document(i);
-		List fieldList = doc.getFields();
-		for (Object o : fieldList) {
-			Field f = (Field)o;
-			String fn = f.name();
-			if (fn.equals(Common.rdfType+"from") || fn.equals(Common.owlClass+"from") || 
-					fn.equals(Common.dbpediaSubject+"from")) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
 //	/**
 //	 * index class basic features
 //	 * @throws Exception
@@ -953,5 +831,174 @@ public class Indexer {
 //		directory.close();
 //		System.out.println(new Date().toString() + " : optimized");
 //	}
+
+//	/**
+//	 * dump basic or extended features of individuals or classes to output, one record per line
+//	 */
+//	public static void dumpFeature(String index, String field, String output) throws Exception {
+//		IndexReader ireader = IndexReader.open(index);
+//		PrintWriter pw = IOFactory.getPrintWriter(output);
+//		for (int i = 0; i < ireader.maxDoc(); i++) {
+//			pw.println(ireader.document(i).get(field));
+//			if ((i+1)%1000000 == 0) System.out.println(new Date().toString() + " : " + (i+1));
+//		}
+//		pw.close();
+//		ireader.close();
+//	}
+
+//	private static void mergeIndex(String source, String target) throws Exception {
+//	System.out.println(new Date().toString() + " : start merging lap 2 indices");
+//	org.apache.lucene.analysis.Analyzer analyzer = new WhitespaceAnalyzer();
+//
+//	Directory directory = FSDirectory.getDirectory(target);
+//	IndexWriter iwriter = new IndexWriter(directory, analyzer, true, 
+//			IndexWriter.MaxFieldLength.UNLIMITED);
+//	iwriter.setMergeFactor(2);
+//	File[] parts = new File(source).listFiles();
+//	IndexReader[] indexParts = new IndexReader[parts.length];
+//	for (int i = 0; i < parts.length; i++) indexParts[i] = IndexReader.open(parts[i]);
+//	iwriter.addIndexes(indexParts);
+//	iwriter.close();
+//	directory.close();
+//	for (int i = 0; i < parts.length; i++) indexParts[i].close();
+//}
+
+//	/**
+//	 * dump class basic features, should be handled by tokenizer & ppjoin as a whole
+//	 * @param target
+//	 * @throws Exception
+//	 */
+//	public static void dumpClassFeature(String nonNullClasses, int numLines, 
+//			String target) throws Exception {
+//		int[] lineList = getLineList(nonNullClasses, numLines);
+//		IndexReader ireader = IndexReader.open(lap3index);
+//		PrintWriter pw = IOFactory.getPrintWriter(target);
+//		for (int i = 0; i < lineList.length; i++) 
+//			pw.println(ireader.document(lineList[i]).get("basic"));
+//		pw.close();
+//		ireader.close();
+//	}
+	
+//	/**
+//	 * dump basic features, should be handled by tokenizer & ppjoin as a whole
+//	 * @param target
+//	 * @throws Exception
+//	 */
+//	public static void dumpFeatureRandom(String indList, int numLines, 
+//			String target) throws Exception {
+//		int[] lineList = getLineList(indList, numLines);
+//		Random r = new Random();
+//		for (int i = 0; i < numLines; i++) {
+//			int x = r.nextInt(1260000);
+//			int y = r.nextInt(1260000);
+//			int t = lineList[x];
+//			lineList[x] = lineList[y];
+//			lineList[y] = t;
+//		}
+//		IndexReader ireader = IndexReader.open(lap3index);
+//		PrintWriter pw = IOFactory.getPrintWriter(target);
+//		for (int i = 0; i < lineList.length; i++) 
+//			pw.println(ireader.document(lineList[i]).get("basic"));
+//		pw.close();
+//		ireader.close();
+//	}
+
+	
+//	/**
+//	 * dump basic features of individuals in lineList to output, one record per line,
+//	 * from start1 to end1, then from start2 to end2
+//	 */
+//	public static void dumpFeature(String index, String field, int[] lineList, 
+//			int start1, int end1, int start2, int end2, String output) throws Exception {
+//		IndexReader ireader = IndexReader.open(index);
+//		PrintWriter pw = IOFactory.getPrintWriter(output);
+//		for (int i = start1; i < end1; i++) 
+//			pw.println(ireader.document(lineList[i]).get(field));
+//		for (int i = start2; i < end2; i++)
+//			pw.println(ireader.document(lineList[i]).get(field));
+//		pw.close();
+//		ireader.close();
+//	}
+	
+//	/**
+//	 * partition non null individual basic features, to a lot of .raw files in partitionFolder,
+//	 * each with linesPerFile lines, 
+//	 * @param nonNullIndNums
+//	 * @param numLines
+//	 * @param partitionFolder
+//	 * @param linesPerFile
+//	 * @throws Exception
+//	 */
+//	public static void partition4ppjoin(String nonNullIndNums, int numLines, String partitionFolder, 
+//			int linesPerFile) throws Exception {
+//		int[] lineList = getLineList(nonNullIndNums, numLines);
+//		int partitionSize = linesPerFile/2;
+//		int partitionNum = numLines/partitionSize;
+//		int[] start = new int[partitionNum+1];
+//		int[] end = new int[partitionNum+1];
+//		start[0] = 0;
+//		for (int i = 1; i < start.length; i++) start[i] = start[i-1]+partitionSize;
+//		for (int i = 0; i < start.length; i++) end[i] = start[i]+partitionSize;
+//		end[end.length-1] = numLines;
+//		for (int i = 0; i < start.length; i++) for (int j = i+1; j < start.length; j++) {
+//			dumpFeature(lap3index, "basic", lineList, start[i], end[i], start[j], end[j], 
+//					partitionFolder+start[i]+"-"+end[i]+"."+start[j]+"-"+end[j]+".raw");
+//		}
+//	}
+	
+//	/**
+//	 * have a look at whether the "<predicate>from" fields have been stored
+//	 * already known they are not indexed
+//	 * @throws Exception
+//	 */
+//	public static void observeLap1index() throws Exception {
+//		IndexReader ireader = IndexReader.open(lap1index+"\\dbpedia");
+//		int count = 0;
+////		System.out.println(ireader.maxDoc());
+////		for (int i = 0; i < ireader.maxDoc(); i++) {
+////			Document doc = ireader.document(i);
+////			List fields = doc.getFields();
+////			for (Object o : fields) {
+////				Field f = (Field)o;
+////				if (f.name().endsWith("from")) {
+////					System.out.println(doc.toString());
+////					count++;
+////					break;
+////				}
+////			}
+////			if (count > 0 && count%50 == 0) System.in.read();
+////		}
+//		TermEnum te = ireader.terms();
+//		int countline = 0;
+//		while (te.next()) {
+//			TermDocs td = ireader.termDocs(te.term());
+//			count = 0;
+//			while (td.next()) count++;
+//			if (count > 1) {
+//				System.out.print(te.term().text() + " : ");
+//				System.out.println(count);
+//			}
+//			countline++;
+//			if (countline%1000 == 0) System.in.read();
+//		}
+//	}
+
+//	/**
+//	 * record not null individual lines in the basic feature index to nonNullNumbers, one doc# per line
+//	 * @param nonNullNumbers
+//	 */
+//	public static void extractNonNullIndividuals(String nonNullNumbers) throws Exception {
+//		IndexReader ireader3 = IndexReader.open(lap3index);
+//		IndexReader ireader2 = IndexReader.open(lap2index);
+//		PrintWriter pw = IOFactory.getPrintWriter(nonNullNumbers);
+//		for (int i = 0; i < ireader3.maxDoc(); i++) if (isIndividual(ireader2, i) 
+//				&& !ireader3.document(i).get("basic").equals("")) {
+//			pw.println(i);
+//		}
+//		pw.close();
+//		ireader2.close();
+//		ireader3.close();
+//	}
+
 
 }

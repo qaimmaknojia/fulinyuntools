@@ -162,7 +162,7 @@ public class Clusterer {
 		HashMap<String, Integer> domainDistribution = new HashMap<String, Integer>();
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
 		int clusterNum = 0;
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
 			String[] uris = getURIs(ireader, docNums, indURI);
@@ -198,7 +198,7 @@ public class Clusterer {
 		HashMap<Integer, String> classURI = new HashMap<Integer, String>();
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
 		PrintWriter pw = IOFactory.getPrintWriter(output);
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		int clusterNum = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
@@ -233,7 +233,7 @@ public class Clusterer {
 		int overlap = 0;
 		int maxClusterSize = 0;
 		int clusterNum = 0;
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
 			String[] uris = getURIs(ireader, docNums, indURI);
@@ -273,7 +273,7 @@ public class Clusterer {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
 		HashMap<Integer, String> indURI = new HashMap<Integer, String>();
 		BufferedReader br = new BufferedReader(new FileReader(clusterFile));
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		PrintWriter pw = IOFactory.getPrintWriter(output);
 		int clusterNum = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -309,7 +309,7 @@ public class Clusterer {
 		int overlap = 0;
 		int maxClusterSize = 0;
 		int clusterNum = 0;
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
 			int[] docNums = Common.getNumsInLineSorted(line);
 			String[] uris = getURIs(ireader, docNums, indURI);
@@ -526,9 +526,9 @@ public class Clusterer {
 	}
 
 	private static void getBasicFeatures(int[] docNums, String[][] basicFeatures) throws Exception {
-		IndexReader ireader = IndexReader.open(Indexer.lap3index);
+		IndexReader ireader = IndexReader.open(Indexer.basicFeatureIndex);
 		for (int i = 0; i < docNums.length; i++) basicFeatures[i] = 
-			sortUnique(ireader.document(docNums[i]).get("basic"));
+			Common.sortUnique(ireader.document(docNums[i]).get("basic"), 0);
 		ireader.close();
 	}
 
@@ -551,19 +551,6 @@ public class Clusterer {
 		return ret;
 	}
 
-	/**
-	 * sort and unique tokens in str, duplicated tokens are assigned unique aliases
-	 * @param str
-	 * @return
-	 */
-	private static String[] sortUnique(String str) {
-		String[] tokens = str.split(" ");
-		Arrays.sort(tokens);
-		for (int i = 0; i < tokens.length; i++) 
-			for (int j = i+1; j < tokens.length && tokens[j].equals(tokens[i]); j++) tokens[j] += ("."+(j-i));
-		return tokens;
-	}
-	
 	private static float calcNg(NN[] nn, int radius) {
 		float nnDistance = nn[1].distance;
 		int i;
