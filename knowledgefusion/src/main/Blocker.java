@@ -121,8 +121,30 @@ public class Blocker {
 		
 //		canonicalize(Indexer.indexFolder+"nonNullIndFeature.txt", workFolder+"tempIndex", 
 //				workFolder+"nonNullIndCaned.txt");
-		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 500, workFolder+"tempIndex", 
-				workFolder+"nonNullIndBlocks.txt", workFolder+"nonNullIndBlockingReport.txt"); // to run
+//		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 500, workFolder+"tempIndex", 
+//				workFolder+"nonNullIndBlocks.txt", workFolder+"nonNullIndBlockingReport.txt");
+		System.out.println(getRecall(workFolder+"nonNullIndBlocks.txt", Indexer.indexFolder+"sameAsID.txt")); // running
+	}
+	
+	public static float getRecall(String blockFile, String stdAns) throws Exception {
+		HashSet<String> stdSet = Common.getStringSet(stdAns);
+		int ansSize = stdSet.size();
+		BufferedReader br = IOFactory.getBufferedReader(blockFile);
+		int overlap = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			int[] docNums = Common.getNumsInLineSorted(line);
+			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
+				String toTest = docNums[i] + " " + docNums[j];
+				if (stdSet.contains(toTest)) {
+					overlap++;
+					if (overlap%10000 == 0) 
+						System.out.println(new Date().toString() + " : " + overlap + " overlaps");
+					stdSet.remove(toTest); // to avoid duplicate counting
+				}
+			}
+		}
+		br.close();
+		return (overlap+0.0f)/ansSize;
 	}
 	
 	public static void canonicalize(String input, String indexFolder, String output) throws Exception {
@@ -224,18 +246,18 @@ public class Blocker {
 	
 	/**
  	 * words in each records in input is sorted by document frequency, if ceil(prefix*length)-prefix share
-	 * at least one token, block them 
+	 * at least one token, block them, 
 	 * @param input
-	 * @param lines
-	 * @param prefix
-	 * @param maxBlockSize
-	 * @param indexFolder
+	 * @param lines number of lines to block
+	 * @param prefix prefix parameter
+	 * @param maxDocFreq max document frequency for a token to be considered a rare feature
+	 * @param indexFolder temporary index folder
 	 * @param output
 	 * @param report
 	 * @throws Exception
 	 */
 	public static void prefixBlockingWithLucene(String input, int lines, float prefix, 
-			int maxBlockSize, String indexFolder, 
+			int maxDocFreq, String indexFolder, 
 			String output, String report) throws Exception {
 		long startTime = new Date().getTime();
 		Common.indexPrefix(input, lines, prefix, indexFolder);
@@ -244,13 +266,16 @@ public class Blocker {
 		IndexSearcher isearcher = new IndexSearcher(ireader);
 		TermEnum te = ireader.terms();
 		PrintWriter pw = IOFactory.getPrintWriter(output);
-		int actualMaxBlockSize = 0;
+		int maxBlockSize = 0;
 		int totalBlockSize = 0;
 		int blockCount = 0;
 		while (te.next()) {
-			TopDocs td = isearcher.search(new TermQuery(te.term()), maxBlockSize);
-			if (td.scoreDocs.length <= 1) continue;
-			if (td.scoreDocs.length > actualMaxBlockSize) actualMaxBlockSize = td.scoreDocs.length;
+			TopDocs td = isearcher.search(new TermQuery(te.term()), maxDocFreq);
+			
+			// discard blocks with only one individual or of too frequent tokens
+			if (td.scoreDocs.length <= 1 || td.scoreDocs.length == maxDocFreq) continue;
+			
+			if (td.scoreDocs.length > maxBlockSize) maxBlockSize = td.scoreDocs.length;
 			totalBlockSize += td.scoreDocs.length;
 			blockCount++;
 			pw.print(ireader.document(td.scoreDocs[0].doc).get("id"));
@@ -268,9 +293,10 @@ public class Blocker {
 		pw.println("blocking parameter: " + prefix);
 		pw.println("time: " + time);
 		pw.println("#block: " + blockCount);
-		pw.println("max block size: " + actualMaxBlockSize);
+		pw.println("max block size: " + maxBlockSize);
 		pw.println("avg block size: " + (totalBlockSize+0.0)/blockCount);
 		pw.close();
+		Common.deleteFolder(new File(indexFolder));
 		System.out.println(prefix + "\t" + lines + "\t" + time); // for speed test
 	}
 
