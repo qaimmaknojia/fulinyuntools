@@ -151,9 +151,13 @@ public class Clusterer {
 //			workFolder+"clusterPR\\j0.4domainEval.txt"); // done
 //		getClusterDomainDistribution(Indexer.indexFolder+"sameAsID.txt", 
 //				Indexer.indexFolder+"sameAsIDdomainDistribution.txt"); // done
-		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster2.5.txt", 2, 2.5f);
-		evaluateWithDomain(workFolder+"cluster2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
-				workFolder+"clusterPR\\cluster2.5domainEval.txt");
+//		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster2.5.txt", 2, 2.5f);
+//		evaluateWithDomain(workFolder+"cluster2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"clusterPR\\cluster2.5domainEval.txt");
+		cluster(Blocker.workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"cluster0.2&100&2.5.txt", 2, 2.5f, 10);
+		evaluateWithDomain(workFolder+"cluster0.2&100&2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
+				workFolder+"clusterPR\\cluster0.2&100&2.5domainEval.txt"); // running
+
 	}
 	
 	public static void getClusterDomainDistribution(String clusterFile,
@@ -320,7 +324,9 @@ public class Clusterer {
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
 				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
 					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
-					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) {
+					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)
+					|| uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainDblp)
+					|| uris[j].contains(Cheater.domainDblp) && uris[i].contains(Cheater.domainDBpedia)) {
 				String toTest = docNums[i] + " " + docNums[j];
 				if (stdSet.contains(toTest)) {
 					overlap++;
@@ -467,9 +473,10 @@ public class Clusterer {
 	 * @param input a set of doc# blocks, one per line 
 	 * @param output a set of doc# clusters, one per line
 	 * @param tsn threshold for SN criteria
+	 * @param maxClusterSize
 	 * @throws Exception
 	 */
-	public static void cluster(String input, String output, int ngRadius, float tsn) throws Exception {
+	public static void cluster(String input, String output, int ngRadius, float tsn, int maxClusterSize) throws Exception {
 		IDataSourceReader br = IOFactory.getReader(input);
 		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -477,9 +484,9 @@ public class Clusterer {
 //			if (records.length > 10) System.out.println(records.length);
 			int[] docNums = new int[records.length];
 			for (int i = 0; i < records.length; i++) docNums[i] = Integer.parseInt(records[i]);
-			cluster(docNums, output, ngRadius, tsn);
+			cluster(docNums, output, ngRadius, tsn, maxClusterSize);
 			count++;
-			if (count%10000 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
+			if (count%100000 == 0) System.out.println(new Date().toString() + " : " + count + " blocks");
 		}
 		br.close();
 		System.out.println(new Date().toString() + " : clustering finished");
@@ -490,7 +497,7 @@ public class Clusterer {
 	 * @param docNums map from internal index (0-n) to doc# of index
 	 * @param output
 	 */
-	private static void cluster(int[] docNums, String output, int ngRadius, float tsn) throws Exception {
+	private static void cluster(int[] docNums, String output, int ngRadius, float tsn, int maxClusterSize) throws Exception {
 		String[][] basicFeatures = new String[docNums.length][];
 		getBasicFeatures(docNums, basicFeatures);
 		NN[][] nnList = new NN[docNums.length][docNums.length];
@@ -522,7 +529,7 @@ public class Clusterer {
 		}
 		boolean[] clustered = new boolean[docNums.length];
 		for (int i = 0; i < docNums.length; i++) if (!clustered[i]) 
-			cluster(docNums, records, i, tsn, output, clustered);
+			cluster(docNums, records, i, tsn, output, clustered, maxClusterSize);
 	}
 
 	private static void getBasicFeatures(int[] docNums, String[][] basicFeatures) throws Exception {
@@ -567,21 +574,37 @@ public class Clusterer {
 	 * @param clustered
 	 */
 	private static void cluster(int[] docNums, NNListAndNG[] records, int i, float tsn, String output,
-			boolean[] clustered) throws Exception {
+			boolean[] clustered, int maxClusterSize) throws Exception {
 		NNListAndNG theOne = records[i];
-		NNListAndNG nn = records[theOne.nnList[1].neighbor];
-		for (int j = records.length-1; j >= 1; j--) {
-			if (equalSet(theOne.nnList, nn.nnList, j) && 
-					avgNg(records, theOne.nnList, j) < tsn) {
+		HashSet<Integer> currentSet = new HashSet<Integer>();
+		for (int j = 0; j < theOne.nnList.length && j < maxClusterSize; j++) currentSet.add(theOne.nnList[j].neighbor);
+		for (int j = currentSet.size()-1; j >= 1; j--) {
+			if (isCompactSet(records, currentSet) && 
+					avgNg(records, currentSet) < tsn) {
 				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(output, true)));
-				pw.print(docNums[theOne.nnList[0].neighbor]);
-				for (int k = 1; k <= j; k++) pw.print(" " + docNums[theOne.nnList[k].neighbor]);
+				boolean first = true;
+				for (Integer ind : currentSet) {
+					if (first) {
+						pw.print(docNums[ind]);
+						first = false;
+					} else pw.print(" " + docNums[ind]);
+				}
 				pw.println();
 				pw.close();
-				for (int k = 0; k <= j; k++) clustered[k] = true;
+				for (Integer ind : currentSet) clustered[ind] = true;
 				break;
 			}
+			currentSet.remove(theOne.nnList[j].neighbor);
 		}
+	}
+
+	private static boolean isCompactSet(NNListAndNG[] records,
+			HashSet<Integer> currentSet) {
+		for (Integer ind : currentSet) {
+			NN[] nn = records[ind].nnList;
+			for (int i = 0; i < currentSet.size(); i++) if (!currentSet.contains(nn[i].neighbor)) return false;
+		}
+		return true;
 	}
 
 	/**
@@ -591,10 +614,10 @@ public class Clusterer {
 	 * @param j
 	 * @return
 	 */
-	private static float avgNg(NNListAndNG[] records, NN[] nnList, int j) {
+	private static float avgNg(NNListAndNG[] records, HashSet<Integer> currentSet) {
 		float ret = 0;
-		for (int i = 0; i <= j; i++) ret += records[nnList[i].neighbor].ng;
-		ret /= (j+1);
+		for (Integer ind : currentSet) ret += records[ind].ng;
+		ret /= currentSet.size();
 		return ret;
 	}
 
