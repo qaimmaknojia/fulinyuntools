@@ -121,14 +121,15 @@ public class Blocker {
 		
 //		canonicalize(Indexer.indexFolder+"nonNullIndFeature.txt", workFolder+"tempIndex", 
 //				workFolder+"nonNullIndCaned.txt");
-//		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 500, workFolder+"tempIndex", 
-//				workFolder+"nonNullIndBlocks.txt", workFolder+"nonNullIndBlockingReport.txt");
-		System.out.println(getRecall(workFolder+"nonNullIndBlocks.txt", Indexer.indexFolder+"sameAsID.txt")); // running
+		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 100, workFolder+"tempIndex", 
+				workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"nonNullIndBlocking0.2&100Report.txt");
+		System.out.println(getRecall(workFolder+"nonNullIndBlocks0.2&100.txt", Indexer.indexFolder+"sameAsID.txt"));
 	}
 	
 	public static float getRecall(String blockFile, String stdAns) throws Exception {
 		HashSet<String> stdSet = Common.getStringSet(stdAns);
 		int ansSize = stdSet.size();
+		System.out.println("answer size: " + ansSize);
 		BufferedReader br = IOFactory.getBufferedReader(blockFile);
 		int overlap = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -144,6 +145,7 @@ public class Blocker {
 			}
 		}
 		br.close();
+		System.out.println("overlap: " + overlap);
 		return (overlap+0.0f)/ansSize;
 	}
 	
@@ -270,10 +272,10 @@ public class Blocker {
 		int totalBlockSize = 0;
 		int blockCount = 0;
 		while (te.next()) {
-			TopDocs td = isearcher.search(new TermQuery(te.term()), maxDocFreq);
+			TopDocs td = isearcher.search(new TermQuery(te.term()), maxDocFreq+1);
 			
 			// discard blocks with only one individual or of too frequent tokens
-			if (td.scoreDocs.length <= 1 || td.scoreDocs.length == maxDocFreq) continue;
+			if (td.scoreDocs.length <= 1 || td.scoreDocs.length > maxDocFreq) continue;
 			
 			if (td.scoreDocs.length > maxBlockSize) maxBlockSize = td.scoreDocs.length;
 			totalBlockSize += td.scoreDocs.length;
