@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" 
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>DBpedia Relation Browser</title>
+<style type="text/css">
+a:link {
+	text-decoration: none;
+	color: #00f;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #639;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:active {
+	text-decoration: underline;
+}
+
+.mouseOver {
+	background: #708090;
+	color: #FFFAFA;
+}
+
+.mouseOut {
+	background: #FFFAFA;
+	color: #000000;
+}
+
+.style1 {
+	color: #FFFFFF
+}
+</style>
+
+
+<script type="text/javascript">
+
+	var relNameSuggestHttp;
+	var searchHttp;
+	
+	var completeDiv;
+	var queryField;
+	var suggestTable;
+	var suggestTableBody;
+	var currentSelectedSuggestion;
+	var hasSuggested=false;
+	var suggestionSize=0;
+	var the_names;
+
+//	function createXMLHttpRequest(){
+//		if(window.ActiveXObject){
+//			relNameSuggestHttp = new ActiveXObject("Microsoft.XMLHTTP");
+//		} else if(window.XMLHttpRequest){
+//			relNameSuggestHttp = new XMLHttpRequest();
+//		}
+//	}
+
+	function getXmlHttpObject() {
+		var xmlHttp=null;
+		try {
+			// Firefox, Opera 8.0+, Safari
+			xmlHttp=new XMLHttpRequest();
+		} catch (e) {
+			// Internet Explorer
+			try {
+				xmlHttp=new ActiveXObject("Msxml2.XMLHTTP");
+			} catch (e) {
+				xmlHttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		}
+		return xmlHttp;
+	}
+	
+	function initVars(){
+		queryField = document.getElementById("searchBox");
+		suggestTable = document.getElementById("suggest_table"); 
+		completeDiv = document.getElementById("popup");
+		suggestTableBody = document.getElementById("suggest_table_body");
+	}
+
+	function doSuggest(){
+		initVars(); 
+		if (queryField.value.length >= 3) { 
+			relNameSuggestHttp = getXmlHttpObject();
+			var url = "./relationbrowser?query=" + escape(queryField.value);
+			relNameSuggestHttp.open("GET", url, true);
+			relNameSuggestHttp.onreadystatechange = displaySuggest;
+			relNameSuggestHttp.send(null);
+		} else { 
+			clearSuggests();
+		}
+	}
+
+	function displaySuggest() {
+		if (relNameSuggestHttp.readyState == 4) {
+			if (relNameSuggestHttp.status == 200) {
+				clearSuggests();
+				if(relNameSuggestHttp.responseXML.getElementsByTagName("Suggestion").length!=0){
+					var name = relNameSuggestHttp.responseXML.getElementsByTagName("Suggestion")[0].firstChild.data;
+					suggestionSize = relNameSuggestHttp.responseXML.getElementsByTagName("Suggestion").length;
+					the_names = relNameSuggestHttp.responseXML.getElementsByTagName("Suggestion");
+					setNames(the_names);
+					hasSuggested = true;
+				} else {
+					hasSuggested = false;
+				}
+			}
+			else if (relNameSuggestHttp.status == 204)
+			{
+				clearSuggests();
+				hasSuggested = false;
+			}
+		} else {
+			hasSuggested = false;
+		}
+	}
+	
+	function setNames(the_names) {
+		clearSuggests();
+		var size = the_names.length;
+		setOffsets();
+
+		var row, cell, txtNode;
+		for (var i = 0; i < size; i++) 
+		{
+			var nextNode = the_names[i].firstChild.data;
+			row = document.createElement("tr");
+			cell = document.createElement("td");
+			
+			row.onmouseover = function() {selectCurrentSuggestion(this.id); };
+			//row.onmouseover = function() {this.className='mouseOver';};
+			row.id = i;
+			row.onclick = function(){ queryField.value=the_names[this.id].firstChild.data; clearSuggests(); };
+			row.setAttribute("bgcolor", "#FFFAFA");
+			row.setAttribute("border", "0");
+			//cell.onclick = function() { populateName(this); } ;							 
+
+			txtNode = document.createTextNode(nextNode);
+			cell.appendChild(txtNode);
+			row.appendChild(cell);
+			suggestTableBody.appendChild(row);
+		}
+		currentSelectedSuggestion = -1;
+	}
+
+	function setOffsets() {
+		var end = queryField.offsetWidth;
+		var left = calculateOffsetLeft(queryField);
+		var top = calculateOffsetTop(queryField) + queryField.offsetHeight;
+
+		completeDiv.style.border = "black 1px solid";
+		completeDiv.style.left = left + "px";
+		completeDiv.style.top = top + "px";
+		suggestTable.style.width = end + "px";
+	}
+		
+	function calculateOffsetLeft(field) {
+		return calculateOffset(field, "offsetLeft");
+	}
+
+	function calculateOffsetTop(field) {
+		return calculateOffset(field, "offsetTop");
+	}
+
+	function calculateOffset(field, attr) {
+		var offset = 0;
+		while(field) {
+			offset += field[attr]; 
+			field = field.offsetParent;
+		}
+		return offset;
+	}
+
+	function populateSuggest(cell) {
+		queryField.value = cell.firstChild.nodeValue;
+		clearSuggests();
+	}
+
+	function clearSuggests() {
+		var ind = suggestTableBody.childNodes.length;
+		for (var i = ind - 1; i >= 0 ; i--) {
+			suggestTableBody.removeChild(suggestTableBody.childNodes[i]);
+		}
+		completeDiv.style.border = "none";
+		hasSuggested = false;
+	}
+
+	function selectCurrentSuggestion(nextToSelectSuggestion)
+	{
+		if (currentSelectedSuggestion != -1) 
+			document.getElementById(currentSelectedSuggestion).className='mouseOut';
+		currentSelectedSuggestion = nextToSelectSuggestion;
+		if (suggestionSize != 0) 
+			currentSelectedSuggestion = (currentSelectedSuggestion*1+suggestionSize*1)%suggestionSize;
+		document.getElementById(currentSelectedSuggestion).className='mouseOver';
+	}
+
+	function onSearchBoxKeyDown(keyCode)
+	{
+		if (keyCode==38)	//up
+		{
+			if (!hasSuggested) return;
+			if (currentSelectedSuggestion == -1) selectCurrentSuggestion(suggestionSize-1);
+			else selectCurrentSuggestion(currentSelectedSuggestion-1);
+		}
+		if (keyCode==40)	//down
+		{
+			if (!hasSuggested) return;
+			selectCurrentSuggestion(currentSelectedSuggestion+1);
+		}
+//		if (keyCode==13)
+//		{
+//			queryField.value=the_names[currentSelectedSuggestion].firstChild.data; clearSuggests();
+//		}
+	}
+	
+	function onSearchBoxKeyUp(keyCode) {
+		if (keyCode == 37 || keyCode == 38 || keyCode == 39 || keyCode == 40) return;//left, up, right down
+		if (keyCode == 13) {	//enter
+			if (document.getElementById("searchBox").value == "") return;
+			if (!hasSuggested || currentSelectedSuggestion == -1) doSearch();
+			else {
+				document.getElementById("searchBox").value 
+					= the_names[currentSelectedSuggestion].firstChild.data;
+				doSearch();
+			}
+		} else {
+			doSuggest();
+		}
+	}
+</script>
+
+</head>
+<body>
+<h1 align="center"><img src="3.jpg" width="320" height="116"></h1>
+
+<table align="center">
+	<tr align="center">
+		<td><input type="text" id="searchBox"
+			onkeyup="onSearchBoxKeyUp(event.keyCode);"
+			onkeydown="onSearchBoxKeyDown(event.keyCode)" style="width: 300px"><input
+			type="button" id="searchButton" value="Search" onclick="doSearch();">
+		<div style="position: absolute; z-index: 11;" id="popup">
+
+		<table id="suggest_table" bgcolor="#FFFAFA" border="0" cellspacing="0"
+			cellpadding="0" style="width: 300px" align="left" />
+			<tbody id="suggest_table_body" align="left">
+			</tbody>
+		</table>
+		</div>
+		</td>
+	</tr>
+</table>
+
+<table>
+<tr>
+<td valign="top">
+<div id="popular_table" style="float: left"></div>
+</td>
+</tr>
+</table>
+
+<script language="javascript">
+
+	popularHttp = getXmlHttpObject();
+//	if(window.ActiveXObject)
+//	{
+//		popularHttp = new ActiveXObject("Microsoft.XMLHTTP");
+//	} 
+//	else if(window.XMLHttpRequest)
+//	{
+//		popularHttp = new XMLHttpRequest(); 
+//	}
+	
+	relationHttp = getXmlHttpObject();
+//	if(window.ActiveXObject)
+//	{
+//		relationHttp = new ActiveXObject("Microsoft.XMLHTTP");
+//	} 
+//	else if(window.XMLHttpRequest)
+//	{
+//		relationHttp = new XMLHttpRequest(); 
+//	}
+		
+	function displayPopular() {
+		if (!(popularHttp.responseXML==null)) {
+		
+			//alert(Math.random());
+			relations = popularHttp.responseXML.getElementsByTagName("Relation");
+			var size = relations.length;
+//			alert("relation size = " + size);
+			var columnPerRow = Math.sqrt(size);
+			var totalNum=0;
+			var popularTable = document.getElementById("popular_table");
+			var max=-1;
+			var min=999999999;
+			var array = new Array();
+			for (var i=0;i<size;i++)
+				array[i]=0;
+				
+			for (var i = 0; i < size; i++)
+			{
+				var name = relations[i].childNodes[0].firstChild.data;
+				var num = 1*relations[i].childNodes[1].firstChild.data;
+				if (num>max)
+					max = num;
+				if (num<min)
+					min = num;
+				totalNum=(totalNum*1+num*1)*1;
+			}
+			//var avg = totalNum*1.0/size;
+
+			var numOfDisplayed=0;
+			while (numOfDisplayed < size)
+			{
+				var index = parseInt(Math.random()*(size+1));
+				if (index>=size || array[index]!=0)
+					continue;
+				//alert(index);
+				array[index]=1;
+				numOfDisplayed+=1;
+				var name = relations[index].childNodes[0].firstChild.data;
+				var num = 1.0*relations[index].childNodes[1].firstChild.data;
+				var fontSizeInt = parseInt(10+Math.log((num-min+1))*Math.log((num-min+1))*0.15);
+				fontSize = fontSizeInt+"px"
+				//alert(fontSize)
+				
+				dd = document.createElement("a");
+				span = document.createElement("span");
+				span.style.fontSize=fontSize;
+				if (fontSizeInt<15)
+					span.style.color="#9900ff";
+				else if (fontSizeInt<20)
+					span.style.color="#666666";
+				else if (fontSizeInt<25)
+					span.style.color="#3366CC";
+				else 
+					span.style.color="#333399";
+				content = document.createTextNode(name);
+				span.appendChild(content);
+				dd.id = name;
+				dd.appendChild(span);
+				dd.href="#";
+				dd.onclick=function() {  document.getElementById("searchBox").value=this.id; doSearch(); };
+				dd.title="number: "+num;
+				content = document.createTextNode(" ");
+				popularTable.appendChild(dd);
+				popularTable.appendChild(content);
+			}
+		} 
+	}
+	var url = "./toprelationloader";
+	popularHttp.open("GET", url, true);
+	popularHttp.onreadystatechange = displayPopular;
+	popularHttp.send(null);
+	
+</script>
+<span class="style1"></span>
+<span class="style1"></span>
+<span class="style1"></span>
+<script language="javascript">
+/*
+	function displayRelationResult()
+	{
+		if (!(relationHttp.responseXML==null)) 
+		{
+			//alert("Hello in relation");
+			
+			var relationPanel = document.getElementById("relationPanel");
+
+			var relationsPanel = document.createElement("div");
+			relationsContent = document.createTextNode("Relations:")
+			relationsPanel.appendChild(relationsContent);
+			relationsPanel.style.fontSize="18px";
+			relationsPanel.style.fontWeight="bold";
+			relationPanel.appendChild(relationsPanel);
+
+			var relationInfoList = relationHttp.responseXML.getElementsByTagName("Relation");
+			
+			var size = relationInfoList.length;
+			
+			for (var i = 0; i < size; i++)
+			{
+				var name = relationInfoList[i].childNodes[0].firstChild.data;
+				var domain = relationInfoList[i].childNodes[1].firstChild.data;
+				var range = relationInfoList[i].childNodes[2].firstChild.data;
+
+				var dd = document.createElement("a");
+				var panelContent = document.createTextNode(name+"("+domain+","+range+")");
+				dd.id = name;
+				dd.appendChild(panelContent);
+				dd.href="#";
+				dd.onclick = function() {  document.getElementById("searchBox").value=this.id; doSearch(); };
+				
+				var panel = document.createElement("div");
+				panel.appendChild(dd);
+				panel.style.fontSize="14px";
+				panel.style.margin="5px";
+
+				relationPanel.appendChild(panel);
+			}
+		} 
+	}
+	
+	function displaySearchResult() {
+		if (!(popularHttp.responseXML == null)) {
+				
+			var searchResultPanel = document.getElementById("searchResultPanel");
+			
+			var numOfInstance = parseInt(popularHttp.responseXML.getElementsByTagName("InstanceNum")[0].firstChild.data);
+		
+			var numOfInstancePanel = document.createElement("div");
+			var numOfInstanceContent = document.createTextNode("Number of Instances: "+numOfInstance)
+			numOfInstancePanel.appendChild(numOfInstanceContent);
+			numOfInstancePanel.style.fontSize="18px";
+			numOfInstancePanel.style.fontWeight="bold";
+			searchResultPanel.appendChild(numOfInstancePanel);
+
+			var domainsPanel = document.createElement("div");
+			var domainsContent = document.createTextNode("Domains:")
+			domainsPanel.appendChild(domainsContent);
+			domainsPanel.style.fontSize="18px";
+			domainsPanel.style.fontWeight="bold";
+			searchResultPanel.appendChild(domainsPanel);
+				
+			var domainInfoList = popularHttp.responseXML.getElementsByTagName("DomainInfo");
+				
+			var size= 10;
+			if (domainInfoList.length < 10)
+				size = domainInfoList.length;
+					
+			for (var i=0;i<size;i++)
+			{
+				var category = domainInfoList[i].childNodes[0].firstChild.data;
+				var pop = domainInfoList[i].childNodes[1].firstChild.data;
+					
+				var categoryPanel = document.createElement("div");
+				var categoryContent = document.createTextNode("category:"+category+"("+pop+")")
+				categoryPanel.appendChild(categoryContent);
+				categoryPanel.style.fontSize="14px";
+				categoryPanel.style.margin="5px";
+
+				searchResultPanel.appendChild(categoryPanel);
+
+			}
+				
+			var rangesPanel = document.createElement("div");
+			var rangesContent = document.createTextNode("Ranges:")
+			rangesPanel.appendChild(rangesContent);
+			rangesPanel.style.fontSize="18px";
+			rangesPanel.style.fontWeight="bold";
+			searchResultPanel.appendChild(rangesPanel);
+				
+			var rangeInfoList = popularHttp.responseXML.getElementsByTagName("RangeInfo");
+				
+			var size = 10;
+			if (rangeInfoList.length < 10)
+				size = rangeInfoList.length;
+					
+			for (var i = 0; i < size; i++)
+			{
+				var category = rangeInfoList[i].childNodes[0].firstChild.data;
+				var pop = rangeInfoList[i].childNodes[1].firstChild.data;
+					
+				var categoryPanel = document.createElement("div");
+				var categoryContent = document.createTextNode("category:"+category+"("+pop+")")
+				categoryPanel.appendChild(categoryContent);
+				categoryPanel.style.fontSize="14px";
+				categoryPanel.style.margin="5px";
+
+				searchResultPanel.appendChild(categoryPanel);
+			}
+		}
+	}
+*/	
+	function doSearch()
+	{
+		if (document.getElementById("searchBox").value == "") return;
+		window.location = "./search.jsp?query="+document.getElementById("searchBox").value+"&level=0";
+	}
+</script>
+
+</body>
+</html>
