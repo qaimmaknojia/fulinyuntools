@@ -2,6 +2,7 @@ package main;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -154,7 +155,8 @@ public class Clusterer {
 //		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster2.5.txt", 2, 2.5f);
 //		evaluateWithDomain(workFolder+"cluster2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				workFolder+"clusterPR\\cluster2.5domainEval.txt");
-		cluster(Blocker.workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"cluster0.2&100&2.5.txt", 2, 2.5f, 10);
+		cluster(Blocker.workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"cluster0.2&100&2.5.txt", 
+				2, 2.5f, 4);
 		evaluateWithDomain(workFolder+"cluster0.2&100&2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
 				workFolder+"clusterPR\\cluster0.2&100&2.5domainEval.txt"); // running
 
@@ -477,6 +479,7 @@ public class Clusterer {
 	 * @throws Exception
 	 */
 	public static void cluster(String input, String output, int ngRadius, float tsn, int maxClusterSize) throws Exception {
+		new File(output).delete();
 		IDataSourceReader br = IOFactory.getReader(input);
 		int count = 0;
 		for (String line = br.readLine(); line != null; line = br.readLine()) {
