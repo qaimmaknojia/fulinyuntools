@@ -160,4 +160,5 @@ public class CosClusterer {
 			this.nnList = nnList;
 			this.ng = ng;
 		}
+	}
 }
