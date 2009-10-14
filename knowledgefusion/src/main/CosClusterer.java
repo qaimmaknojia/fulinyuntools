@@ -143,4 +143,21 @@ public class CosClusterer {
 		float ret = 1 - (float)(intersection+0.0)/(r1.length * r2.length);
 		return ret;
 	}
+	
+	class NN {
+		public int neighbor;
+		public float distance;
+		public NN(int neighbor, float distance) {
+			this.neighbor = neighbor;
+			this.distance = distance;
+		}
+	}
+
+	class NNListAndNG {
+		public NN[] nnList;
+		public float ng;
+		public NNListAndNG(NN[] nnList, float ng) {
+			this.nnList = nnList;
+			this.ng = ng;
+		}
 }
