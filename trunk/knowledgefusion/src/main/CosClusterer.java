@@ -139,8 +139,8 @@ public class CosClusterer {
 		HashSet<String> tokenSet = new HashSet<String>();
 		for (String s : r1) tokenSet.add(s);
 		for (String s : r2) tokenSet.add(s);
-		int intersection = r1.length+r2.length-tokenSet.size();
-		float ret = (float)(tokenSet.size()-intersection+0.0)/tokenSet.size();
+		int intersection = r1.length + r2.length - tokenSet.size();
+		float ret = 1 - (float)(intersection+0.0)/(r1.length * r2.length);
 		return ret;
 	}
 }
