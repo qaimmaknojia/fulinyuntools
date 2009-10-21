@@ -9,7 +9,7 @@ public class Evaluation {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {
-		Cheater.evaluate(workFolder+ "r" + args[0] + "sorted.txt",
+		KeyIndDealer.evaluate(workFolder+ "r" + args[0] + "sorted.txt",
 				Indexer.indexFolder + "sameAsID.txt", workFolder + "result" + args[0] + ".txt");
 	}
 

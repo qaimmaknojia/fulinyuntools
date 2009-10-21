@@ -10,7 +10,7 @@ public class BaselineCheck {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		Cheater.translateDocNum(Indexer.indexFolder+"keyInd.txt",
+		KeyIndDealer.translateDocNum(Indexer.indexFolder+"keyInd.txt",
 				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"),
 				workFolder + "r" + args[0] + ".txt", workFolder + "r" + args[0] + "translated.txt");
 		
