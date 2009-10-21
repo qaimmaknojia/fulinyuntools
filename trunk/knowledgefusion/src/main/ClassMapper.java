@@ -44,7 +44,7 @@ public class ClassMapper {
 			String[] parts = line.split(" ");
 			if (parts[1].equals("-1")) {
 				String uri = ireader.document(Integer.parseInt(parts[0])).get("URI");
-				if (!uri.contains(Cheater.domainDBpedia)) pw.println(parts[0] + " " + uri);
+				if (!uri.contains(KeyIndDealer.domainDBpedia)) pw.println(parts[0] + " " + uri);
 			}
 		}
 		pw.close();

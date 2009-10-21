@@ -155,10 +155,12 @@ public class Clusterer {
 //		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"cluster2.5.txt", 2, 2.5f);
 //		evaluateWithDomain(workFolder+"cluster2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				workFolder+"clusterPR\\cluster2.5domainEval.txt");
-		cluster(Blocker.workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"cluster0.2&100&2.5.txt", 
-				2, 2.5f, 4);
-		evaluateWithDomain(workFolder+"cluster0.2&100&2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
-				workFolder+"clusterPR\\cluster0.2&100&2.5domainEval.txt"); // running
+//		cluster(Blocker.workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"cluster0.2&100&2.5.txt", 
+//				2, 2.5f, 4);
+//		evaluateWithDomain(workFolder+"cluster0.2&100&2.5.txt", Indexer.indexFolder+"sameAsID.txt", 
+//				workFolder+"clusterPR\\cluster0.2&100&2.5domainEval.txt"); // running
+//		cluster(Blocker.workFolder+"prefix0.2&3blockTranslated.txt", workFolder+"clusterTemp.txt", 2, 1.1f, 100);
+//		pickThreshold("E:\\user\\fulinyun\\ng.txt", "E:\\user\\fulinyun\\ngFiltered.txt");	// all avg ng = 1.0
 
 	}
 	
@@ -212,9 +214,9 @@ public class Clusterer {
 			clusterNum++;
 			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) {
-				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainDBpedia)) continue;
-				if (uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainGeonames)) continue;
-				if (uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) continue;
+				if (uris[i].contains(KeyIndDealer.domainDBpedia) && uris[j].contains(KeyIndDealer.domainDBpedia)) continue;
+				if (uris[i].contains(KeyIndDealer.domainGeonames) && uris[j].contains(KeyIndDealer.domainGeonames)) continue;
+				if (uris[i].contains(KeyIndDealer.domainDblp) && uris[j].contains(KeyIndDealer.domainDblp)) continue;
 				pw.println(docNums[i] + " " + docNums[j]);
 			}
 		}
@@ -248,9 +250,9 @@ public class Clusterer {
 			clusterNum++;
 			if (clusterNum%10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
 			if (docNums.length == 2)
-				if (uris[0].contains(Cheater.domainDBpedia) && uris[1].contains(Cheater.domainGeonames) 
-					|| uris[0].contains(Cheater.domainGeonames) && uris[1].contains(Cheater.domainDBpedia)
-					|| uris[0].contains(Cheater.domainDblp) && uris[1].contains(Cheater.domainDblp)) {
+				if (uris[0].contains(KeyIndDealer.domainDBpedia) && uris[1].contains(KeyIndDealer.domainGeonames) 
+					|| uris[0].contains(KeyIndDealer.domainGeonames) && uris[1].contains(KeyIndDealer.domainDBpedia)
+					|| uris[0].contains(KeyIndDealer.domainDblp) && uris[1].contains(KeyIndDealer.domainDblp)) {
 				String toTest = docNums[1] + " " + docNums[0];
 				if (stdSet.contains(toTest)) {
 					overlap++;
@@ -269,7 +271,7 @@ public class Clusterer {
 	}
 	
 	/**
-	 * evaluate individual clusters in clusterFile in terms of precision and recall w.r.t. stdAns, consider only 
+	 * get false negative pairs w.r.t. stdAns, consider only 
 	 * individual pairs from dbpedia<->geonames and dblp<->dblp
 	 * @param clusterFile
 	 * @param stdAns
@@ -288,9 +290,9 @@ public class Clusterer {
 			clusterNum++;
 			if (clusterNum % 10000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
-				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
-					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
-					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)) {
+				if (uris[i].contains(KeyIndDealer.domainDBpedia) && uris[j].contains(KeyIndDealer.domainGeonames) 
+					|| uris[i].contains(KeyIndDealer.domainGeonames) && uris[j].contains(KeyIndDealer.domainDBpedia)
+					|| uris[i].contains(KeyIndDealer.domainDblp) && uris[j].contains(KeyIndDealer.domainDblp)) {
 				String toTest = docNums[i] + " " + docNums[j];
 				if (!stdSet.contains(toTest)) pw.println(toTest);
 			}
@@ -324,11 +326,11 @@ public class Clusterer {
 			clusterNum++;
 			if (clusterNum%100000 == 0) System.out.println(new Date().toString() + " : " + clusterNum);
 			for (int i = 0; i < docNums.length; i++) for (int j = 0; j < i; j++) 
-				if (uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainGeonames) 
-					|| uris[i].contains(Cheater.domainGeonames) && uris[j].contains(Cheater.domainDBpedia)
-					|| uris[i].contains(Cheater.domainDblp) && uris[j].contains(Cheater.domainDblp)
-					|| uris[i].contains(Cheater.domainDBpedia) && uris[j].contains(Cheater.domainDblp)
-					|| uris[j].contains(Cheater.domainDblp) && uris[i].contains(Cheater.domainDBpedia)) {
+				if (uris[i].contains(KeyIndDealer.domainDBpedia) && uris[j].contains(KeyIndDealer.domainGeonames) 
+					|| uris[i].contains(KeyIndDealer.domainGeonames) && uris[j].contains(KeyIndDealer.domainDBpedia)
+					|| uris[i].contains(KeyIndDealer.domainDblp) && uris[j].contains(KeyIndDealer.domainDblp)
+					|| uris[i].contains(KeyIndDealer.domainDBpedia) && uris[j].contains(KeyIndDealer.domainDblp)
+					|| uris[j].contains(KeyIndDealer.domainDblp) && uris[i].contains(KeyIndDealer.domainDBpedia)) {
 				String toTest = docNums[i] + " " + docNums[j];
 				if (stdSet.contains(toTest)) {
 					overlap++;
@@ -582,8 +584,12 @@ public class Clusterer {
 		HashSet<Integer> currentSet = new HashSet<Integer>();
 		for (int j = 0; j < theOne.nnList.length && j < maxClusterSize; j++) currentSet.add(theOne.nnList[j].neighbor);
 		for (int j = currentSet.size()-1; j >= 1; j--) {
+			float avgNgv = avgNg(records, currentSet);
 			if (isCompactSet(records, currentSet) && 
-					avgNg(records, currentSet) < tsn) {
+					avgNgv < tsn) {
+//				PrintWriter ng = new PrintWriter(new BufferedWriter(new FileWriter("e:\\user\\fulinyun\\ng.txt", true)));
+//				ng.println(avgNgv);
+//				ng.close();
 				PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(output, true)));
 				boolean first = true;
 				for (Integer ind : currentSet) {
@@ -636,6 +642,19 @@ public class Clusterer {
 		for (int i = 0; i <= j; i++) nnSet1.add(nnList1[i].neighbor);
 		for (int i = 0; i <= j; i++) if (!nnSet1.contains(nnList2[i].neighbor)) return false;
 		return true;
+	}
+	
+	public static void pickThreshold(String input, String output) throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(input));
+		PrintWriter pw = new PrintWriter(new FileWriter(output));
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			if (!line.equals("1.0")) {
+				System.out.println(line);
+				pw.println(line);
+			}
+		}
+		pw.close();
+		br.close();
 	}
 	
 //	/**

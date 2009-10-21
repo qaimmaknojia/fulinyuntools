@@ -2,24 +2,32 @@ package main;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.TreeSet;
 
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermDocs;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 
 import basic.IDataSourceReader;
 import basic.IOFactory;
 
-public class Cheater {
+public class KeyIndDealer {
 
 	public static String dbpediaSameAs = 
 		"\\\\poseidon\\team\\semantic search\\BillionTripleData\\crude\\dbpedia-v3.equ";
@@ -36,6 +44,7 @@ public class Cheater {
 //	public static int stdAnsSize = 2318;
 //	public static int r03resultSize = 23359103;
 	public static String keyInd = Indexer.indexFolder+"keyInd.txt";
+	public static String ppjoinFolder = Indexer.indexFolder+"\\ppjoin\\";
 		
 	public static void main(String[] args) throws Exception {
 //		extractSameAsByDomain(dbpediaSameAs, domainDBpedia, domainGeonames, 
@@ -53,9 +62,9 @@ public class Cheater {
 		// keyInd.txt: all doc#s of individuals appear in some sameAs pair, sorted in ascending order
 //		dumpFeature(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
-//				Blocker.workFolder+"cheatBasicFeature.txt"); // done
-		// tokenizer cheatBasicFeature.txt // done
-		// ppjoin j 0.5 cheatBasicFeature.txt.bin > r0.5.txt // done in 40s
+//				Blocker.workFolder+"keyIndBasicFeature.txt"); // done
+		// tokenizer keyIndBasicFeature.txt // done
+		// ppjoin j 0.5 keyIndBasicFeature.txt.bin > r0.5.txt // done in 40s
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
 //				Blocker.workFolder+"r0.5.txt", Blocker.workFolder+"r0.5translated.txt"); // done
@@ -63,43 +72,43 @@ public class Cheater {
 //		evaluate(Blocker.workFolder+"r0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
 //		getFailed(Blocker.workFolder+"r0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				Blocker.workFolder+"r0.5failed.txt");
-//		blockByRareWords(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 3, 
+//		blockByRareWords(Blocker.workFolder+"keyIndBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 3, 
 //				Blocker.workFolder+"rare3.txt"); // done
-//		readBinaryFile(Blocker.workFolder+"cheatBasicFeature.txt.bin"); // unexpected byte order!!!
+//		readBinaryFile(Blocker.workFolder+"keyIndBasicFeature.txt.bin"); // unexpected byte order!!!
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //		Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
 //		Blocker.workFolder+"rare3.txt", Blocker.workFolder+"rare3translated.txt"); // done
 		// sort -n rare3translated.txt > rare3sorted.txt // done
 //		evaluate(Blocker.workFolder+"rare3sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-//		blockByRareWords(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 1, 
+//		blockByRareWords(Blocker.workFolder+"keyIndBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 1, 
 //				Blocker.workFolder+"rare1.txt"); // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
 //				Blocker.workFolder+"rare1.txt", Blocker.workFolder+"rare1translated.txt"); // done
 		// sort -n rare1translated.txt > rare1sorted.txt // done
 //		evaluate(Blocker.workFolder+"rare1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-		// qtokenizer 5 cheatBasicFeatureU.txt // done
-		// ppjoin j 0.5 cheatBasicFeatureU.txt.5gram.bin > u5j0.5.txt // done
+		// qtokenizer 5 keyIndBasicFeatureU.txt // done
+		// ppjoin j 0.5 keyIndBasicFeatureU.txt.5gram.bin > u5j0.5.txt // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder+"keyInd.txt"), 
 //				Blocker.workFolder+"u5j0.5.txt", Blocker.workFolder+"u5j0.5translated.txt"); // done
 		// sort -n u5j0.5translated.txt > u5j0.5sorted.txt // done
 //		evaluate(Blocker.workFolder+"u5j0.5sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done
-//		blockByPrefix(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//		blockByPrefix(Blocker.workFolder+"keyIndBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 0.1f, 
 //				Blocker.workFolder+"prefix0.1.txt"); // too slow, aborted
-//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//		blockByPrefixFast(Blocker.workFolder+"keyIndBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 0.1f, 
 //				Blocker.workFolder+"prefix0.1.txt"); // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
 //				Blocker.workFolder + "prefix0.1.txt", Blocker.workFolder+"prefix0.1translated.txt"); // done
 		// sort -n prefix0.1translated.txt > prefix0.1sorted.txt // done
 //		evaluate(Blocker.workFolder+"prefix0.1sorted.txt", Indexer.indexFolder+"sameAsID.txt"); // done: 5364/672897
-//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeature.txt.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.2f, 
+//		blockByPrefixFast(Blocker.workFolder+"keyIndBasicFeature.txt.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 0.2f, 
 //				Blocker.workFolder+"prefix0.2.txt"); // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
@@ -107,8 +116,8 @@ public class Cheater {
 		// sort -n prefix0.2translated.txt > prefix0.2sorted.txt // done
 //		evaluate(Blocker.workFolder+"prefix0.2sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				Blocker.workFolder+"prefix0.2eval.txt"); // done: 32156/10936070
-//		blockByPrefixFast(Blocker.workFolder+"cheatBasicFeatureU.txt.5gram.bin", 
-//				Analyzer.countLines(Blocker.workFolder+"cheatBasicFeature.txt"), 0.1f, 
+//		blockByPrefixFast(Blocker.workFolder+"keyIndBasicFeatureU.txt.5gram.bin", 
+//				Analyzer.countLines(Blocker.workFolder+"keyIndBasicFeature.txt"), 0.1f, 
 //				Blocker.workFolder+"prefixU5gram0.1.txt"); // done
 //		translateDocNum(Indexer.indexFolder+"keyInd.txt", 
 //				Analyzer.countLines(Indexer.indexFolder + "keyInd.txt"),
@@ -120,10 +129,62 @@ public class Cheater {
 //		evaluate(Blocker.workFolder+"blockP=30sorted.txt", Indexer.indexFolder+"sameAsID.txt", 
 //				Blocker.workFolder+"pr\\blockP=30eval.txt");
 
-//		getAvgFeatureLength(Blocker.workFolder+"cheatBasicFeature.txt");
+//		getAvgFeatureLength(Blocker.workFolder+"keyIndBasicFeature.txt");
 //		dumpFeature(Indexer.indexFolder+"nonNullInd.txt", 2560000, Indexer.indexFolder+"nonNullIndFeature.txt");
+		extractExtendedFeature(keyInd, Blocker.workFolder+"keyIndExtendedFeature.txt");
 	}
 	
+	/**
+	 * extract extended feature for key individuals
+	 * based on the 2nd- and 3rd- lap indexes, for each key individual, extract its attribute values and 
+	 * its neighbors' attribute values
+	 */
+	public static void extractExtendedFeature(String indList, String target) throws Exception {
+		System.out.println(new Date().toString() + " : start extracting extended feature for " + indList);
+		BufferedReader br = IOFactory.getBufferedReader(indList);
+		PrintWriter pw = IOFactory.getPrintWriter(target);
+		IndexReader ireader2 = IndexReader.open(Indexer.refIndex);
+		IndexReader ireader3 = IndexReader.open(Indexer.basicFeatureIndex);
+		IndexSearcher isearcher3 = new IndexSearcher(ireader3);
+		int count = 0;
+		for (String line = br.readLine(); line != null; line = br.readLine()) {
+			pw.print(line);
+			int i = Integer.parseInt(line);
+			Document doc = ireader3.document(i);
+			String uri = doc.get("URI");
+			String extended = doc.get("basic");
+			Document toExtend = ireader2.document(i);
+			if (!toExtend.get("URI").equals(doc.get("URI"))) {
+				System.out.println("URI not matched!!!");
+				System.exit(1);
+			}
+			List fieldList = toExtend.getFields();
+			for (Object o : fieldList) {
+				Field f = (Field)o;
+				if (f.name().endsWith("from") || f.name().endsWith("to")) 
+				if (!f.name().equals(Common.rdfType+"from") && !f.name().equals(Common.owlClass+"from") 
+						&& !f.name().equals(Common.dbpediaSubject+"from")) {
+					TopDocs tdbasic = isearcher3.search(new TermQuery(new Term("URI", 
+							f.stringValue())), 1);
+					if (tdbasic.scoreDocs.length > 0) {
+						int idoc = tdbasic.scoreDocs[0].doc;
+						String dbasic = ireader3.document(idoc).get("basic");
+						extended += dbasic;
+					}
+				}
+			}
+			pw.println(extended);
+			count++;
+			if (count%2000 == 0) System.out.println(new Date().toString() + " : " + count);
+		}
+		pw.close();
+		br.close();
+		isearcher3.close();
+		ireader2.close();
+		ireader3.close();
+
+	}
+
 	public static void getAvgFeatureLength(String input) throws Exception {
 		BufferedReader br = new BufferedReader(new FileReader(input));
 		int lineCount = 0;

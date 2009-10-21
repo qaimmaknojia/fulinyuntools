@@ -121,9 +121,12 @@ public class Blocker {
 		
 //		canonicalize(Indexer.indexFolder+"nonNullIndFeature.txt", workFolder+"tempIndex", 
 //				workFolder+"nonNullIndCaned.txt");
-		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 100, workFolder+"tempIndex", 
-				workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"nonNullIndBlocking0.2&100Report.txt");
-		System.out.println(getRecall(workFolder+"nonNullIndBlocks0.2&100.txt", Indexer.indexFolder+"sameAsID.txt"));
+//		prefixBlockingWithLucene(workFolder+"nonNullIndCaned.txt", 0.2f, 100, workFolder+"tempIndex", 
+//				workFolder+"nonNullIndBlocks0.2&100.txt", workFolder+"nonNullIndBlocking0.2&100Report.txt");
+//		System.out.println(getRecall(workFolder+"nonNullIndBlocks0.2&100.txt", Indexer.indexFolder+"sameAsID.txt"));
+
+		canonicalize(workFolder+"keyIndExtendedFeature.txt", workFolder+"tempIndex", 
+				workFolder+"keyIndExtendedFeatureCaned.txt"); // running
 	}
 	
 	public static float getRecall(String blockFile, String stdAns) throws Exception {
@@ -176,7 +179,7 @@ public class Blocker {
 				iwriter.addDocument(doc);
 			}
 			lineCount++;
-			if (lineCount % 100000 == 0) 
+			if (lineCount % 10000 == 0) 
 				System.out.println(new Date().toString() + " : " + lineCount + " lines indexed");
 			if (lineCount == maxLineNumber) break;
 		}
