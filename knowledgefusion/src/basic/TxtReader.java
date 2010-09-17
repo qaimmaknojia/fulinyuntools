@@ -3,6 +3,7 @@ package basic;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 public class TxtReader implements IDataSourceReader {
 
@@ -19,7 +20,9 @@ public class TxtReader implements IDataSourceReader {
 	}
 	
 	private void init() throws Exception {
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
+		if (IOFactory.isURL(filename)) 
+			br = new BufferedReader(new InputStreamReader(new URL(filename).openStream(), "UTF-8"));
+		else br = new BufferedReader(new InputStreamReader(new FileInputStream(filename), "UTF-8"));
 	}
 	
 	@Override

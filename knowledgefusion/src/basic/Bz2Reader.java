@@ -2,7 +2,9 @@ package basic;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import org.apache.tools.bzip2.CBZip2InputStream;
 
@@ -24,13 +26,14 @@ public class Bz2Reader implements IDataSourceReader {
 	}
 
 	private void init(String filename) throws Exception {
-		FileInputStream fis = new FileInputStream(filename);
-		
+		InputStream is = null;
+		if (IOFactory.isURL(filename)) is = new URL(filename).openStream();
+		else is = new FileInputStream(filename);
 		//read the initial "BZ" mark
-		fis.read();
-		fis.read();
+		is.read();
+		is.read();
 		
-		br = new BufferedReader(new InputStreamReader(new CBZip2InputStream(fis), "UTF-8"));
+		br = new BufferedReader(new InputStreamReader(new CBZip2InputStream(is), "UTF-8"));
 	}
 
 	@Override
