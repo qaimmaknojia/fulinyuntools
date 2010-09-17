@@ -3,6 +3,7 @@ package basic;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import com.ice.tar.TarInputStream;
 
@@ -19,7 +20,8 @@ public class TarReader implements IDataSourceReader {
 
 	public TarReader(String fileName) {
 		try {
-			tarInput = new TarInputStream(new FileInputStream(fileName));
+			if (IOFactory.isURL(fileName)) tarInput = new TarInputStream(new URL(fileName).openStream());
+			else tarInput = new TarInputStream(new FileInputStream(fileName));
 			bReader = new BufferedReader(new InputStreamReader(tarInput, "UTF-8"));
 		} catch (Exception e) {
 			e.printStackTrace();

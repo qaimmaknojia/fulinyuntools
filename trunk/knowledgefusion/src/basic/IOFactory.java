@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -53,4 +55,20 @@ public class IOFactory {
 		return new PrintWriter(new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(filename), "UTF-8")));
 	}
+	
+	public static boolean isURL(String URLName) {
+		try {
+//			HttpURLConnection.setFollowRedirects(false);
+			// note : you may also need
+			// HttpURLConnection.setInstanceFollowRedirects(false)
+			HttpURLConnection con = (HttpURLConnection) new URL(URLName)
+					.openConnection();
+			con.setRequestMethod("HEAD");
+			return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+		} catch (Exception e) {
+//			e.printStackTrace();
+			return false;
+		}
+	}
+
 }

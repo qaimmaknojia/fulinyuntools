@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -32,7 +33,8 @@ public class ZipReader implements IDataSourceReader {
 	}
 
 	private void init() throws Exception {
-		zipinput = new ZipInputStream(new FileInputStream(fileName));
+		if (IOFactory.isURL(fileName)) zipinput = new ZipInputStream(new URL(fileName).openStream());
+		else zipinput = new ZipInputStream(new FileInputStream(fileName));
 		br = new BufferedReader(new InputStreamReader(zipinput, "UTF-8"));
 	}
 

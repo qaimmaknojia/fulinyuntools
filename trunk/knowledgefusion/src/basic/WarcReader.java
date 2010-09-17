@@ -12,6 +12,7 @@ import it.unimi.dsi.law.warc.util.WarcHttpResponse;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 /**
  * Used to read a data source that is in the form of a single .warc file
@@ -37,7 +38,9 @@ public class WarcReader implements IDataSourceReader{
 	}
 	
 	public void init() throws Exception {
-		FastBufferedInputStream in = new FastBufferedInputStream(new FileInputStream(fileName));
+		FastBufferedInputStream in = null;
+		if (IOFactory.isURL(fileName)) in = new FastBufferedInputStream(new URL(fileName).openStream());
+		else in = new FastBufferedInputStream(new FileInputStream(fileName));
 		record = new GZWarcRecord();
 		Filter<WarcRecord> filter = Filters.adaptFilterBURL2WarcRecord(new Filter<BURL>() {
 			public boolean accept(BURL x) {

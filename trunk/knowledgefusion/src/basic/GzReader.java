@@ -3,6 +3,7 @@ package basic;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Scanner;
 import java.util.zip.GZIPInputStream;
 
@@ -29,7 +30,10 @@ public class GzReader implements IDataSourceReader {
 	}
 
 	private void init(String fileName) throws Exception {
-		br = new BufferedReader(new InputStreamReader(new GZIPInputStream(
+		if (IOFactory.isURL(fileName)) 
+			br = new BufferedReader(new InputStreamReader(new GZIPInputStream(
+					new URL(fileName).openStream()), "UTF-8"));
+		else br = new BufferedReader(new InputStreamReader(new GZIPInputStream(
 				new FileInputStream(fileName)), "UTF-8"));
 	}
 
