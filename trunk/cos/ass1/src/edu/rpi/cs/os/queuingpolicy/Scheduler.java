@@ -444,8 +444,8 @@ public abstract class Scheduler {
 	public static void main(String[] args) {
 //		batchMain();
 //		hrrnMain();
-		sjfMain();
-//		interactiveMain(args);
+//		sjfMain();
+		interactiveMain(args);
 	}
 
 }
