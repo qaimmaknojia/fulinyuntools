@@ -1,0 +1,228 @@
+td=6ms tq=1ms
+
+Simulation summary:
+Response time of Process #0: 37.501211298451935 ms
+Response time of Process #1: 56.24961187111871 ms
+Response time of Process #2: 37.50120004800192 ms
+Response time of Process #3: 56.24980312303123 ms
+Response time of Process #4: 37.50119629785191 ms
+Response time of Process #5: 56.249848123481236 ms
+Response time of Process #6: 37.501275060565376 ms
+Response time of Process #7: 56.24992124921249 ms
+Response time of Process #8: 37.501275060565376 ms
+Average response time: 44.022611745370234
+Slowdown of Process #9: 18.747586248270537
+CPU utilization: 0.4666678
+Disk utilization: 0.8783157
+Cycle length: 10
+
+
+td=15ms tq=1ms
+
+Simulation summary:
+Response time of Process #0: 41.39279180084939 ms
+Response time of Process #1: 55.190211272269686 ms
+Response time of Process #2: 41.39285300351017 ms
+Response time of Process #3: 55.19040444179526 ms
+Response time of Process #4: 41.39292337240877 ms
+Response time of Process #5: 55.19052586263991 ms
+Response time of Process #6: 41.39292337240877 ms
+Response time of Process #7: 55.19065490711203 ms
+Response time of Process #8: 41.392989601960394 ms
+Average response time: 46.566964285714285
+Slowdown of Process #9: 14.04845593420827
+CPU utilization: 0.4698016
+Disk utilization: 0.9999933
+Cycle length: 10
+
+
+td=25ms tq=1ms
+
+Simulation summary:
+Response time of Process #0: 45.13539033725717 ms
+Response time of Process #1: 55.530103287427806 ms
+Response time of Process #2: 45.13547609590525 ms
+Response time of Process #3: 55.53020913159853 ms
+Response time of Process #4: 45.13545804145302 ms
+Response time of Process #5: 55.53035351347749 ms
+Response time of Process #6: 45.13555282732722 ms
+Response time of Process #7: 55.53050344850565 ms
+Response time of Process #8: 45.13559016023471 ms
+Average response time: 49.23134920287603
+Slowdown of Process #9: 11.106027018742532
+CPU utilization: 0.4723056
+Disk utilization: 0.9999957
+Cycle length: 10
+
+
+td=6ms tq=1.5ms
+
+Simulation summary:
+Response time of Process #0: 26.709020202775612 ms
+Response time of Process #1: 48.030134486071084 ms
+Response time of Process #2: 26.709020202775612 ms
+Response time of Process #3: 48.03015850144092 ms
+Response time of Process #4: 26.709020202775612 ms
+Response time of Process #5: 48.03018251681076 ms
+Response time of Process #6: 26.70902933210827 ms
+Response time of Process #7: 48.03020653218059 ms
+Response time of Process #8: 26.709042686737785 ms
+Average response time: 33.27370549419997
+Slowdown of Process #9: 14.47140306041232
+CPU utilization: 0.5997487
+Disk utilization: 0.9553082
+Cycle length: -1
+
+
+td=15ms tq=1.5ms
+
+Simulation summary:
+Response time of Process #0: 29.67824221091807 ms
+Response time of Process #1: 47.01943331640618 ms
+Response time of Process #2: 29.67824030105893 ms
+Response time of Process #3: 47.01952283777049 ms
+Response time of Process #4: 29.678255140320054 ms
+Response time of Process #5: 47.01961687841485 ms
+Response time of Process #6: 29.678255140320054 ms
+Response time of Process #7: 47.01968740889813 ms
+Response time of Process #8: 29.678255140320054 ms
+Average response time: 35.49670271592083
+Slowdown of Process #9: 10.900014170018421
+CPU utilization: 0.5996664
+Disk utilization: 0.9999995
+Cycle length: -1
+
+
+td=25ms tq=1.5ms
+
+Simulation summary:
+Response time of Process #0: 34.79167565461238 ms
+Response time of Process #1: 46.068799985257805 ms
+Response time of Process #2: 34.79169305063635 ms
+Response time of Process #3: 46.06890197270826 ms
+Response time of Process #4: 34.79169305063635 ms
+Response time of Process #5: 46.06897107738803 ms
+Response time of Process #6: 34.791727842684274 ms
+Response time of Process #7: 46.06908625185431 ms
+Response time of Process #8: 34.79172639343122 ms
+Average response time: 39.03896574848679
+Slowdown of Process #9: 8.096969304389367
+CPU utilization: 0.5995508
+Disk utilization: 0.9999995
+Cycle length: -1
+
+
+td=6ms tq=3ms
+
+Simulation summary:
+Response time of Process #0: 32.85294658755659 ms
+Response time of Process #1: 32.85294890664424 ms
+Response time of Process #2: 32.85294890664424 ms
+Response time of Process #3: 32.85294890664424 ms
+Response time of Process #4: 32.85294890664424 ms
+Response time of Process #5: 32.85294890664424 ms
+Response time of Process #6: 32.85294890664424 ms
+Response time of Process #7: 32.85294890664424 ms
+Response time of Process #8: 32.85294890664424 ms
+Average response time: 32.852948648966326
+Slowdown of Process #9: 10.15455228578972
+CPU utilization: 0.6920322
+Disk utilization: 0.9623989
+Cycle length: 172
+
+
+td=15ms tq=3ms
+
+Simulation summary:
+Response time of Process #0: 35.227237820128934 ms
+Response time of Process #1: 35.22725351219581 ms
+Response time of Process #2: 35.22725703495991 ms
+Response time of Process #3: 35.22725351219581 ms
+Response time of Process #4: 35.22725703495991 ms
+Response time of Process #5: 35.22728169430862 ms
+Response time of Process #6: 35.22728169430862 ms
+Response time of Process #7: 35.22728169430862 ms
+Response time of Process #8: 35.22728169430862 ms
+Average response time: 35.22726507683142
+Slowdown of Process #9: 7.045488491899097
+CPU utilization: 0.6954838
+Disk utilization: 0.9999995
+Cycle length: 118
+
+
+td=25ms tq=3ms
+
+Simulation summary:
+Response time of Process #0: 39.07136828944284 ms
+Response time of Process #1: 39.071399546768774 ms
+Response time of Process #2: 39.07138838312404 ms
+Response time of Process #3: 39.07138838312404 ms
+Response time of Process #4: 39.07141964069423 ms
+Response time of Process #5: 39.07141964069423 ms
+Response time of Process #6: 39.07141964069423 ms
+Response time of Process #7: 39.07145089826442 ms
+Response time of Process #8: 39.07145089826442 ms
+Average response time: 39.071411702293
+Slowdown of Process #9: 4.97273944237689
+CPU utilization: 0.7001828
+Disk utilization: 0.9999995
+Cycle length: -1
+
+
+td=6ms tq=11ms
+
+Simulation summary:
+Response time of Process #0: 40.5 ms
+Response time of Process #1: 40.5 ms
+Response time of Process #2: 40.5 ms
+Response time of Process #3: 40.5 ms
+Response time of Process #4: 40.5 ms
+Response time of Process #5: 40.5 ms
+Response time of Process #6: 40.5 ms
+Response time of Process #7: 40.5 ms
+Response time of Process #8: 40.5 ms
+Average response time: 40.5
+Slowdown of Process #9: 3.6818349676385114
+CPU utilization: 0.753086
+Disk utilization: 0.8024698
+Cycle length: 10
+
+
+td=15ms tq=11ms
+
+Simulation summary:
+Response time of Process #0: 42.785689836643535 ms
+Response time of Process #1: 42.785689836643535 ms
+Response time of Process #2: 42.78570939585829 ms
+Response time of Process #3: 42.78570939585829 ms
+Response time of Process #4: 42.78570939585829 ms
+Response time of Process #5: 42.78571367448229 ms
+Response time of Process #6: 42.78570939585829 ms
+Response time of Process #7: 42.785807804210165 ms
+Response time of Process #8: 42.785807804210165 ms
+Average response time: 42.78572739322001
+Slowdown of Process #9: 3.2672905013330547
+CPU utilization: 0.7618248
+Disk utilization: 0.9821923
+Cycle length: -1
+
+
+td=25ms tq=11ms
+
+Simulation summary:
+Response time of Process #0: 48.49988359911535 ms
+Response time of Process #1: 48.50000485003686 ms
+Response time of Process #2: 48.5 ms
+Response time of Process #3: 48.5 ms
+Response time of Process #4: 48.49996119932875 ms
+Response time of Process #5: 48.500077601342504 ms
+Response time of Process #6: 48.500077601342504 ms
+Response time of Process #7: 48.500077601342504 ms
+Response time of Process #8: 48.500077601342504 ms
+Average response time: 48.500017783564324
+Slowdown of Process #9: 2.645466252845199
+CPU utilization: 0.7800682
+Disk utilization: 0.9999995
+Cycle length: -1
+
+
