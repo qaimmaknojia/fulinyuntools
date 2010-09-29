@@ -1,7 +1,11 @@
 package edu.rpi.cs.os.queuingpolicy;
 
 import java.util.Arrays;
-
+/**
+ * round robin scheduler implementation
+ * @author Linyun Fu
+ *
+ */
 public class RRScheduler extends Scheduler {
 
 	static {

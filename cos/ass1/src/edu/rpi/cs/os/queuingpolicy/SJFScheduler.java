@@ -3,7 +3,7 @@ package edu.rpi.cs.os.queuingpolicy;
 import java.util.Arrays;
 
 /**
- * preemptive SJF scheduler
+ * preemptive SJF scheduler implementation
  * @author Linyun Fu
  *
  */

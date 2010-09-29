@@ -1,5 +1,10 @@
 package edu.rpi.cs.os.queuingpolicy;
 
+/**
+ * utility functions
+ * @author Linyun Fu
+ *
+ */
 public class Util {
 
 	/**
