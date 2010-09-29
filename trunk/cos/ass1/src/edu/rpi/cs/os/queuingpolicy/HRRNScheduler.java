@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 /**
- * HRRN scheduler
+ * HRRN scheduler implementation
  * @author Linyun Fu
  *
  */
