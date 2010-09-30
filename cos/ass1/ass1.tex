@@ -428,23 +428,24 @@ According to the above simulation results, I plotted the average response time o
 
 \begin{figure}[h]
 \begin{center}
-\scalebox{0.4}{\includegraphics[0,0][950,555]{responseTime.jpg}}
+\includegraphics[width=0.8\textwidth]{responseTime.eps}
 \caption{Impact on response time}
 \end{center}
 \end{figure}
 
 From Figure 1, we can see that the optimal time quantum to shorten response time is somewhere between 1 ms and 1.5 ms. Too short or too long time quantum values would both hurt the responsiveness of the interactive processes (Process 0 through 8 in this paper). The reason is as follows.
 
-For too short time quantum values such as 1 ms, even the shortest process needs to get the CPU twice to finish, which means waiting for each of the other processes getting and yielding CPU.
+\begin{itemize}
+\item For too short time quantum values such as 1 ms, even the shortest process needs to get the CPU twice to finish, which means waiting for each of the other processes getting and yielding CPU.
+\item For too long time quantum values such as 11 ms, although short processes can finish their jobs by getting CPU for just one time, before they can execute for the next time, they need to wait for long processes (Process 9 in this paper) using CPU for full time quanta.
+\end{itemize}
 
 \begin{figure}[h]
 \begin{center}
-\scalebox{0.4}{\includegraphics[0,0][950,555]{slowdown.jpg}}
+\includegraphics[width=0.8\textwidth]{slowdown.eps}
 \caption{Impact on slowdown}
 \end{center}
 \end{figure}
-
-For too long time quantum values such as 11 ms, although short processes can finish their jobs by getting CPU for just one time, before they can execute for the next time, they need to wait for long processes (Process 9 in this paper) using CPU for full time quanta.
 
 From Figure 2, we can see that the slowdown drops consistently as time quantum goes up, no matter how long the disk operation takes. It is because the longer the time quantum, the less times the long processes need to get the CPU to finish. 
 
@@ -452,7 +453,7 @@ On the other hand, faster disk causes larger slowdown, because the faster the di
 
 \begin{figure}[h]
 \begin{center}
-\scalebox{0.4}{\includegraphics[0,0][950,555]{cpuUtil.jpg}}
+\includegraphics[width=0.8\textwidth]{cpuUtil.eps}
 \caption{Impact on CPU utilization}
 \end{center}
 \end{figure}
@@ -461,7 +462,7 @@ From Figure 3, we can see that the CPU utilization increases consistently as tim
 
 \begin{figure}[h]
 \begin{center}
-\scalebox{0.4}{\includegraphics[0,0][950,555]{diskUtil.jpg}}
+\includegraphics[width=0.8\textwidth]{diskUtil.eps}
 \caption{Impact on disk utilization}
 \end{center}
 \end{figure}
