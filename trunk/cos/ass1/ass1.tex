@@ -51,6 +51,8 @@ has only 3 processes in the ready queue. Full data for this system and a sketch 
 program for emulation are given in class.
 
 \part*{Answer}
+I assume the scheduler starts working in the following way: first it puts all processes into the ready queue, then it spends a context switching to decide which process runs first in the CPU.
+
 \section{Preemptive SJF Scheduling}
 No matter what $t_D$ is, the first five processes executed would be 0, 2, 4, 6 and 8.
 
@@ -65,7 +67,7 @@ while Process 8 finishes using CPU at time point
 \end{eqnarray}
 so by the time Process 8 finishes using CPU, Process 0 has already come back to the ready queue, so Process 1, 3, 5, 7 and 9 suffer from starvation. Process 0, 2, 4, 6 and 8 get CPU time in turn forever.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 7.5 ms; the response times of Process 1, 3, 5 and 7 are all infinity; the average response time of all the interactive processes is infinity;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $7.5-6=1.5$ ms; the response times of Process 1, 3, 5 and 7 are all infinity; the average response time of all the interactive processes is infinity;
 \item[b)] The slowdown of Process 9 is infinity;
 \item[c)] The CPU utilization is 100\%.
 \end{enumerate}
@@ -84,7 +86,7 @@ so by the time Process 8 finishes using CPU, Process 0 has already come back to 
 The CPU does a 1 ms context switch and a 1.5 ms process execution in turn forever.
 
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 12.5 ms; the response times of Process 1, 3, 5 and 7 are all infinity; the average response time of all the interactive processes is infinity;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $12.5-6=6.5$ ms; the response times of Process 1, 3, 5 and 7 are all infinity; the average response time of all the interactive processes is infinity;
 \item[b)] The slowdown of Process 9 is infinity;
 \item[c)] The CPU utilization is $1.5/(1+1.5)=60\%$.
 \end{enumerate}
@@ -98,11 +100,11 @@ while Process 8 finishes using CPU at time point
 \begin{eqnarray}
 1.5\times5=7.5\textrm{ ms};
 \end{eqnarray}
-so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 will be executed after Process 8, followed by Process 3 and 5. Process 5 finishes using CPU at time point
+so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 is executed after Process 8, followed by Process 3 and 5. Process 5 finishes using CPU at time point
 \begin{eqnarray}
 7.5+3\times3=16.5\textrm{ ms};
 \end{eqnarray}
-so Process 0 will use CPU again, followed by Process 2, 4, 6 and 8. Process 8 finishes using CPU at time point
+so Process 0 uses CPU again, followed by Process 2, 4, 6 and 8. Process 8 finishes using CPU at time point
 \begin{eqnarray}
 16.5+1.5\times5=24\textrm{ ms};
 \end{eqnarray}
@@ -110,26 +112,24 @@ on the other hand, Process 1 comes back to the ready queue at time point
 \begin{eqnarray}
 7.5+3+16=26.5\textrm{ ms};
 \end{eqnarray}
-so by the time Process 8 finishes using CPU, Process 1 has not yet come back to the ready queue, Process 7 will get the CPU, followed by Process 1 and 3.
+so by the time Process 8 finishes using CPU, Process 1 has not yet come back to the ready queue, Process 7 gets the CPU, followed by Process 1 and 3.
 
 The similar cycle repeats and the executing Process number is 0, 2, 4, 6, 8, 1, 3, 5, 0, 2, 4, 6, 8, 7, 1, 3, 0, 2, 4, 6, 8, 5, 7, 1, 0, 2, 4, 6, 8, 3, 5, 7, 0, 2, 4, 6, 8, 1, 3, 5, $\cdots$
 
 The length of the cycle of execution is 
-
 \begin{eqnarray}
 (1.5\times5+3\times3)\times4=66\textrm{ ms}
 \end{eqnarray}
-
 For every 66 ms, Process 0, 2, 4, 6 and 8 finishes 4 times each, while Process 1, 3, 5 and 7 finishes 3 times each.
 
 Process 9 cannot get any CPU time.
 
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $66/4=16.5$ ms;
-the response times of Process 1, 3, 5 and 7 are all $66/3=22$ ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $66/4-15=1.5$ ms;
+the response times of Process 1, 3, 5 and 7 are all $66/3-15=7$ ms;
 the average response time of all the interactive processes is 
 \begin{eqnarray}
-(16.5\times5\times4+22\times4\times3)/(5\times4+4\times3)=18.6\textrm{ ms};
+(1.5\times5\times4+7\times4\times3)/(5\times4+4\times3)=3.6\textrm{ ms};
 \end{eqnarray}
 \item[b)] The slowdown of Process 9 is infinity;
 \item[c)] The CPU utilization is 100\%.
@@ -144,43 +144,41 @@ while Process 8 finishes using CPU at time point
 \begin{eqnarray}
 (1+1.5)\times5=12.5\textrm{ ms};
 \end{eqnarray}
-so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 will be executed after Process 8, followed by Process 3. Process 3 finishes using CPU at time point
+so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 is executed after Process 8 and finish using CPU at time point 
 \begin{eqnarray}
-12.5+(1+3)\times2=20.5\textrm{ ms};
+12.5+1+3=16.5\textrm{ ms},
 \end{eqnarray}
-so Process 0 will use CPU again, followed by Process 2, 4, 6 and 8. Process 8 finishes using CPU at time point
-\begin{eqnarray}
-20.5+(1+1.5)\times5=33\textrm{ ms};
-\end{eqnarray}
-Process 0 has not yet come back to the ready queue by this time, Process 5 will get the CPU, followed by Process 7, followed by Process 0, 2, 4, 6 and 8 again.
+followed by a context switch of 1 ms, i.e., the context switch ends at time point 17.5 ms. It is just the time Process 0 comes back to the ready queue and interrupts the about-to-run Process 3. Another context switch is performed to let Process 0 get the CPU, so there are two context switches back to back here. 
 
-Note that we assume when two processes have the same remaining CPU time, the process that has stayed longer in the ready queue get the CPU, so although Process 1 comes back to the ready queue at time point
-\begin{eqnarray}
-12.5+1+3+15=31.5\textrm{ ms};
-\end{eqnarray}
-it still queues after Process 5 and 7, and will get the CPU right after Process 8.
+Then Process 0 uses CPU again, followed by Process 2, 4, 6, 8 and 3, followed by two context switches, etc.
 
-The executing Process number series is 0, 2, 4, 6, 8, 1, 3, 0, 2, 4, 6, 8, 5, 7, 0, 2, 4, 6, 8, 1, 3, 0, 2, 4, 6, 8, 5, 7, $\cdots$
+%Note that I assume when two processes have the same remaining CPU time, the process that has stayed longer in the ready queue get the CPU, so although Process 1 comes back to the ready queue at time point
+%\begin{eqnarray}
+%12.5+1+3+15=31.5\textrm{ ms};
+%\end{eqnarray}
+%it still queues after Process 5 and 7, and will get the CPU right after Process 8.
+
+The executing Process number series is 0, 2, 4, 6, 8, 1, 0, 2, 4, 6, 8, 3, 0, 2, 4, 6, 8, 5, 0, 2, 4, 6, 8, 7, 0, 2, 4, 6, 8, 1, $\cdots$
 
 The length of the cycle of execution is 
 \begin{eqnarray}
-(1+1.5)\times10+(1+3)\times4=41\textrm{ ms}
+(1+1.5)\times20+(1+3)\times4+1\times4=70\textrm{ ms}
 \end{eqnarray}
-For every 41 ms, Process 0, 2, 4, 6 and 8 finishes 2 times each, while Process 1, 3, 5 and 7 finishes 1 time each.
+For every 50 ms, Process 0, 2, 4, 6 and 8 finishes 4 times each, while Process 1, 3, 5 and 7 finishes 1 time each.
 
 Process 9 cannot get any CPU time.
 
-The CPU does 14 ms context switching during each cycle.
+The CPU does 28 ms context switching during each cycle.
 
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $41/2=20.5$ ms; the response times of Process 1, 3, 5 and 7 are all 41 ms; the average response time of all the interactive processes is 
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $70/4-15=2.5$ ms; the response times of Process 1, 3, 5 and 7 are all $70-15=55$ ms; the average response time of all the interactive processes is 
 
 \begin{eqnarray}
-(20.5\times5\times2+41\times4\times1)/(5\times2+4\times1)=26.4\textrm{ ms};
+(2.5\times5\times4+55\times4\times1)/(5\times4+4\times1)=11.3\textrm{ ms};
 \end{eqnarray}
 
 \item[b)] The slowdown of Process 9 is infinity;
-\item[c)] The CPU utilization is $(41-14)/41=65.85\%$.
+\item[c)] The CPU utilization is $(70-28)/70=60\%$.
 \end{enumerate}
 
 \subsection{$t_D=25$ ms, $T_s = 0$ ms}
@@ -192,30 +190,26 @@ while Process 8 finishes using CPU at time point
 \begin{eqnarray}
 1.5\times5=7.5\textrm{ ms};
 \end{eqnarray}
-so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 will be executed after Process 8, followed by Process 3, 5, 7 and 9. Process 9 finishes using CPU at time point
+so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 is executed after Process 8, followed by Process 3, 5, 7 and 9. When Process 9 has used CPU for 7 ms, at time point
 \begin{eqnarray}
-7.5+3\times4+55=74.5\textrm{ ms};
+7.5+3\times4+7=26.5\textrm{ ms};
 \end{eqnarray}
-so Process 0 will use CPU again, followed by Process 2, 4, 6, 8, 1, 3, 5 and 7. Process 7 finishes using CPU at time point
-\begin{eqnarray}
-74.5+1.5\times5+3\times4=94\textrm{ ms};
-\end{eqnarray}
-Process 9 has not yet come back to the ready queue by this time, CPU will remain idle for 5.5 ms and start executing Process 9.
+Process 0 uses CPU again, followed by Process 2, 4, 6, 8, 1, 3, 5, 7 and 9. Again Process 9 can only use CPU for 7 ms before Process 0 comes back to get the CPU. The micro-cycle repeated for 7 times. At the 8th cycle, Process 9 uses CPU for $55-7*7=6$ ms, and finishes using CPU before Process 0 comes back from IO operation, so the CPU idles for 1 ms before Process 0 uses CPU again.
 
-The executing order is Process 0, 2, 4, 6, 8, 1, 3, 5, 7, idle for 5.5 ms, Process 9, 0, 2, 4, 6, 8, 1, 3, 5, 7, idle for 5.5 ms, Process 9, 0, 2, 4, 6, 8, $\cdots$
+The executing order is Process (0, 2, 4, 6, 8, 1, 3, 5, 7, 9) repeat 7 times, 0, 2, 4, 6, 8, 1, 3, 5, 7, idle for 1 ms, 0, 2, 4, 6, 8, $\cdots$
 
 The length of the cycle of execution is 
 \begin{eqnarray}
-1.5\times5+3\times4+5.5+55=80\textrm{ ms}
+(1.5\times5+3\times4+7)\times8=212\textrm{ ms}
 \end{eqnarray}
-For every 80 ms, each of the 10 processes finishes 1 time.
+For every 212 ms, each of the Process 0 through 8 finishes 8 times.
 
-The CPU is idle for 5.5 ms during each cycle.
+The CPU is idle for 1 ms during each cycle.
 
 \begin{enumerate}
-\item[a)] The response times of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 80 ms; the average response time of all the interactive processes is 80 ms;
-\item[b)] The slowdown of Process 9 is $80/55=1.45$;
-\item[c)] The CPU utilization is $(80-5.5)/80=93.13\%$.
+\item[a)] The response times of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all $212/8-25=1.5$ ms; the average response time of all the interactive processes is 1.5 ms;
+\item[b)] The slowdown of Process 9 is $212/55=3.85$;
+\item[c)] The CPU utilization is $(212-1)/212=99.53\%$.
 \end{enumerate}
 
 \subsection{$t_D=25$ ms, $T_s = 1$ ms}
@@ -227,48 +221,35 @@ while Process 8 finishes using CPU at time point
 \begin{eqnarray}
 (1+1.5)\times5=12.5\textrm{ ms};
 \end{eqnarray}
-so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 will be executed after Process 8, followed by Process 3, 5 and 7. Process 7 finishes using CPU at time point
+so by the time Process 8 finishes using CPU, Process 0 has not yet come back to the ready queue, Process 1 is executed after Process 8, followed by Process 3, 5 and 7. When Process 7 has used CPU for 2 ms, at time point
 \begin{eqnarray}
-12.5+(1+3)\times4=28.5\textrm{ ms};
+12.5+(1+3)\times3+1+2=27.5\textrm{ ms},
 \end{eqnarray}
-so Process 0 will use CPU again, followed by Process 2, 4, 6 and 8. Process 8 finishes using CPU at time point
-\begin{eqnarray}
-28.5+(1+1.5)\times5=41\textrm{ ms};
-\end{eqnarray}
-while Process 1 will come back to the ready queue at time point
-\begin{eqnarray}
-12.5+1+3+25=41.5\textrm{ ms}
-\end{eqnarray}
-so Process 1 has not yet come back to the ready queue by the time Process 8 finishes using CPU, Process 9 will get the CPU, followed by Process 0, 2, 4, 6, 8, 1, 3, 5 and 7. Since
-\begin{eqnarray}
-(1+1.5)\times5+(1+3)\times4=28.5>25
-\end{eqnarray}
-Process 9 will get CPU again following Process 7.
+Process 0 comes back and interrupts Process 7. While after a context switch, it turns out that Process 7 has less remaining time ($3-2=1$ ms) than Process 0 (1.5 ms) so Process 7 uses CPU again for 1 ms, followed by Process 0, 2, 4, 6, 8, 1, 3 and 5. Then Process 7 uses CPU for 2 ms, context switch for 1 ms, Process 7 uses CPU for 1 ms, etc.
 
-The executing Process number series is 0, 2, 4, 6, 8, 1, 3, 5, 7, 0, 2, 4, 6, 8, 9, 0, 2, 4, 6, 8, 1, 3, 5, 7, 0, 2, 4, 6, 8, 9, 0, 2, 4, 6, 8, $\cdots$
+The executing Process number series is 0, 2, 4, 6, 8, 1, 3, 5, 7, 7, 0, 2, 4, 6, 8, 1, 3, 5, 7, 7, $\cdots$
+
+Process 9 never gets the CPU.
 
 The length of the cycle of execution is 
 \begin{eqnarray}
-(1+1.5)\times10+(1+3)\times4+1+55=97\textrm{ ms}
+(1+1.5)\times5+(1+3)\times3+1+2+1+1=29.5\textrm{ ms}
 \end{eqnarray}
-For every 97 ms, Process 0, 2, 4, 6 and 8 finishes 2 times each, while Process 1, 3, 5 and 7 finishes 1 time each.
+For every 29.5 ms, Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 finishes 1 time each.
 
-The CPU does 15 ms context switching during each cycle.
+The CPU does 10 ms context switching during each cycle.
 
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all $97/2=48.5$ ms; the response times of Process 1, 3, 5 and 7 are all 97 ms; the average response time of all the interactive processes is 
-\begin{eqnarray}
-(48.5\times5\times2+97\times4\times1)/(5\times2+4\times1)=62.4\textrm{ ms};
-\end{eqnarray}
-\item[b)] The slowdown of Process 9 is $97/55=1.76$;
-\item[c)] The CPU utilization is $(97-15)/97=84.54\%$.
+\item[a)] The response times of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all $29.5-25=4.5$ ms; the average response time of all the interactive processes is 4.5 ms;
+\item[b)] The slowdown of Process 9 is infinity;
+\item[c)] The CPU utilization is $(29.5-10)/29.5=66.10\%$.
 \end{enumerate}
 
 \section{HRRN Scheduling}
 \subsection{$t_D=6$ ms, $T_s = 0$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 20.0 ms; the response times of Process 1, 3, 5 and 7 are all 27.8 ms; the average response time of all the interactive processes is 22.9 ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 14.0 ms; the response times of Process 1, 3, 5 and 7 are all 21.8 ms; the average response time of all the interactive processes is 16.9 ms;
 \item[b)] The slowdown of Process 9 is 5.17;
 \item[c)] The CPU utilization is 100\%.
 \end{enumerate}
@@ -276,7 +257,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$t_D=6$ ms, $T_s = 1$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 25.2 ms; the response times of Process 1, 3, 5 and 7 are all 40.3 ms; the average response time of all the interactive processes is 30.2 ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 19.2 ms; the response times of Process 1, 3, 5 and 7 are all 34.3 ms; the average response time of all the interactive processes is 24.2 ms;
 \item[b)] The slowdown of Process 9 is 9.53;
 \item[c)] The CPU utilization is 70.04\%.
 \end{enumerate}
@@ -284,7 +265,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$t_D=15$ ms, $T_s = 0$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 33.8 ms; the response times of Process 1, 3, 5 and 7 are all 50.8 ms; the average response time of all the interactive processes is 39.7 ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 18.8 ms; the response times of Process 1, 3, 5 and 7 are all 35.8 ms; the average response time of all the interactive processes is 24.7 ms;
 \item[b)] The slowdown of Process 9 is 1.85;
 \item[c)] The CPU utilization is 100\%.
 \end{enumerate}
@@ -292,7 +273,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$t_D=15$ ms, $T_s = 1$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 31.5 ms; the response times of Process 1, 3, 5 and 7 are all 42.0 ms; the average response time of all the interactive processes is 35.4 ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 16.5 ms; the response times of Process 1, 3, 5 and 7 are all 27.0 ms; the average response time of all the interactive processes is 20.4 ms;
 \item[b)] The slowdown of Process 9 is 4.58;
 \item[c)] The CPU utilization is 74.21\%.
 \end{enumerate}
@@ -300,7 +281,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$t_D=25$ ms, $T_s = 0$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 80.0 ms; the average response time of all the interactive processes is 80.0 ms;
+\item[a)] The response times of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 55.0 ms; the average response time of all the interactive processes is 55.0 ms;
 \item[b)] The slowdown of Process 9 is 1.45;
 \item[c)] The CPU utilization is 93.13\%.
 \end{enumerate}
@@ -308,7 +289,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$t_D=25$ ms, $T_s = 1$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 48.5 ms; the response times of Process 1, 3, 5 and 7 are all 97.0 ms; the average response time of all the interactive processes is 62.4 ms;
+\item[a)] The response times of Process 0, 2, 4, 6 and 8 are all 23.5 ms; the response times of Process 1, 3, 5 and 7 are all 72.0 ms; the average response time of all the interactive processes is 37.4 ms;
 \item[b)] The slowdown of Process 9 is 1.76;
 \item[c)] The CPU utilization is 84.54\%.
 \end{enumerate}
@@ -318,7 +299,7 @@ To simplify discussion, we fix $T_s = 1$ hereafter.
 \subsection{$T_Q$ = 1 ms, $t_D=6$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 37.5 ms; the response times of Process 1, 3, 5 and 7 are all 56.2 ms; the average response time of all the interactive processes is 44.0 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 31.5 ms; the response times of Process 1, 3, 5 and 7 are all 50.2 ms; the average response time of all the interactive processes is 38.0 ms;
 \item[b)] The slowdown of Process 9 is 18.75;
 \item[c)] The CPU utilization is 46.67\%;
 \item[d)] The disk utilization is 87.83\%.
@@ -327,7 +308,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 1 ms, $t_D=15$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 41.4 ms; the response times of Process 1, 3, 5 and 7 are all 55.2 ms; the average response time of all the interactive processes is 46.6 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 26.4 ms; the response times of Process 1, 3, 5 and 7 are all 40.2 ms; the average response time of all the interactive processes is 31.6 ms;
 \item[b)] The slowdown of Process 9 is 14.05;
 \item[c)] The CPU utilization is 46.98\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -336,7 +317,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 1 ms, $t_D=25$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 45.1 ms; the response times of Process 1, 3, 5 and 7 are all 55.5 ms; the average response time of all the interactive processes is 49.2 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 20.1 ms; the response times of Process 1, 3, 5 and 7 are all 30.5 ms; the average response time of all the interactive processes is 24.2 ms;
 \item[b)] The slowdown of Process 9 is 11.11;
 \item[c)] The CPU utilization is 47.23\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -345,7 +326,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 1.5 ms, $t_D=6$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 26.7 ms; the response times of Process 1, 3, 5 and 7 are all 48.0 ms; the average response time of all the interactive processes is 33.3 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 20.7 ms; the response times of Process 1, 3, 5 and 7 are all 42.0 ms; the average response time of all the interactive processes is 27.3 ms;
 \item[b)] The slowdown of Process 9 is 14.47;
 \item[c)] The CPU utilization is 59.97\%;
 \item[d)] The disk utilization is 95.53\%.
@@ -354,7 +335,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 1.5 ms, $t_D=15$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 29.7 ms; the response times of Process 1, 3, 5 and 7 are all 47.0 ms; the average response time of all the interactive processes is 35.5 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 14.7 ms; the response times of Process 1, 3, 5 and 7 are all 32.0 ms; the average response time of all the interactive processes is 20.5 ms;
 \item[b)] The slowdown of Process 9 is 10.90;
 \item[c)] The CPU utilization is 59.97\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -363,7 +344,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 1.5 ms, $t_D=25$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 34.8 ms; the response times of Process 1, 3, 5 and 7 are all 46.1 ms; the average response time of all the interactive processes is 39.0 ms;
+\item[a)] The response time of Process 0, 2, 4, 6 and 8 are all 9.8 ms; the response times of Process 1, 3, 5 and 7 are all 21.1 ms; the average response time of all the interactive processes is 14.0 ms;
 \item[b)] The slowdown of Process 9 is 8.10;
 \item[c)] The CPU utilization is 59.96\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -372,7 +353,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 3 ms, $t_D=6$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 32.9 ms; the average response time of all the interactive processes is 32.9 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 26.9 ms; the average response time of all the interactive processes is 26.9 ms;
 \item[b)] The slowdown of Process 9 is 10.15;
 \item[c)] The CPU utilization is 69.20\%;
 \item[d)] The disk utilization is 96.24\%.
@@ -381,7 +362,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 3 ms, $t_D=15$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 35.2 ms; the average response time of all the interactive processes is 35.2 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 20.2 ms; the average response time of all the interactive processes is 20.2 ms;
 \item[b)] The slowdown of Process 9 is 7.05;
 \item[c)] The CPU utilization is 69.55\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -390,7 +371,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 3 ms, $t_D=25$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 39.1 ms; the average response time of all the interactive processes is 39.1 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 14.1 ms; the average response time of all the interactive processes is 14.1 ms;
 \item[b)] The slowdown of Process 9 is 4.97;
 \item[c)] The CPU utilization is 70.02\%;
 \item[d)] The disk utilization is 100.00\%.
@@ -399,7 +380,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 11 ms, $t_D=6$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 40.5 ms; the average response time of all the interactive processes is 40.5 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 34.5 ms; the average response time of all the interactive processes is 34.5 ms;
 \item[b)] The slowdown of Process 9 is 3.68;
 \item[c)] The CPU utilization is 75.31\%;
 \item[d)] The disk utilization is 80.25\%.
@@ -408,7 +389,7 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 11 ms, $t_D=15$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 42.8 ms; the average response time of all the interactive processes is 42.8 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 27.8 ms; the average response time of all the interactive processes is 27.8 ms;
 \item[b)] The slowdown of Process 9 is 3.27;
 \item[c)] The CPU utilization is 76.18\%;
 \item[d)] The disk utilization is 98.22\%.
@@ -417,14 +398,14 @@ I used the emulation program (see attached) to emulate for 5,000,000 ms and got 
 \subsection{$T_Q$ = 11 ms, $t_D=25$ ms}
 I used the emulation program (see attached) to emulate for 5,000,000 ms and got the following results.
 \begin{enumerate}
-\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 48.5 ms; the average response time of all the interactive processes is 48.5 ms;
+\item[a)] The response time of Process 0, 1, 2, 3, 4, 5, 6, 7 and 8 are all 23.5 ms; the average response time of all the interactive processes is 23.5 ms;
 \item[b)] The slowdown of Process 9 is 2.65;
 \item[c)] The CPU utilization is 78.01\%;
 \item[d)] The disk utilization is 100.00\%.
 \end{enumerate}
 
 \subsection{Discussion}
-According to the above simulation results, I plotted the average response time of all the interactive processes, the slowdown of Process 9, the CPU utilization and the disk utilization as IO overhead and time quantum changed in Figure 1 through 4.
+According to the above simulation results, I plotted the average response time of all the interactive processes, the slowdown of Process 9, the CPU utilization and the disk utilization as IO overhead and time quantum changed in Figure 1 through 4. Note that it is the $T_Q/t_B$ and $t_D/t_B$ ratios that matters, all the discussions are about the relative values of time quantum and IO cost with regard to the average CPU burst time of the processes.
 
 \begin{figure}[h]
 \begin{center}
