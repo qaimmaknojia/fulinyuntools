@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 /**
  * preemptive SJF scheduler implementation
+ * one problem not solved yet: when a process finishes IO and comes back to the ready queue, 
+ * it does not (but it should) interrupt the scheduler and trigger a context switch
  * @author Linyun Fu
  *
  */

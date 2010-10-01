@@ -153,10 +153,10 @@ public class Process {
 	}
 
 	/**
-	 * Round time R is defined only for interactive processes and it is a time
-	 * from the end of the one service on the disk to the end of the next
-	 * service on the disk. Hence, the round time includes waiting time in the
-	 * ready queue, the execution on the CPU and the service time on the disk.
+	 * The response time for interactive processes can be defined as the time
+	 * from entering the ready queue of the CPU till time of the request for the
+	 * disk, so, the time when a process is at the disk is not included in the
+	 * response time.
 	 * 
 	 * @return the avg. response time of the process during the simulation if
 	 *         it's not infinity, otherwise return -1
@@ -165,7 +165,7 @@ public class Process {
 		if (ioStopTimes.size() < 2) return -1;
 		int first = ioStopTimes.first();
 		int last = ioStopTimes.last();
-		return (last-first+0.0)/(ioStopTimes.size()-1)/2;
+		return ((last-first+0.0)/(ioStopTimes.size()-1)-tio)/2;
 	}
 
 	/**

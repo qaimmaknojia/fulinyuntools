@@ -188,7 +188,8 @@ public abstract class Scheduler {
 			totalResponseTime += processes[i].getTotalResponseTime();
 			totalFinishingTimes += processes[i].getFinishTimes();
 		}
-		System.out.println("Average response time: " + totalResponseTime/totalFinishingTimes);
+		System.out.println("Average response time: " + 
+				(totalResponseTime/totalFinishingTimes-processes[0].tio/2));
 		double slowdown = processes[9].getSlowdown();
 		System.out.println("Slowdown of Process #9: " + 
 				(slowdown < 0 ? "infinity" : slowdown));
@@ -277,33 +278,13 @@ public abstract class Scheduler {
 	 * @param args
 	 */
 	public static void interactiveMain(String[] args) {
+		if (args.length < 3) {
+			printHelpInfo();
+			System.exit(0);
+		}
+		
 		for (String s : args) if (s.toLowerCase().startsWith("--help")) {
-			System.out.println(
-				"*****************************************\n" +
-				"*                                       *\n" +
-				"*       Scheduler Simulator v0.01       *\n" +
-				"*                                       *\n" +
-				"*           Author: Linyun Fu           *\n" +
-				"*                                       *\n" +
-				"*****************************************\n" +
-				"\n" +
-				"Usage: java edu.rpi.cs.os.queuingpolicy.Scheduler [options] " +
-				"[Td] [Ts] [Tsim]\n" +
-				"\n" +
-				"options:\n" +
-				"-v: verbose mode, print every detail of the simulation process\n" +
-				"-sjf: use preemptive SJF scheduler, which is the default scheduler used\n" +
-				"-hrrn: use HRRN scheduler\n" +
-				"-rr[Tq]: use RR scheduler with Tq as the time quantum, " +
-				"Tq is measured in time units, 1 time unit = 0.5 ms\n" +
-				"\n" +
-				"--help: show this help document\n" +
-				"\n" +
-				"Td: disk time for each process, measured in time units, 1 time unit = 0.5 ms\n" +
-				"Ts: context switching time, measured in time units, 1 time unit = 0.5 ms\n" +
-				"Tsim: simulation time, measured in time units, 1 time unit = 0.5 ms\n" +
-				"\n"
-			);
+			printHelpInfo();
 			System.exit(0);
 		}
 
@@ -372,10 +353,47 @@ public abstract class Scheduler {
 		simulate(sch, 55*2, 3, 6, td, ts, tq, simTime, verbose);
 	}
 	
+	private static void printHelpInfo() {
+		System.out.println(
+			  "*****************************************\n"
+			+ "*                                       *\n"
+			+ "*       Scheduler Simulator v0.01       *\n"
+			+ "*                                       *\n"
+			+ "*           Author: Linyun Fu           *\n"
+			+ "*                                       *\n"
+			+ "*****************************************\n"
+			+ "\n"
+			+ "Usage: java edu.rpi.cs.os.queuingpolicy.Scheduler [options] "
+			+ "[Td] [Ts] [Tsim]\n"
+			+ "\n"
+			+ "options:\n"
+			+ "-v: verbose mode, print every detail of the simulation process\n"
+			+ "-sjf: use preemptive SJF scheduler, which is the default scheduler used\n"
+			+ "-hrrn: use HRRN scheduler\n"
+			+ "-rr[Tq]: use RR scheduler with Tq as the time quantum, "
+			+ "Tq is measured in time units, 1 time unit = 0.5 ms\n"
+			+ "\n"
+			+ "--help: show this help document\n"
+			+ "\n"
+			+ "Td: disk time for each process, measured in time units, 1 time unit = 0.5 ms\n"
+			+ "Ts: context switching time, measured in time units, 1 time unit = 0.5 ms\n"
+			+ "Tsim: simulation time, measured in time units, 1 time unit = 0.5 ms\n"
+			+ "\n"
+			+ "Samples:\n"
+			+ "run preemptive SJF scheduler, Td=15ms Ts=1ms simulate 48500ms:\n"
+			+ "java edu.rpi.cs.os.queuingpolicy.Scheduler -sjf 30 2 97000\n\n"
+			+ "run HRRN scheduler, Td=25ms Ts=0ms simulate 50000ms:\n"
+			+ "java edu.rpi.cs.os.queuingpolicy.Scheduler -hrrn 50 0 100000\n\n"
+			+ "run Round Robin scheduler, Tq=1.5ms Td=6ms Ts=1ms simulate 50000ms:\n"
+			+ "java edu.rpi.cs.os.queuingpolicy.Scheduler -rr3 12 2 100000\n\n"
+		);
+
+	}
+
 	/**
-	 * get the results for plotting
+	 * get the round robin results for plotting
 	 */
-	public static void batchMain() {
+	public static void rrMain() {
 		System.out.println("td=6ms tq=1ms");
 		simulate(new RRScheduler(), 110, 3, 6, 12, 2, 2, 10000000, false);
 		System.out.println("td=15ms tq=1ms");
@@ -431,18 +449,18 @@ public abstract class Scheduler {
 		System.out.println("td=6ms ts=1ms");
 		simulate(new SJFScheduler(), 110, 3, 6, 12, 2, 2, 2500, false);
 		System.out.println("td=15ms ts=0ms");
-		simulate(new SJFScheduler(), 110, 3, 6, 30, 0, 2, 86*20, false);
+		simulate(new SJFScheduler(), 110, 3, 6, 30, 0, 2, 66*20, false);
 		System.out.println("td=15ms ts=1ms");
-		simulate(new SJFScheduler(), 110, 3, 6, 30, 2, 3, 41*20, false);
+		simulate(new SJFScheduler(), 110, 3, 6, 30, 2, 3, 70*20, false);
 		System.out.println("td=25ms ts=0ms");
-		simulate(new SJFScheduler(), 110, 3, 6, 50, 0, 3, 80*20, false);
+		simulate(new SJFScheduler(), 110, 3, 6, 50, 0, 3, 212*20, false);
 		System.out.println("td=25ms ts=1ms");
-		simulate(new SJFScheduler(), 110, 3, 6, 50, 2, 3, 97*20, false);
+		simulate(new SJFScheduler(), 110, 3, 6, 50, 2, 3, 59*20, false);
 		
 	}
 	
 	public static void main(String[] args) {
-//		batchMain();
+//		rrMain();
 //		hrrnMain();
 //		sjfMain();
 		interactiveMain(args);
