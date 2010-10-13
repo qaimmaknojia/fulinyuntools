@@ -1,0 +1,181 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Linyun Fu\\RIN: 660929569\\Email: fula@cs.rpi.edu}
+\title{Assignment 2: Paging Policies}
+\begin{document}
+\maketitle
+\part*{Question}
+Consider the following high-level code segment:
+
+\vspace{1ex}
+
+{\tt
+\hspace{4em}for (i=0;i$<$n;i++) \{
+
+\hspace{8em}B[i]=i*n;
+
+\hspace{8em}A[i]=B[i]+m;
+
+\hspace{8em}C[i]=A[i]*B[i];
+
+\hspace{4em}\}
+
+\hspace{4em}for (i=0;i$<$n;i++) \{
+
+\hspace{8em}for (j=i;j$<$n;j++) \{
+
+\hspace{12em}B[j]+=A[i]*m;
+
+\hspace{12em}C[j]-=A[j]+B[i];
+
+\hspace{8em}\}
+
+\hspace{8em}B[i]+=C[n-1]+A[i];
+
+\hspace{4em}\}
+}
+
+\begin{enumerate}
+\item Using registers (denoted as $\tt R_i$), create a machine language translation of this
+program loaded into the virtual address space (with the page size equal to 1024 words).
+Assume that this program starts in page 0 at the internal page address 994 (each page internal
+addresses start at 0 and end at 1023). The constants (like 0, 1 etc.) are placed in page 2 (at the
+addresses starting at 0), the static data (for example, {\tt n}) in page 3, and each of the arrays {\tt A}, {\tt B}, {\tt C} is placed on its own page (page 4, 5 and 6 respectively).
+
+After creating the machine code, write an expression that represents the string of page
+references generated during execution of this code segment (use the parameters {\tt n} and {\tt i} and
+notation (str)$^{n}$ to denote $n$ repetitions of the string str. In this string, represent n-th page by
+a single decimal digit n$-$1).
+
+\item Assume that n=11. Write a program to analyze the run-time behavior of this
+code segment under the working set memory policy. In particular, your program should print a
+table with rows for different values of $\Delta$ (the window size) ranging from 1 to 64, and columns
+providing:
+\begin{align}
+\nonumber & P(\Delta), \textit{ the total number of page faults}\\
+\nonumber & W(\Delta), \textit{ the average working set size, and}\\
+\nonumber & F(\Delta)=\frac{P(\Delta)}{|\omega|}, \textit{ the average page fault rate.}
+\end{align}
+Plot the following curves: X-axis $\Delta$, Y-axis:
+\begin{align}
+\nonumber & P(\Delta),\\
+\nonumber & W(\Delta), \textrm{ and}\\
+\nonumber & \frac{1}{F(\Delta)},
+\end{align}
+for $\Delta$ ranging from 1 to 64.
+Hint: A good solution should use the stack property of the working set policy:
+\begin{itemize}
+\item If a page fault occurs at $\Delta$, then it also occurs at $\Delta-1$.
+\item If the working set is $W$ for $\Delta$ then it is at least $W$ for $\Delta + 1$.
+\end{itemize}
+
+\item From the last plot ($\Delta$ vs. $1/F(\Delta)$ ), explain the cause of major (at least the
+largest four) knees in terms of a reference string structure (a knee of a piecewise linear curve is
+point at which the slope of the curve is larger to the immediate left of this point than to the
+immediate right of it).
+
+\item In a strict implementation of the working set policy (referred to here as a strict
+policy), a page that drops out of the window is removed from the memory immediately.
+Compute the average and maximum number of frames assigned to the program in such a case.
+
+\item In practice, there is a delay between marking the page as out of the working
+set and the time the memory system replaces it with a new page. Assume that this delay is
+short for clean pages, so they cause the page fault immediately when referenced after dropping
+from the working set. For dirty pages, the delay is longer, so they will cause a page fault only
+when referenced after a pages fault caused by reference to some other page. Hence, until a
+page fault caused by some other page happens, any reference to a dirty page after it is out the
+working set would not cause a page fault. Let's call the working set policy with such a delay a
+practical working set policy. Compute the page fault rates $F(\Delta)$ with the practical working set
+policy for $\Delta = 1, \cdots, 64$ and plot it together with $F(\Delta)$ for the strict implementation of the
+working set policy. Explain the difference. Compute the average and maximum number of
+frames assigned to the program in both cases and compare them to each other.
+
+\item[$\bullet$] {\bf Bonus} (5 points): For each $\Delta$ and integer $n$ such that $n =$ maximum number of
+frames assigned to the program under practical working set policy and under strict
+implementation of the working set policy, find the fault rate under $n$ frames and OPT policy
+for the string from (a). Plot these rates together with corresponding $F(\Delta)$ (that is maximum
+$\Delta$ for which the equality $n =$ maximum number of frames assigned to the program holds) both
+for the strict implementation of the working set policy and practical working set policy and
+discuss the differences.
+\end{enumerate}
+
+\part*{Answer}
+\section{Code Translation and Page References}
+The machine code of the program is as follows.
+
+\vspace{2ex}
+
+\begin{tabular}{r|r|l|l}
+Page & Internal address & Content & Page reference(s)\\
+\hline
+0 & 0 & \tt \#\#\# & \\
+0 & $\vdots$ & $\vdots$ & \\
+0 & 994 & \tt ($\tt R_0$)$\leftarrow$ ZERO & 02\\%%i
+0 & 995 & \tt ($\tt R_1$)$\leftarrow$ n & 03\\%%n
+0 & 996 & \tt ($\tt R_2$)$\leftarrow$ m & 03\\%%m
+0 & 997 & \tt ($\tt R_3$)$\leftarrow$ ONE & 02\\%%1
+0 & 998 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
+0 & 999 & \tt branch\_greaterequal*+8 & 0\\%for (i=0;i<n;i++) {
+0 & 1000 & \tt B[$\tt R_0$]$\tt \leftarrow R_0*n$ & 035\\%B[i]=i*n;
+0 & 1001 & \tt ($\tt R_4$)$\leftarrow$ B[$\tt R_0$] & 05\\%%B[i]
+0 & 1002 & \tt A[$\tt R_0$]$\tt \leftarrow R_4+R_2$ & 04\\%A[i]=B[i]+m;
+0 & 1003 & \tt ($\tt R_5$)$\leftarrow$ A[$\tt R_0$] & 04\\%%A[i]
+0 & 1004 & \tt C[$\tt R_0$]$\tt \leftarrow R_5*R_4$ & 06\\%C[i]=A[i]*B[i];
+0 & 1005 & \tt ($\tt R_0$)$\tt \leftarrow R_0+R_3$ & 0\\%%i++
+0 & 1006 & \tt branch*-8 & 0\\%}
+0 & 1007 & \tt ($\tt R_0$)$\leftarrow$ ZERO & 02\\%%i
+0 & 1008 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
+0 & 1009 & \tt branch\_greaterequal*+23 & 0\\%for (i=0;i<n;i++) {
+0 & 1010 & \tt ($\tt R_4$)$\tt \leftarrow R_0$ & 0\\%%j
+\end{tabular}
+
+\begin{tabular}{r|r|l|l}
+Page & Internal address & Content & Page reference(s)\\
+\hline
+0 & 1011 & \tt compare $\tt R_4$,$\tt R_1$ & 0\\
+0 & 1012 & \tt branch\_greaterequal*+12 & 0\\%for (j=i;j<n;j++) {
+0 & 1013 & $\tt R_5 \leftarrow B[R_4]$ & 05\\%%B[j]
+0 & 1014 & $\tt R_6 \leftarrow A[R_0]$ & 04\\%%A[i]
+0 & 1015 & $\tt R_6 \leftarrow R_6*R_2$ & 0\\%%A[i]*m
+0 & 1016 & $\tt B[R_4]\leftarrow R_5+R_6$ & 05\\%B[j]+=A[i]*m;
+0 & 1017 & $\tt R_5 \leftarrow C[R_4]$ & 06\\%%C[j]
+0 & 1018 & $\tt R_6 \leftarrow A[R_4]$ & 04\\%%A[j]
+0 & 1019 & $\tt R_7 \leftarrow B[R_0]$ & 05\\%%B[i]
+0 & 1020 & $\tt R_7 \leftarrow R_6+R_7$ & 0\\%%A[j]+B[i]
+0 & 1021 & $\tt C[R_4] \leftarrow R_5-R_7$ & 06\\%C[j]-=A[j]+B[i];
+0 & 1022 & $\tt R_4 \leftarrow R_4+R_3$ & 0\\%%j++
+0 & 1023 & \tt branch*-12 & 0\\%}
+1 & 0 & $\tt R_4 \leftarrow B[R_0]$ & 15\\%%B[i]
+1 & 1 & $\tt R_5 \leftarrow R_1-R_3$ & 1\\%%n-1
+1 & 2 & $\tt R_5 \leftarrow C[R_5]$ & 16\\%%C[n-1]
+1 & 3 & $\tt R_6 \leftarrow A[R_0]$ & 14\\%%A[i]
+1 & 4 & $\tt R_6 \leftarrow R_5+R_6$ & 1\\%%C[n-1]+A[i]
+1 & 5 & $\tt B[R_0] \leftarrow R_4+R_6$ & 15\\%B[i]+=C[n-1]+A[i];
+1 & 6 & $\tt R_0 \leftarrow R_0+R_3$ & 1\\%%i++
+1 & 7 & \tt branch*-23 & 1\\%}
+1 & $\vdots$ & $\vdots$ & \\
+2 & 0 & \tt ZERO & \\
+2 & 1 & \tt ONE & \\
+2 & $\vdots$ & $\vdots$ & \\
+3 & 0 & \tt n & \\
+3 & 1 & \tt m & \\
+3 & $\vdots$ & $\vdots$ & \\
+4 & & \tt A & \\
+5 & & \tt B & \\
+6 & & \tt C & \\
+\end{tabular}
+
+\vspace{2ex}
+
+From the above translation, we know the string of page references during execution of this code segment is 
+
+\vspace{2ex}
+
+\hangindent2em 02030302 (000350504040600)$\tt ^n$ 0002 (000 (00050400506040500600)$\tt ^n$ 151161411511) (000 (00050400506040500600)$\tt ^{n-1}$ 151161411511) $\cdots$ (000 (00050400506040500600)$^2$ 151161411511) (000 00050400506040500600 151161411511) 00
+
+\end{document}
+
