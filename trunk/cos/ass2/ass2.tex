@@ -113,57 +113,66 @@ The machine code of the program is as follows.
 Page & Internal address & Content & Page reference(s)\\
 \hline
 0 & 0 & \tt \#\#\# & \\
-0 & $\vdots$ & $\vdots$ & \\
+0 & $\cdots$ & $\cdots$ & \\
 0 & 994 & \tt ($\tt R_0$)$\leftarrow$ ZERO & 02\\%%i
 0 & 995 & \tt ($\tt R_1$)$\leftarrow$ n & 03\\%%n
-0 & 996 & \tt ($\tt R_2$)$\leftarrow$ m & 03\\%%m
-0 & 997 & \tt ($\tt R_3$)$\leftarrow$ ONE & 02\\%%1
-0 & 998 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
-0 & 999 & \tt branch\_greaterequal*+8 & 0\\%for (i=0;i<n;i++) {
-0 & 1000 & \tt B[$\tt R_0$]$\tt \leftarrow R_0*n$ & 035\\%B[i]=i*n;
-0 & 1001 & \tt ($\tt R_4$)$\leftarrow$ B[$\tt R_0$] & 05\\%%B[i]
-0 & 1002 & \tt A[$\tt R_0$]$\tt \leftarrow R_4+R_2$ & 04\\%A[i]=B[i]+m;
-0 & 1003 & \tt ($\tt R_5$)$\leftarrow$ A[$\tt R_0$] & 04\\%%A[i]
-0 & 1004 & \tt C[$\tt R_0$]$\tt \leftarrow R_5*R_4$ & 06\\%C[i]=A[i]*B[i];
-0 & 1005 & \tt ($\tt R_0$)$\tt \leftarrow R_0+R_3$ & 0\\%%i++
-0 & 1006 & \tt branch*-8 & 0\\%}
-0 & 1007 & \tt ($\tt R_0$)$\leftarrow$ ZERO & 02\\%%i
-0 & 1008 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
-0 & 1009 & \tt branch\_greaterequal*+23 & 0\\%for (i=0;i<n;i++) {
-0 & 1010 & \tt ($\tt R_4$)$\tt \leftarrow R_0$ & 0\\%%j
+%0 & 996 & \tt ($\tt R_2$)$\leftarrow$ m & 03\\%%m
+0 & 996 & \tt ($\tt R_2$)$\leftarrow$ ONE & 02\\%%1
+0 & 997 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
+0 & 998 & \tt branch\_greaterequal*+10 & 0\\%for (i=0;i<n;i++) {
+0 & 999 & \tt ($\tt R_3$)$\leftarrow$ n & 03\\%%n
+0 & 1000 & \tt B[$\tt R_0$]$\tt \leftarrow R_0*R_3$ & 05\\%B[i]=i*n;
+0 & 1001 & \tt ($\tt R_3$)$\leftarrow$ B[$\tt R_0$] & 05\\%%B[i]
+0 & 1002 & \tt ($\tt R_4$)$\leftarrow$ m & 03\\%%m
+0 & 1003 & \tt A[$\tt R_0$]$\tt \leftarrow R_3+R_4$ & 04\\%A[i]=B[i]+m;
+0 & 1004 & \tt ($\tt R_4$)$\leftarrow$ A[$\tt R_0$] & 04\\%%A[i]
+0 & 1005 & \tt C[$\tt R_0$]$\tt \leftarrow R_4*R_3$ & 06\\%C[i]=A[i]*B[i];
+0 & 1006 & \tt ($\tt R_0$)$\tt \leftarrow R_0+R_2$ & 0\\%%i++
+0 & 1007 & \tt branch*-10 & 0\\%}
+0 & 1008 & \tt ($\tt R_0$)$\leftarrow$ ZERO & 02\\%%i
+0 & 1009 & \tt ($\tt R_1$)$\leftarrow$ n & 03\\%%n
+0 & 1010 & \tt ($\tt R_2$)$\leftarrow$ ONE & 02\\%%1
+0 & 1011 & \tt compare $\tt R_0$,$\tt R_1$ & 0\\
+0 & 1012 & \tt branch\_greaterequal*+28 & 0\\%for (i=0;i<n;i++) {
+0 & 1013 & \tt ($\tt R_3$)$\tt \leftarrow R_0$ & 0\\%%j
+0 & 1014 & \tt ($\tt R_4$)$\leftarrow$ n & 03\\%%n
+0 & 1015 & \tt ($\tt R_5$)$\leftarrow$ ONE & 02\\%%1
+0 & 1016 & \tt compare $\tt R_3$,$\tt R_4$ & 0\\
+0 & 1017 & \tt branch\_greaterequal*+13 & 0\\%for (j=i;j<n;j++) {
+0 & 1018 & \tt ($\tt R_6$)$\tt \leftarrow B[R_3]$ & 05\\%%B[j]
+0 & 1019 & \tt ($\tt R_7$)$\tt \leftarrow A[R_0]$ & 04\\%%A[i]
+0 & 1020 & \tt ($\tt R_8$)$\tt \leftarrow m$ & 03\\%%m
+0 & 1021 & \tt ($\tt R_7$)$\tt \leftarrow R_7*R_8$ & 0\\%%A[i]*m
+0 & 1022 & $\tt B[R_3]\leftarrow R_6+R_7$ & 05\\%B[j]+=A[i]*m;
+0 & 1023 & \tt ($\tt R_6$)$\tt \leftarrow C[R_3]$ & 06\\%%C[j]
+1 & 0 & \tt ($\tt R_7$)$\tt \leftarrow A[R_3]$ & 14\\%%A[j]
+1 & 1 & \tt ($\tt R_8$)$\tt \leftarrow B[R_0]$ & 15\\%%B[i]
+1 & 2 & \tt ($\tt R_7$)$\tt \leftarrow R_7+R_8$ & 1\\%%A[j]+B[i]
+1 & 3 & $\tt C[R_3] \leftarrow R_6-R_7$ & 16\\%C[j]-=A[j]+B[i];
 \end{tabular}
 
 \begin{tabular}{r|r|l|l}
 Page & Internal address & Content & Page reference(s)\\
 \hline
-0 & 1011 & \tt compare $\tt R_4$,$\tt R_1$ & 0\\
-0 & 1012 & \tt branch\_greaterequal*+12 & 0\\%for (j=i;j<n;j++) {
-0 & 1013 & $\tt R_5 \leftarrow B[R_4]$ & 05\\%%B[j]
-0 & 1014 & $\tt R_6 \leftarrow A[R_0]$ & 04\\%%A[i]
-0 & 1015 & $\tt R_6 \leftarrow R_6*R_2$ & 0\\%%A[i]*m
-0 & 1016 & $\tt B[R_4]\leftarrow R_5+R_6$ & 05\\%B[j]+=A[i]*m;
-0 & 1017 & $\tt R_5 \leftarrow C[R_4]$ & 06\\%%C[j]
-0 & 1018 & $\tt R_6 \leftarrow A[R_4]$ & 04\\%%A[j]
-0 & 1019 & $\tt R_7 \leftarrow B[R_0]$ & 05\\%%B[i]
-0 & 1020 & $\tt R_7 \leftarrow R_6+R_7$ & 0\\%%A[j]+B[i]
-0 & 1021 & $\tt C[R_4] \leftarrow R_5-R_7$ & 06\\%C[j]-=A[j]+B[i];
-0 & 1022 & $\tt R_4 \leftarrow R_4+R_3$ & 0\\%%j++
-0 & 1023 & \tt branch*-12 & 0\\%}
-1 & 0 & $\tt R_4 \leftarrow B[R_0]$ & 15\\%%B[i]
-1 & 1 & $\tt R_5 \leftarrow R_1-R_3$ & 1\\%%n-1
-1 & 2 & $\tt R_5 \leftarrow C[R_5]$ & 16\\%%C[n-1]
-1 & 3 & $\tt R_6 \leftarrow A[R_0]$ & 14\\%%A[i]
-1 & 4 & $\tt R_6 \leftarrow R_5+R_6$ & 1\\%%C[n-1]+A[i]
-1 & 5 & $\tt B[R_0] \leftarrow R_4+R_6$ & 15\\%B[i]+=C[n-1]+A[i];
-1 & 6 & $\tt R_0 \leftarrow R_0+R_3$ & 1\\%%i++
-1 & 7 & \tt branch*-23 & 1\\%}
-1 & $\vdots$ & $\vdots$ & \\
+1 & 4 & \tt ($\tt R_3$)$\tt \leftarrow R_3+R_5$ & 1\\%%j++
+1 & 5 & \tt branch*-13 & 1\\%}
+1 & 6 & \tt ($\tt R_3$)$\tt \leftarrow B[R_0]$ & 15\\%%B[i]
+1 & 7 & \tt ($\tt R_4$)$\tt \leftarrow n$ & 13\\%%n
+1 & 8 & \tt ($\tt R_5$)$\tt \leftarrow ONE$ & 12\\%%1
+1 & 9 & \tt ($\tt R_4$)$\tt \leftarrow R_4-R_5$ & 1\\%%n-1
+1 & 10 & \tt ($\tt R_4$)$\tt \leftarrow C[R_4]$ & 16\\%%C[n-1]
+1 & 11 & \tt ($\tt R_5$)$\tt \leftarrow A[R_0]$ & 14\\%%A[i]
+1 & 12 & \tt ($\tt R_4$)$\tt \leftarrow R_4+R_5$ & 1\\%%C[n-1]+A[i]
+1 & 13 & $\tt B[R_0] \leftarrow R_3+R_4$ & 15\\%B[i]+=C[n-1]+A[i];
+1 & 14 & \tt ($\tt R_0$)$\tt \leftarrow R_0+R_2$ & 1\\%%i++
+1 & 15 & \tt branch*-28 & 1\\%}
+1 & $\cdots$ & $\cdots$ & \\
 2 & 0 & \tt ZERO & \\
 2 & 1 & \tt ONE & \\
-2 & $\vdots$ & $\vdots$ & \\
+2 & $\cdots$ & $\cdots$ & \\
 3 & 0 & \tt n & \\
 3 & 1 & \tt m & \\
-3 & $\vdots$ & $\vdots$ & \\
+3 & $\cdots$ & $\cdots$ & \\
 4 & & \tt A & \\
 5 & & \tt B & \\
 6 & & \tt C & \\
@@ -171,11 +180,13 @@ Page & Internal address & Content & Page reference(s)\\
 
 \vspace{2ex}
 
-From the above translation, we know the string of page references during execution of this code segment is 
+From the above translation, we know the string of page references during execution of this code segment is as follows. (To make the page reference history clear, I group closely related references together.)
 
 \vspace{2ex}
 
-\hangindent2em 02030302 (000350504040600)$\tt ^n$ 0002 (000 (00050400506040500600)$\tt ^n$ 151161411511) (000 (00050400506040500600)$\tt ^{n-1}$ 151161411511) $\cdots$ (000 (00050400506040500600)$^2$ 151161411511) (000 00050400506040500600 151161411511) 00
+\hangindent2em \,020302 \,(000305050304040600)$\tt ^n$ \,00 \,020302 \,(0000302 \,(0005040300506141511611)$\tt ^n$ \,00 \,1513121161411511) \,(0000302 \,(0005040300506141511611)$\tt ^{n-1}$ \,00 \,1513121161411511) $\cdots$ (0000302 \,(0005040300506141511611)$^2$ \,00 \,1513121161411511) \,(0000302 \,(0005040300506141511611) \,00 \,1513121161411511) \,00
+
+\section{Working Set Memory Policy}
 
 \end{document}
 
