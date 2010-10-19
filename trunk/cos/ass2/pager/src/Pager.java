@@ -454,9 +454,10 @@ public class Pager {
 //		generateTable3tex();
 //		generateTable3csv();
 		
-//		String whole = buildWholeString();
+		String whole = buildWholeString();
 //		generateTable4tex(whole);
-//		generateTable4csv(whole);
+		generateTable4csv(whole);
+//		getOptP(0, 7, whole);
 	}
 
 	/**
@@ -901,7 +902,7 @@ public class Pager {
 	 * @return
 	 */
 	public static int getOptP(int delta, int n, String ref) {
-		if (n == 7) return 7;
+//		if (n == 7) return 7;
 		HashSet<Character> ws = new HashSet<Character>();
 		int ret = 0;
 		for (int i = 0; i < ref.length(); i++) ret += getOptP(ws, n, ref, i);
@@ -918,8 +919,15 @@ public class Pager {
 	 * @return
 	 */
 	private static int getOptP(HashSet<Character> workingSet, int n, String ref, int current) {
+//		if (current >= 282) {
+//			System.out.println("start debug");
+//		}
 		int ret = 1;
-		if (workingSet.contains(ref.charAt(current))) ret = 0;
+		int size = workingSet.size();
+		char c = ref.charAt(current);
+		boolean b = workingSet.contains(c);
+		if (b) ret = 0;
+//		else System.out.println(current);
 		updateOpt(workingSet, n, ref, current);
 		return ret;
 	}
@@ -932,7 +940,12 @@ public class Pager {
 	 * @param current
 	 */
 	private static void updateOpt(HashSet<Character> workingSet, int n, String ref, int current) {
-		if (workingSet.size() < n) workingSet.add(ref.charAt(current));
+		int size = workingSet.size();
+		if (size < n || workingSet.contains(ref.charAt(current))) {
+			char c = ref.charAt(current);
+			workingSet.add(c);
+			size = workingSet.size();
+		}
 		else {
 			char tokick = '#';
 			int distance = 0;
