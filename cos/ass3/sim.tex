@@ -1,0 +1,525 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{longtable}
+\author{Linyun Fu\\RIN: 660929569\\Email: fula@cs.rpi.edu}
+\title{Simulation Project}
+\begin{document}
+\maketitle
+\part*{Question}
+The computer system to be simulated is described as follows.
+
+There are two kinds of processes in the computer system.
+\begin{enumerate}
+\item Interactive processes created at $n$ terminals, repeatedly making rounds between the
+terminal and the memory system.
+\item A parallel computation consisting of four parallel processes executing constantly in
+the memory system (i.e., its processing time is so large that it will not leave the
+memory system during the simulation).
+\end{enumerate}
+
+The service time distributions for interactive processes are:
+\begin{itemize}
+\item[\bf{Terminal}] (thinking time): $\overline{t_t} = 5sec$, exponential distribution.
+\item[\bf{CPU}] : $\overline{t_{CPU}} = 100ms$, exponential distribution.
+\item[\bf{PAGE}] Inter paging interval: exponential with the following fault probability function:
+\begin{equation*}
+f(m) = 2^{-p} \textrm{ where } p = m/175 + 17
+\end{equation*}
+and $m$ denotes memory allocated to a process measured in MBytes and $f(m)$ denotes
+probability that the given instruction will cause a page fault with memory allocation
+$m$.
+\item[\bf{IO}] Inter IO interval time $\overline{t_{IIO}} = 15ms$, exponential distribution.
+\end{itemize}
+Initially, at the beginning of simulation, each terminal creates a single interactive processes
+that then stays (when its user thinks what to do next) for a random time distributed as
+described above. After the currently executed interactive process returns to its terminal,
+this terminal creates another single interactive process and releases it for execution after
+random thinking time distributed as described above.
+
+The parallel computation creates four parallel processes at the beginning of the simulation
+which immediately attempt to execute. The distributions of service times for each parallel
+process are:
+\begin{itemize}
+\item[\bf{Inter-synchronization}] (time between subsequent barrier synchronization points): $\overline{t_{bs}} =
+0.2sec$, exponential distribution. After reaching a synchronization point, a parallel
+process is suspended until all other parallel processes reach this point. Unsuspended
+parallel processes enter the CPU queue.
+\item[\bf{PAGE}] Inter paging interval defined as for interactive processes.
+\item[\bf{IO}] Inter IO interval time $\overline{t_{PIO}} = 15ms$, exponential distribution.
+\end{itemize}
+The processing system is a quad (four CPU's) with a shared memory of 8 Gbytes
+organized into pages of 4 Kbytes each. There is also a cache from which 95\% of all
+memory references are loaded within one instruction cycle. Cache miss cost is 81 machine
+cycles (that is the time in which the needed data will be loaded from main memory to
+cache and CPU). The operating system occupies 512 Mbytes (128 Kpages). An instruction
+cycle is $10^{-9}sec$. We assume that each instruction takes so long to execute if its data are
+in the cache, otherwise the execution time of an instruction is equal to the cache miss.
+
+There is a disk used for paging and IO operations with the service time $t_{diskser} = 5ms$,
+constant.
+
+Each process (interactive or parallel) is assigned an equal amount of memory during
+execution that is defined by the formula $\frac{Mem-OS}{MPL}$. Context switching time $t_s = 0.5ms$.
+
+A process is dispatched from the CPU queue when one of the processors becomes free.
+Except for the exceptions mentioned below, all queues are organized as First-In-First-Out
+(FIFO). An interactive process leaving CPU because of time quantum expiration, releases
+all its memory frames and leaves the memory system (a parallel process in this situation
+just returns to the ready queue).
+
+The time quantum for all processes, $t_q$, is 150 ms.
+
+Select (as described at the end of this document) one of the following two policies for
+scheduling processes:
+\begin{enumerate}
+\item Parallel processes of a parallel computation execute only if there is a processor that
+would become idle because there are no interactive processes in the ready queue.
+\item All processes execute on all CPUs in FIFO order from the ready queue.
+\end{enumerate}
+When submitting the simulator by the first deadline, you need to provide the code
+that is capable to simulate the system described above and the results of running this
+system (unaltered). These results should include at the minimum a table with: (i) the
+response time, (ii) the CPU utilization by users' processes, (iii) the disk utilization, and
+(iv) the average waiting time in eligible queue for $n = 90$ and $MPL = 20$. If your results
+are different from what they should be, you will receive this information, you should debug
+your system before proceeding to analyses.
+
+For the final submission, simulating 10,000,000 ms of execution time, evaluate:
+\begin{itemize}
+\item $U_{CPU,ps}$ -- CPU utilization by users' processes,
+\item $U_{CPU,wd}$ -- percentage of total execution time a processor is idling while there are
+processes in disk queue,
+\item $U_{CPU,wi}$ -- percentage of time a processor idling while queues inside the memory
+system (so excluding the eligible queue) are empty (but some process(es) may be
+serviced by disk(s) and/or other processors)
+\item $\overline{t_e}$ -- average waiting time in eligible queue
+\end{itemize}
+$U_{CPU,wd}$ and $U_{CPU,wi}$ should be averaged over all processors.
+Show in graphic form the above values as a function of n and MPL:
+\begin{enumerate}
+\item $n$ -- number of terminals active, consider $n$ = 30, 60, 90.
+\item $MPL$ -- multiprogramming level, consider $MPL$ = 10, 15, 20.
+\end{enumerate}
+Discuss the obtained plots.
+
+Based on the simulation, select such $MPL$ from the three listed above that the minimum
+cost additions to this computer system will bring its average response time to less
+than 1s with $n$ = 90 users. The additions should be selected from the following list:
+\begin{itemize}
+\item[a] -- add a number of CPUs at \$200 each?
+\item[b] -- add cache, each addition that cuts the current cache miss rate by half costs \$100,
+decide how many such additions you want (to clarify, two additions cut the miss
+rate to 1.25\%). Note that adding cache changes $\overline{t_{CPU}}$, $\overline{t_{bs}}$, $\overline{t_{IIO}}$ and $\overline{t_{PIO}}$, not just paging.
+\item[c] -- increase memory using 1GByte chips, and decide how many chips to use? (cost: \$100
+per 1GByte chip), or
+\item[d] -- increase the number of disks at \$100 per unit (assume that if there are $k$ disks, each
+takes $1/k$ load of disk requests and maintains its own queue).
+\end{itemize}
+Explain your choices. Show by simulation that the extended computer system achieves
+at most 1s response time.
+
+{\bf Bonus: 5 pts.} Assume that you split interactive processes into two categories: (i)
+urgent, that are processes with CPU burst less than 0.075s, and (ii) non-urgent, those
+with the CPU burst time equal to or greater than 0.075s. Select the time quantum $t_{qopt}$
+to optimize the response time of the urgent and only urgent processes for $n$=90 users
+using the extended computer system of your solution to the project (but you can change
+to any value the MPL to optimize response time of the urgent processes). Simulate the
+system with such settings and discuss the values of the response time for urgent processes
+and the total response time for all interactive processes for the following values of time
+quantum: $t_{qopt}/2$, $t_{qopt}$, $2t_{qopt}$ for the extended system.
+
+\part*{Answer}
+\section{Simulator Implementation}
+I select the second policy for
+scheduling processes, i.e., all processes execute on all CPUs in FIFO order from the ready queue.
+
+By running the simulator (see attached),I got the following results.
+\begin{itemize}
+\item[(i)] The average response time is 17.05 sec;
+\item[(ii)] The CPU utilization by users' processes of each CPU is:
+\begin{itemize}
+\item CPU\#1: 34.26\%
+\item CPU\#2:  6.22\%
+\item CPU\#3:  0.17\%
+\item CPU\#4:  0.00\%
+\end{itemize}
+so the average CPU utilization is 10.16\%, which is quite different from the official answer. I have not yet figured out what's wrong with my program;
+\item[(iii)] The disk utilization is:
+\begin{itemize}
+\item Disk\#1: 100.00\%
+\end{itemize}
+since there is only 1 disk currently, the average disk utilization is 100\%;
+\item[(iv)] The average waiting time in eligible queue is 13.14 sec.
+\end{itemize}
+
+\section{Analysis}
+Since $\overline{t_{CPU}} = 100ms$ when cache miss rate is 0.05, cache miss cost is 81 machine cycles, and an instruction cycle is $10^{-9}sec$, the average number of machine cycles needed for an instruction is
+\begin{align}
+(81-1)\times 0.05+1=5
+\end{align}
+and the average number of instructions for a CPU burst is
+\begin{align}
+\overline{t_{CPU}}=\frac{100\times 10^{-3}}{5\times 10^{-9}}=2\times 10^7
+\end{align}
+Similarly, I measure $\overline{t_{bs}}$, $\overline{t_{IIO}}$ and $\overline{t_{PIO}}$ in terms of number of instructions as follows.
+\begin{align}
+\overline{t_{bs}}=\frac{0.2}{5\times 10^{-9}}=4\times 10^7\\
+\overline{t_{IIO}}=\frac{15\times 10^{-3}}{5\times 10^{-9}}=3\times 10^6\\
+\overline{t_{PIO}}=\frac{15\times 10^{-3}}{5\times 10^{-9}}=3\times 10^6
+\end{align}
+The reason to measure $\overline{t_{CPU}}$, $\overline{t_{bs}}$, $\overline{t_{IIO}}$ and $\overline{t_{PIO}}$ in terms of number of instructions is that the cache miss rate $m$ is no longer a constant and becomes a variable, so I calculate the above time lengths from the changing $m$ value, instead of using constant values.
+
+Since the number of CPUs and disks, the size of the memory, the number of interactive processes and MPL are all variables now. I changed my simulation program accordingly.
+
+\subsection{Intuitive Approach}
+First of all, I tried to find the MPL that yields the shortest response time. I tried MPL values of 10, 15 and 20 and fixed the cache miss rate, number of CPUs, size of memory (MEM, measured in MBytes), number of disks and number of interactive processes ($n$) to the original value. Results show that the average response time drops with the decreasing value of MPL, as shown in Table 1.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. MPL and Number of Disks}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 20 & 17.63\\
+0.05 & 4 & 8192 & 1 & 90 & 15 & 11.42\\
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+0.05 & 4 & 8192 & 2 & 90 & 10 & 0.97\\
+\end{tabular}
+\end{center}
+\end{table}
+In Table 1, response time (resp.) is measured in seconds.
+
+So intuitively, I fix MPL = 10. This yields the average CPU utilization of 21.51\%, and disk utilization 100\%, so the most likely way to reduce the average response time is to purchase additional disks. In fact, one additional disk makes the response time drop to 0.94 seconds (less than 1 second, appended in Table 1). This is the most economical way to improve the system -- it only costs \$100.
+
+\subsection{Checking with Exhaustive Enumeration}
+To validate the intuition presented in the last section, I enumerated all the ``cache-CPU-memory-disk-n-MPL'' combinations within a certain scope and recorded the response time and cost of each combination. The simulation results indicate the following laws.
+\begin{itemize}
+\item Set MPL = 10 is better than 15 or 20. Table 2 shows this trend when the other variables are all set to their original values.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. MPL}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 20 & 17.63\\
+0.05 & 4 & 8192 & 1 & 90 & 15 & 11.42\\
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+\end{tabular}
+\end{center}
+\end{table}
+\item Investing on cache can either improve or hurt the response time. Table~3 shows the effect of decreasing cache miss rate.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. Cache Miss Rate}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+0.025 & 4 & 8192 & 1 & 90 & 10 & 5.38\\
+0.0125 & 4 & 8192 & 1 & 90 & 10 & 5.53\\
+\end{tabular}
+\end{center}
+\end{table}
+\item Investing on CPU can only cause very limited change on response time. Table 4 shows this effect.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. Number of CPUs}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+0.05 & 5 & 8192 & 1 & 90 & 10 & 5.51\\
+0.05 & 6 & 8192 & 1 & 90 & 10 & 5.43\\
+\end{tabular}
+\end{center}
+\end{table}
+\item Investing on memory can cause some improvement on response time, but not great compared with investing on disks. Table 5 shows this effect.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. Memory Size}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+0.05 & 4 & 9216 & 1 & 90 & 10 & 3.69\\
+0.05 & 4 & 10240 & 1 & 90 & 10 & 2.45\\
+\end{tabular}
+\end{center}
+\end{table}
+\item Investing on disks cause significant improvement on response time. Table 6 shows this effect.
+\begin{table}
+\begin{center}
+\caption{Response Time vs. Number of Disks}
+\vspace{0.5ex}
+\begin{tabular}{r|r|r|r|r|r|r}
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp.\\
+\hline
+0.05 & 4 & 8192 & 1 & 90 & 10 & 5.47\\
+0.05 & 4 & 8192 & 2 & 90 & 10 & 0.94\\
+0.05 & 4 & 8192 & 3 & 90 & 10 & 0.44\\
+\end{tabular}
+\end{center}
+\end{table}
+\end{itemize}
+The full results are listed in Table 7.
+\begin{center}
+\begin{longtable}{r|r|r|r|r|r|r|r}
+\caption{Finding the Optimal Investment Combination with Exhaustive Enumeration}\\
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp. & \$ \\ \hline \endfirsthead
+\caption{(continued)}\\
+cache miss & \#CPU & MEM & \#disk & $n$ & MPL & resp. & \$ \\ \hline \endhead
+0.050000 & 4 & 8192 & 1 & 90 & 20 & 17.63 & 0 \\
+0.050000 & 4 & 8192 & 1 & 90 & 15 & 11.42 & 0 \\
+0.050000 & 4 & 8192 & 1 & 90 & 10 & 5.47 & 0 \\
+0.025000 & 4 & 8192 & 1 & 90 & 20 & 17.57 & 100 \\
+0.025000 & 4 & 8192 & 1 & 90 & 15 & 11.37 & 100 \\
+0.025000 & 4 & 8192 & 1 & 90 & 10 & 5.38 & 100 \\
+0.012500 & 4 & 8192 & 1 & 90 & 20 & 17.51 & 200 \\
+0.012500 & 4 & 8192 & 1 & 90 & 15 & 11.29 & 200 \\
+0.012500 & 4 & 8192 & 1 & 90 & 10 & 5.53 & 200 \\
+0.050000 & 5 & 8192 & 1 & 90 & 20 & 17.53 & 200 \\
+0.050000 & 5 & 8192 & 1 & 90 & 15 & 11.40 & 200 \\
+0.050000 & 5 & 8192 & 1 & 90 & 10 & 5.51 & 200 \\
+0.025000 & 5 & 8192 & 1 & 90 & 20 & 17.44 & 300 \\
+0.025000 & 5 & 8192 & 1 & 90 & 15 & 11.38 & 300 \\
+0.025000 & 5 & 8192 & 1 & 90 & 10 & 5.45 & 300 \\
+0.012500 & 5 & 8192 & 1 & 90 & 20 & 17.47 & 400 \\
+0.012500 & 5 & 8192 & 1 & 90 & 15 & 11.34 & 400 \\
+0.012500 & 5 & 8192 & 1 & 90 & 10 & 5.45 & 400 \\
+0.050000 & 6 & 8192 & 1 & 90 & 20 & 17.65 & 400 \\
+0.050000 & 6 & 8192 & 1 & 90 & 15 & 11.40 & 400 \\
+0.050000 & 6 & 8192 & 1 & 90 & 10 & 5.43 & 400 \\
+0.025000 & 6 & 8192 & 1 & 90 & 20 & 17.30 & 500 \\
+0.025000 & 6 & 8192 & 1 & 90 & 15 & 11.31 & 500 \\
+0.025000 & 6 & 8192 & 1 & 90 & 10 & 5.43 & 500 \\
+0.012500 & 6 & 8192 & 1 & 90 & 20 & 17.45 & 600 \\
+0.012500 & 6 & 8192 & 1 & 90 & 15 & 11.36 & 600 \\
+0.012500 & 6 & 8192 & 1 & 90 & 10 & 5.35 & 600 \\
+0.050000 & 4 & 9216 & 1 & 90 & 20 & 14.10 & 100 \\
+0.050000 & 4 & 9216 & 1 & 90 & 15 & 8.37 & 100 \\
+0.050000 & 4 & 9216 & 1 & 90 & 10 & 3.69 & 100 \\
+0.025000 & 4 & 9216 & 1 & 90 & 20 & 14.11 & 200 \\
+0.025000 & 4 & 9216 & 1 & 90 & 15 & 8.42 & 200 \\
+0.025000 & 4 & 9216 & 1 & 90 & 10 & 3.67 & 200 \\
+0.012500 & 4 & 9216 & 1 & 90 & 20 & 13.99 & 300 \\
+0.012500 & 4 & 9216 & 1 & 90 & 15 & 8.49 & 300 \\
+0.012500 & 4 & 9216 & 1 & 90 & 10 & 3.60 & 300 \\
+0.050000 & 5 & 9216 & 1 & 90 & 20 & 13.98 & 300 \\
+0.050000 & 5 & 9216 & 1 & 90 & 15 & 8.51 & 300 \\
+0.050000 & 5 & 9216 & 1 & 90 & 10 & 3.63 & 300 \\
+0.025000 & 5 & 9216 & 1 & 90 & 20 & 14.11 & 400 \\
+0.025000 & 5 & 9216 & 1 & 90 & 15 & 8.51 & 400 \\
+0.025000 & 5 & 9216 & 1 & 90 & 10 & 3.60 & 400 \\
+0.012500 & 5 & 9216 & 1 & 90 & 20 & 14.03 & 500 \\
+0.012500 & 5 & 9216 & 1 & 90 & 15 & 8.46 & 500 \\
+0.012500 & 5 & 9216 & 1 & 90 & 10 & 3.62 & 500 \\
+0.050000 & 6 & 9216 & 1 & 90 & 20 & 14.10 & 500 \\
+0.050000 & 6 & 9216 & 1 & 90 & 15 & 8.41 & 500 \\
+0.050000 & 6 & 9216 & 1 & 90 & 10 & 3.63 & 500 \\
+0.025000 & 6 & 9216 & 1 & 90 & 20 & 14.16 & 600 \\
+0.025000 & 6 & 9216 & 1 & 90 & 15 & 8.56 & 600 \\
+0.025000 & 6 & 9216 & 1 & 90 & 10 & 3.62 & 600 \\
+0.012500 & 6 & 9216 & 1 & 90 & 20 & 14.01 & 700 \\
+0.012500 & 6 & 9216 & 1 & 90 & 15 & 8.51 & 700 \\
+0.012500 & 6 & 9216 & 1 & 90 & 10 & 3.67 & 700 \\
+0.050000 & 4 & 10240 & 1 & 90 & 20 & 11.20 & 200 \\
+0.050000 & 4 & 10240 & 1 & 90 & 15 & 6.24 & 200 \\
+0.050000 & 4 & 10240 & 1 & 90 & 10 & 2.45 & 200 \\
+0.025000 & 4 & 10240 & 1 & 90 & 20 & 11.29 & 300 \\
+0.025000 & 4 & 10240 & 1 & 90 & 15 & 6.30 & 300 \\
+0.025000 & 4 & 10240 & 1 & 90 & 10 & 2.44 & 300 \\
+0.012500 & 4 & 10240 & 1 & 90 & 20 & 11.20 & 400 \\
+0.012500 & 4 & 10240 & 1 & 90 & 15 & 6.28 & 400 \\
+0.012500 & 4 & 10240 & 1 & 90 & 10 & 2.44 & 400 \\
+0.050000 & 5 & 10240 & 1 & 90 & 20 & 11.32 & 400 \\
+0.050000 & 5 & 10240 & 1 & 90 & 15 & 6.36 & 400 \\
+0.050000 & 5 & 10240 & 1 & 90 & 10 & 2.42 & 400 \\
+0.025000 & 5 & 10240 & 1 & 90 & 20 & 11.25 & 500 \\
+0.025000 & 5 & 10240 & 1 & 90 & 15 & 6.30 & 500 \\
+0.025000 & 5 & 10240 & 1 & 90 & 10 & 2.51 & 500 \\
+0.012500 & 5 & 10240 & 1 & 90 & 20 & 11.44 & 600 \\
+0.012500 & 5 & 10240 & 1 & 90 & 15 & 6.32 & 600 \\
+0.012500 & 5 & 10240 & 1 & 90 & 10 & 2.45 & 600 \\
+0.050000 & 6 & 10240 & 1 & 90 & 20 & 11.24 & 600 \\
+0.050000 & 6 & 10240 & 1 & 90 & 15 & 6.25 & 600 \\
+0.050000 & 6 & 10240 & 1 & 90 & 10 & 2.46 & 600 \\
+0.025000 & 6 & 10240 & 1 & 90 & 20 & 11.33 & 700 \\
+0.025000 & 6 & 10240 & 1 & 90 & 15 & 6.27 & 700 \\
+0.025000 & 6 & 10240 & 1 & 90 & 10 & 2.46 & 700 \\
+0.012500 & 6 & 10240 & 1 & 90 & 20 & 11.23 & 800 \\
+0.012500 & 6 & 10240 & 1 & 90 & 15 & 6.24 & 800 \\
+0.012500 & 6 & 10240 & 1 & 90 & 10 & 2.44 & 800 \\
+0.050000 & 4 & 8192 & 2 & 90 & 20 & 6.56 & 100 \\
+0.050000 & 4 & 8192 & 2 & 90 & 15 & 3.64 & 100 \\
+0.050000 & 4 & 8192 & 2 & 90 & 10 & 0.94 & 100 \\
+0.025000 & 4 & 8192 & 2 & 90 & 20 & 6.59 & 200 \\
+0.025000 & 4 & 8192 & 2 & 90 & 15 & 3.67 & 200 \\
+0.025000 & 4 & 8192 & 2 & 90 & 10 & 0.91 & 200 \\
+0.012500 & 4 & 8192 & 2 & 90 & 20 & 6.65 & 300 \\
+0.012500 & 4 & 8192 & 2 & 90 & 15 & 3.66 & 300 \\
+0.012500 & 4 & 8192 & 2 & 90 & 10 & 0.92 & 300 \\
+0.050000 & 5 & 8192 & 2 & 90 & 20 & 6.56 & 300 \\
+0.050000 & 5 & 8192 & 2 & 90 & 15 & 3.61 & 300 \\
+0.050000 & 5 & 8192 & 2 & 90 & 10 & 0.94 & 300 \\
+0.025000 & 5 & 8192 & 2 & 90 & 20 & 6.58 & 400 \\
+0.025000 & 5 & 8192 & 2 & 90 & 15 & 3.60 & 400 \\
+0.025000 & 5 & 8192 & 2 & 90 & 10 & 0.88 & 400 \\
+0.012500 & 5 & 8192 & 2 & 90 & 20 & 6.61 & 500 \\
+0.012500 & 5 & 8192 & 2 & 90 & 15 & 3.61 & 500 \\
+0.012500 & 5 & 8192 & 2 & 90 & 10 & 0.88 & 500 \\
+0.050000 & 6 & 8192 & 2 & 90 & 20 & 6.60 & 500 \\
+0.050000 & 6 & 8192 & 2 & 90 & 15 & 3.63 & 500 \\
+0.050000 & 6 & 8192 & 2 & 90 & 10 & 0.94 & 500 \\
+0.025000 & 6 & 8192 & 2 & 90 & 20 & 6.55 & 600 \\
+0.025000 & 6 & 8192 & 2 & 90 & 15 & 3.67 & 600 \\
+0.025000 & 6 & 8192 & 2 & 90 & 10 & 0.91 & 600 \\
+0.012500 & 6 & 8192 & 2 & 90 & 20 & 6.55 & 700 \\
+0.012500 & 6 & 8192 & 2 & 90 & 15 & 3.63 & 700 \\
+0.012500 & 6 & 8192 & 2 & 90 & 10 & 0.90 & 700 \\
+0.050000 & 4 & 9216 & 2 & 90 & 20 & 4.86 & 200 \\
+0.050000 & 4 & 9216 & 2 & 90 & 15 & 2.11 & 200 \\
+0.050000 & 4 & 9216 & 2 & 90 & 10 & 0.51 & 200 \\
+0.025000 & 4 & 9216 & 2 & 90 & 20 & 4.77 & 300 \\
+0.025000 & 4 & 9216 & 2 & 90 & 15 & 2.07 & 300 \\
+0.025000 & 4 & 9216 & 2 & 90 & 10 & 0.43 & 300 \\
+0.012500 & 4 & 9216 & 2 & 90 & 20 & 4.80 & 400 \\
+0.012500 & 4 & 9216 & 2 & 90 & 15 & 2.14 & 400 \\
+0.012500 & 4 & 9216 & 2 & 90 & 10 & 0.43 & 400 \\
+0.050000 & 5 & 9216 & 2 & 90 & 20 & 4.78 & 400 \\
+0.050000 & 5 & 9216 & 2 & 90 & 15 & 2.11 & 400 \\
+0.050000 & 5 & 9216 & 2 & 90 & 10 & 0.47 & 400 \\
+0.025000 & 5 & 9216 & 2 & 90 & 20 & 4.79 & 500 \\
+0.025000 & 5 & 9216 & 2 & 90 & 15 & 2.11 & 500 \\
+0.025000 & 5 & 9216 & 2 & 90 & 10 & 0.45 & 500 \\
+0.012500 & 5 & 9216 & 2 & 90 & 20 & 4.80 & 600 \\
+0.012500 & 5 & 9216 & 2 & 90 & 15 & 2.10 & 600 \\
+0.012500 & 5 & 9216 & 2 & 90 & 10 & 0.44 & 600 \\
+0.050000 & 6 & 9216 & 2 & 90 & 20 & 4.78 & 600 \\
+0.050000 & 6 & 9216 & 2 & 90 & 15 & 2.11 & 600 \\
+0.050000 & 6 & 9216 & 2 & 90 & 10 & 0.46 & 600 \\
+0.025000 & 6 & 9216 & 2 & 90 & 20 & 4.83 & 700 \\
+0.025000 & 6 & 9216 & 2 & 90 & 15 & 2.12 & 700 \\
+0.025000 & 6 & 9216 & 2 & 90 & 10 & 0.45 & 700 \\
+0.012500 & 6 & 9216 & 2 & 90 & 20 & 4.74 & 800 \\
+0.012500 & 6 & 9216 & 2 & 90 & 15 & 2.11 & 800 \\
+0.012500 & 6 & 9216 & 2 & 90 & 10 & 0.45 & 800 \\
+0.050000 & 4 & 10240 & 2 & 90 & 20 & 3.28 & 300 \\
+0.050000 & 4 & 10240 & 2 & 90 & 15 & 1.09 & 300 \\
+0.050000 & 4 & 10240 & 2 & 90 & 10 & 0.37 & 300 \\
+0.025000 & 4 & 10240 & 2 & 90 & 20 & 3.34 & 400 \\
+0.025000 & 4 & 10240 & 2 & 90 & 15 & 1.09 & 400 \\
+0.025000 & 4 & 10240 & 2 & 90 & 10 & 0.29 & 400 \\
+0.012500 & 4 & 10240 & 2 & 90 & 20 & 3.32 & 500 \\
+0.012500 & 4 & 10240 & 2 & 90 & 15 & 1.12 & 500 \\
+0.012500 & 4 & 10240 & 2 & 90 & 10 & 0.29 & 500 \\
+0.050000 & 5 & 10240 & 2 & 90 & 20 & 3.34 & 500 \\
+0.050000 & 5 & 10240 & 2 & 90 & 15 & 1.08 & 500 \\
+0.050000 & 5 & 10240 & 2 & 90 & 10 & 0.33 & 500 \\
+0.025000 & 5 & 10240 & 2 & 90 & 20 & 3.41 & 600 \\
+0.025000 & 5 & 10240 & 2 & 90 & 15 & 1.14 & 600 \\
+0.025000 & 5 & 10240 & 2 & 90 & 10 & 0.29 & 600 \\
+0.012500 & 5 & 10240 & 2 & 90 & 20 & 3.40 & 700 \\
+0.012500 & 5 & 10240 & 2 & 90 & 15 & 1.12 & 700 \\
+0.012500 & 5 & 10240 & 2 & 90 & 10 & 0.29 & 700 \\
+0.050000 & 6 & 10240 & 2 & 90 & 20 & 3.39 & 700 \\
+0.050000 & 6 & 10240 & 2 & 90 & 15 & 1.11 & 700 \\
+0.050000 & 6 & 10240 & 2 & 90 & 10 & 0.32 & 700 \\
+0.025000 & 6 & 10240 & 2 & 90 & 20 & 3.39 & 800 \\
+0.025000 & 6 & 10240 & 2 & 90 & 15 & 1.12 & 800 \\
+0.025000 & 6 & 10240 & 2 & 90 & 10 & 0.29 & 800 \\
+0.012500 & 6 & 10240 & 2 & 90 & 20 & 3.34 & 900 \\
+0.012500 & 6 & 10240 & 2 & 90 & 15 & 1.09 & 900 \\
+0.012500 & 6 & 10240 & 2 & 90 & 10 & 0.29 & 900 \\
+0.050000 & 4 & 8192 & 3 & 90 & 20 & 2.93 & 200 \\
+0.050000 & 4 & 8192 & 3 & 90 & 15 & 1.22 & 200 \\
+0.050000 & 4 & 8192 & 3 & 90 & 10 & 0.44 & 200 \\
+0.025000 & 4 & 8192 & 3 & 90 & 20 & 2.97 & 300 \\
+0.025000 & 4 & 8192 & 3 & 90 & 15 & 1.20 & 300 \\
+0.025000 & 4 & 8192 & 3 & 90 & 10 & 0.33 & 300 \\
+0.012500 & 4 & 8192 & 3 & 90 & 20 & 2.90 & 400 \\
+0.012500 & 4 & 8192 & 3 & 90 & 15 & 1.19 & 400 \\
+0.012500 & 4 & 8192 & 3 & 90 & 10 & 0.31 & 400 \\
+0.050000 & 5 & 8192 & 3 & 90 & 20 & 2.97 & 400 \\
+0.050000 & 5 & 8192 & 3 & 90 & 15 & 1.19 & 400 \\
+0.050000 & 5 & 8192 & 3 & 90 & 10 & 0.37 & 400 \\
+0.025000 & 5 & 8192 & 3 & 90 & 20 & 2.96 & 500 \\
+0.025000 & 5 & 8192 & 3 & 90 & 15 & 1.21 & 500 \\
+0.025000 & 5 & 8192 & 3 & 90 & 10 & 0.32 & 500 \\
+0.012500 & 5 & 8192 & 3 & 90 & 20 & 2.88 & 600 \\
+0.012500 & 5 & 8192 & 3 & 90 & 15 & 1.17 & 600 \\
+0.012500 & 5 & 8192 & 3 & 90 & 10 & 0.32 & 600 \\
+0.050000 & 6 & 8192 & 3 & 90 & 20 & 2.95 & 600 \\
+0.050000 & 6 & 8192 & 3 & 90 & 15 & 1.19 & 600 \\
+0.050000 & 6 & 8192 & 3 & 90 & 10 & 0.37 & 600 \\
+0.025000 & 6 & 8192 & 3 & 90 & 20 & 2.89 & 700 \\
+0.025000 & 6 & 8192 & 3 & 90 & 15 & 1.19 & 700 \\
+0.025000 & 6 & 8192 & 3 & 90 & 10 & 0.32 & 700 \\
+0.012500 & 6 & 8192 & 3 & 90 & 20 & 2.94 & 800 \\
+0.012500 & 6 & 8192 & 3 & 90 & 15 & 1.20 & 800 \\
+0.012500 & 6 & 8192 & 3 & 90 & 10 & 0.31 & 800 \\
+0.050000 & 4 & 9216 & 3 & 90 & 20 & 1.79 & 300 \\
+0.050000 & 4 & 9216 & 3 & 90 & 15 & 0.67 & 300 \\
+0.050000 & 4 & 9216 & 3 & 90 & 10 & 0.34 & 300 \\
+0.025000 & 4 & 9216 & 3 & 90 & 20 & 1.76 & 400 \\
+0.025000 & 4 & 9216 & 3 & 90 & 15 & 0.64 & 400 \\
+0.025000 & 4 & 9216 & 3 & 90 & 10 & 0.23 & 400 \\
+0.012500 & 4 & 9216 & 3 & 90 & 20 & 1.81 & 500 \\
+0.012500 & 4 & 9216 & 3 & 90 & 15 & 0.65 & 500 \\
+0.012500 & 4 & 9216 & 3 & 90 & 10 & 0.22 & 500 \\
+0.050000 & 5 & 9216 & 3 & 90 & 20 & 1.83 & 500 \\
+0.050000 & 5 & 9216 & 3 & 90 & 15 & 0.66 & 500 \\
+0.050000 & 5 & 9216 & 3 & 90 & 10 & 0.28 & 500 \\
+0.025000 & 5 & 9216 & 3 & 90 & 20 & 1.80 & 600 \\
+0.025000 & 5 & 9216 & 3 & 90 & 15 & 0.65 & 600 \\
+0.025000 & 5 & 9216 & 3 & 90 & 10 & 0.23 & 600 \\
+0.012500 & 5 & 9216 & 3 & 90 & 20 & 1.81 & 700 \\
+0.012500 & 5 & 9216 & 3 & 90 & 15 & 0.64 & 700 \\
+0.012500 & 5 & 9216 & 3 & 90 & 10 & 0.22 & 700 \\
+0.050000 & 6 & 9216 & 3 & 90 & 20 & 1.79 & 700 \\
+0.050000 & 6 & 9216 & 3 & 90 & 15 & 0.65 & 700 \\
+0.050000 & 6 & 9216 & 3 & 90 & 10 & 0.26 & 700 \\
+0.025000 & 6 & 9216 & 3 & 90 & 20 & 1.82 & 800 \\
+0.025000 & 6 & 9216 & 3 & 90 & 15 & 0.65 & 800 \\
+0.025000 & 6 & 9216 & 3 & 90 & 10 & 0.22 & 800 \\
+0.012500 & 6 & 9216 & 3 & 90 & 20 & 1.80 & 900 \\
+0.012500 & 6 & 9216 & 3 & 90 & 15 & 0.64 & 900 \\
+0.012500 & 6 & 9216 & 3 & 90 & 10 & 0.22 & 900 \\
+0.050000 & 4 & 10240 & 3 & 90 & 20 & 1.11 & 400 \\
+0.050000 & 4 & 10240 & 3 & 90 & 15 & 0.45 & 400 \\
+0.050000 & 4 & 10240 & 3 & 90 & 10 & 0.31 & 400 \\
+0.025000 & 4 & 10240 & 3 & 90 & 20 & 1.09 & 500 \\
+0.025000 & 4 & 10240 & 3 & 90 & 15 & 0.43 & 500 \\
+0.025000 & 4 & 10240 & 3 & 90 & 10 & 0.19 & 500 \\
+0.012500 & 4 & 10240 & 3 & 90 & 20 & 1.09 & 600 \\
+0.012500 & 4 & 10240 & 3 & 90 & 15 & 0.42 & 600 \\
+0.012500 & 4 & 10240 & 3 & 90 & 10 & 0.17 & 600 \\
+0.050000 & 5 & 10240 & 3 & 90 & 20 & 1.10 & 600 \\
+0.050000 & 5 & 10240 & 3 & 90 & 15 & 0.45 & 600 \\
+0.050000 & 5 & 10240 & 3 & 90 & 10 & 0.24 & 600 \\
+0.025000 & 5 & 10240 & 3 & 90 & 20 & 1.11 & 700 \\
+0.025000 & 5 & 10240 & 3 & 90 & 15 & 0.43 & 700 \\
+0.025000 & 5 & 10240 & 3 & 90 & 10 & 0.18 & 700 \\
+0.012500 & 5 & 10240 & 3 & 90 & 20 & 1.12 & 800 \\
+0.012500 & 5 & 10240 & 3 & 90 & 15 & 0.42 & 800 \\
+0.012500 & 5 & 10240 & 3 & 90 & 10 & 0.17 & 800 \\
+0.050000 & 6 & 10240 & 3 & 90 & 20 & 1.11 & 800 \\
+0.050000 & 6 & 10240 & 3 & 90 & 15 & 0.44 & 800 \\
+0.050000 & 6 & 10240 & 3 & 90 & 10 & 0.22 & 800 \\
+0.025000 & 6 & 10240 & 3 & 90 & 20 & 1.11 & 900 \\
+0.025000 & 6 & 10240 & 3 & 90 & 15 & 0.43 & 900 \\
+0.025000 & 6 & 10240 & 3 & 90 & 10 & 0.18 & 900 \\
+0.012500 & 6 & 10240 & 3 & 90 & 20 & 1.11 & 1000 \\
+0.012500 & 6 & 10240 & 3 & 90 & 15 & 0.42 & 1000 \\
+0.012500 & 6 & 10240 & 3 & 90 & 10 & 0.17 & 1000 \\
+\end{longtable}
+\end{center}
+In all, the most economical way to meet the response time requirement is to set MPL = 10 and buy 1 more disk.
+\end{document}
