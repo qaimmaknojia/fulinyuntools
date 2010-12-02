@@ -99,23 +99,31 @@ where $0\le\epsilon_i\le t_c, (i = 1, 2, \cdots, N-1)$. This is the time the dea
 \nonumber t_{deadlock} & = & (t_c+t_w)-(N\cdot t_c-\sum^{N-1}_{i=1}\epsilon_i)\\
 & = & t_w - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i
 \end{align}
-which ranges from $t_w-(N-1)t_c$ to $t_w$.
+which ranges from $t_w-(N-1)t_c$ to $t_w$, having average value of $t_w-\frac{(N-1)t_c}{2}$.
 
 When $N\cdot t_c<t_e$, 
 \begin{align}
 t_{deadlock} = t_e - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i
 \end{align}
-which decreases or stays the same when N increases; after $N\cdot t_c\ge t_e$, 
+and
+\begin{align}
+\overline{t_{deadlock}}=t_e - \frac{(N-1)t_c}{2}
+\end{align}
+which decreases when N increases; after $N\cdot t_c\ge t_e$, 
 \begin{align}
 \nonumber t_{deadlock} & = & N\cdot t_c - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i\\
 & = & t_c+\sum^{N-1}_{i=1}\epsilon_i
 \end{align}
-which increases or stays the same when N increases.
+and 
+\begin{align}
+\overline{t_{deadlock}}=\frac{(N+1)t_c}{2}
+\end{align}
+which increases when N increases.
 \end{itemize}
 
 \section*{Bonus}
 \begin{itemize}
-\item[a.] The key to this problem is a mechanism to ensure there is only one philosopher getting a token at a time. In light of the Morris solution to mutual exclusion implementation, the program can be extended as follows.
+\item[a.] By adding a semaphore representing tokens, the program can be extended as follows.
 
 semaphore token = N$-$1;
 
