@@ -90,30 +90,52 @@ After a philosopher seats at the table, it takes up to $N\cdot t_c$ time for all
 t_w = N\cdot t_c+t_e
 \end{align}
 after this amount of time, if still nothing happens, there must be a deadlock.
-\item[c.] If this strategy is adopted, when a deadlock happens, it takes at most $t_w = max(N\cdot t_c,t_e)$ time for one or more philosophers to give up their chopsticks, which breaks the deadlock. So the time the system spends in deadlock is at most
+\item[c.] If this strategy is adopted, the situation where a deadlock will happen is as follows. Suppose all the philosophers are right-handed, and the first philosopher $P_1$ arrives at the table at time point 0, then at time point $t_c-\epsilon_1$ the second philosopher $P_2$ arrives, $P_1$ grabs her first chopstick at time point $t_c$, but the second chopstick is grabbed by $P_2$ at time point $2t_c-\epsilon_1$, similarly, $P_3$ comes at $2t_c-\epsilon_1-\epsilon_2$ and grabs the second chopstick of $P_2$ at $3t_c-\epsilon_1-\epsilon_2$, $\cdots$ The last philosopher $P_N$ grabs the last chopstick at 
 \begin{align}
-t_w = max(N\cdot t_c,t_e)
+N\cdot t_c-\sum^{N-1}_{i=1}\epsilon_i, 
 \end{align}
-when $N\cdot t_c<t_e$, the time stays the same when N increases; after $N\cdot t_c\ge t_e$, the time increases when N increases.
+where $0\le\epsilon_i\le t_c, (i = 1, 2, \cdots, N-1)$. This is the time the deadlock begins. Since $P_1$ will give up his chopstick at time $t_c+t_w$, the time that the system spends in deadlock is
+\begin{align}
+\nonumber t_{deadlock} & = & (t_c+t_w)-(N\cdot t_c-\sum^{N-1}_{i=1}\epsilon_i)\\
+& = & t_w - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i
+\end{align}
+which ranges from $t_w-(N-1)t_c$ to $t_w$.
+
+When $N\cdot t_c<t_e$, 
+\begin{align}
+t_{deadlock} = t_e - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i
+\end{align}
+which decreases or stays the same when N increases; after $N\cdot t_c\ge t_e$, 
+\begin{align}
+\nonumber t_{deadlock} & = & N\cdot t_c - (N-1)t_c + \sum^{N-1}_{i=1}\epsilon_i\\
+& = & t_c+\sum^{N-1}_{i=1}\epsilon_i
+\end{align}
+which increases or stays the same when N increases.
 \end{itemize}
 
 \section*{Bonus}
 \begin{itemize}
-\item[a.] The modified program is as follows.
+\item[a.] The key to this problem is a mechanism to ensure there is only one philosopher getting a token at a time. In light of the Morris solution to mutual exclusion implementation, the program can be extended as follows.
+
+semaphore token = N$-$1;
 
 \textbf{loopforever}
 
 \hspace{3em}\textbf{Think}; left = rnd()$<$0.2;
 
-\hspace{3em}if (left) P(chopstick[i\%N]); P(chopstick[i-1]);
+\hspace{3em}SP(token, 1, 1);
 
-\hspace{3em}else P(chopstick[i-1]); P(chopstick[i\%N]);
+\hspace{3em}if (left) P(chopstick[i\%N]); P(chopstick[i$-$1]);
+
+\hspace{3em}else P(chopstick[i$-$1]); P(chopstick[i\%N]);
 
 \hspace{3em}\textbf{Eat};
 
-\hspace{3em}if (left) V(chopstick[i\%N]; V(chopstick[i-1]);
+\hspace{3em}if (left) V(chopstick[i\%N]; V(chopstick[i$-$1]);
 
-\hspace{3em}else V(chopstick[i-1]); V(chopstickl[i\%N]);
+\hspace{3em}else V(chopstick[i$-$1]); V(chopstickl[i\%N]);
+
+\hspace{3em}SV(token, 1);
 
 \textbf{end}
 
