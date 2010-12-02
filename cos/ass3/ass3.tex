@@ -90,7 +90,7 @@ After a philosopher seats at the table, it takes up to $N\cdot t_c$ time for all
 t_w = N\cdot t_c+t_e
 \end{align}
 after this amount of time, if still nothing happens, there must be a deadlock.
-\item[c.] If this strategy is adopted, when a deadlock happens, it takes $t_w = max(N\cdot t_c,t_e)$ time for one or more philosophers to give up their chopsticks, which breaks the deadlock. So the time the system spends in deadlock is
+\item[c.] If this strategy is adopted, when a deadlock happens, it takes at most $t_w = max(N\cdot t_c,t_e)$ time for one or more philosophers to give up their chopsticks, which breaks the deadlock. So the time the system spends in deadlock is at most
 \begin{align}
 t_w = max(N\cdot t_c,t_e)
 \end{align}
@@ -117,7 +117,23 @@ when $N\cdot t_c<t_e$, the time stays the same when N increases; after $N\cdot t
 
 \textbf{end}
 
-\item[b.] $t_d > 5\times(t_c+t_l)$
+\item[b.] When the deadlock prevention strategy is adopted, the case yielding the longest waiting time is that
+\begin{enumerate}
+\item One philosopher, $P_1$, comes to the table alone, acquires one chopstick, just then the second philosopher $P_2$ comes, grabs the second chopstick $P_1$ is trying to get, then the same thing happens to $P_2$: $P_3$ grabs the second chopstick $P_2$ is trying to get, etc. So after $N\cdot t_c$ time, all the chopsticks are grabbed and philosopher $P_{n-1}$ starts eating. 
+\item Then after another $t_l$ time, $P_{n-1}$ stops eating and release the chopstick $P_{n-2}$ needs, letting $P_{n-2}$ start eating after $t_c$ time. Then after another $t_l$ time, $P_{n-2}$ stops eating and release the chopstick $P_{n-3}$ needs, letting $P_{n-3}$ start eating after $t_c$ time, etc. So after totally $(N-2)(t_l+t_c)$ time, $P_1$ gets the other chopstick and stops starving.
+\end{enumerate}
+The total waiting time of $P_1$ is
+\begin{align}
+N\cdot t_c+(N-2)(t_l+t_c)
+\end{align}
+According to the surviving constraint,
+\begin{align}
+N\cdot t_c+(N-2)(t_l+t_c)<t_d
+\end{align}
+so 
+\begin{align}
+N < \frac{t_d+2t_l+2t_c}{t_l+2t_c}
+\end{align}
 \end{itemize}
 
 \end{document}
