@@ -1,3 +1,4 @@
+package util;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
@@ -19,6 +20,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.Security;
 import java.util.Calendar;
@@ -41,30 +43,48 @@ import javax.swing.JButton;
 
 public class Common {
 	
-	public static String configFile = "/configSchool.prop";
-
-	public static int startX = 30;
-	public static int startY = 1006;
-	public static int firefoxX = 78;
-	public static int firefoxY = 294;
-	public static int addressX = 765;
-	public static int addressY = 74;
-	public static int exitX = 1267;
-	public static int exitY = 11;
-	public static int screenWidth = 1280;
-	public static int screenHeight = 1024;
 
 	public static Dialog noticeDialog = new Dialog((Frame)null, "");
-	public static int countdown = 5;
-	public static JButton delay = new JButton(""+countdown);
+	public static int countdown;
+	public static JButton delay = new JButton(" ");
 
 	public static Robot robot = null;
 	
-	public static String workingSign = "E:\\robotworking";
+	public static String workingSign = "/temp/robotworking.sign";
 
+	// default values
+	public static String configFile = "config/common.prop";
+
+	public static int startX;
+	public static int startY;
+	public static int firefoxX;
+	public static int firefoxY;
+	public static int addressX;
+	public static int addressY;
+	public static int screenWidth;
+	public static int screenHeight;
+	public static int exitX;
+	public static int exitY;
+	
 	static {
 		try {
-			
+			File conf = new File(configFile);
+			System.out.println("default configuration file: " + conf.getAbsolutePath());
+			Properties prop = new Properties();
+			InputStream is = new FileInputStream(conf);
+			prop.load(is);
+			startX = Integer.parseInt(prop.getProperty("startX"));
+			startY = Integer.parseInt(prop.getProperty("startY"));
+			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
+			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
+			addressX = Integer.parseInt(prop.getProperty("addressX"));
+			addressY = Integer.parseInt(prop.getProperty("addressY"));
+			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
+			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
+			exitX = Integer.parseInt(prop.getProperty("exitX"));
+			exitY = Integer.parseInt(prop.getProperty("exitY"));
+
+			System.out.println("using working sign: " + new File(workingSign).getAbsolutePath());
 			noticeDialog.setLayout(new FlowLayout());
 			noticeDialog.add(new Label("drop your mouse!"));
 			delay.addActionListener(new ActionListener() {
@@ -81,26 +101,15 @@ public class Common {
 				}
 			});
 
-			Properties prop = new Properties();
-			InputStream is = MobRobot.class.getResourceAsStream(configFile);
-			prop.load(is);
-			startX = Integer.parseInt(prop.getProperty("startX"));
-			startY = Integer.parseInt(prop.getProperty("startY"));
-			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
-			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
-			addressX = Integer.parseInt(prop.getProperty("addressX"));
-			addressY = Integer.parseInt(prop.getProperty("addressY"));
-			exitX = Integer.parseInt(prop.getProperty("exitX"));
-			exitY = Integer.parseInt(prop.getProperty("exitY"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public static void main(String[] args) {
-		initRobot();
-		enterGame("about:blank");
-		exitFirefox();
+//		initRobot();
+//		enterGame("about:blank");
+//		exitFirefox();
 //		robot.delay(5000);
 //		Point p = findLandmarkPartial("e:\\test.bmp", 300, 300, 500, 500);
 //		robot.mouseMove(p.x, p.y);
@@ -127,14 +136,19 @@ public class Common {
 	}
 	
 	public static void notice(String title, int x, int y) {
+		notice(title, x, y, 10);
+	}
+	
+	public static void notice(String title, int x, int y, int countdown) {
 		Dialog d = noticeDialog;
 		d.setTitle(title);
 		d.setLocation(new Point(x, y));
 		d.setSize(200, 70);
 		d.setAlwaysOnTop(true);
 		d.setVisible(true);
+		delay.setText(""+countdown);
 		try {
-			countdown = 5;
+			Common.countdown = countdown;
 			while (countdown != 0) {
 				Thread.currentThread().sleep(1000);
 				countdown--;
@@ -156,7 +170,65 @@ public class Common {
 		}
 	}
 
-	public static void enterGame(String url) {
+	public static void selectAll() {
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress('A');
+		robot.keyRelease('A');
+		robot.keyRelease(KeyEvent.VK_CONTROL);		
+	}
+	
+	public static void copy() {
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress('C');
+		robot.keyRelease('C');
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+	}
+	
+	public static void paste() {
+		robot.keyPress(KeyEvent.VK_CONTROL);
+		robot.keyPress('V');
+		robot.keyRelease('V');
+		robot.keyRelease(KeyEvent.VK_CONTROL);
+	}
+
+	public static void switchProgram() {
+		robot.keyPress(KeyEvent.VK_ALT);
+		robot.keyPress(KeyEvent.VK_TAB);
+		robot.keyRelease(KeyEvent.VK_TAB);
+		robot.keyRelease(KeyEvent.VK_ALT);		
+	}
+	
+	public static void enterString(String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (str.charAt(i) == ':') {
+				robot.keyPress(KeyEvent.VK_SHIFT);
+				robot.keyPress(KeyEvent.VK_SEMICOLON);
+				robot.keyRelease(KeyEvent.VK_SEMICOLON);
+				robot.keyRelease(KeyEvent.VK_SHIFT);
+			} else if (str.charAt(i) == '_') {
+				robot.keyPress(KeyEvent.VK_SHIFT);
+				robot.keyPress(KeyEvent.VK_MINUS);
+				robot.keyRelease(KeyEvent.VK_MINUS);
+				robot.keyRelease(KeyEvent.VK_SHIFT);
+			} else if (Character.isUpperCase(str.charAt(i))) {
+				robot.keyPress(KeyEvent.VK_SHIFT);
+				robot.keyPress(Character.toUpperCase(str.charAt(i)));
+				robot.keyRelease(Character.toUpperCase(str.charAt(i)));
+				robot.keyRelease(KeyEvent.VK_SHIFT);
+			} else {
+				robot.keyPress(Character.toUpperCase(str.charAt(i)));
+				robot.keyRelease(Character.toUpperCase(str.charAt(i)));
+			}
+		}
+
+	}
+	
+	public static void enterSite(String url) {
+		enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
+	}
+	
+	public static void enterSite(String url, int startX, int startY, 
+			int firefoxX, int firefoxY, int addressX, int addressY) {
 
 		while (new File(workingSign).exists()) {
 			System.out.println(new Date().toString() + " another robot working, waiting for 40 seconds");
@@ -182,27 +254,16 @@ public class Common {
 		moveAndClick(addressX, addressY);
 
 		robot.delay(2000);
-		for (int i = 0; i < url.length(); i++) {
-			if (url.charAt(i) == ':') {
-				robot.keyPress(KeyEvent.VK_SHIFT);
-				robot.keyPress(KeyEvent.VK_SEMICOLON);
-				robot.keyRelease(KeyEvent.VK_SEMICOLON);
-				robot.keyRelease(KeyEvent.VK_SHIFT);
-			} else if (url.charAt(i) == '_') {
-				robot.keyPress(KeyEvent.VK_SHIFT);
-				robot.keyPress(KeyEvent.VK_MINUS);
-				robot.keyRelease(KeyEvent.VK_MINUS);
-				robot.keyRelease(KeyEvent.VK_SHIFT);
-			} else {
-				robot.keyPress(Character.toUpperCase(url.charAt(i)));
-				robot.keyRelease(Character.toUpperCase(url.charAt(i)));
-			}
-		}
+		enterString(url);
 		robot.keyPress(KeyEvent.VK_ENTER);
 		robot.keyRelease(KeyEvent.VK_ENTER);
 	}
 
 	public static void takePic(String fn) {
+		takePic(fn, screenWidth, screenHeight);
+	}
+	
+	public static void takePic(String fn, int screenWidth, int screenHeight) {
 
 		robot.delay(2000);
 		BufferedImage image = robot.createScreenCapture(new Rectangle(0, 0, screenWidth,
@@ -215,13 +276,64 @@ public class Common {
 	}
 
 	public static void exitFirefox() {
+		exitFirefox(exitX, exitY);
+	}
+	
+	public static void exitFirefox(int exitX, int exitY) {
 
 		robot.delay(5000);
 		moveAndClick(exitX, exitY);
 		new File(workingSign).delete();
 	}
 
+	public static boolean findAndClick(String bmpLm, int sx, int sy, int screenWidth, int screenHeight) throws Exception {
+		Point trgt = findLandmark(bmpLm, sx, sy, screenWidth, screenHeight);
+		if (trgt.x != -1 && trgt.y != -1) {
+			moveAndClick(trgt.x, trgt.y);
+			return true;
+		}
+		return false;
+	}
+	
+	public static Point findLandmark(String bmpLm, int sx, int sy, int screenWidth, int screenHeight) {
+		try {
+			robot.delay(2000);
+			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
+			BufferedImage image = ImageIO.read(new File(bmpLm));
+			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = sx; x < screen.getWidth()-image.getWidth(); x++) {
+					if (match(screen, image, x, y)) {
+						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
+					}
+				}
+			}
+			for (int y = 0; y < sy; y++) {
+				for (int x = 0; x < screen.getWidth()-image.getWidth(); x++) {
+					if (match(screen, image, x, y)) {
+						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
+					}
+				}
+			}
+			for (int y = sy; y < screen.getHeight()-image.getHeight(); y++) {
+				for (int x = 0; x < sx; x++) {
+					if (match(screen, image, x, y)) {
+						return new Point(x+image.getWidth()/2, y+image.getHeight()/2); 
+					}
+				}
+			}
+			return new Point(-1, -1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Point(-1, -1);
+		}
+	}
+
 	public static Point findLandmark(String bmpLm, int sx, int sy, boolean shouldFind) {
+		return findLandmark(bmpLm, sx, sy, shouldFind, screenWidth, screenHeight);
+	}
+	
+	public static Point findLandmark(String bmpLm, int sx, int sy, boolean shouldFind, 
+			int screenWidth, int screenHeight) {
 		try {
 			robot.delay(2000);
 			BufferedImage screen = robot.createScreenCapture(new Rectangle(screenWidth, screenHeight));
@@ -419,8 +531,12 @@ public class Common {
 	}
 	
 	public static void waitForLandmark(String landmark, int sx, int sy) {
+		waitForLandmark(landmark, sx, sy, screenWidth, screenHeight);
+	}
+	
+	public static void waitForLandmark(String landmark, int sx, int sy, int screenWidth, int screenHeight) {
 
-		Point p = findLandmark(landmark, sx, sy, true);
+		Point p = findLandmark(landmark, sx, sy, true, screenWidth, screenHeight);
 		int retry = 0;
 		while (p.x == -1 && p.y == -1) {
 			retry++;
@@ -428,7 +544,7 @@ public class Common {
 			robot.keyPress(KeyEvent.VK_F5);
 			robot.keyRelease(KeyEvent.VK_F5);
 			robot.delay(30000);
-			p = findLandmark(landmark, sx, sy, true);
+			p = findLandmark(landmark, sx, sy, true, screenWidth, screenHeight);
 		}
 	}
 

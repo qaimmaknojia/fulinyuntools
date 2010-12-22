@@ -1,3 +1,4 @@
+package game;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -10,6 +11,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+
+import util.Common;
 
 
 public class ParkingRobot {

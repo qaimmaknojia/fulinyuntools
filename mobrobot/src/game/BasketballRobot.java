@@ -1,3 +1,4 @@
+package game;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -12,6 +13,8 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+
+import util.Common;
 
 
 public class BasketballRobot {
