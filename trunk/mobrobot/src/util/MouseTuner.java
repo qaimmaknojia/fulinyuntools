@@ -1,3 +1,4 @@
+package util;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Robot;

@@ -1,5 +1,8 @@
+package game;
 import java.io.File;
 import java.util.Date;
+
+import util.Common;
 
 
 public class CardRobot {
@@ -27,7 +30,7 @@ public class CardRobot {
 		while (true) {
 
 			Common.notice("card", 300, 300);
-			Common.enterGame(cardURL);
+			Common.enterSite(cardURL);
 			Common.robot.delay(10000);
 			Common.takePic(picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg");
 			Common.exitFirefox();

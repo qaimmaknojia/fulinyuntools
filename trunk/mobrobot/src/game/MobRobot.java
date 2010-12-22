@@ -1,23 +1,27 @@
+package game;
 import java.awt.Point;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Properties;
 
+import util.Common;
+
 public class MobRobot {
 
-//	public static int startX = 30;
-//	public static int startY = 1006;
-//	public static int firefoxX = 78;
-//	public static int firefoxY = 294;
-//	public static int addressX = 765;
-//	public static int addressY = 74;
+	public static String configFile = "configMob.prop";
+	public static int startX = 30;
+	public static int startY = 1006;
+	public static int firefoxX = 78;
+	public static int firefoxY = 294;
+	public static int addressX = 765;
+	public static int addressY = 74;
 	public static int taskX = 251;
 	public static int taskY = 313;
 	public static int doX = 878;
 	public static int doY = 786;
-//	public static int exitX = 1267;
-//	public static int exitY = 11;
+	public static int exitX = 1267;
+	public static int exitY = 11;
 	public static int scrollX;
 	public static int scrollY;
 	public static int screenWidth;
@@ -91,22 +95,22 @@ public class MobRobot {
 		try {
 			
 			Properties prop = new Properties();
-			InputStream is = MobRobot.class.getResourceAsStream(Common.configFile);
+			InputStream is = MobRobot.class.getResourceAsStream(configFile);
 			prop.load(is);
-//			startX = Integer.parseInt(prop.getProperty("startX"));
-//			startY = Integer.parseInt(prop.getProperty("startY"));
-//			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
-//			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
-//			addressX = Integer.parseInt(prop.getProperty("addressX"));
-//			addressY = Integer.parseInt(prop.getProperty("addressY"));
+			startX = Integer.parseInt(prop.getProperty("startX"));
+			startY = Integer.parseInt(prop.getProperty("startY"));
+			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
+			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
+			addressX = Integer.parseInt(prop.getProperty("addressX"));
+			addressY = Integer.parseInt(prop.getProperty("addressY"));
 			taskX = Integer.parseInt(prop.getProperty("taskX"));
 			taskY = Integer.parseInt(prop.getProperty("taskY"));
 			doX = Integer.parseInt(prop.getProperty("doX"));
 			doY = Integer.parseInt(prop.getProperty("doY"));
 			scrollX = Integer.parseInt(prop.getProperty("scrollX"));
 			scrollY = Integer.parseInt(prop.getProperty("scrollY"));
-//			exitX = Integer.parseInt(prop.getProperty("exitX"));
-//			exitY = Integer.parseInt(prop.getProperty("exitY"));
+			exitX = Integer.parseInt(prop.getProperty("exitX"));
+			exitY = Integer.parseInt(prop.getProperty("exitY"));
 			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
 			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
 			brotherBeginX = Integer.parseInt(prop.getProperty("brotherBeginX"));
@@ -211,11 +215,12 @@ public class MobRobot {
 	public static void mainCheck(String[] args) {
 		while (true) {
 			try {
-				Common.enterGame(mobURL);
+				Common.enterSite(mobURL, startX, startY, 
+						firefoxX, firefoxY, addressX, addressY);
 				String pic = picFilePrefix + new Date().toString().replaceAll(":", "_") + ".jpg";
-				Common.takePic(pic);
+				Common.takePic(pic, screenWidth, screenHeight);
 				Common.sendMail("check", new Date().toString(), pic);
-				Common.exitFirefox();
+				Common.exitFirefox(exitX, exitY);
 				System.out.println("sleep until " + new Date(new Date().getTime()+60*60*1000).toString());
 				Thread.currentThread().sleep(60*60*1000);
 			} catch (Exception e) {
@@ -258,7 +263,7 @@ public class MobRobot {
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " prepare begins");
-		Common.notice("mob", 300, 300);
+		Common.notice("mob", 300, 300, 10);
 		prepare();
 		Date end = new Date();
 		System.out.println(end.toString() + " prepare finished");
@@ -273,7 +278,7 @@ public class MobRobot {
 		Date start = new Date();
 		long startms = start.getTime();
 		System.out.println(start.toString() + " task begins");
-		Common.notice("mob", 300, 300);
+		Common.notice("mob", 300, 300, 10);
 		doVeryRichTask();
 		Date end = new Date();
 		System.out.println(end.toString() + " task finished");
@@ -285,10 +290,10 @@ public class MobRobot {
 	
 	private static void prepare() {
 
-		Common.enterGame(mobURL);
+		Common.enterSite(mobURL, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		
 		Common.robot.delay(5000);
-		Common.waitForLandmark(enterLandmark, 190, 180);
+		Common.waitForLandmark(enterLandmark, 190, 180, screenWidth, screenHeight);
 		
 //		int stamina = getStamina();
 //		if (stamina < 10) {
@@ -306,7 +311,7 @@ public class MobRobot {
 		findAndClick("e:\\mobtemp\\gotoTask.bmp", 0, 0, true);
 
 		Common.robot.delay(5000);
-		Common.waitForLandmark(taskLandmark, 150, 340);
+		Common.waitForLandmark(taskLandmark, 150, 340, screenWidth, screenHeight);
 //		Point p = Common.findLandmark(jailLandmark, 160, 340);
 //		if (p.x != -1 && p.y != -1) {
 ////			robot.mouseMove(lawyerX, lawyerY);
@@ -364,18 +369,18 @@ public class MobRobot {
 		Common.moveAndClick(scrollupX, scrollupY);
 
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
+		Common.takePic(pic, screenWidth, screenHeight);
 //		Common.sendMail("prepare", new Date().toString(), pic);
 
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 	}
 
 	private static void doVeryRichTask() {
 		
-		Common.enterGame(mobURL);
+		Common.enterSite(mobURL, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		
 		Common.robot.delay(5000);
-		Common.waitForLandmark(enterLandmark, 190, 180);
+		Common.waitForLandmark(enterLandmark, 190, 180, screenWidth, screenHeight);
 		
 //		int stamina = getStamina();
 //		if (stamina < 40) {
@@ -393,7 +398,7 @@ public class MobRobot {
 		findAndClick("e:\\mobtemp\\gotoTask.bmp", 0, 0, true);
 
 		Common.robot.delay(5000);
-		Common.waitForLandmark(taskLandmark, 150, 340);
+		Common.waitForLandmark(taskLandmark, 150, 340, screenWidth, screenHeight);
 		Common.moveAndClick(scrollX, scrollY);
 		Common.robot.delay(1000);
 		Common.moveAndClick(scrollX, scrollY);
@@ -407,16 +412,16 @@ public class MobRobot {
 		Common.moveAndClick(scrollupX, scrollupY);
 		
 		String pic = picFilePrefix + new Date().toString().replaceAll(":", "_")+".jpg";
-		Common.takePic(pic);
+		Common.takePic(pic, screenWidth, screenHeight);
 //		Common.sendMail("task", new Date().toString(), pic);
 		
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 	}
 
 	private static boolean findAndClick(String target, int startx, int starty, boolean shouldFind) {
 		Common.robot.delay(1000);
 		Common.robot.mouseMove(0, 0);
-		Point tar = Common.findLandmark(target, startx, starty, shouldFind);
+		Point tar = Common.findLandmark(target, startx, starty, shouldFind, screenWidth, screenHeight);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;

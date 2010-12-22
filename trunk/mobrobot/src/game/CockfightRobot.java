@@ -1,4 +1,7 @@
+package game;
 import java.util.Date;
+
+import util.Common;
 
 
 public class CockfightRobot {
@@ -17,7 +20,7 @@ public class CockfightRobot {
 		Common.sleepUntil(20, 50, 0);
 		for (int i = 0; i < 5; i++) {
 			Common.sleep(2*60*60*1000);
-			Common.enterGame("http://apps.xiaonei.com/cockfight");
+			Common.enterSite("http://apps.xiaonei.com/cockfight");
 			Common.robot.delay(30000);
 			Common.moveAndClick(1270, 927);	//scroll down
 			Common.robot.delay(2000);
@@ -31,7 +34,7 @@ public class CockfightRobot {
 		Common.initRobot();
 		Common.sleepUntil(22, 40, 0);
 		while (true) {
-			Common.enterGame("http://apps.xiaonei.com/cockfight");
+			Common.enterSite("http://apps.xiaonei.com/cockfight");
 			Common.robot.delay(30000);
 			Common.moveAndClick(367, 745);
 			Common.exitFirefox();
@@ -43,7 +46,7 @@ public class CockfightRobot {
 		Common.initRobot();
 		for (int i = 0; i < 5; i++) {
 			Common.sleep(2*60*60*1000);
-			Common.enterGame("http://apps.xiaonei.com/cockfight");
+			Common.enterSite("http://apps.xiaonei.com/cockfight");
 			Common.robot.delay(30000);
 			Common.takePic("e:\\cockfight " + new Date().toString().replaceAll(":", "_") + ".jpg");
 			Common.exitFirefox();

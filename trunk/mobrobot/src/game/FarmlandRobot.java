@@ -1,19 +1,61 @@
+package game;
 import java.awt.Point;
 import java.awt.event.InputEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.Properties;
+
+import util.Common;
 
 
 public class FarmlandRobot {
 
+	public static String configFile = "configFarmland.prop";
+	public static int startX;
+	public static int startY;
+	public static int firefoxX;
+	public static int firefoxY;
+	public static int addressX;
+	public static int addressY;
+	public static String url;
+	public static int screenWidth;
+	public static int screenHeight;
+	public static int exitX;
+	public static int exitY;
+	
 	public static int place1offsetX = -430;
 	public static int place1offsetY = 180;
 	public static Point[] place = null;
 	public static Point shopPlace = null;
 	public static int numPlace = 12;
 	public static int numAuto = 12;
-	public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
+	//public static String farmlandURL = "http://apps.xiaonei.com/happyfarm";
 	public static String picFilePrefix = "E:\\farmland\\snapshot ";
-
+	
+	static {
+		try {
+			File conf = new File(configFile);
+			System.out.println("using configuration file: " + conf.getAbsolutePath());
+			Properties prop = new Properties();
+			InputStream is = new FileInputStream(conf);
+			prop.load(is);
+			startX = Integer.parseInt(prop.getProperty("startX"));
+			startY = Integer.parseInt(prop.getProperty("startY"));
+			firefoxX = Integer.parseInt(prop.getProperty("firefoxX"));
+			firefoxY = Integer.parseInt(prop.getProperty("firefoxY"));
+			addressX = Integer.parseInt(prop.getProperty("addressX"));
+			addressY = Integer.parseInt(prop.getProperty("addressY"));
+			url = prop.getProperty("url");
+			screenWidth = Integer.parseInt(prop.getProperty("screenWidth"));
+			screenHeight = Integer.parseInt(prop.getProperty("screenHeight"));
+			exitX = Integer.parseInt(prop.getProperty("exitX"));
+			exitY = Integer.parseInt(prop.getProperty("exitY"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static void main(String[] args) {
 //		haste();			//running
 		mainMaintain();		//running
@@ -203,7 +245,7 @@ public class FarmlandRobot {
 			int x = begin.x+j%5*90;
 			int y = begin.y+j/5*100-30;
 			Common.moveAndClick(x, y);
-			Common.takePic("e:\\farmland\\info\\" + i + ".jpg");
+			Common.takePic("e:\\farmland\\info\\" + i + ".jpg", screenWidth, screenHeight);
 			findAndClick("e:\\farmland\\cancel.bmp", true);
 		}
 		finalize("browse shop completed");
@@ -220,7 +262,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			Common.robot.mouseMove(place[5].x, place[5].y);
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("maintain completed");
 			
 			Common.sleepUntil(23, 0, 0);
@@ -230,7 +272,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			Common.robot.mouseMove(place[5].x, place[5].y);
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("maintain completed");
 
 			Common.sleepUntil(8, 0, 0);
@@ -240,7 +282,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			Common.robot.mouseMove(place[5].x, place[5].y);
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("maintain completed");
 
 			Common.sleepUntil(11, 30, 0);
@@ -250,7 +292,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			Common.robot.mouseMove(place[5].x, place[5].y);
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("maintain completed");
 
 		}
@@ -381,7 +423,7 @@ public class FarmlandRobot {
 			initialize("farmland harvest");
 			buyManure(numAuto*4-1);	// 1 less than needed
 			manure();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("stage 1 completed");
 			
 			Common.sleep(plantTime+60*60*1000-new Date().getTime()+1000);
@@ -390,7 +432,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			manure();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("stage 2 completed");
 			
 			Common.sleep(60*60*1000);
@@ -399,7 +441,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			manure();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("stage 3 completed");
 			
 			Common.sleep(2*60*60*1000);
@@ -408,7 +450,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			manure();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("stage 4 manure completed");
 
 			Common.sleep(60*60*1000);
@@ -416,7 +458,7 @@ public class FarmlandRobot {
 			water();
 			removeWeed();
 			removeWorm();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("stage 4 maintain completed");
 			
 			Common.sleep(plantTime+6*60*60*1000-new Date().getTime());
@@ -428,7 +470,7 @@ public class FarmlandRobot {
 		Common.robot.delay(7000);
 		findAndClick("e:\\farmland\\whiteInStore.bmp", true);
 		Common.robot.delay(3000);
-		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true);
+		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true, screenWidth, screenHeight);
 		for (int i = 0; i < num; i++) {
 			Common.moveAndClick(ra.x, ra.y);
 			Common.robot.delay(100);
@@ -447,7 +489,7 @@ public class FarmlandRobot {
 		Common.robot.delay(3000);
 		findAndClick("e:\\farmland\\manure.bmp", true);
 		Common.robot.delay(3000);
-		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true);
+		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true, screenWidth, screenHeight);
 		for (int i = 0; i < num-1; i++) {
 			Common.moveAndClick(ra.x, ra.y);
 			Common.robot.delay(100);
@@ -471,7 +513,7 @@ public class FarmlandRobot {
 			removeWeed();
 			removeWorm();
 			manure();
-			Common.takePic(getPicName());
+			Common.takePic(getPicName(), screenWidth, screenHeight);
 			finalize("pumpkin stage "+i+" completed");
 		}
 		for (int i = 0; i < 7; i++) {
@@ -486,7 +528,7 @@ public class FarmlandRobot {
 		initialize("pumpkin@9");
 		harvest();
 		sellAll();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("pumpkin@9 finished");
 
 	}
@@ -527,7 +569,7 @@ public class FarmlandRobot {
 		removeWeed();
 		removeWorm();
 		manure();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("pumpkin season 2 stage 2 completed");
 		
 		for (int i = 0; i < 7; i++) {
@@ -543,7 +585,7 @@ public class FarmlandRobot {
 		harvest();
 		sellAll();
 		manure();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("pumpkin season 3 stage 1 completed");
 
 		Common.sleep(8*60*60*1000-300000);
@@ -552,7 +594,7 @@ public class FarmlandRobot {
 		removeWeed();
 		removeWorm();
 		manure();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("pumpkin season 3 stage 2 completed");
 		
 		for (int i = 0; i < 7; i++) {
@@ -567,7 +609,7 @@ public class FarmlandRobot {
 		initialize("pumpkin rush");
 		harvest();
 		sellAll();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("pumpkin rush finished");
 
 	}
@@ -575,7 +617,7 @@ public class FarmlandRobot {
 	public static void showBag() {
 		initialize("farmland show bag");
 		findAndClick("e:\\farmland\\bag.bmp", true);
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("show bag completed");
 		System.exit(0);
 	}
@@ -587,7 +629,7 @@ public class FarmlandRobot {
 		for (int i = 1; i < 9; i++) {
 			Common.robot.mouseMove(place[i].x, place[i].y);
 			String pic = "e:\\farmland\\fullview\\snapshot " + new Date().toString().replaceAll(":", "_")+".jpg";
-			Common.takePic(pic);
+			Common.takePic(pic, screenWidth, screenHeight);
 		}
 		
 		finalize("full view completed");
@@ -601,23 +643,23 @@ public class FarmlandRobot {
 	}
 
 	public static void initialize(String msg) {
-		Common.notice(msg, 300, 300);
+		Common.notice(msg, 300, 300, 10);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 	}
 
 	public static void finalize(String msg) {
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 		System.out.println(new Date().toString() + " " + msg);
 	}
 	
 	public static void simpleManure() {
 		initialize("farmland simple manure");
 		manure();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("simple manure completed");
 		System.exit(0);
 	}
@@ -625,9 +667,9 @@ public class FarmlandRobot {
 	public static void testBuyManure() {
 		Common.notice("farmland buy manure test", 300, 300);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 		
 		buyManure(2);
@@ -639,7 +681,7 @@ public class FarmlandRobot {
 		water();
 		removeWeed();
 		removeWorm();
-		Common.takePic(getPicName());
+		Common.takePic(getPicName(), screenWidth, screenHeight);
 		finalize("simple maintain completed");
 		System.exit(0);
 	}
@@ -651,17 +693,17 @@ public class FarmlandRobot {
 		
 		Common.notice("farmland simple plant", 300, 300);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 		
 		buySeed("e:\\farmland\\white.bmp", 7);
 		plant("e:\\farmland\\whiteInBag.bmp");
 		
 		String pic = getPicName();
-		Common.takePic(pic);
-		Common.exitFirefox();
+		Common.takePic(pic, screenWidth, screenHeight);
+		Common.exitFirefox(exitX, exitY);
 		System.out.println(new Date().toString() + " simple plant completed");
 
 		System.exit(0);
@@ -687,7 +729,7 @@ public class FarmlandRobot {
 		for (int i = 1; i <= numPlace; i++) {
 			Common.robot.mouseMove(place[i].x, place[i].y);
 			String pic = "e:\\farmland\\observe\\snapshot " + new Date().toString().replaceAll(":", "_")+".jpg";
-			Common.takePic(pic);
+			Common.takePic(pic, screenWidth, screenHeight);
 		}
 		finalize("observe completed");
 		System.exit(0);
@@ -699,34 +741,34 @@ public class FarmlandRobot {
 
 		Common.notice("farmland harvest", 300, 300);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 		harvest();
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 		
 		Common.sleepUntil(18, 15, 0);
 		
 		Common.notice("farmland harvest", 300, 300);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 		harvest();
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 		
 		Common.sleepUntil(20, 25, 0);
 		
 		Common.notice("farmland harvest", 300, 300);
 		Common.initRobot();
-		Common.enterGame(farmlandURL);
+		Common.enterSite(url, startX, startY, firefoxX, firefoxY, addressX, addressY);
 		Common.robot.delay(30000);
-		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310);
+		Common.waitForLandmark("e:\\farmland\\shop.bmp", 800, 310, screenWidth, screenHeight);
 		initPlace();
 		harvest();
-		Common.exitFirefox();
+		Common.exitFirefox(exitX, exitY);
 
 	}
 
@@ -772,7 +814,7 @@ public class FarmlandRobot {
 	private static boolean findAndClick(String target, boolean shouldFind) {
 		Common.robot.delay(1000);
 		Common.robot.mouseMove(200, 300);
-		Point tar = Common.findLandmark(target, 400, 300, shouldFind);
+		Point tar = Common.findLandmark(target, 400, 300, shouldFind, screenWidth, screenHeight);
 		if (tar.x != -1 && tar.y != -1) {
 			Common.moveAndClick(tar.x, tar.y);
 			return true;
@@ -797,7 +839,7 @@ public class FarmlandRobot {
 		Common.robot.delay(1000);
 		findAndClick("e:\\farmland\\seedTab.bmp", false);
 		Common.robot.delay(1000);
-		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true);
+		Point ra = Common.findLandmark("e:\\farmland\\rightArrow.bmp", 400, 300, true, screenWidth, screenHeight);
 		for (int i = 0; i < num-1; i++) {
 			Common.moveAndClick(ra.x, ra.y);
 			Common.robot.delay(100);
@@ -845,7 +887,7 @@ public class FarmlandRobot {
 	public static void initPlace() {
 		place = new Point[20];
 		for (int i = 0; i < 20; i++) place[i] = new Point();
-		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310, true);
+		shopPlace = Common.findLandmark("e:\\farmland\\shop.bmp", 800, 310, true, screenWidth, screenHeight);
 		place[1].x = shopPlace.x+place1offsetX;
 		place[1].y = shopPlace.y+place1offsetY;
 		Common.robot.mouseMove(place[1].x, place[1].y);
