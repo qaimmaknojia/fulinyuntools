@@ -1,0 +1,26 @@
+Name: Linyun Fu
+
+== Submission list ==
+
+* lightsout.pl -- the Prolog source code for the solution;
+* board.txt -- a sample input file for the program, containing a solvable board;
+* badboard.txt -- a sample input containing an unsolvable board;
+* pa1.pdf -- an analysis of the Lights Out problem.
+
+== How to run the program ==
+
+* Consult "lightsout.pl";
+* Type "load('$FileName').", where $FileName represents the name of the file containing the initial board status, i.e., 25 characters, each being 'B' or 'W';
+* The program will show you the five rows of the board loaded;
+* Type "solve." and do something else while waiting for the running result :)
+* Type ";" for more solutions if the board is solvable; type "." to stop the program.
+
+== Features of the solution ==
+
+* If you type semicolon for enough times, the program will finally find all the four solutions for a solvable board; (Why FOUR solutions? See pa1.pdf for details)
+* Returns "false" in a reasonable time (less than 7 minutes on my laptop with Intel Pentium 1.86GHz X 2 CPU, 4GB DDR3 Memory) if the board is unsolvable;
+
+== Bugs ==
+
+* It repeatedly finds the same solution for a solvable board.
+
