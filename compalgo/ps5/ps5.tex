@@ -1,0 +1,105 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\newtheorem{clm}{Claim}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 5}
+\begin{document}
+\maketitle
+\section*{Chapter 7, Problem 7}
+Consider a set of mobile computing clients in a certain town who each
+need to be connected to one of several possible \emph{base stations}. We'll
+suppose there are $n$ clients, with the position of each client specified
+by its $(x, y)$ coordinates in the plane. There are also $k$ base stations; the
+position of each of these is specified by $(x, y)$ coordinates as well.
+
+For each client, we wish to connect it to exactly one of the base
+stations. Our choice of connections is constrained in the following ways.
+There is a range parameter $r$ -- a client can only be connected to a base
+station that is within distance $r$. There is also a \emph{load parameter} $L$ -- no
+more than $L$ clients can be connected to any single base station.
+
+Your goal is to design a polynomial-time algorithm for the following
+problem. Given the positions of a set of clients and a set of base stations,
+as well as the range and load parameters, decide whether every client can
+be connected simultaneously to a base station, subject to the range and
+load conditions in the previous paragraph.
+
+\section*{Answer}
+
+\begin{figure}
+%\includegraphics[width=0.7\textwidth]{7.7.eps}
+\caption{Reducing the problem to network flow}
+\end{figure}
+
+\section*{Chapter 7, Problem 34}
+\emph{Ad hoc networks}, made up of low-powered wireless devices, have been
+proposed for situations like natural disasters in which the coordinators
+of a rescue effort might want to monitor conditions in a hard-to-reach
+area. The idea is that a large collection of these wireless devices could be
+dropped into such an area from an airplane and then configured into a
+functioning network.
+
+Note that we're talking about (a) relatively inexpensive devices that
+are (b) being dropped from an airplane into (c) dangerous territory; and
+for the combination of reasons (a), (b), and (c), it becomes necessary to
+include provisions for dealing with the failure of a reasonable number of
+the nodes.
+
+We'd like it to be the case that if one of the devices $v$ detects that it is in
+danger of failing, it should transmit a representation of its current state to
+some other device in the network. Each device has a limited transmitting
+range -- say it can communicate with other devices that lie within $d$ meters
+of it. Moreover, since we don't want it to try transmitting its state to a
+device that has already failed, we should include some redundancy: A
+device $v$ should have a set of $k$ other devices that it can potentially contact,
+each within $d$ meters of it. We'll call this a \emph{back-up set} for device $v$.
+
+\begin{itemize}
+\item[(a)] Suppose you're given a set of $n$ wireless devices, with positions
+represented by an $(x, y)$ coordinate pair for each. Design an algorithm
+that determines whether it is possible to choose a back-up set for
+each device (i.e., $k$ other devices, each within $d$ meters), with the
+further property that, for some parameter $b$, no device appears in
+the back-up set of more than $b$ other devices. The algorithm should
+output the back-up sets themselves, provided they can be found.
+
+\item[(b)] The idea that, for each pair of devices $v$ and $w$, there's a strict
+dichotomy between being ``in range'' or ``out of range'' is a simplified
+abstraction. More accurately, there's a power decay function $f(\cdot)$ that
+specifies, for a pair of devices at distance $\delta$, the signal strength $f(\delta)$
+that they'll be able to achieve on their wireless connection. (We'll
+assume that $f(\delta)$ decreases with increasing $\delta$.)
+
+We might want to build this into our notion of back-up sets as
+follows: among the $k$ devices in the back-up set of $v$, there should
+be at least one that can be reached with very high signal strength,
+at least one other that can be reached with moderately high signal
+strength, and so forth. More concretely, we have values $p_1 \ge p_2 \ge\cdots \ge
+p_k$, so that if the back-up set for $v$ consists of devices at distances
+$d_1 \le d_2 \le \cdots\le d_k$, then we should have $f(d_j) \ge p_j$ for each $j$.
+
+Give an algorithm that determines whether it is possible to
+choose a back-up set for each device subject to this more detailed
+condition, still requiring that no device should appear in the back-up
+set of more than $b$ other devices. Again, the algorithm should output
+the back-up sets themselves, provided they can be found.
+\end{itemize}
+
+\section*{Answer}
+
+\subsection*{Problem (a)}
+\begin{figure}
+%\includegraphics[width=0.7\textwidth]{7.34.eps}
+\caption{Reducing the problem to network flow}
+\end{figure}
+
+\subsection*{Problem (b)}
+
+\end{document}
