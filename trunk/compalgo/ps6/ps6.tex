@@ -1,0 +1,115 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\newtheorem*{eg}{Example}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 6}
+\begin{document}
+\maketitle
+\section*{Chapter 7, Problem 13}
+in a standard $s$-$t$ Maximum-Flow Problem, we assume edges have capacities,
+and there is no limit on how much flow is allowed to pass through a node. In this problem, we consider the variant of the Maximum-Flow and
+Minimum-Cut problems with node capacities.
+
+Let $G = (V, E)$ be a directed graph, with source $s \in V$; sink $t \in V$, and
+nonnegative node capacities $\{c_v \ge 0\}$ for each $v \in V$. Given a flow $f$ in this
+graph, the flow though a node $v$ is defined as $f^{\textrm{in}}(v)$. We say that a flow
+is feasible if it satisfies the usual flow-conservation constraints and the
+node-capacity constraints: $f^{\textrm{in}}(v)\le c_v$ for all nodes.
+
+Give a polynomial-time algorithm to find an $s$-$t$ maximum flow in
+such a node-capacitated network. Define an $s$-$t$ cut for node-capacitated
+networks, and show that the analogue of the Max-Flow Min-Cut Theorem
+holds true.
+
+\section*{Answer}
+
+\section*{Chapter 7, Problem 28}
+A group of students has decided to add some features to Cornell's on-line
+Course Management System (CMS), to handle aspects of course planning
+that are not currently covered by the software. They're beginning with a
+module that helps schedule office hours at the start of the semester.
+
+Their initial prototype works as follows. The office hour schedule will
+be the same from one week to the next, so it's enough to focus on the
+scheduling problem for a single week. The course administrator enters
+a collection of nonoverlapping one-hour time intervals $I_1, I_2, \dots, I_k$ when
+it would be possible for teaching assistants (TAs) to hold office hours;
+the eventual office-hour schedule will consist of a subset of some, but
+generally, not all, of these time slots. Then each of the TAs enters his or
+her weekly schedule, showing the times when he or she would be available
+to hold office hours.
+
+Finally, the course administrator specifies, for parameters $a$, $b$, and
+$c$, that they would like each TA to hold between $a$ and $b$ office hours per
+week, and they would like a total of exactly $c$ office hours to be held over
+the course of the week.
+
+The problem, then, is how to assign each TA to some of the office hour
+time slots, so that each TA is available for each of his or her office hour
+slots, and so that the right number of office hours gets held. (There
+should be only one TA at each office hour.)
+
+{\eg \rm Suppose there are five possible time slots for office hours:}
+\begin{quote}
+{\it $I_1$ = Mon 3 -- 4 P.M.; $I_2$ = Tue 1 -- 2 P.M.; $I_3$ = Wed 10 -- 11 A.M.; $I_4$ = Wed 3 -- 4 P.M.; and $I_5$ = Thu 10 -- 11 A.M..}
+\end{quote}
+There are two TAs; the first would be able to hold office hours at any
+time on Monday or Wednesday afternoons, and the second would be able
+to hold office hours at any time on Tuesday, Wednesday, or Thursday.
+(In general, TA availability might be more complicated to specify than
+this, but we're keeping this example simple.) Finally, each TA should hold
+between $a = 1$ and $b = 2$ office hours, and we want exactly $c = 3$ office hours
+per week total.
+
+One possible solution would be to have the first TA hold office hours
+in time slot $I_1$, and the second TA to hold office hours In time slots $I_2$
+and $I_5$.
+\begin{itemize}
+\item[(a)] Give a polynomial-time algorithm that takes the Input to an Instance
+of this problem (the time slots, the TA schedules, and the parameters
+a, b, and c) and does one of the following two things:
+\begin{itemize}
+\item Constructs a valid schedule for office hours, specifying which
+TA will cover which time slots, or
+\item Reports (correctly) that there is no valid way to schedule office
+hours.
+\end{itemize}
+\item[(b)] This office-hour scheduling feature becomes very popular, and so
+course staffs begin to demand more. In particular, they observe that
+it's good to have a greater density of office hours closer to the due
+date of a homework assignment.
+
+So what they want to be able to do is to specify an office-hour
+density parameter for each day of the week: The number $d_i$ specifies
+that they want to have at least $d_i$ office hours on a given day $i$ of the
+week.
+
+For example, suppose that in our previous example, we add the
+constraint that we want at least one office hour on Wednesday and at
+least one office hour on Thursday. Then the previous solution does
+not work; but there is a possible solution in which we have the first
+TA hold office hours in time slot $I_1$, and the second TA hold office
+hours In time slots $I_3$ and $I_5$. (Another solution would be to have the
+first TA hold office hours in time slots $I_1$ and $I_4$, and the second TA
+hold office hours in time slot $I_5$.)
+
+Give a polynomial-time algorithm that computes office-hour
+schedules under this more complex set of constraints. The algorithm
+should either construct a schedule or report (correctly) that
+none exists.
+\end{itemize}
+
+\section*{Answer}
+\subsection*{Problem (a)}
+
+\subsection*{Problem (b)}
+
+\end{document}
