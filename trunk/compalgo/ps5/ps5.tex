@@ -1,0 +1,218 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\newtheorem{clm}{Claim}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 5}
+\begin{document}
+\maketitle
+\section*{Chapter 7, Problem 7}
+Consider a set of mobile computing clients in a certain town who each
+need to be connected to one of several possible \emph{base stations}. We'll
+suppose there are $n$ clients, with the position of each client specified
+by its $(x, y)$ coordinates in the plane. There are also $k$ base stations; the
+position of each of these is specified by $(x, y)$ coordinates as well.
+
+For each client, we wish to connect it to exactly one of the base
+stations. Our choice of connections is constrained in the following ways.
+There is a range parameter $r$ -- a client can only be connected to a base
+station that is within distance $r$. There is also a \emph{load parameter} $L$ -- no
+more than $L$ clients can be connected to any single base station.
+
+Your goal is to design a polynomial-time algorithm for the following
+problem. Given the positions of a set of clients and a set of base stations,
+as well as the range and load parameters, decide whether every client can
+be connected simultaneously to a base station, subject to the range and
+load conditions in the previous paragraph.
+
+\section*{Answer}
+We denote the $n$ client nodes with $c_1, c_2, \dots, c_n$ and the $k$ base stations with $b_1, b_2, \dots, b_k$. We convert the problem into a maximum-flow problem in the following way.
+\begin{itemize}
+\item Add a source node $s$ and add an edge from it to each client node with capacity 1;
+\item For each pair $(c_i, b_j)$, if the distance between $c_i$ and $b_j$ is within $r$, then add an edge from $c_i$ to $b_j$ with capacity 1;
+\item Add a sink node $t$ and add an edge from each base station node to it with capacity $L$.
+\end{itemize}
+
+Then we find the maximum flow in this flow network. If the the size of the maximum flow is $n$, then it is possible to connect every client to a base station at the same time; otherwise it is impossible to achieve the goal. Figure~1 illustrates the above conversion scheme.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{7.7.eps}
+\caption{Reducing the problem to a maximum-flow problem}
+\end{center}
+\end{figure}
+
+Next we prove that each solution to the problem corresponds to a maximum flow of size $n$ in the flow network and vice versa.
+
+\begin{itemize}
+\item Given a solution to the original problem, we know that each $c_i$ is connected to exactly one $b_j$, and each $b_j$ is connected from at most $L$ $c_i$'s. In the flow network, we let the edge from $c_i$ to $b_j$ carry flow of size 1 if $b_j$ is $c_i$'s base station, we also let the edge from $s$ to each $c_i$ carry flow of size 1 to meet conservation conditions. For the same reason, we let each edge from $b_j$ to $t$ carry flow of size $f^{\textrm{in}}b_j\le L$. Therefore we have a maximum flow of size $n$ since every edge going out from $s$ is saturated.
+\item Given a maximum flow of size $n$ in the flow network, we know that each edge out from $s$ must be saturated, and each edge in to $t$ must carry a flow no more than $L$, so $f^{\textrm{in}}c_i=1$ for each $c_i$ and $f^{\textrm{out}}b_j\le L$ for each $b_j$, thus $f^{\textrm{out}}c_i=f^{\textrm{in}}c_i=1$ for each $c_i$, and $f^{\textrm{in}}b_j = f^{\textrm{out}}b_j\le L$ for each $b_j$, which means all the edges between $\{c_1, c_2, \dots, c_n\}$ and $\{b_1, b_2, \dots, b_k\}$ carrying flow of size 1 make a valid solution to the original problem.
+\end{itemize}
+
+The conversion is composed of adding nodes $s$ and $t$, connecting $s$ with $n$ nodes and $t$ with $k$ nodes, and assigning capacity values to all the edges in the flow network, which can be completed in polynomial time; the maximum-flow problem can also be solved in polynomial time. Therefore, the time complexity of the algorithm is polynomial.
+
+\section*{Chapter 7, Problem 34}
+\emph{Ad hoc networks}, made up of low-powered wireless devices, have been
+proposed for situations like natural disasters in which the coordinators
+of a rescue effort might want to monitor conditions in a hard-to-reach
+area. The idea is that a large collection of these wireless devices could be
+dropped into such an area from an airplane and then configured into a
+functioning network.
+
+Note that we're talking about (a) relatively inexpensive devices that
+are (b) being dropped from an airplane into (c) dangerous territory; and
+for the combination of reasons (a), (b), and (c), it becomes necessary to
+include provisions for dealing with the failure of a reasonable number of
+the nodes.
+
+We'd like it to be the case that if one of the devices $v$ detects that it is in
+danger of failing, it should transmit a representation of its current state to
+some other device in the network. Each device has a limited transmitting
+range -- say it can communicate with other devices that lie within $d$ meters
+of it. Moreover, since we don't want it to try transmitting its state to a
+device that has already failed, we should include some redundancy: A
+device $v$ should have a set of $k$ other devices that it can potentially contact,
+each within $d$ meters of it. We'll call this a \emph{back-up set} for device $v$.
+
+\begin{itemize}
+\item[(a)] Suppose you're given a set of $n$ wireless devices, with positions
+represented by an $(x, y)$ coordinate pair for each. Design an algorithm
+that determines whether it is possible to choose a back-up set for
+each device (i.e., $k$ other devices, each within $d$ meters), with the
+further property that, for some parameter $b$, no device appears in
+the back-up set of more than $b$ other devices. The algorithm should
+output the back-up sets themselves, provided they can be found.
+
+\item[(b)] The idea that, for each pair of devices $v$ and $w$, there's a strict
+dichotomy between being ``in range'' or ``out of range'' is a simplified
+abstraction. More accurately, there's a power decay function $f(\cdot)$ that
+specifies, for a pair of devices at distance $\delta$, the signal strength $f(\delta)$
+that they'll be able to achieve on their wireless connection. (We'll
+assume that $f(\delta)$ decreases with increasing $\delta$.)
+
+We might want to build this into our notion of back-up sets as
+follows: among the $k$ devices in the back-up set of $v$, there should
+be at least one that can be reached with very high signal strength,
+at least one other that can be reached with moderately high signal
+strength, and so forth. More concretely, we have values $p_1 \ge p_2 \ge\cdots \ge
+p_k$, so that if the back-up set for $v$ consists of devices at distances
+$d_1 \le d_2 \le \cdots\le d_k$, then we should have $f(d_j) \ge p_j$ for each $j$.
+
+Give an algorithm that determines whether it is possible to
+choose a back-up set for each device subject to this more detailed
+condition, still requiring that no device should appear in the back-up
+set of more than $b$ other devices. Again, the algorithm should output
+the back-up sets themselves, provided they can be found.
+\end{itemize}
+
+\section*{Answer}
+
+\subsection*{Problem (a)}
+We convert the original problem into a maximum-flow problem in the following way.
+\begin{itemize}
+\item For each wireless device, create two nodes, namely $v_i$ and $v_i'$ ($i=1, 2, \dots, n$);
+\item Create the source node $s$ and the sink node $t$;
+\item For each node $v_i$, create an edge from $s$ to $v_i$ with capacity $k$;
+\item For every pair $(v_i, v_j')$ such that $i \ne j$, if the distance between device $i$ and $j$ is within $d$, then create an edge from $v_i$ to $v_j'$ with capacity 1;
+\item For each node $v_j'$, create an edge from $v_j'$ to $t$ with capacity $b$.
+\end{itemize}
+
+Then we find the maximum flow in the this flow network. If the size of the maximum flow is not $nk$, then we know that the required back-up sets do not exist; otherwise the edges between $\{v_1, v_2, \dots, v_n\}$ and $\{v_1', v_2', \dots, v_n'\}$ that carry flow of size 1 make a valid solution to the original problem, i.e., if edge $(v_i, v_j')$ carries flow of size 1, then device $j$ is in device $i$'s back-up set. Figure~2 illustrates the above conversion.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{7.34a.eps}
+\caption{Reducing problem (a) to maximum-flow problem}
+\end{center}
+\end{figure}
+
+Next we prove that each solution to the problem corresponds to a maximum flow of size $nk$ in the flow network and vice versa.
+\begin{itemize}
+\item Given a solution to the original problem, we know that each device finds $k$ other devices within a distance of $d$, and no device is in the back-up sets of more than $b$ other devices. In the flow network, we let the edge from $v_i$ to $v_j'$ carry flow of size 1 if device $i$ finds $j$ as one of its back-up devices. We then let the edge from $s$ to each $v_i$ carry flow of size $k$ to meet conservation conditions, because $f^{\textrm{out}}v_i = k$ for each $i$. For the same reason, we let the edge from $v_j'$ to $t$ carry flow of size $f^{\textrm{in}}v_j'$ for each $j$. Since no device is in the back-up sets of more than $b$ other devices, no edge from $v_j'$ to $t$ carry flow of size more than $b$. Therefore, it is a maximum flow of size $nk$ in the flow network since every edge going out from $s$ is saturated.
+\item Given a maximum flow of size $nk$ in the flow network, we let device $j$ in $i$'s back-up set if the edge from $v_i$ to $v_j'$ carries flow of size 1. We know that every edge out from $s$ must be saturated, so $f^{\textrm{in}}v_i=k$ for each $i$, therefore $f^{\textrm{out}}v_i=f^{\textrm{in}}v_i=k$ for each $i$,  which means each device finds its $k$ back-up devices,  and the fact that $f^{\textrm{out}}v_j'\le b$ for each $j$ yields that $f^{\textrm{in}}v_j'=f^{\textrm{out}}v_j'\le b$ for each $j$, which means no device appears in the back-up sets of more than $b$ other devices. 
+\end{itemize}
+
+The conversion consists of creating $2n+2$ nodes and $O(n^2)$ edges with designated capacities, which can be computed in polynomial time. Since the maximum-flow problem is solvable in polynomial time, the overall time complexity is polynomial.
+
+\subsection*{Problem (b)}
+For the sake of simplicity, we made the following definition about \emph{level-$l$ back-up devices}. i.e., if device $j$ is a back-up device for device $i$ and the distance between $i$ and $j$, which is $\delta$, satisfies $p_l\le f(\delta)< p_{l-1}$ ($p_0=+\infty$), then we say $j$ is a \emph{level-$l$ back-up} of $i$. The highest level is level 1 since it has the most strict constraint on distance. The original problem is equivalent to the following problem.
+\begin{quote}
+Determine whether each device can find at least one level-1 back-up, at least two back-ups of level 2 or above, $\dots$, and at least $k-1$ back-ups of level-$(k-1)$ or above, and totally $k$ back-ups of level-$k$ or above; no device is allowed in the back-up sets of more than $b$ other devices.
+\end{quote}
+
+We convert the original problem into a maximum-flow problem in the following way.
+\begin{itemize}
+\item For each wireless device $i$, create $3k+1$ nodes, namely $u_{il}$, $v_{il}$ and $v_{il}'$  for $l = 1, 2, \dots, k$, and $v_i'$. We use $S_l$ to denote the subgraph containing all the nodes $v_{il}$ and $v_{il}'$ ($i = 1, 2, \dots, n$) hereafter;
+\item Create the source node $s$ and the sink node $t$;
+\item For each node $u_{i1}$, create an edge from $s$ to $u_{i1}$ with capacity $k$;
+\item For each node $u_{il}$, create an edge from $u_{il}$ to $v_{il}$ with capacity $k+1-l$, i.e., $u_{i1}$ to $v_{i1}$ with capacity $k$, $u_{i2}$ to $v_{i2}$ with capacity $k-1$, $\dots$, $u_{ik}$ to $v_{ik}$ with capacity $1$;
+\item Create an edge from $u_{il}$ to $u_{i(l+1)}$ with capacity $k-l$ for each $l$ from 1 to $k-1$, i.e., $u_{i1}$ to $u_{i2}$ with capacity $k-1$, $u_{i2}$ to $u_{i3}$ with capacity $k-2$, $\dots$, $u_{i(k-1)}$ to $u_{ik}$ with capacity $1$;
+\item For each pair $(v_{i1}, v_{j1}')$ such that $i\ne j$ in $S_1$, if the distance between $v_{i1}$ and $v_{j1}'$, $\delta$, satisfies $f(\delta)\ge p_1$, then create an edge from $v_{i1}$ to $v_{j1}'$ with capacity 1;
+\item For each subgraph $S_l$ in $\{S_2, S_3, \dots, S_k\}$, create edges between $v_{il}$'s and $v_{jl}'$'s satisfying $p_l\le f(\delta)<p_{l-1}$ with capacity 1, where $\delta$ is the distance between some pair $(v_{il}, v_{jl}')$;
+\item For each node $v_{jl}'$, create an edge from $v_{jl}'$ to $v_j'$ with capacity $n$ (or infinity);
+\item For each node $v_j'$, create an edge from $v_j'$ to $t$ with capacity $b$.
+\end{itemize}
+
+Then we find the maximum flow in the this flow network. If the size of the maximum flow is not $nk$, then we know that the required back-up sets do not exist; otherwise the edges in $S_1, S_2, \dots, S_k$ that carry flow of size 1 make a valid solution to the original problem, i.e., edges in $S_l$ indicate each device's level-$l$ back-up device(s). Figure~3 illustrates the above conversion.
+
+\begin{figure}
+\begin{center}
+\includegraphics[width=\textwidth]{7.34b.eps}
+\caption{Reducing problem (b) to maximum-flow problem}
+\end{center}
+\end{figure}
+
+Next we prove that each solution to the problem corresponds to a maximum flow of size $nk$ in the flow network and vice versa.
+
+\begin{itemize}
+\item Given a solution to the original problem, we know that each device finds 
+\begin{itemize}
+\item at least one level-1 back-up, 
+\item at least two back-ups of level 2 or above, 
+
+$\dots$, 
+
+\item at least $k-1$ back-ups of level $k-1$ or above, and 
+\item totally $k$ back-ups of level $k$ or above, 
+\end{itemize}
+and no device is in the back-up sets of more than $b$ other devices. We let the edge from $v_{il}$ to $v_{jl}'$ (in subgraph $S_l$) carry flow of size 1 if device $j$ is one of device $i$'s level-$l$ back-ups. So for each $i=1,2,\dots,n$, we have
+\begin{align}
+\nonumber f^{\textrm{out}}v_{i1} & \ge 1\\\nonumber
+f^{\textrm{out}}v_{i1}+f^{\textrm{out}}v_{i2} & \ge 2\\\nonumber
+\dots & \dots \dots \\\nonumber
+f^{\textrm{out}}v_{i1}+f^{\textrm{out}}v_{i2}+\dots+f^{\textrm{out}}v_{i(k-1)} & \ge k-1\\\nonumber
+f^{\textrm{out}}v_{i1}+f^{\textrm{out}}v_{i2}+\dots+f^{\textrm{out}}v_{ik} & = k
+\end{align}
+therefore 
+\begin{align}
+\nonumber f^{\textrm{out}}v_{ik} & \le 1\\\nonumber
+f^{\textrm{out}}v_{i(k-1)} + f^{\textrm{out}}v_{i(k)}& \le 2\\\nonumber
+\dots & \dots \dots\\\nonumber
+f^{\textrm{out}}v_{i2} + f^{\textrm{out}}v_{i3} + \dots + f^{\textrm{out}}v_{i(k)} & \le k-1\\\nonumber
+f^{\textrm{out}}v_{i1}+f^{\textrm{out}}v_{i2}+\dots+f^{\textrm{out}}v_{ik} & = k
+\end{align}
+Therefore we can let each edge from $u_{il}$ to $v_{il}$ carry flow of size $f^{\textrm{out}}v_{il}$ and each edge from $u_{il}$ to $u_{i(l+1)}$ carry flow of size $f^{\textrm{out}}u_{i(l+1)}$ to meet conservation conditions while still meeting capacity conditions, and we have $f^{\textrm{out}}u_{ik} = k$ for all $i$. Then we let the edge from $s$ to each $u_{ik}$ carry flow of size $k$ to meet conservation conditions. We also let the edge from $v_{jl}'$ to $v_j'$ carry flow of size $f^{\textrm{in}}v_{jl}'$ for the same reason. Since no device is in the back-up sets of more than $b$ other devices, we have $f^{\textrm{in}}v_{j}' \le b$ for all $j$, so we can let each edge from  $v_j'$ to $t$ carry flow of size $f^{\textrm{in}}v_{j}'$ to meet conservation conditions while still meeting capacity conditions. Now we have a flow saturating all the edges out from $s$, which is a maximum flow of size $nk$.
+\item Given a maximum flow of size $nk$ in the flow network, we let device $j$ in device $i$'s back-up set if the edge from $v_{il}$ to $v_{jl}'$ carries flow of size 1 for some $l$. Now we prove this is a valid solution. We know that every edge out from $s$ must be saturated, so $f^{\textrm{in}}u_{il}=k$ for each $i$, therefore $f^{\textrm{out}}u_{il}=k$ for each $i$, so 
+\begin{align*}
+f^{\textrm{in}}v_{i1}+f^{\textrm{in}}v_{i2}+\dots+f^{\textrm{in}}v_{ik} = k
+\end{align*} 
+for each $i$, so 
+\begin{align*}
+f^{\textrm{out}}v_{i1}+f^{\textrm{out}}v_{i2}+\dots+f^{\textrm{out}}v_{ik} = k
+\end{align*} 
+which means every device finds its $k$ back-up devices. Since 
+\begin{align*}
+f^{\textrm{out}}v_{i(k-l+1)} + f^{\textrm{out}}v_{i(k-l+2)} + \dots + f^{\textrm{out}}v_{i(k-1)} + f^{\textrm{out}}v_{ik} \le l
+\end{align*}
+for each $l$, there are at least $k-l$ back-up devices of level $k-l$ or above. On the other hand, since $f^{\textrm{in}}v_j'=f^{\textrm{out}}v_j'\le b$ for each $j$, and $f^{\textrm{in}}v_j'$ is the total number of times that device $j$ acts as some other device's back-up, this means no device appears in the back-up sets of more than $b$ other devices. 
+\end{itemize}
+
+The conversion consists of creating $3kn+n+2$ nodes and $O(kn^2)$ edges with designated capacities, which can be computed in polynomial time. Since the maximum-flow problem is solvable in polynomial time, the overall time complexity is polynomial.
+
+\end{document}
