@@ -30,12 +30,30 @@ networks, and show that the analogue of the Max-Flow Min-Cut Theorem
 holds true.
 
 \section*{Answer}
+To find an $s$-$t$ maximum flow in a node-capacitated network $G$, we convert the problem to a standard $s$-$t$ problem, i.e., given $G$, we create the standard flow network $G'$ as follows.
+\begin{itemize}
+\item For each node $v\in V$, we create two nodes, namely $v_{in}$ and $v_{out}$, and create an edge from $v_{in}$ to $v_{out}$ with capacity $c_v$ in $G'$;
+\item We let $s_{in}$ be the source in $G'$, and $t_{out}$ the sink;
+\item For each edge from $v_i$ to $v_j$ in $G$, we create an edge from $v_{iout}$ to $v_{jin}$ with capacity $+\infty$ in $G'$.
+\end{itemize}
+Then we run some maximum flow algorithm on $G'$, and let the flow on the edge from $v_i$ to $v_j$ in $G$ be the same as the flow on the edge $v_{iout}$ to $v_{jin}$ in $G'$. This is the maximum flow on $G$. Figure~1 gives an example of the conversion.
 \begin{figure}
 \begin{center}
-%\includegraphics[width=0.7\textwidth]{7.13.eps}
+\includegraphics[width=0.7\textwidth]{7.13.eps}
 \caption{Reducing the problem to a normal maximum flow problem}
 \end{center}
 \end{figure}
+
+Next we prove that a flow in $G$ corresponds to a flow of the same size in $G'$, and vice versa.
+\begin{itemize}
+\item Given a flow in $G$, we know that for each $v\in V$, $f^{in}v\le c_v$, so we can assign a flow of size $f^{in}v$ on the edge from $v_{in}$ to $v_{out}$ in $G'$. We also assign the edge from $v_{iout}$ to $v_{jin}$ in $G'$ a flow of the same size as the edge from $v_i$ to $v_j$ in $G$. Since $f^{out}s$ in $G$ is the same as $f^{out}s_{out}$ in $G'$, which is the same as $f^{out}s_{in}$, we have created a flow with the same size in $G'$.
+\item Given a flow in $G'$, we know that the flow on each edge from $v_{in}$ to $v_{out}$ in $G'$ is less than $c_v$, thus $f^{in}v_{in}$ is less than $c_v$, so we can let edge from $v_i$ to $v_j$ in $G$ carry flow of the same size as the edge from $v_{iout}$ to $v_{jin}$ in $G'$. Then $f^{out}s$ in $G$ is the same as $f^{out}s_{out}$ in $G'$, which is the same as $f^{out}s_{in}$, we have created a flow with the same size in $G$.
+\end{itemize}
+Therefore a maximum flow in $G'$ corresponds to a maximum flow in $G$ and they have the same size.
+
+Constructing $G'$ consists of creating $2n$ nodes, where $n = |V|$ in $G$, and assigning capacities to $m+n$ edges, where $m = |E|$ in G, which can be finished in polynomial time. Since finding the maximum flow for a standard flow network takes polynomial time, the overall time complexity is polynomial.
+
+An $s$-$t$ cut in $G$ can be defined as the set of nodes that separate $s$ from $t$ if deleted. The size of a cut is the sum of node capacity in the cut. Note that the minimum cut in $G'$ must be a set of edges each from $v_{in}$ to $v_{out}$, which corresponds to a set of nodes in $G$, i.e., edge ($v_{in}$, $v_{out}$) corresponds to node $v$. Also the minimum cut in $G$, which is a set of nodes, corresponds to a set of edges ($v_{in}$, $v_{out}$) in $G'$, so the Max-Flow Min-Cut Theorem holds true for node-capacitated flow networks.
 
 \section*{Chapter 7, Problem 28}
 A group of students has decided to add some features to Cornell's on-line
@@ -115,12 +133,23 @@ none exists.
 
 \section*{Answer}
 \subsection*{Problem (a)}
+We convert this problem into a circulation problem as follows.
+\begin{itemize}
+\item 
+\end{itemize}
+Then we solve the circulation problem with some network flow algorithm, if we cannot find a feasible circulation for $G$, we know that a schedule does not exist, otherwise all the edges from $TA_i$ to $I_j$ with flow of size 1 corresponds to a schedule, i.e., if the edge from $TA_i$ to $I_j$ carries flow of size 1, TA $i$ should work during time interval $I_j$. Figure~2 illustrates the conversion.
 \begin{figure}
 \begin{center}
 %\includegraphics[width=0.7\textwidth]{7.28a.eps}
 \caption{Reducing problem (a) into a circulation problem, all nodes have demand 0}
 \end{center}
 \end{figure}
+
+Next we prove that a solution to the original problem corresponds to a feasible circulation in $G$, and vice versa.
+\begin{itemize}
+\item Given a solution to the original problem, 
+\item Given a feasible circulation in $G$
+\end{itemize}
 
 \subsection*{Problem (b)}
 \begin{figure}
