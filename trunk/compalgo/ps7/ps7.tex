@@ -1,0 +1,60 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\newtheorem*{eg}{Example}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 7}
+\begin{document}
+\maketitle
+\section*{Chapter 7, Problem 29}
+Some of your friends have recently graduated and started a small company,
+which they are currently running out of their parents' garages in
+Santa Clara. They're in the process of porting all their software from an
+old system to a new, revved-up system; and they're facing the following
+problem.
+
+They have a collection of $n$ software applications, $\{1, 2, \dots, n\}$, running
+on their old system; and they'd like to port some of these to the new
+system. If they move application $i$ to the new system, they expect a net
+(monetary) benefit of $b_i \ge 0$. The different software applications interact
+with one another; if applications $i$ and $j$ have extensive interaction, then
+the company, will incur an expense if they move one of $i$ or $j$ to the new
+system but not both; let's denote this expense by $x_{ij} \ge 0$.
+
+So, if the situation were really this simple, your friends would just
+port all $n$ applications, achieving a total benefit of $\sum_i b_i$. Unfortunately,
+there's a problem, ...
+
+Due to small but fundamental incompatibilities between the two
+systems, there's no way to port application 1 to the new system; it will
+have to remain on the old system. Nevertheless, it might still pay off to
+port some of the other applications, accruing the associated benefit and
+incurring the expense of the interaction between applications on different
+systems.
+
+So this is the question they pose to you: Which of the remaining
+applications, if any, should be moved? Give a polynomial-time algorithm
+to find a set $S \subseteq \{2, 3, \dots, n\}$ for which the sum of the benefits minus the
+expenses of moving the applications in $S$ to the new system is maximized.
+
+\section*{Answer}
+
+\section*{Chapter 7, Problem 30}
+Consider a variation on the previous problem. In the new scenario, any
+application can potentially be moved, but now some of the benefits $b_i$ for
+moving to the new system are in fact negative: If $b_i < 0$, then it is preferable
+(by an amount quantified in $b_i$) to keep $i$ on the old system. Again, give
+a polynomial-time algorithm to find a set $S \subseteq \{1, 2, \dots, n\}$ for which the
+sum of the benefits minus the expenses of moving the applications in $S$
+to the new system is maximized.
+
+\section*{Answer}
+
+\end{document}
