@@ -58,7 +58,7 @@ Given applications 1 through $n$, each with a net benefit $b_i \ge 0$, and each 
 \item We create two edges for each node pair $i$ and $j$, one from $i$ to $j$, the other from $j$ to $i$, both with capacity $x_{ij}$.
 \end{itemize}
 
-Then we run the Min-Cut algorithm on the flow network. Suppose we find a minimum cut ($\{s\}\cup A, \{t\}\cup S$), then the applications in $S$ should should be ported to the new system, and the rest should remain on the old system. Figure~1 illustrates the conversion.
+Then we run the Min-Cut algorithm on the flow network. Suppose we find a minimum cut ($\{s\}\cup A, \{t\}\cup S$), then the applications in $S$ should be ported to the new system, and the rest should remain on the old system. Figure~1 illustrates the conversion.
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.7\textwidth]{7.29.eps}
@@ -79,7 +79,7 @@ q'(S)=\sum_{i\notin S}b_i+\sum_{|S\cap \{i,j\}|=1}x_{ij}
 so $q(S)+q'(S)=\sum_i b_i$.
 \item Given a cut ($\{s\}\cup A, \{t\}\cup S$) with a finite size, we know that node 1 must not belong to $S$, we port application $i$ to the new system if node $i$ belongs to $S$ and let the rest applications remain on the old system. We also get $q(S)+q'(S)=\sum_i b_i$ through the same calculation as above.
 \end{itemize}
-Therefore the porting plan with the maximum value corresponds to the cut with the minimum value.
+Therefore the porting plan with the maximum value corresponds to the cut with the minimum size.
 
 Constructing the flow network consists of creating $n+2$ nodes and $O(n^2)$ edges with capacities, which can be completed in polynomial time. Since the Minimum-Cut problem can be solved in polynomial time, the overall time complexity is polynomial.
 
@@ -106,7 +106,7 @@ Given applications 1 through $n$, each with a net benefit $b_i$, and each pair w
 \item We create two edges for each node pair $i$ and $j$, one from $i$ to $j$, the other from $j$ to $i$, both with capacity $x_{ij}$.
 \end{itemize}
 
-Then we run the Min-Cut algorithm on the flow network. Suppose we find a minimum cut ($\{s\}\cup A, \{t\}\cup S$), then the applications in $S$ should should be ported to the new system, and the rest should remain on the old system. Figure~2 illustrates the conversion.
+Then we run the Min-Cut algorithm on the flow network. Suppose we find a minimum cut ($\{s\}\cup A, \{t\}\cup S$), then the applications in $S$ should be ported to the new system, and the rest should remain on the old system. Figure~2 illustrates the conversion.
 \begin{figure}
 \begin{center}
 \includegraphics[width=0.7\textwidth]{7.30.eps}
@@ -132,7 +132,7 @@ so
 \end{align}
 \item Given a cut ($\{s\}\cup A, \{t\}\cup S$), we port application $i$ to the new system if node $i$ belongs to $S$ and let the rest applications remain on the old system. We also get $q(S)+q'(S)=\sum_{b_i>0} b_i$ through the same calculation as above.
 \end{itemize}
-Therefore the porting plan with the maximum value corresponds to the cut with the minimum value.
+Therefore the porting plan with the maximum value corresponds to the cut with the minimum size.
 
 Constructing the flow network consists of creating $n+2$ nodes and $O(n^2)$ edges with capacities, which can be completed in polynomial time. Since the Minimum-Cut problem can be solved in polynomial time, the overall time complexity is polynomial.
 
