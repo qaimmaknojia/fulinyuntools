@@ -138,7 +138,7 @@ We convert this problem into a circulation problem by creating a circulation net
 \item For each TA $i$, create a node $TA_i$; for each time interval $I_j$, create a node $I_j$; create another two nodes $s$ and $t$; assign all these nodes 0 demand;
 \item Create an edge from $s$ to each $TA_i$ with lower bound $a$ and capacity $b$;
 \item Create an edge from $TA_i$ to $I_j$ with lower bound 0 and capacity 1 if TA $i$ can attend time interval $I_j$;
-\item Create an edge from each $I_j$ to $t$ with lower bound 0 and capacity $+\infty$;
+\item Create an edge from each $I_j$ to $t$ with lower bound 0 and capacity 1;
 \item Create an edge from $t$ to $s$ with lower bound $c$ and capacity $c$.
 \end{itemize}
 Then we solve the circulation problem on $G$ with some network flow algorithm, if we cannot find a feasible circulation for $G$, we know that a schedule does not exist, otherwise all the edges from $TA_i$ to $I_j$ with flow of size 1 corresponds to a schedule, i.e., if the edge from $TA_i$ to $I_j$ carries flow of size 1, TA $i$ should work during time interval $I_j$. Figure~2 illustrates the conversion.
@@ -151,8 +151,8 @@ Then we solve the circulation problem on $G$ with some network flow algorithm, i
 
 Next we prove that a solution to the original problem corresponds to a feasible circulation in $G$, and vice versa.
 \begin{itemize}
-\item Given a solution to the original problem, we know that each TA attends between $a$ and $b$ time intervals, and there are exactly $c$ office hours in all. So we can let the edge from $TA_i$ to $I_j$ carry flow of size 1 if $TA_i$ attends $I_j$, and let the edge from $s$ to each $TA_i$ carry flow of size $f^{\textrm{out}}(TA_i)$ to fulfil conservation conditions without violating flow size constraints on these edges since $a\le f^{\textrm{out}}(TA_i)\le b$ for each $i$. We also know that $\sum_{j}f^{\textrm{in}}(I_j)=c$, so $f^{\textrm{in}}(t)=\sum_{j}f^{\textrm{out}}(I_j)=\sum_{j}f^{\textrm{in}}(I_j)=c$, so we can assign each edge from $I_j$ to $t$ with flow of size $f^{\textrm{in}}(I_j)$ and assign the edge from $t$ to $s$ with flow of size $c$. Now we have a feasible circulation on $G$.
-\item Given a feasible circulation in $G$, we schedule $TA_i$ to attend $I_j$ if the edge from $TA_i$ to $I_j$ carry flow of size 1. Since $f^{\textrm{out}}(TA_i)=f^{\textrm{in}}(TA_i)$ is between $a$ and $b$ for each $i$, we know that each TA has between $a$ and $b$ office hours; the edge from $t$ to $s$ carries flow of size $c$, so $\sum_{j}f^{\textrm{in}}(I_j)=\sum_{j}f^{\textrm{out}}(I_j)=f^{\textrm{in}}(t)=c$, which means totally $c$ office hours are held. So this is a valid office hour schedule.
+\item Given a solution to the original problem, we know that each TA attends between $a$ and $b$ time intervals, no two TAs attend the same office hour, and there are exactly $c$ office hours in all. So we can let the edge from $TA_i$ to $I_j$ carry flow of size 1 if $TA_i$ attends $I_j$, and let the edge from $s$ to each $TA_i$ carry flow of size $f^{\textrm{out}}(TA_i)$ to fulfil conservation conditions without violating flow size constraints on these edges since $a\le f^{\textrm{out}}(TA_i)\le b$ for each $i$. We also know that $\sum_{j}f^{\textrm{in}}(I_j)=c$, so $f^{\textrm{in}}(t)=\sum_{j}f^{\textrm{out}}(I_j)=\sum_{j}f^{\textrm{in}}(I_j)=c$, so we can assign each edge from $I_j$ to $t$ with flow of size $f^{\textrm{in}}(I_j)$ (which is either 0 or 1) and assign the edge from $t$ to $s$ with flow of size $c$. Now we have a feasible circulation on $G$.
+\item Given a feasible circulation in $G$, we schedule $TA_i$ to attend $I_j$ if the edge from $TA_i$ to $I_j$ carry flow of size 1. Since $f^{\textrm{out}}(TA_i)=f^{\textrm{in}}(TA_i)$ is between $a$ and $b$ for each $i$, we know that each TA has between $a$ and $b$ office hours; the edge from $t$ to $s$ carries flow of size $c$, so $\sum_{j}f^{\textrm{in}}(I_j)=\sum_{j}f^{\textrm{out}}(I_j)=f^{\textrm{in}}(t)=c$, which means totally $c$ office hours are held. Also $f^{\textrm{in}}(I_j)=f^{\textrm{out}}(I_j)\in \{0,1\}$, which means at most 1 TA attends each office hour. So this is a valid office hour schedule.
 \end{itemize}
 
 Suppose there are $n$ TAs, Constructing $G$ consists of creating $n+k+2$ nodes with demand 0, and up to $kn+n+k+1$ edges with lower bounds and capacities, which can be done in polynomial time. Since finding a feasible circulation takes polynomial time, the overall time complexity is polynomial.
@@ -163,7 +163,7 @@ We convert this problem into a circulation problem by creating a circulation net
 \item For each TA $i$, create a node $TA_i$; for each time interval $I_j$, create a node $I_j$; create a day node $d$ for each day of the week ($d=Mon, Tue, \dots, Friday$); create another two nodes $s$ and $t$; assign all these nodes 0 demand;
 \item Create an edge from $s$ to each $TA_i$ with lower bound $a$ and capacity $b$;
 \item Create an edge from $TA_i$ to $I_j$ with lower bound 0 and capacity 1 if TA $i$ can attend time interval $I_j$;
-\item Create an edge from each $I_j$ to day node $d$ with lower bound 0 and capacity $+\infty$ if $I_j$ is in $d$;
+\item Create an edge from each $I_j$ to day node $d$ with lower bound 0 and capacity 1 if $I_j$ is in $d$;
 \item Create an edge from each day node $d$ to $t$ with lower bound $d_i$ and capacity $+\infty$ if $d$ is the $i$-th day of the week;
 \item Create an edge from $t$ to $s$ with lower bound $c$ and capacity $c$.
 \end{itemize}
