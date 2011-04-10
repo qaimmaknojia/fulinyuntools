@@ -1,0 +1,92 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\newtheorem*{eg}{Example}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 8}
+\begin{document}
+\maketitle
+\section*{Chapter 8, Problem 3}
+Suppose you're helping to organize a summer sports camp, and the
+following problem comes up. The camp is supposed to have at least
+one counselor who's skilled at each of the $n$ sports covered by the camp
+(baseball, volleyball, and so on). They have received job applications from
+$m$ potential counselors. For each of the $n$ sports, there is some subset
+of the $m$ applicants qualified in that sport. The question is: For a given
+number $k < m$, is it possible to hire at most $k$ of the counselors and have
+at least one counselor qualified in each of the $n$ sports? We'll call this the
+{\em Efficient Recruiting Problem}.
+
+Show that Efficient Recruiting is NP-complete.
+
+\section*{Answer}
+Given the subset of applicants qualified in each sport, we can easily know the subset of sports each applicant is skilled at. We denote an instance of Efficient Recruiting as $(U, S_1, S_2, \dots, S_m, k)$, where $U$ is the full set of the $n$ sports, $S_i$ are the subset of sports applicant $i$ is skilled at, and $k$ is the largest number of counselors to hire.
+
+First, given the subset of sports each applicant is skilled at, and no more than $k$ applicants as a certificate, we can check whether these applicants cover all the $n$ sports by calculating the union of the set of sports each of these $k$ applicants is skilled at and see if it equals the full set of all the sports. This calculation takes polynomial time, therefore Efficient Recruiting is NP.
+
+Next we show that Efficient Recruiting is harder than Set Cover. Given an instance of Set Cover $(U, S_1, S_2, \dots, S_m, k)$, we construct an instance of Efficient Recruiting $(U', S_1', S_2', \dots, S_{m'}', k')$ as follows.
+\begin{itemize}
+\item $U' = U$;
+\item $m'=m$ and $S_i' = S_i$ for each $i$ from 1 to $m$;
+\item $k'=k$.
+\end{itemize}
+
+Given the answer to a Set Cover problem instance, we know whether we can find at most $k$ sets from $S_1, S_2, \dots, S_m$ whose union is the full set $U$, so we know whether we can find at most $k'$ sets from $S_1', S_2', \dots, S_{m'}'$ whose union is $U'$, which means we can hire at most $k'$ counselors and have at least one counselor qualified in each sport.
+
+On the other hand, given the answer to an Efficient Recruiting problem instance, we know whether we can find at most $k'$ counselors to cover all the sports, which means we can find at most $k'$ sets from $S_1', S_2', \dots, S_{m'}'$ whose union is $U'$, which means we can find at most $k$ sets from $S_1, S_2, \dots, S_m$ whose union is the full set $U$.
+
+The reduction consists of creating the full set $U'$, $m$ subsets $S_i'$, and copying the value of $k$, which can be completed in polynomial time, so Efficient Recruiting is NP-complete.
+
+\section*{Chapter 8, Problem 9}
+Consider the following problem. You are managing a communication
+network, modeled by a directed graph $G = (V, E)$. There are $c$ {\em users} who
+are interested in malting use of this network. User $i$ (for each $i = 1, 2, \dots, c$)
+issues a {\em request} to reserve a specific path $P_i$ in $G$ on which to transmit
+data.
+
+You are interested in accepting as many of these path requests as
+possible, subject to the following restriction: if you accept both $P_i$ and $P_j$,
+then $P_i$ and $P_j$ cannot share any nodes.
+
+Thus, the {\em Path Selection Problem} asks: Given a directed graph $G =
+(V, E)$, a set of requests $P_1, P_2, \dots, P_c$ -- each of which must be a path in
+$G$ -- and a number $k$, is it possible to select at least $k$ of the paths so that
+no two of the selected paths share any nodes?
+
+Prove that Path Selection is NP-complete.
+
+\section*{Answer}
+We denote an instance of Path Selection as $(G=(V,E), P_1, P_2, \dots, P_c, k)$.
+
+First, given $G$ and no more than $k$ paths from $P_1, P_2, \dots, P_c$ as a certificate, we can check whether these paths share any node by calculating the intersection of the node set of each path in polynomial time, therefore Path Selection is NP.
+
+Next we show that Path Selection is harder than Independent Set. Given an instance of Independent Set $(G=(V,E), k)$, we construct an instance of Path Selection $(G'=(V',E'), P_1, P_2, \dots, P_c, k')$ as follows.
+\begin{itemize}
+\item $V' = E\cup V$, i.e., for each edge $(v_i, v_j)\in E$, we create a node $v_{ij}$ in $V'$, and for each node $v_i\in V$, we create a node $v_i$ in $V'$;
+\item $c = |V|$;
+\item For each $i$, we connect all nodes of form $v_{ij}$ and $v_{ji}$ and $v_i$ in some order to form a chain, and we let $P_i$ be this chain;
+\item $k'=k$.
+\end{itemize}
+Figure~1 illustrate the reduction.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.7\textwidth]{8.9.eps}
+\caption{Reduce Independent Set to Path Selection, $P_1=(v_1, v_{12}, v_{13}, v_{14})$, $P_2=(v_2, v_{12}, v_{23})$, $P_3=(v_3, v_{13}, v_{23})$, $P_4=(v_{14}, v_4)$}
+\end{center}
+\end{figure}
+
+Given the answer to a Independent Set problem instance, we know whether we can find at least $k$ nodes from $V$ where no two nodes are adjacent, so we know whether we can find at least $k'$ paths from $P_1, P_2, \dots, P_c$ where no two paths share any nodes, because $v_i$ and $v_j$ are adjacent in $G$ iff $P_i$ and $P_j$ share node $v_{ij}$ in $G'$.
+
+On the other hand, given the answer to a Path Selection problem instance, we know whether we can find at least $k'$ paths where no two paths share any nodes, which means we can find at least $k$ nodes from $V$ where no two nodes are adjacent.
+
+The reduction consists of creating $|E|+|V|$ nodes and $O(|V|^2)$ edges, setting $|V|$ paths and copying $k$, which can be completed in polynomial time, so Path Selection is NP-complete.
+
+\end{document}
+
