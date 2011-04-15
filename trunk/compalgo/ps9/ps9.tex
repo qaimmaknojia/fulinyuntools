@@ -1,0 +1,108 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{amsthm}
+
+\newtheorem*{eg}{Example}
+
+\author{Linyun Fu}
+\title{CSCI 4020 Computer Algorithms Spring 2011\\
+Problem Set 9}
+\begin{document}
+\maketitle
+\section*{Chapter 8, Problem 8}
+Your friends' preschool-age daughter Madison has recently learned to
+spell some simple words. To help encourage this, her parents got her a
+colorful set of refrigerator magnets featuring the letters of the alphabet
+(some number of copies of the letter A, some number of copies of the
+letter B, and so on), and the last time you saw her the two of you spent a
+while arranging the magnets to spell out words that she knows.
+
+Somehow with you and Madison, things always end up getting more
+elaborate than originally planned, and soon the two of you were trying
+to spell out words so as to use up all the magnets in the full set -- that
+is, picking words that she knows how to spell, so that once they were all
+spelled out, each magnet was participating in the spelling of exactly one
+of the words. (Multiple copies of words are okay here; so for example, if
+the set of refrigerator magnets includes two copies each of C, A, and T, 
+it would be okay to spell out CAT twice.)
+
+This turned out to be pretty difficult, and it was only later that you
+realized a plausible reason for this. Suppose we consider a general version
+of the problem of \emph{Using Up All the Refrigerator Magnets}, where we replace
+the English alphabet by an arbitrary collection of symbols, and we model
+Madison's vocabulary as an arbitrary set of strings over this collection of
+symbols. The goal is the same as in the previous paragraph.
+
+Prove that the problem of Using Up All the Refrigerator Magnets is
+NP-complete.
+
+\section*{Answer}
+First I show that Using Up All the Refrigerator Magnets is in NP. Given the collection of symbols and the vocabulary, along with a collection of strings as a certificate, we can check whether each string in the certificate belongs to the vocabulary and whether all the symbols in the collection is just used up in polynomial time. So this problem is in NP.
+
+Next I show that this problem is NP-complete by showing that it is harder than the problem of Subset Sum.
+
+First I develop a representation of an instance of the problem of Using Up All the Refrigerator Magnets. Suppose there are $k$ different symbols and we have $s_1, s_2, \dots, s_k$ copies of Symbol $1, 2, \dots, k$, respectively, and the vocabulary is $\{t_1, t_2, \dots, t_m\}$. Since the order of symbols within a string does not matter, each string $t_i$ can be thought of as a vector $(t_{i1}, t_{i2}, \dots, t_{ik})$, which means that $t_i$ contains $t_{i1}, t_{i2}, \dots, t_{ik}$ copies of Symbol $1, 2, \dots, k$, respectively. We denote an instance of the problem of Using Up All the Refrigerator Magnets as $(s_1, s_2, \dots, s_k, t_1, t_2, \dots, t_m)$.
+
+An instance of the problem of Subset Sum, $(w_1, w_2, \dots, w_n, W)$, can be reduced into an instance of the problem of Using Up All the Refrigerator Magnets, $(s_1, s_2, \dots, s_k, t_1, t_2, \dots, t_m)$, in the following way.
+\begin{itemize}
+\item $k=n+1, s_1=W, s_2=s_3=\dots=s_k=1$;
+\item $m=2n$; 
+\item For each $1\le i \le n$, 
+\begin{align}
+t_{ij}=\left\{\begin{array}{rl}
+w_i, & \textrm{if } j=1\\
+1, & \textrm{if } j=i+1\\
+0, & \textrm{otherwise}
+\end{array}\right.
+\end{align}
+\item For each $n+1\le i \le m$, 
+\begin{align}
+t_{ij}=\left\{\begin{array}{rl}
+1, & \textrm{if } j=i-n+1\\
+0, & \textrm{otherwise}
+\end{array}\right.
+\end{align}
+these are dummies to ensure that each string is used at most once.
+\end{itemize}
+Table~1 illustrates this reduction, which consists of constructing $2n+1$ of $(n+1)$-dimensional integer vectors, and thus can be completed in polynomial time.
+
+\begin{table}
+\begin{center}
+\caption{Reduce Subset Sum to Using Up All the Refrigerator Magnets}
+\vspace{1ex}
+\begin{tabular}{l|r@{,}l}
+$t_1$ & $(w_1$ & $1, 0, 0, \dots, 0, 0)$\\
+$t_2$ & $(w_2$ & $0, 1, 0, \dots, 0, 0)$\\
+$\vdots$ & \multicolumn{2}{c}{$\vdots$}\\
+$t_n$ & $(w_n$ & $0, 0, 0, \dots, 0, 1)$\\
+$t_{n+1}$ & $(0$ & $1, 0, 0, \dots, 0, 0)$\\
+$t_{n+2}$ & $(0$ & $0, 1, 0, \dots, 0, 0)$\\
+$\vdots$ & \multicolumn{2}{c}{$\vdots$}\\
+$t_{m}$ & $(0$ & $0, 0, 0, \dots, 0, 1)$\\
+\hline
+all & $(W$ & $1, 1, 1, \dots, 1, 1)$
+\end{tabular}
+\end{center}
+\end{table}
+
+Given an answer to the Subset Sum problem, we know that a subset of $\{w_1, w_2, \dots, w_n\}$ sums up to $W$, we can find the corresponding $t_i$'s from $\{t_1, t_2, \dots, t_n\}$, i.e., if $w_i$ is in the subset, then $t_i$ would be chosen, and select proper dummy strings from $\{t_{n+1}, t_{n+2}, \dots, t_m\}$ to sum up to $(W, 1, 1, \dots, 1)=(s_1, s_2, \dots, s_k)$, so we know that there is a spelling scheme to use up the magnets.
+
+Given an answer to the Using Up All the Refrigerator Magnets problem, we know that it is possible to spell some strings from $\{t_1, t_2, \dots, t_m\}$ for arbitrary times to use up all the symbols $(W, 1, 1, \dots, 1)$, since there are only 1 copy of Symbol 2 through Symbol $k$, we know that each string from $t_1$ through $t_n$ is spelled at most once. The corresponding $w_i$'s of the spelled strings add up to $W$, which means an answer exists for the Subset Sum problem.
+
+\section*{Chapter 8, Problem 17}
+You are given a directed graph $G = (V, E)$ with weights $w_e$ on its edges $e \in E$.
+The weights can be negative or positive. The \emph{Zero-Weight-Cycle Problem}
+is to decide if there is a simple cycle in $G$ so that the sum of the edge
+weights on this cycle is exactly 0. Prove that this problem is NP-complete.
+
+\section*{Answer}
+First I show that the Zero-Weight-Cycle problem is in NP. Given an instance of this problem, which consists of a directed graph and a weight on each of its edge, along with a sequence of vertices $(v_1, v_2, \dots, v_k)$ as a certificate, we can check whether the certificate is a simple cycle in $G$ and whether the edge weights on this cycle sum up to 0 in polynomial time. So this problem is in NP.
+
+Next I prove that this problem is NP-complete by showing that it is harder than the problem of 
+ 
+\end{document}
+
