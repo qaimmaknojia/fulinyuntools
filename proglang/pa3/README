@@ -1,0 +1,9 @@
+
+* How to run the program
+ - Make sure you include the salsa<version>.jar file in the classpath environment variable.
+ - Compile source files: java salsac.SalsaCompiler sky/*.salsa
+ - Compile java files: javac sky/*.java
+ - Start naming server: java wwc.naming.WWCNamingServer
+ - Start theaters claimed in theatersFile.txt: java wwc.messaging.Theater <port_number>
+ - Start the analyzer: java sky.Analyzer
+
