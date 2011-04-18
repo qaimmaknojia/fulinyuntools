@@ -121,6 +121,6 @@ Figure~1 illustrates the reduction, which consists of creating $2n$ nodes and $m
 
 Given an answer to the Directed Hamiltonian Cycle problem, we know that there exists a simple cycle $(v_{j1}, v_{j2}, \dots, v_{jn})$ that contains every node in $V$. Consider the cycle $(v_{j1in}, v_{j1out}, v_{j2in}, v_{j2out}, \dots, v_{jnin}, v_{jnout})$ in $G'$, it is a simple cycle and the weights of its edges sum up to 0, so we get an answer to the Zero-Weight-Cycle problem.
 
-Given an answer to the Zero-Weight-Cycle problem, we know that there exists a simple cycle on $G'$ and the weights on its edges sum up to 0. Because of the weight assignment on $G'$, this would happen only when the cycle contains every edge $(v_{iin}, v_{iout})$ for $i=1,2,\dots,n$, so we can find a Hamiltonian cycle by replacing each edge $(v_{iin}, v_{iout})$ with node $v_i$ in $E$.
+Given an answer to the Zero-Weight-Cycle problem, we know that there exists a simple cycle on $G'$ and the weights on its edges sum up to 0. Because of the weight assignment on $G'$, this would happen only when the cycle contains every edge $(v_{iin}, v_{iout})$ for $i=1,2,\dots,n$, so we can find a Hamiltonian cycle on $G$ by replacing each edge $(v_{iin}, v_{iout})$ with node $v_i$ in $V$.
 \end{document}
 
