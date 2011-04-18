@@ -30,93 +30,97 @@ import java.util.*;
  */
 
 behavior Analyze {
-  String starsFile = "stars_21_xyz.txt";    // Stars file
-  int n = 2;    // The number of actors   
-  long initialTime;    // Starting Time
-  String nameServer = "localhost";        // Name Server
-  String theatersFile = "theatersFile.txt";    // File containing the theaters          
+	String starsFile = "stars_21_xyz.txt";    // Stars file
+	int n = 2;    // The number of actors   
+	long initialTime;    // Starting Time
+	String nameServer = "localhost";        // Name Server
+	String theatersFile = "theatersFile.txt";    // File containing the theaters          
 
-  void act(String args[]){
-    int argc = args.length;
-      if(argc>=1) starsFile=args[0];
-      if(argc>=2) n=Integer.parseInt(args[1]);
-      if(argc>=3) nameServer=args[2];
-      if(argc>=4) theatersFile = args[3];
-      Dedup()@DistributeWork()@displayResults(token)@endTimer();
-  }      
+	void act(String args[]) {
+		int argc = args.length;
+		if(argc>=1) starsFile=args[0];
+		if(argc>=2) n=Integer.parseInt(args[1]);
+		if(argc>=3) nameServer=args[2];
+		if(argc>=4) theatersFile = args[3];
+		dedup()@distributeWork(token)@displayResults(token)@endTimer();
+	}      
 
-  double[ ][ ] DistributeWork(){
-    Double h = new Double((b-a)/n);    // Trapezoid base length    
-    Integer local_n = new Integer((int) (n/noActors));   // Number of trapezoids for  
-    Double   local_a;   // Left endpoint my process 
-    Double   local_b;   // Right endpoint my process
+	/* Deduplicate the stars file, return the name of the deduplicated file */
+	String dedup() {
 
-    //create actors and assign data
-    TrapWorker[] workers = new TrapWorker[noActors];
-    for (int i=0; i<noActors; i++){                                   
-      workers[i] = new TrapWorker();
-    }
+	}
 
-    // read available theaters
-    Vector theaters = new Vector();
-    String theater;
-    try {
-      BufferedReader in = new BufferedReader(new FileReader(theatersFile));
-      while ((theater = in.readLine())!= null){
-        theaters.add(theater);
-      }
-      in.close(); 
-    } catch (IOException ioe){
-      standardOutput<-println("[error] Can't open the file "+theatersFile+" for reading.");
-    }
+	/* Distribute to the actors based on dFile, the deduplicated stars file */
+	double[][] distributeWork(String dFile) {
 
-    // migrate actors to theaters
-    for (int i=0; i<noActors; i++){
-      standardOutput<-println("Sending actor "+
-        "uan://"+nameServer+":3030/a"+i+" to "+
-        "rmsp://"+theaters.get(i%theaters.size())+"/a"+i);
-      
-	  workers[i] = new TrapWorker() at  
-        (new UAN("uan://"+nameServer+":3030/a"+i), 
-         new UAL("rmsp://"+theaters.get(i%theaters.size())+"/a"+i)
-        );
-    }
+		//create actors and assign data
+		Worker[] workers = new Worker[n];
+		for (int i = 0; i < n; i++) {                                   
+			workers[i] = new Worker();
+		}
 
-    //start computation
-    standardOutput<-println(">>>>>>Starting the computation");
-    initialTime = System.currentTimeMillis();         
-    join{                  
-      for (int i=0;i<noActors;i++){
+		// read available theaters
+		Vector theaters = new Vector();
+		String theater;
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(theatersFile));
+			while ((theater = in.readLine()) != null) {
+				theaters.add(theater);
+			}
+			in.close(); 
+		} catch (IOException ioe) {
+			standardOutput<-println("[error] Can't open the file " + theatersFile + " for reading.");
+		}
 
-        /* Length of each actor's interval of
-         * integration = local_n*h.  So my interval
-         * starts at: */
-    
-	    local_a = new Double(a + i*local_n.doubleValue()*h.doubleValue());
-        local_b = new Double(local_a.doubleValue() + local_n.doubleValue()*h.doubleValue());
-        workers[i]<-trap(local_a, local_b, local_n, h);
-      }                       
-    }@addUpIntegrals(token)@currentContinuation;
-  }
+		// migrate actors to theaters
+		for (int i = 0; i < n; i++) {
+			standardOutput<-println("Sending actor "+
+					"uan://"+nameServer+":3030/a"+i+" to "+
+					"rmsp://"+theaters.get(i%theaters.size())+"/a"+i);
 
-  void endTimer(){
-    long finalTime = System.currentTimeMillis();
-    long runningTime = finalTime - initialTime;
-    standardOutput<-println("Running time for Trapezoidal" + 
-        " approximation is "+runningTime+" ms.");
-  }
+			workers[i] = new Worker() at  
+				(new UAN("uan://"+nameServer+":3030/a"+i), 
+				 new UAL("rmsp://"+theaters.get(i%theaters.size())+"/a"+i)
+				);
+		}
 
-  Double addUpIntegrals(Object[] results){
-    //rceives the integral calculated from each actor's work
-    double total = 0.0;
-    for (int i = 0; i<results.length; i++){
-      total += ((Double) results[i]).doubleValue();
-    }
-    return new Double(total); 
-  }
+		//start computation
+		standardOutput<-println(">>>>>>Starting the computation");
+		initialTime = System.currentTimeMillis();
+		join {
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(dFile));
+				while ((star = in.readLine()) != null) {
+					String[] parts = star.split(" ");
+					double x = Double.parseDouble(parts[0]);
+					double y = Double.parseDouble(parts[1]);
+					double z = Double.parseDouble(parts[2]);
+					workers[i]<-calc(x,y,z,dFile);
+				}
+				in.close(); 
+			} catch (IOException ioe) {
+				standardOutput<-println("[error] Can't open the file " + theatersFile + " for reading.");
+			}@summarize(token)@currentContinuation;
+		}
 
-  void displayResults(Double result){
-    standardOutput<-println("With n = "+n+" trapezoids, our estimate of the integral on ("+a+","+b+") ="+result.doubleValue()+ "with error "+ (result.doubleValue() - 1.0e0));
-  }
-}
+		void endTimer(){
+			long finalTime = System.currentTimeMillis();
+			long runningTime = finalTime - initialTime;
+			standardOutput<-println("Running time for star calculation is " + 
+					runningTime+" ms.");
+		}
+
+		Result summarize(Object[] results) { // TODO
+			//rceives the integral calculated from each actor's work
+			double total = 0.0;
+			for (int i = 0; i<results.length; i++){
+				total += ((Double) results[i]).doubleValue();
+			}
+			return new Result(total); 
+		}
+
+		void displayResults(Result result) { // TODO
+			standardOutput<-println("With "+n+" workers, our calculation of the stars in "+starsFile+" gets the following results:\n"+result);
+		}
+	}
 
