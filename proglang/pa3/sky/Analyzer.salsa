@@ -35,6 +35,7 @@ behavior Analyze {
 	long initialTime;    // Starting Time
 	String nameServer = "localhost";        // Name Server
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
+	String dedupFile = "dedup.txt";
 
 	void act(String args[]) {
 		int argc = args.length;
@@ -42,16 +43,33 @@ behavior Analyze {
 		if(argc>=2) n=Integer.parseInt(args[1]);
 		if(argc>=3) nameServer=args[2];
 		if(argc>=4) theatersFile = args[3];
-		dedup()@distributeWork(token)@displayResults(token)@endTimer();
+		dedup()@distributeWork()@displayResults(token)@endTimer();
 	}      
 
 	/* Deduplicate the stars file, return the name of the deduplicated file */
-	String dedup() {
+	void dedup() {
+		Hashset<String> lineset = new Hashset<String>();
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(starsFile));
+			while ((star = in.readLine()) != null) {
+				lineset.add(star);
+			}
+			in.close();
+		} catch (IOException ioe) {
+			standardOutput<-println("[error] Can't open the file " + starsFile + " for reading.");
+		}
 
+		try {
+			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(dedupFile)));
+			for (String s : lineset) out.println(s);
+			out.close();
+		} catch (IOException ioe) {
+			standardOutput<-println("[error] Can't write to file " + dedupFile);
+		}
 	}
 
 	/* Distribute to the actors based on dFile, the deduplicated stars file */
-	double[][] distributeWork(String dFile) {
+	double[][] distributeWork() {
 
 		//create actors and assign data
 		Worker[] workers = new Worker[n];
@@ -89,13 +107,13 @@ behavior Analyze {
 		initialTime = System.currentTimeMillis();
 		join {
 			try {
-				BufferedReader in = new BufferedReader(new FileReader(dFile));
+				BufferedReader in = new BufferedReader(new FileReader(dedupFile));
 				while ((star = in.readLine()) != null) {
 					String[] parts = star.split(" ");
 					double x = Double.parseDouble(parts[0]);
 					double y = Double.parseDouble(parts[1]);
 					double z = Double.parseDouble(parts[2]);
-					workers[i]<-calc(x,y,z,dFile);
+					workers[i]<-calc(x,y,z,dedupFile);
 				}
 				in.close(); 
 			} catch (IOException ioe) {
