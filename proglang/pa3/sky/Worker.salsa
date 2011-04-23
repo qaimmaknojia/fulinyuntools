@@ -1,53 +1,113 @@
 module sky;
 import java.io.*;
+import java.util.*;
 
-/* TrapWorker.salsa -- 
- *   Worker for Parallel Trapezoidal Rule
+/* Worker.salsa -- 
+ *   Worker for Parallel star calculation
  */
 
-behavior TrapWorker{
-  Double trap(Double local_a ,Double local_b,Integer local_n ,Double h) {
-    //integral = (f(local_a) + f(local_b))/2.0;
-    token f_local_a = f(local_a);
-    token f_local_b = f(local_b);
-    token integral = startIntegral(f_local_a, f_local_b);
-    double x = local_a.doubleValue();
+behavior Worker {
+	void act(String args[]) {
+		calc(0.0,0.0,0.0,"test.txt");
+	}
 
-    for (int i = 1; i <= local_n.intValue()-1; i++, x+=h.doubleValue()) {
-      //x = add(x,h);
-      token f_x = f(new Double(x));
-      integral = add(integral, f_x);     //x = x + h; integral = integral + f(x);
-    }
+	void calc(Double x, Double y, Double z, String dedupFile) {
+		join {
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(dedupFile));
+				String star;
+				while ((star = in.readLine()) != null) {
+					String[] parts = star.split(" ");
+					double x1 = Double.parseDouble(parts[0]);
+					double y1 = Double.parseDouble(parts[1]);
+					double z1 = Double.parseDouble(parts[2]);
+					//standardOutput<-println("see "+x1+" "+y1+" "+z1+" from file")@
+					dist(x,y,z,x1,y1,z1);
+				}
+				in.close(); 
+			} catch (IOException ioe) {
+				standardOutput<-println("[error] Can't open the file " + dedupFile + " for reading.");
+			};
+		}@getMinMax(token)@displayResult(token);
+	}
 
-    multiply(integral, h)@currentContinuation;
-  }
+	Distance dist(double x, double y, double z, double x1, double y1, double z1) {
+		return new Distance(x,y,z,x1,y1,z1);
+	}
 
+	Result getMinMax(Object[] values) {
+		/*
+			 double min = Double.MAX_VALUE;
+			 double max = 0.0;
+			 String minStar1 = "";
+			 String minStar2 = "";
+			 String maxStar1 = "";
+			 String maxStar2 = "";
+			 */
+		Result r = new Result(Double.MAX_VALUE, "", "", 0.0, "", "");
+		//standardOutput<-println("entering getMinMax()")@
+		reset(r, values)@currentContinuation;
+	}
 
-  Double f(Double d) {           
-    double dv = d.doubleValue();
-    return new Double(5*dv*dv*dv*dv);
-  }
+	Result reset(Result r, Object[] values) {
+		Distance d = (Distance)values[0];
+		token rr = reset1(r, d);
+		for (int i = 1; i < values.length; i++) {
+			d = (Distance)values[i];
+			//standardOutput<-println("processing value " + i + " in reset")@d<-display();
+			rr = reset1(rr, d);
+		}
+		iden(rr)@currentContinuation;
+	}
 
+	Result iden(Result r) {
+		return r;
+	}
 
-  Double add(Double d, Double f){           
-    double dv = d.doubleValue();
-    double fv = f.doubleValue();
-    return new Double(dv+fv);
-  } 
+	Result reset1(Result r, Distance dis) {
+		//standardOutput<-println("enter reset1");
+		/*token dis = dis.d;
+		token min = r<-getMin();
+		token max = r<-getMax();
+		token s1 = d<-getStar1();
+		token s2 = d<-getStar2();*/
+		changeMin(r, dis.d, r.min, dis.s1, dis.s2)@
+			changeMax(token, dis.d, r.max, dis.s1, dis.s2)@currentContinuation;
+	}
 
+	Result changeMin(Result r, double dis, double min, String s1, String s2) {
+		if (dis < min) {
+			/*token max = r<-getMax();
+			token maxs1 = r<-getMaxstar1();
+			token maxs2 = r<-getMaxstar2();*/
+			return new Result(dis, s1, s2, r.max, r.maxstar1, r.maxstar2);
+			//standardOutput<-println("after changeMin:")@
+			//r<-display(); // for debugging
+		}
+		return r;
+	}
 
+	Result changeMax(Result r, double dis, double max, String s1, String s2) {
+		if (dis > max) {
+			/*token min = r<-getMin();
+			token mins1 = r<-getMinstar1();
+			token mins2 = r<-getMinstar2();*/
+			return new Result(r.min, r.minstar1, r.minstar2, dis, s1, s2);
+			//standardOutput<-println("after changeMax:")@
+			//r<-display(); // for debugging
+		}
+		return r;
+	}
 
-  Double multiply(Double d, Double f){
-    double dv = d.doubleValue();
-    double fv = f.doubleValue();
-    return new Double(dv*fv);
-  }
+	/*
+	Result newResult(double min, String mins1, String mins2, double max, String maxs1, String maxs2) {
+		return new Result(min, mins1, mins2, max, maxs1, maxs2);
+	}
+	*/
 
-
-
-  Double startIntegral(Double d, Double f){
-    return new Double((d.doubleValue()+f.doubleValue())/2.0);
-  }
-
+	void displayResult(Result r) {
+		standardOutput<-println("The final result is\n"+r.min+"\n"+r.minstar1+" , "+r.minstar2+"\n"+r.max+"\n"+r.maxstar1+" , "+r.maxstar2);
+	}
+	
 }
 
