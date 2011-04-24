@@ -31,24 +31,25 @@ import java.util.*;
 
 behavior Analyze {
 	String starsFile = "stars_21_xyz.txt";    // Stars file
-	int n = 2;    // The number of actors   
 	long initialTime;    // Starting Time
 	String nameServer = "localhost";        // Name Server
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
 	String dedupFile = "dedup.txt";
+	int nstar; // number of different stars
+
+	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
 
 	void act(String args[]) {
 		int argc = args.length;
 		if(argc>=1) starsFile=args[0];
-		if(argc>=2) n=Integer.parseInt(args[1]);
-		if(argc>=3) nameServer=args[2];
-		if(argc>=4) theatersFile = args[3];
-		dedup()@distributeWork()@displayResults(token)@endTimer();
+		if(argc>=2) nameServer=args[1];
+		if(argc>=3) theatersFile = args[2];
+		dedup()@distributeWork()@endTimer();
 	}      
 
 	/* Deduplicate the stars file, return the name of the deduplicated file */
 	void dedup() {
-		Hashset<String> lineset = new Hashset<String>();
+		Hashset lineset = new Hashset();
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(starsFile));
 			while ((star = in.readLine()) != null) {
@@ -61,19 +62,21 @@ behavior Analyze {
 
 		try {
 			PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(dedupFile)));
-			for (String s : lineset) out.println(s);
+			for (Iterator i = lineset.iterator(); i.hasNext(); ) out.println((String)i.next());
 			out.close();
 		} catch (IOException ioe) {
 			standardOutput<-println("[error] Can't write to file " + dedupFile);
 		}
+
+		nstar = lineset.size();
 	}
 
-	/* Distribute to the actors based on dFile, the deduplicated stars file */
-	double[][] distributeWork() {
+	/* Distribute to the actors based on the deduplicated stars file */
+	void distributeWork() {
 
 		//create actors and assign data
-		Worker[] workers = new Worker[n];
-		for (int i = 0; i < n; i++) {                                   
+		Worker[] workers = new Worker[nstar];
+		for (int i = 0; i < nstar; i++) {                                   
 			workers[i] = new Worker();
 		}
 
@@ -91,7 +94,7 @@ behavior Analyze {
 		}
 
 		// migrate actors to theaters
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < nstar; i++) {
 			standardOutput<-println("Sending actor "+
 					"uan://"+nameServer+":3030/a"+i+" to "+
 					"rmsp://"+theaters.get(i%theaters.size())+"/a"+i);
@@ -106,39 +109,57 @@ behavior Analyze {
 		standardOutput<-println(">>>>>>Starting the computation");
 		initialTime = System.currentTimeMillis();
 		join {
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(dedupFile));
-				while ((star = in.readLine()) != null) {
-					String[] parts = star.split(" ");
-					double x = Double.parseDouble(parts[0]);
-					double y = Double.parseDouble(parts[1]);
-					double z = Double.parseDouble(parts[2]);
-					workers[i]<-calc(x,y,z,dedupFile);
-				}
-				in.close(); 
-			} catch (IOException ioe) {
-				standardOutput<-println("[error] Can't open the file " + theatersFile + " for reading.");
-			}@summarize(token)@currentContinuation;
-		}
-
-		void endTimer(){
-			long finalTime = System.currentTimeMillis();
-			long runningTime = finalTime - initialTime;
-			standardOutput<-println("Running time for star calculation is " + 
-					runningTime+" ms.");
-		}
-
-		Result summarize(Object[] results) { // TODO
-			//rceives the integral calculated from each actor's work
-			double total = 0.0;
-			for (int i = 0; i<results.length; i++){
-				total += ((Double) results[i]).doubleValue();
+			for (int i = 0; i < nstar; i++) {
+				workers[i]<-calc(i, dedupFile, nstar);
 			}
-			return new Result(total); 
+		}@summarize(token);
+	}
+
+	void endTimer(){
+		long finalTime = System.currentTimeMillis();
+		long runningTime = finalTime - initialTime;
+		standardOutput<-println("Running time for star calculation is " + 
+				runningTime+" ms.");
+	}
+
+	void summarize(double[][] results) {
+
+		double cndis = Double.MAX_VALUE; // closest neighbour distance
+		Array[] cn = new Array[6]; // closest neighbour pairs
+		double fndis = 0.0; // farthest neighbour distance
+		Array[] fn = new Array[6]; // farthest neighbour pairs
+		double minmaxdis = Double.MAX_VALUE; // minimum max distance
+		Array[] ihs = new Array[3]; // ideal hub stars
+		double maxmindis = 0.0; // maximum min distance
+		Array[] ijs = new Array[3]; // ideal jail stars
+		double minavgdis = Double.MAX_VALUE; // minimum average distance
+		Array[] ics = new Array[3]; // ideal capital stars
+
+		for (int i = 0; i < results.length; i++){
+			if (results[i][MIN] < cndis) {
+				cndis = results[i][MIN];
+				for (int i = 0; i < 6; i++) cn[i].clear();
+				cn[0].add(results[i][X]);
+				cn[1].add(results[i][Y]);
+				cn[2].add(results[i][Z]);
+				cn[3].add(results[i][XMIN]);
+				cn[4].add(results[i][YMIN]);
+				cn[5].add(results[i][ZMIN]);
+			} else if (results[i][MIN] == cndis) {
+				cn[0].add(results[i][X]);
+				cn[1].add(results[i][Y]);
+				cn[2].add(results[i][Z]);
+				cn[3].add(results[i][XMIN]);
+				cn[4].add(results[i][YMIN]);
+				cn[5].add(results[i][ZMIN]);
+			}
+
+
 		}
 
-		void displayResults(Result result) { // TODO
-			standardOutput<-println("With "+n+" workers, our calculation of the stars in "+starsFile+" gets the following results:\n"+result);
-		}
+		standardOutput<-println("With "+n+" workers, our calculation of the stars in "+starsFile+" gets the following results:\n"+result);
+		return new Result(total); 
 	}
+
+}
 
