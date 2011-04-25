@@ -29,8 +29,8 @@ import java.util.*;
  *
  */
 
-behavior Analyze {
-	String starsFile = "stars_21_xyz.txt";    // Stars file
+behavior Analyzer {
+	String starsFile = "test.txt";    // Stars file
 	long initialTime;    // Starting Time
 	String nameServer = "localhost";        // Name Server
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
@@ -40,21 +40,33 @@ behavior Analyze {
 	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
 
 	void act(String args[]) {
+		cact(args);
+		//dact(args);
+	}      
+
+	/** concurrent */
+	void cact(String args[]) {
+		int argc = args.length;
+		if (argc >=1) starsFile = args[0];
+		dedup()@distributeWorkC()@endTimer();
+	}
+
+	/** distributed */
+	void dact(String args[]) {
 		int argc = args.length;
 		if(argc>=1) starsFile=args[0];
 		if(argc>=2) nameServer=args[1];
 		if(argc>=3) theatersFile = args[2];
 		dedup()@distributeWork()@endTimer();
-	}      
+	}
 
-	/* Deduplicate the stars file, return the name of the deduplicated file */
+	/** Deduplicate the stars file, return the name of the deduplicated file */
 	void dedup() {
-		Hashset lineset = new Hashset();
+		HashSet lineset = new HashSet();
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(starsFile));
-			while ((star = in.readLine()) != null) {
-				lineset.add(star);
-			}
+			String star;
+			while ((star = in.readLine()) != null) if (!star.equalsIgnoreCase("")) lineset.add(star);
 			in.close();
 		} catch (IOException ioe) {
 			standardOutput<-println("[error] Can't open the file " + starsFile + " for reading.");
@@ -71,7 +83,7 @@ behavior Analyze {
 		nstar = lineset.size();
 	}
 
-	/* Distribute to the actors based on the deduplicated stars file */
+	/** Distribute to the actors based on the deduplicated stars file for distributed computation */
 	void distributeWork() {
 
 		//create actors and assign data
@@ -115,6 +127,25 @@ behavior Analyze {
 		}@summarize(token);
 	}
 
+	/** Distribute to the actors based on the deduplicated stars file for concurrent computation*/
+	void distributeWorkC() {
+
+		//create actors and assign data
+		Worker[] workers = new Worker[nstar];
+		for (int i = 0; i < nstar; i++) {                                   
+			workers[i] = new Worker();
+		}
+
+		//start computation
+		standardOutput<-println(">>>>>>Starting the computation");
+		initialTime = System.currentTimeMillis();
+		join {
+			for (int i = 0; i < nstar; i++) {
+				workers[i]<-calc(i, dedupFile, nstar);
+			}
+		}@summarize(token);
+	}
+
 	void endTimer(){
 		long finalTime = System.currentTimeMillis();
 		long runningTime = finalTime - initialTime;
@@ -125,20 +156,20 @@ behavior Analyze {
 	void summarize(double[][] results) {
 
 		double cndis = Double.MAX_VALUE; // closest neighbour distance
-		Array[] cn = new Array[6]; // closest neighbour pairs
+		Vector[] cn = new Vector[6]; // closest neighbour pairs
 		double fndis = 0.0; // farthest neighbour distance
-		Array[] fn = new Array[6]; // farthest neighbour pairs
+		Vector[] fn = new Vector[6]; // farthest neighbour pairs
 		double minmaxdis = Double.MAX_VALUE; // minimum max distance
-		Array[] ihs = new Array[3]; // ideal hub stars
+		Vector[] ihs = new Vector[3]; // ideal hub stars
 		double maxmindis = 0.0; // maximum min distance
-		Array[] ijs = new Array[3]; // ideal jail stars
+		Vector[] ijs = new Vector[3]; // ideal jail stars
 		double minavgdis = Double.MAX_VALUE; // minimum average distance
-		Array[] ics = new Array[3]; // ideal capital stars
+		Vector[] ics = new Vector[3]; // ideal capital stars
 
-		for (int i = 0; i < results.length; i++){
+		for (int i = 0; i < nstar; i++){
 			if (results[i][MIN] < cndis) {
 				cndis = results[i][MIN];
-				for (int i = 0; i < 6; i++) cn[i].clear();
+				for (int j = 0; j < 6; i++) cn[j].clear();
 				cn[0].add(results[i][X]);
 				cn[1].add(results[i][Y]);
 				cn[2].add(results[i][Z]);
@@ -154,12 +185,117 @@ behavior Analyze {
 				cn[5].add(results[i][ZMIN]);
 			}
 
+			if (results[i][MAX] > fndis) {
+				fndis = results[i][MAX];
+				for (int j = 0; j < 6; j++) fn[j].clear();
+				fn[0].add(results[i][X]);
+				fn[1].add(results[i][Y]);
+				fn[2].add(results[i][Z]);
+				fn[3].add(results[i][XMAX]);
+				fn[4].add(results[i][YMAX]);
+				fn[5].add(results[i][ZMAX]);
+			} else if (results[i][MAX] == fndis) {
+				fn[0].add(results[i][X]);
+				fn[1].add(results[i][Y]);
+				fn[2].add(results[i][Z]);
+				fn[3].add(results[i][XMAX]);
+				fn[4].add(results[i][YMAX]);
+				fn[5].add(results[i][ZMAX]);
+			}
+
+			if (results[i][MAX] < minmaxdis) {
+				minmaxdis = results[i][MAX];
+				for (int j = 0; j < 3; j++) ihs[j].clear();
+				ihs[0].add(results[i][X]);
+				ihs[1].add(results[i][Y]);
+				ihs[2].add(results[i][Z]);
+			} else if (results[i][MAX] == minmaxdis) {
+				ihs[0].add(results[i][X]);
+				ihs[1].add(results[i][Y]);
+				ihs[2].add(results[i][Z]);
+			}
+
+			if (results[i][MIN] > maxmindis) {
+				maxmindis = results[i][MIN];
+				for (int j = 0; j < 3; j++) ijs[j].clear();
+				ijs[0].add(results[i][X]);
+				ijs[1].add(results[i][Y]);
+				ijs[2].add(results[i][Z]);
+			} else if (results[i][MIN] == maxmindis) {
+				ijs[0].add(results[i][X]);
+				ijs[1].add(results[i][Y]);
+				ijs[2].add(results[i][Z]);
+			}
+
+			if (results[i][AVG] < minavgdis) {
+				minavgdis = results[i][AVG];
+				for (int j = 0; j < 3; j++) ics[j].clear();
+				ics[0].add(results[i][X]);
+				ics[1].add(results[i][Y]);
+				ics[2].add(results[i][Z]);
+			} else if (results[i][AVG] == minavgdis) {
+				ics[0].add(results[i][X]);
+				ics[1].add(results[i][Y]);
+				ics[2].add(results[i][Z]);
+			}
 
 		}
 
-		standardOutput<-println("With "+n+" workers, our calculation of the stars in "+starsFile+" gets the following results:\n"+result);
-		return new Result(total); 
+		token cndedup = dedupPair(cn);
+		token fndedup = dedupPair(fn);
+
+		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\nminimal pairwise distance: "+cndis)@
+		outputVector(cndedup)@
+		standardOutput<-println("\nmaximal pairwise distance: "+fndis)@
+		outputVector(fndedup)@
+		standardOutput<-println("\nminimum maximal distance: "+minmaxdis)@
+		outputVector(ihs)@
+		standardOutput<-println("\nmaximum minimal distance: "+maxmindis)@
+		outputVector(ijs)@
+		standardOutput<-println("\nminimal average distance: "+minavgdis)@
+		outputVector(ics);
 	}
 
+	Vector[] dedupPair(Vector[] pairs) {
+		for (int i = 1; i < pairs[0].size(); ) {
+			boolean removed = false;
+			for (int j = 0; j < i; j++) {
+				double i0 = (Double)pairs[0].get(i);
+				double i1 = (Double)pairs[1].get(i);
+				double i2 = (Double)pairs[2].get(i);
+				double i3 = (Double)pairs[3].get(i);
+				double i4 = (Double)pairs[4].get(i);
+				double i5 = (Double)pairs[5].get(i);
+				double j0 = (Double)pairs[0].get(j);
+				double j1 = (Double)pairs[1].get(j);
+				double j2 = (Double)pairs[2].get(j);
+				double j3 = (Double)pairs[3].get(j);
+				double j4 = (Double)pairs[4].get(j);
+				double j5 = (Double)pairs[5].get(j);
+				if (i0 == j3 && i1 == j4 && i2 == j5 && i3 == j0 && i4 == j1 && i5 == j2) {
+					for (int k = 0; k < 6; k++) pairs[k].remove(i);
+					removed = true;
+					break;
+				}
+			}
+			if (!removed) i++;
+		}
+		return pairs;
+	}
+
+	void outputVector(Vector[] list) {
+		token t = outputColumn(list, 0);
+		for (int i = 1; i < list[0].size(); i++) t = outputColumn(list, i):waitfor(t);
+	}
+
+	void outputColumn(Vector[] list, int col) {
+		token t = standardOutput<-print("<"+list[0].get(col)+",");
+		for (int i = 1; i < list.length; i++) {
+			t = standardOutput<-print(list[i].get(col)):waitfor(t);
+			if (i == list.length-1) t = standardOutput<-println(">"):waitfor(t);
+			else if (i%3 == 2) t = standardOutput<-print("> <"):waitfor(t);
+			else t = standardOutput<-print(","):waitfor(t);
+		}
+	}
 }
 

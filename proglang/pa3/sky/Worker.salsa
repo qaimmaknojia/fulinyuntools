@@ -18,6 +18,7 @@ behavior Worker {
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
 	double[] calc(int n, String dedupFile, int nstar) {
 
+		//standardOutput<-println(getUAN() + " get " + n + "," + dedupFile + "," + nstar);
 		double[][] coord = new double[nstar][3];
 
 		try {
@@ -37,7 +38,11 @@ behavior Worker {
 		y = coord[n][1];
 		z = coord[n][2];
 		getMinMax(n, coord)@currentContinuation;
-
+		/*
+		token t = getMinMax(n, coord);
+		displayResult(t)@
+		iden(t)@currentContinuation;
+		*/
 	}
 
 	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
