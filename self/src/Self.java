@@ -1,2 +1,0 @@
-// a program that prints itself
-public class Self {	public static void main(String[] args) { String s = "// a program that prints itselfpublic class Self { public static void main(String[] args) { String s = ; char n = 10; char c = 34; System.out.println(s.substring(0, 31)+n+s.substring(31, 103)+c+s+c+s.substring(103);}}"; char n = 10; char c = 34; System.out.println(s.substring(0, 31)+n+s.substring(31, 103)+c+s+c+s.substring(103));}}
