@@ -16,7 +16,7 @@ behavior Worker {
 	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
 
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
-	double[] calc(int n, String dedupFile, int nstar) {
+	Vector calc(int n, String dedupFile, int nstar) {
 
 		//standardOutput<-println(getUAN() + " get " + n + "," + dedupFile + "," + nstar);
 		double[][] coord = new double[nstar][3];
@@ -39,14 +39,14 @@ behavior Worker {
 		z = coord[n][2];
 		getMinMax(n, coord)@currentContinuation;
 		/*
-		token t = getMinMax(n, coord);
-		displayResult(t)@
-		iden(t)@currentContinuation;
-		*/
+			 token t = getMinMax(n, coord);
+			 displayResult(t)@
+			 iden(t)@currentContinuation;
+			 */
 	}
 
 	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
-	double[] getMinMax(int n, double[][] values) {
+	Vector getMinMax(int n, double[][] values) {
 		double[] r = new double[RESULTSIZE];
 		r[X] = r[XMIN] = r[XMAX] = x;
 		r[Y] = r[YMIN] = r[YMAX] = y;
@@ -54,7 +54,13 @@ behavior Worker {
 		r[MIN] = Double.MAX_VALUE;
 		r[MAX] = 0.0;
 		r[AVG] = 0.0;
-		reset(r, n, values)@getAvg(token, values.length)@currentContinuation;
+		reset(r, n, values)@getAvg(token, values.length)@convert2vector(token)@currentContinuation;
+	}
+
+	Vector convert2vector(double[] a) {
+		Vector r = new Vector();
+		for (int i = 0; i < a.length; i++) r.add(a[i]);
+		return r;
 	}
 
 	/** get the Result object containing the minimum and the maximum distances */
@@ -77,28 +83,29 @@ behavior Worker {
 
 	/** change the records for minimum and maximum distances for a Result object */
 	double[] reset1(double[] r, double[] star) {
-		
+
 		double dx = x-star[0];
 		double dy = y-star[1];
 		double dz = z-star[2];
-		double dis = Math.sqrt(dx*dx+dy*dy+dz*dz);
-		
-		if (dis < r[MIN]) {
-			r[MIN] = dis;
-			r[XMIN] = star[0];
-			r[YMIN] = star[1];
-			r[ZMIN] = star[2];
+		if (dx != 0.0 || dy != 0.0 || dz != 0.0) {
+			double dis = Math.sqrt(dx*dx+dy*dy+dz*dz);
+
+			if (dis < r[MIN]) {
+				r[MIN] = dis;
+				r[XMIN] = star[0];
+				r[YMIN] = star[1];
+				r[ZMIN] = star[2];
+			}
+
+			if (dis > r[MAX]) {
+				r[MAX] = dis;
+				r[XMAX] = star[0];
+				r[YMAX] = star[1];
+				r[ZMAX] = star[2];
+			}
+
+			r[AVG] += dis;
 		}
-
-		if (dis > r[MAX]) {
-			r[MAX] = dis;
-			r[XMAX] = star[0];
-			r[YMAX] = star[1];
-			r[ZMAX] = star[2];
-		}
-
-		r[AVG] += dis;
-
 		return r;
 
 	}
@@ -115,8 +122,23 @@ behavior Worker {
 	}
 
 	/** display the content of a Result object */
-	void displayResult(double[] r) {
-		standardOutput<-println("\nThe final result for "+r[X]+" "+r[Y]+" "+r[Z]+" is\nmin distance: "+r[MIN]+"\nfrom "+r[XMIN]+" "+r[YMIN]+" "+r[ZMIN]+"\nmax distance: "+r[MAX]+"\nfrom "+r[XMAX]+" "+r[YMAX]+" "+r[ZMAX]+"\navg distance: "+r[AVG]);
+	Vector displayResult(Vector r) {
+		double rmin = (Double)r.get(MIN);
+		double rmax = (Double)r.get(MAX);
+		double ravg = (Double)r.get(AVG);
+		double rx = (Double)r.get(X);
+		double ry = (Double)r.get(Y);
+		double rz = (Double)r.get(Z);
+		double rxmin = (Double)r.get(XMIN);
+		double rymin = (Double)r.get(YMIN);
+		double rzmin = (Double)r.get(ZMIN);
+		double rxmax = (Double)r.get(XMAX);
+		double rymax = (Double)r.get(YMAX);
+		double rzmax = (Double)r.get(ZMAX);
+
+		standardOutput<-println("\nThe final result for "+rx+" "+ry+" "+rz+" is\nmin distance: "+rmin+"\nfrom "+rxmin+" "+rymin+" "+rzmin+"\nmax distance: "+rmax+"\nfrom "+rxmax+" "+rymax+" "+rzmax+"\navg distance: "+ravg);
+
+		return r;
 	}
 
 }
