@@ -40,23 +40,33 @@ behavior Analyzer {
 	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
 
 	void act(String args[]) {
-		cact(args);
-		//dact(args);
+		if (args.length >= 1) {
+			String lastarg = args[args.length-1];
+			if (lastarg.equalsIgnoreCase("--concurrent") || lastarg.equalsIgnoreCase("-c")) {
+				String[] nargs = new String[args.length-1];
+				for (int i = 0; i < nargs.length; i++) nargs[i] = args[i];
+				cact(nargs);
+			} else {
+				dact(args);
+			}
+		} else {
+			dact(args);
+		}
 	}      
 
 	/** concurrent */
 	void cact(String args[]) {
 		int argc = args.length;
-		if (argc >=1) starsFile = args[0];
+		if (argc >= 1) starsFile = args[0];
 		dedup()@distributeWorkC();
 	}
 
 	/** distributed */
 	void dact(String args[]) {
 		int argc = args.length;
-		if(argc>=1) starsFile=args[0];
-		if(argc>=2) nameServer=args[1];
-		if(argc>=3) theatersFile = args[2];
+		if(argc >= 1) starsFile = args[0];
+		if(argc >= 2) nameServer = args[1];
+		if(argc >= 3) theatersFile = args[2];
 		dedup()@distributeWork();
 	}
 
@@ -124,7 +134,7 @@ behavior Analyzer {
 			for (int i = 0; i < nstar; i++) {
 				workers[i]<-calc(i, dedupFile, nstar);
 			}
-		}@summarize(token)@endTimer();
+		}@summarize(token);
 	}
 
 	/** Distribute to the actors based on the deduplicated stars file for concurrent computation*/
@@ -149,7 +159,7 @@ behavior Analyzer {
 	void endTimer(){
 		long finalTime = System.currentTimeMillis();
 		long runningTime = finalTime - initialTime;
-		standardOutput<-println("\nRunning time for star calculation is " + 
+		standardOutput<-println("Running time for star calculation is " + 
 				runningTime+" ms.");
 	}
 
@@ -279,16 +289,16 @@ behavior Analyzer {
 		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\n\nminimal pairwise distance: "+cndis)@
 		outputVector(cndedup)@
 		standardOutput<-println(token)@
-		standardOutput<-println("\nmaximal pairwise distance: "+fndis)@
+		standardOutput<-println("maximal pairwise distance: "+fndis)@
 		outputVector(fndedup)@
 		standardOutput<-println(token)@
-		standardOutput<-println("\nminimum maximal distance: "+minmaxdis)@
+		standardOutput<-println("minimum maximal distance: "+minmaxdis)@
 		outputVector(ihs)@
 		standardOutput<-println(token)@
-		standardOutput<-println("\nmaximum minimal distance: "+maxmindis)@
+		standardOutput<-println("maximum minimal distance: "+maxmindis)@
 		outputVector(ijs)@
 		standardOutput<-println(token)@
-		standardOutput<-println("\nminimal average distance: "+minavgdis)@
+		standardOutput<-println("minimal average distance: "+minavgdis)@
 		outputVector(ics)@
 		standardOutput<-println(token)@
 		endTimer();
@@ -329,7 +339,7 @@ behavior Analyzer {
 
 	String concat(Object[] strings) {
 		String ret = "";
-		for (int i = 0; i < strings.length; i++) ret += (String)strings[i];
+		for (int i = 0; i < strings.length; i++) ret += (String)strings[i]+"\n";
 		return ret;
 	}
 
