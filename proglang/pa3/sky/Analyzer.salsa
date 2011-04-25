@@ -143,13 +143,13 @@ behavior Analyzer {
 			for (int i = 0; i < nstar; i++) {
 				workers[i]<-calc(i, dedupFile, nstar);
 			}
-		}@summarize(token)@endTimer();
+		}@summarize(token);
 	}
 
 	void endTimer(){
 		long finalTime = System.currentTimeMillis();
 		long runningTime = finalTime - initialTime;
-		standardOutput<-println("Running time for star calculation is " + 
+		standardOutput<-println("\nRunning time for star calculation is " + 
 				runningTime+" ms.");
 	}
 
@@ -162,11 +162,11 @@ behavior Analyzer {
 		Vector[] fn = new Vector[6]; // farthest neighbour pairs
 		for (int i = 0; i < 6; i++) fn[i] = new Vector();
 		double minmaxdis = Double.MAX_VALUE; // minimum max distance
-		Vector[] ihs = new Vector[3]; // ideal hub stars
-		for (int i = 0; i < 3; i++) ihs[i] = new Vector();
+		Vector[] ihs = new Vector[6]; // ideal hub stars
+		for (int i = 0; i < 6; i++) ihs[i] = new Vector();
 		double maxmindis = 0.0; // maximum min distance
-		Vector[] ijs = new Vector[3]; // ideal jail stars
-		for (int i = 0; i < 3; i++) ijs[i] = new Vector();
+		Vector[] ijs = new Vector[6]; // ideal jail stars
+		for (int i = 0; i < 6; i++) ijs[i] = new Vector();
 		double minavgdis = Double.MAX_VALUE; // minimum average distance
 		Vector[] ics = new Vector[3]; // ideal capital stars
 		for (int i = 0; i < 3; i++) ics[i] = new Vector();
@@ -225,26 +225,38 @@ behavior Analyzer {
 
 			if (rmax < minmaxdis) {
 				minmaxdis = rmax;
-				for (int j = 0; j < 3; j++) ihs[j].clear();
+				for (int j = 0; j < 6; j++) ihs[j].clear();
 				ihs[0].add(rx);
 				ihs[1].add(ry);
 				ihs[2].add(rz);
+				ihs[3].add(rxmax);
+				ihs[4].add(rymax);
+				ihs[5].add(rzmax);
 			} else if (rmax == minmaxdis) {
 				ihs[0].add(rx);
 				ihs[1].add(ry);
 				ihs[2].add(rz);
+				ihs[3].add(rxmax);
+				ihs[4].add(rymax);
+				ihs[5].add(rzmax);
 			}
 
 			if (rmin > maxmindis) {
 				maxmindis = rmin;
-				for (int j = 0; j < 3; j++) ijs[j].clear();
+				for (int j = 0; j < 6; j++) ijs[j].clear();
 				ijs[0].add(rx);
 				ijs[1].add(ry);
 				ijs[2].add(rz);
+				ijs[3].add(rxmin);
+				ijs[4].add(rymin);
+				ijs[5].add(rzmin);
 			} else if (rmin == maxmindis) {
 				ijs[0].add(rx);
 				ijs[1].add(ry);
 				ijs[2].add(rz);
+				ijs[3].add(rxmin);
+				ijs[4].add(rymin);
+				ijs[5].add(rzmin);
 			}
 
 			if (ravg < minavgdis) {
@@ -264,16 +276,22 @@ behavior Analyzer {
 		token cndedup = dedupPair(cn);
 		token fndedup = dedupPair(fn);
 
-		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\nminimal pairwise distance: "+cndis)@
+		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\n\nminimal pairwise distance: "+cndis)@
 		outputVector(cndedup)@
+		standardOutput<-println(token)@
 		standardOutput<-println("\nmaximal pairwise distance: "+fndis)@
 		outputVector(fndedup)@
+		standardOutput<-println(token)@
 		standardOutput<-println("\nminimum maximal distance: "+minmaxdis)@
 		outputVector(ihs)@
+		standardOutput<-println(token)@
 		standardOutput<-println("\nmaximum minimal distance: "+maxmindis)@
 		outputVector(ijs)@
+		standardOutput<-println(token)@
 		standardOutput<-println("\nminimal average distance: "+minavgdis)@
-		outputVector(ics);
+		outputVector(ics)@
+		standardOutput<-println(token)@
+		endTimer();
 	}
 
 	Vector[] dedupPair(Vector[] pairs) {
@@ -303,19 +321,27 @@ behavior Analyzer {
 		return pairs;
 	}
 
-	void outputVector(Vector[] list) {
-		token t = outputColumn(list, 0);
-		for (int i = 1; i < list[0].size(); i++) t = outputColumn(list, i):waitfor(t);
+	String outputVector(Vector[] list) {
+		join {
+			for (int i = 0; i < list[0].size(); i++) outputColumn(list, i);
+		}@concat(token)@currentContinuation;
 	}
 
-	void outputColumn(Vector[] list, int col) {
-		token t = standardOutput<-print("<"+list[0].get(col)+",");
-		for (int i = 1; i < list.length; i++) {
-			t = standardOutput<-print(list[i].get(col)):waitfor(t);
-			if (i == list.length-1) t = standardOutput<-println(">"):waitfor(t);
-			else if (i%3 == 2) t = standardOutput<-print("> <"):waitfor(t);
-			else t = standardOutput<-print(","):waitfor(t);
+	String concat(Object[] strings) {
+		String ret = "";
+		for (int i = 0; i < strings.length; i++) ret += (String)strings[i];
+		return ret;
+	}
+
+	String outputColumn(Vector[] list, int col) {
+		String ret = "<";
+		for (int i = 0; i < list.length; i++) {
+			ret += list[i].get(col);
+			if (i == list.length-1) ret += ">";
+			else if (i%3 == 2) ret += "> <";
+			else ret += ",";
 		}
+		return ret;
 	}
 }
 
