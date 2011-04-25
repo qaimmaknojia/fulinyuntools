@@ -141,7 +141,7 @@ behavior Analyzer {
 		initialTime = System.currentTimeMillis();
 		join {
 			for (int i = 0; i < nstar; i++) {
-				workers[i]<-calc(i, dedupFile, nstar)@workers[i]<-displayResult(token);
+				workers[i]<-calc(i, dedupFile, nstar);
 			}
 		}@summarize(token)@endTimer();
 	}
@@ -171,7 +171,7 @@ behavior Analyzer {
 		Vector[] ics = new Vector[3]; // ideal capital stars
 		for (int i = 0; i < 3; i++) ics[i] = new Vector();
 
-		standardOutput<-println("summing...");
+		//standardOutput<-println("summing...");
 		for (int i = 0; i < nstar; i++){
 			double rmin = (Double)((Vector)results[i]).get(MIN);
 			double rmax = (Double)((Vector)results[i]).get(MAX);
@@ -189,7 +189,7 @@ behavior Analyzer {
 
 			if (rmin < cndis) {
 				cndis = rmin;
-				for (int j = 0; j < 6; i++) cn[j].clear();
+				for (int j = 0; j < 6; j++) cn[j].clear();
 				cn[0].add(rx);
 				cn[1].add(ry);
 				cn[2].add(rz);
