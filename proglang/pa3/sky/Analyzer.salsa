@@ -36,8 +36,10 @@ behavior Analyzer {
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
 	String dedupFile = "dedup.txt";
 	int nstar; // number of different stars
+	int load = 3; // number of stars for each worker
+	double[][] coords; // all star coordinates
 
-	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
+	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, START = 12, END = 13, RESULTSIZE = 14; // used to encode the result of one worker with an array of doubles
 
 	void act(String args[]) {
 		if (args.length >= 1) {
@@ -58,15 +60,17 @@ behavior Analyzer {
 	void cact(String args[]) {
 		int argc = args.length;
 		if (argc >= 1) starsFile = args[0];
+		if (argc >= 2) load = Integer.parseInt(args[1]);
 		dedup()@distributeWorkC();
 	}
 
 	/** distributed */
 	void dact(String args[]) {
 		int argc = args.length;
-		if(argc >= 1) starsFile = args[0];
-		if(argc >= 2) nameServer = args[1];
-		if(argc >= 3) theatersFile = args[2];
+		if (argc >= 1) starsFile = args[0];
+		if (argc >= 2) nameServer = args[1];
+		if (argc >= 3) theatersFile = args[2];
+		if (args >= 4) load = Integer.parseInt(args[3]);
 		dedup()@distributeWork();
 	}
 
@@ -91,14 +95,30 @@ behavior Analyzer {
 		}
 
 		nstar = lineset.size();
+		coords = new double[nstar][3];
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(dedupFile));
+			int i = 0;
+			for (String star = in.readLine(); star != null && !star.equalsIgnoreCase(""); star = in.readLine()) {
+				String[] parts = star.split(" ");
+				for (j = 0; j < 3; j++) coords[i][j] = Double.parseDouble(parts[j]);
+				i++;
+			}
+			in.close();
+		} catch (IOException ioe) {
+			standardOutput<-println("[error] Can't open the file " + dedupFile + " for reading.");
+		}
+
 	}
 
 	/** Distribute to the actors based on the deduplicated stars file for distributed computation */
 	void distributeWork() {
 
 		//create actors and assign data
-		Worker[] workers = new Worker[nstar];
-		for (int i = 0; i < nstar; i++) {                                   
+		int nw = nstar/load;
+		if (nstar%load != 0) nw++;
+		Worker[] workers = new Worker[nw];
+		for (int i = 0; i < nw; i++) {                                   
 			workers[i] = new Worker();
 		}
 
@@ -130,11 +150,78 @@ behavior Analyzer {
 		//start computation
 		standardOutput<-println(">>>>>>Starting the computation");
 		initialTime = System.currentTimeMillis();
+		for (int i = 0; i < nw; i++) {
+			size = load;
+			if (i == nw-1) {
+				size = nstar-(nw-1)*load;
+			}	
+			double[][] data = new double[size][3];
+			for (int j = i*load, jj = 0; j < i*load+load && j < nstar; j++, jj++) for (int k = 0; k < 3; k++) data[jj][k] = coords[j][k];
+			workers[i]<-getData(data);
+		}
 		join {
 			for (int i = 0; i < nstar; i++) {
-				workers[i]<-calc(i, dedupFile, nstar);
+				Worker w = new Worker();
+				join {
+				for (int j = 0; j < nw; j++) {
+					w<-migrate(workers[j].getUAL())@
+					w<-getDataFromColleague(workers[j])@w<-calc(coords[i][0], coords[i][1], coords[i][2]);
+				}
+				}@sumcolumn(token)
 			}
 		}@summarize(token);
+	}
+
+	Vector sumcolumn(Object[] snippets) {
+		
+		double min = Double.MAX_VALUE;
+		double max = 0.0;
+		double avg = 0.0;
+		double xmin;
+		double ymin;
+		double zmin;
+		double xmax;
+		double ymax;
+		double zmax;
+
+		for (int i = 0; i < snippets.length; i++) {
+			Vector v = (Vector)snippets[i];
+			if (v.get(MIN) < min) {
+				min = v.get(MIN);
+				xmin = v.get(XMIN);
+				ymin = v.get(YMIN);
+				zmin = v.get(ZMIN);
+			}
+			if (v.get(MAX) > max) {
+				max = v.get(MAX);
+				xmax = v.get(XMAX);
+				ymax = v.get(YMAX);
+				zmax = v.get(ZMAX);
+			}
+			avg += v.get(AVG);
+		}
+
+		double[] ret = new double[RESULTSIZE];
+		Vector v = (Vector)snippets[0];
+		ret[X] = v.get(X);
+		ret[Y] = v.get(Y);
+		ret[Z] = v.get(Z);
+		ret[MIN] = min;
+		ret[MAX] = max;
+		ret[AVG] = avg;
+		ret[XMIN] = xmin;
+		ret[YMIN] = ymin;
+		ret[ZMIN] = zmin;
+		ret[XMAX] = xmax;
+		ret[YMAX] = ymax;
+		ret[ZMAX] = zmax;
+		convert2vector(ret)@currentContinuation;
+	}
+
+	Vector convert2vector(double[] a) {
+		Vector r = new Vector();
+		for (int i = 0; i < a.length; i++) r.add(a[i]);
+		return r;
 	}
 
 	/** Distribute to the actors based on the deduplicated stars file for concurrent computation*/
@@ -183,18 +270,19 @@ behavior Analyzer {
 
 		//standardOutput<-println("summing...");
 		for (int i = 0; i < nstar; i++){
-			double rmin = (Double)((Vector)results[i]).get(MIN);
-			double rmax = (Double)((Vector)results[i]).get(MAX);
-			double ravg = (Double)((Vector)results[i]).get(AVG);
-			double rx = (Double)((Vector)results[i]).get(X);
-			double ry = (Double)((Vector)results[i]).get(Y);
-			double rz = (Double)((Vector)results[i]).get(Z);
-			double rxmin = (Double)((Vector)results[i]).get(XMIN);
-			double rymin = (Double)((Vector)results[i]).get(YMIN);
-			double rzmin = (Double)((Vector)results[i]).get(ZMIN);
-			double rxmax = (Double)((Vector)results[i]).get(XMAX);
-			double rymax = (Double)((Vector)results[i]).get(YMAX);
-			double rzmax = (Double)((Vector)results[i]).get(ZMAX);
+			Vector v = (Vector)results[i];
+			double rmin = (Double)v.get(MIN);
+			double rmax = (Double)v.get(MAX);
+			double ravg = (Double)v.get(AVG);
+			double rx = (Double)v.get(X);
+			double ry = (Double)v.get(Y);
+			double rz = (Double)v.get(Z);
+			double rxmin = (Double)v.get(XMIN);
+			double rymin = (Double)v.get(YMIN);
+			double rzmin = (Double)v.get(ZMIN);
+			double rxmax = (Double)v.get(XMAX);
+			double rymax = (Double)v.get(YMAX);
+			double rzmax = (Double)v.get(ZMAX);
 			//standardOutput<-println(rmin+" "+rmax+" "+ravg+" "+rx+" "+ry+" "+rz);
 
 			if (rmin < cndis) {
@@ -287,21 +375,21 @@ behavior Analyzer {
 		token fndedup = dedupPair(fn);
 
 		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\n\nminimal pairwise distance: "+cndis)@
-		outputVector(cndedup)@
-		standardOutput<-println(token)@
-		standardOutput<-println("maximal pairwise distance: "+fndis)@
-		outputVector(fndedup)@
-		standardOutput<-println(token)@
-		standardOutput<-println("minimum maximal distance: "+minmaxdis)@
-		outputVector(ihs)@
-		standardOutput<-println(token)@
-		standardOutput<-println("maximum minimal distance: "+maxmindis)@
-		outputVector(ijs)@
-		standardOutput<-println(token)@
-		standardOutput<-println("minimal average distance: "+minavgdis)@
-		outputVector(ics)@
-		standardOutput<-println(token)@
-		endTimer();
+			outputVector(cndedup)@
+			standardOutput<-println(token)@
+			standardOutput<-println("maximal pairwise distance: "+fndis)@
+			outputVector(fndedup)@
+			standardOutput<-println(token)@
+			standardOutput<-println("minimum maximal distance: "+minmaxdis)@
+			outputVector(ihs)@
+			standardOutput<-println(token)@
+			standardOutput<-println("maximum minimal distance: "+maxmindis)@
+			outputVector(ijs)@
+			standardOutput<-println(token)@
+			standardOutput<-println("minimal average distance: "+minavgdis)@
+			outputVector(ics)@
+			standardOutput<-println(token)@
+			endTimer();
 	}
 
 	Vector[] dedupPair(Vector[] pairs) {
