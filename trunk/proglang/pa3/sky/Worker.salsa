@@ -12,48 +12,48 @@ behavior Worker {
 	double x = 0.0;
 	double y = 0.0;
 	double z = 0.0;
+	double[][] stardata;
+	//int start;
+	//int end;
 
-	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
+	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, /*START = 12, END = 13, */RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
+
+	void getData(double[][] data/*, int start, int end*/) {
+		stardata = new double[data.length][3];
+		for (int i = 0; i < data.length; i++) for (int j = 0; j < 3; j++) stardata[i][j] = data[i][j];
+		//this.start = start;
+		//this.end = end;
+	}
+
+	double[][] sendData() {
+		return stardata;
+	}
+
+	void getDataFromColleague(Worker w) {
+		w<-sendData()@getData(token);
+	}
 
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
-	Vector calc(int n, String dedupFile, int nstar) {
+	Vector calc(double x, double y, double z) {
 		
-		double[][] coord = new double[nstar][3];
-
-		try {
-			BufferedReader in = new BufferedReader(new FileReader(dedupFile));
-			for (int i = 0; i < nstar; i++) {
-				String star = in.readLine();
-				String[] parts = star.split(" ");
-				coord[i][0] = Double.parseDouble(parts[0]);
-				coord[i][1] = Double.parseDouble(parts[1]);
-				coord[i][2] = Double.parseDouble(parts[2]);
-			}
-			in.close();
-		} catch (IOException ioe) {
-			standardOutput<-println("[error] Can't open the file " + dedupFile + " for reading.");
-		}
-		x = coord[n][0];
-		y = coord[n][1];
-		z = coord[n][2];
-		getMinMax(n, coord)@currentContinuation;
-		/*
-			 token t = getMinMax(n, coord);
-			 displayResult(t)@
-			 iden(t)@currentContinuation;
-			 */
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		getMinMax(stardata/*, start, end*/)@currentContinuation;
 	}
 
 	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
-	Vector getMinMax(int n, double[][] values) {
+	Vector getMinMax(double[][] values/*, int start, int end*/) {
 		double[] r = new double[RESULTSIZE];
+		//r[START] = new Integer(start);
+		//r[END] = new Integer(end);
 		r[X] = r[XMIN] = r[XMAX] = x;
 		r[Y] = r[YMIN] = r[YMAX] = y;
 		r[Z] = r[ZMIN] = r[ZMAX] = z;
 		r[MIN] = Double.MAX_VALUE;
 		r[MAX] = 0.0;
 		r[AVG] = 0.0;
-		reset(r, n, values)@getAvg(token, values.length)@convert2vector(token)@currentContinuation;
+		reset(r, values)@convert2vector(token)@currentContinuation;
 	}
 
 	Vector convert2vector(double[] a) {
@@ -63,11 +63,11 @@ behavior Worker {
 	}
 
 	/** get the Result object containing the minimum and the maximum distances */
-	double[] reset(double[] r, int n, double[][] values) {
+	double[] reset(double[] r, double[][] values) {
 
 		token rr = reset1(r, values[0]);
 
-		for (int i = 1; i < values.length; i++) if (i != n) {
+		for (int i = 1; i < values.length; i++) {
 			rr = reset1(rr, values[i]);
 		}
 
@@ -109,15 +109,13 @@ behavior Worker {
 
 	}
 
-	double[] getAvg(double[] r, int tot) {
-		r[AVG] /= tot;
-		return r;
-	}
-
 	/** for unit test */
 	void act(String args[]) {
-		calc(1, "test.txt", 4)@displayResult(token)@
-			calc(2, "test.txt", 4)@displayResult(token);
+		double[][] stardata = {{0.0, 0.0, 0.0},{0.0, 1.0, 0.0},{0.0, 1.0, 5.0},{0.0, 0.0, 5.0}};
+		double[][] stardata1 = {{0.0, 0.0, 0.0},{0.0, 1.0, 0.0}};
+		double[][] stardata2 = {{0.0, 1.0, 0.0},{0.0, 1.0, 5.0},{0.0, 0.0, 5.0}};
+		getData(stardata1)@calc(0.0, 0.0, 0.0)@displayResult(token)@
+			getData(stardata2)@calc(0.0, 1.0, 0.0)@displayResult(token);
 	}
 
 	/** display the content of a Result object */
@@ -134,8 +132,9 @@ behavior Worker {
 		double rxmax = (Double)r.get(XMAX);
 		double rymax = (Double)r.get(YMAX);
 		double rzmax = (Double)r.get(ZMAX);
-
-		standardOutput<-println("\nThe final result for "+rx+" "+ry+" "+rz+" is\nmin distance: "+rmin+"\nfrom "+rxmin+" "+rymin+" "+rzmin+"\nmax distance: "+rmax+"\nfrom "+rxmax+" "+rymax+" "+rzmax+"\navg distance: "+ravg);
+		//int start = (Integer)r.get(START);
+		//int end = (Integer)r.get(END);
+		standardOutput<-println("\nThe final result for "+rx+" "+ry+" "+rz+" is\nmin distance: "+rmin+"\nfrom "+rxmin+" "+rymin+" "+rzmin+"\nmax distance: "+rmax+"\nfrom "+rxmax+" "+rymax+" "+rzmax+"\ntotal distance: "+ravg);
 
 		return r;
 	}
