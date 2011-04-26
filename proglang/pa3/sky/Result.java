@@ -1,4 +1,4 @@
-package sky;
+package sky.util;
 
 import java.io.*;
 
