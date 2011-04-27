@@ -32,14 +32,20 @@ import java.util.*;
 behavior Analyzer {
 	String starsFile = "test.txt";    // Stars file
 	long initialTime;    // Starting Time
+	long tsend; // time spent on sending data to workers
+	long twork; // time spent on the slowest theater
+	long taggr; // time spent on the aggregation
 	String nameServer = "localhost";        // Name Server
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
 	String dedupFile = "dedup.txt";
 	int nstar; // number of different stars
 	int load = 3; // number of stars for each worker
+	int ncopy = 1; // number of copies of the star file to send out to the workers
 	double[][] coords; // all star coordinates
-
-	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, START = 12, END = 13, RESULTSIZE = 14; // used to encode the result of one worker with an array of doubles
+	boolean[] active; // record each worker is currently active or not
+	int[] nworker; // number of active workers at each theater
+	Worker[] workers; // the references to the workers
+	Vector theaters; // theater names
 
 	void act(String args[]) {
 		if (args.length >= 1) {
@@ -61,6 +67,7 @@ behavior Analyzer {
 		int argc = args.length;
 		if (argc >= 1) starsFile = args[0];
 		if (argc >= 2) load = Integer.parseInt(args[1]);
+		initialTime = System.currentTimeMillis();
 		dedup()@distributeWorkC();
 	}
 
@@ -68,9 +75,10 @@ behavior Analyzer {
 	void dact(String args[]) {
 		int argc = args.length;
 		if (argc >= 1) starsFile = args[0];
-		if (argc >= 2) nameServer = args[1];
-		if (argc >= 3) theatersFile = args[2];
-		if (args >= 4) load = Integer.parseInt(args[3]);
+		if (argc >= 2) load = Integer.parseInt(args[1]);
+		if (argc >= 3) ncopy = Integer.parseInt(args[2]);
+		if (argc >= 4) nameServer = args[3];
+		if (argc >= 5) theatersFile = args[4];
 		dedup()@distributeWork();
 	}
 
@@ -115,15 +123,15 @@ behavior Analyzer {
 	void distributeWork() {
 
 		//create actors and assign data
-		int nw = nstar/load;
-		if (nstar%load != 0) nw++;
-		Worker[] workers = new Worker[nw];
-		for (int i = 0; i < nw; i++) {                                   
-			workers[i] = new Worker();
-		}
+		int nw = nstar*ncopy/load;
+		if (nstar*ncopy%load != 0) nw++;
+		workers = new Worker[nw];
+		for (int i = 0; i < nw; i++) workers[i] = new Worker();
+		active = new boolean[nw];
+		for (int i = 0; i < nw; i++) active[i] = true;
 
 		// read available theaters
-		Vector theaters = new Vector();
+		theaters = new Vector();
 		String theater;
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(theatersFile));
@@ -135,8 +143,10 @@ behavior Analyzer {
 			standardOutput<-println("[error] Can't open the file " + theatersFile + " for reading.");
 		}
 
+		nworker = new int[theaters.size()];
+		for (int i = 0; i < nworker.length; i++) nworker[i] = 0;
 		// migrate actors to theaters
-		for (int i = 0; i < nstar; i++) {
+		for (int i = 0; i < nw; i++) {
 			standardOutput<-println("Sending actor "+
 					"uan://"+nameServer+":3030/a"+i+" to "+
 					"rmsp://"+theaters.get(i%theaters.size())+"/a"+i);
@@ -145,35 +155,42 @@ behavior Analyzer {
 				(new UAN("uan://"+nameServer+":3030/a"+i), 
 				 new UAL("rmsp://"+theaters.get(i%theaters.size())+"/a"+i)
 				);
+			nworker[i%theaters.size()]+=1;
 		}
 
 		//start computation
 		standardOutput<-println(">>>>>>Starting the computation");
-		initialTime = System.currentTimeMillis();
 		for (int i = 0; i < nw; i++) {
 			size = load;
 			if (i == nw-1) {
-				size = nstar-(nw-1)*load;
+				size = nstar*ncopy-(nw-1)*load;
 			}	
 			double[][] data = new double[size][3];
-			for (int j = i*load, jj = 0; j < i*load+load && j < nstar; j++, jj++) for (int k = 0; k < 3; k++) data[jj][k] = coords[j][k];
+			for (int j = i*load, jj = 0; j < i*load+load && j < nstar; j++, jj++) for (int k = 0; k < 3; k++) data[jj][k] = coords[j%nstar][k];
 			workers[i]<-getData(data);
 		}
+		tsend = System.currentTimeMillis()-initialTime;
+
 		join {
-			for (int i = 0; i < nstar; i++) {
-				Worker w = new Worker();
-				join {
-				for (int j = 0; j < nw; j++) {
-					w<-migrate(workers[j].getUAL())@
-					w<-getDataFromColleague(workers[j])@w<-calc(coords[i][0], coords[i][1], coords[i][2]);
-				}
-				}@sumcolumn(token)
+			for (int i = 0; i < nw; i++) {
+				workers[i]<-calc();
 			}
 		}@summarize(token);
+
 	}
 
+	/*
+	 * 		Worker w = new Worker();
+				join {
+					for (int j = 0; j < nw; j++) {
+						w<-migrate(workers[j].getUAL())@
+							w<-getDataFromColleague(workers[j])@w<-calc(coords[i][0], coords[i][1], coords[i][2]);
+					}
+				}@sumcolumn(token)
+	 */
+
 	Vector sumcolumn(Object[] snippets) {
-		
+
 		double min = Double.MAX_VALUE;
 		double max = 0.0;
 		double avg = 0.0;
@@ -226,32 +243,65 @@ behavior Analyzer {
 
 	/** Distribute to the actors based on the deduplicated stars file for concurrent computation*/
 	void distributeWorkC() {
-
 		//create actors and assign data
-		Worker[] workers = new Worker[nstar];
-		for (int i = 0; i < nstar; i++) {                                   
-			workers[i] = new Worker();
-		}
+		int nw = nstar*ncopy/load;
+		if (nstar*ncopy%load != 0) nw++;
+		workers = new Worker[nw];
+		for (int i = 0; i < nw; i++) workers[i] = new Worker();
 
 		//start computation
 		standardOutput<-println(">>>>>>Starting the computation");
-		initialTime = System.currentTimeMillis();
+		for (int i = 0; i < nw; i++) {
+			size = load;
+			if (i == nw-1) {
+				size = nstar*ncopy-(nw-1)*load;
+			}	
+			double[][] data = new double[size][3];
+			for (int j = i*load, jj = 0; j < i*load+load && j < nstar; j++, jj++) for (int k = 0; k < 3; k++) data[jj][k] = coords[j%nstar][k];
+			workers[i]<-getData(data);
+		}
+
 		join {
-			for (int i = 0; i < nstar; i++) {
-				workers[i]<-calc(i, dedupFile, nstar);
+			for (int i = 0; i < nw; i++) {
+				workers[i]<-calc(workers);
 			}
 		}@summarize(token);
+
+		//create actors and assign data
+//		Worker[] workers = new Worker[nstar];
+//		for (int i = 0; i < nstar; i++) {                                   
+//			workers[i] = new Worker();
+//		}
+
+		//start computation
+//		standardOutput<-println(">>>>>>Starting the computation");
+//		initialTime = System.currentTimeMillis();
+//		join {
+//			for (int i = 0; i < nstar; i++) {
+//				workers[i]<-calc(i, dedupFile, nstar);
+//			}
+//		}@summarize(token);
 	}
 
-	void endTimer(){
+	void endTimer(long start) {
 		long finalTime = System.currentTimeMillis();
-		long runningTime = finalTime - initialTime;
-		standardOutput<-println("Running time for star calculation is " + 
-				runningTime+" ms.");
+		taggr = finalTime - start;
+	}
+	
+	void loadBalance(int w) {
+		active[w] = false;
+		nworker[w%theaters.size()]-=1;
+		for (int i = 0; i < theaters.size(); i++) for (int j = 0; j < theaters.size(); j++) if (nworker[i] > nworker[j]+1) {
+			for (int k = i; k < active.length && nworker[i] > nworker[j]+1; k += theaters.size()) if (active[k]) {
+				workers[k]<-migrate("rmsp://"+theaters.get(j%theaters.size())+"/a"+i);
+				nworker[i]-=1;
+				nworker[j]+=1;
+			}
+		}
 	}
 
 	void summarize(Object[] results) {
-
+		long startTime = System.currentTimeMillis();
 		double cndis = Double.MAX_VALUE; // closest neighbour distance
 		Vector[] cn = new Vector[6]; // closest neighbour pairs
 		for (int i = 0; i < 6; i++) cn[i] = new Vector();
@@ -269,106 +319,73 @@ behavior Analyzer {
 		for (int i = 0; i < 3; i++) ics[i] = new Vector();
 
 		//standardOutput<-println("summing...");
-		for (int i = 0; i < nstar; i++){
-			Vector v = (Vector)results[i];
-			double rmin = (Double)v.get(MIN);
-			double rmax = (Double)v.get(MAX);
-			double ravg = (Double)v.get(AVG);
-			double rx = (Double)v.get(X);
-			double ry = (Double)v.get(Y);
-			double rz = (Double)v.get(Z);
-			double rxmin = (Double)v.get(XMIN);
-			double rymin = (Double)v.get(YMIN);
-			double rzmin = (Double)v.get(ZMIN);
-			double rxmax = (Double)v.get(XMAX);
-			double rymax = (Double)v.get(YMAX);
-			double rzmax = (Double)v.get(ZMAX);
-			//standardOutput<-println(rmin+" "+rmax+" "+ravg+" "+rx+" "+ry+" "+rz);
+		for (int i = 0; i < nw; i++){
+			Result v = (Result)results[i];
 
-			if (rmin < cndis) {
-				cndis = rmin;
-				for (int j = 0; j < 6; j++) cn[j].clear();
-				cn[0].add(rx);
-				cn[1].add(ry);
-				cn[2].add(rz);
-				cn[3].add(rxmin);
-				cn[4].add(rymin);
-				cn[5].add(rzmin);
-			} else if (rmin == cndis) {
-				cn[0].add(rx);
-				cn[1].add(ry);
-				cn[2].add(rz);
-				cn[3].add(rxmin);
-				cn[4].add(rymin);
-				cn[5].add(rzmin);
+			if (v.cndis < cndis) {
+				cndis = v.cndis;
+				cn = v.cn;
+			} else if (v.cndis == cndis) {
+				cn[0].addAll(v.cn[0]);
+				cn[1].addAll(v.cn[1]);
+				cn[2].addAll(v.cn[2]);
+				cn[3].addAll(v.cn[3]);
+				cn[4].addAll(v.cn[4]);
+				cn[5].addAll(v.cn[5]);
 			}
 
-			if (rmax > fndis) {
-				fndis = rmax;
-				for (int j = 0; j < 6; j++) fn[j].clear();
-				fn[0].add(rx);
-				fn[1].add(ry);
-				fn[2].add(rz);
-				fn[3].add(rxmax);
-				fn[4].add(rymax);
-				fn[5].add(rzmax);
-			} else if (rmax == fndis) {
-				fn[0].add(rx);
-				fn[1].add(ry);
-				fn[2].add(rz);
-				fn[3].add(rxmax);
-				fn[4].add(rymax);
-				fn[5].add(rzmax);
+			if (v.fndis > fndis) {
+				fndis = v.fndis;
+				fn = v.fn;
+			} else if (v.fndis == fndis) {
+				fn[0].addAll(v.fn[0]);
+				fn[1].addAll(v.fn[1]);
+				fn[2].addAll(v.fn[2]);
+				fn[3].addAll(v.fn[3]);
+				fn[4].addAll(v.fn[4]);
+				fn[5].addAll(v.fn[5]);
 			}
 
-			if (rmax < minmaxdis) {
-				minmaxdis = rmax;
-				for (int j = 0; j < 6; j++) ihs[j].clear();
-				ihs[0].add(rx);
-				ihs[1].add(ry);
-				ihs[2].add(rz);
-				ihs[3].add(rxmax);
-				ihs[4].add(rymax);
-				ihs[5].add(rzmax);
-			} else if (rmax == minmaxdis) {
-				ihs[0].add(rx);
-				ihs[1].add(ry);
-				ihs[2].add(rz);
-				ihs[3].add(rxmax);
-				ihs[4].add(rymax);
-				ihs[5].add(rzmax);
+			if (v.minmaxdis < minmaxdis) {
+				minmaxdis = v.minmaxdis;
+				ihs = v.ihs;
+			} else if (v.minmaxdis == minmaxdis) {
+				ihs[0].addAll(v.ihs[0]);
+				ihs[1].addAll(v.ihs[1]);
+				ihs[2].addAll(v.ihs[2]);
+				ihs[3].addAll(v.ihs[3]);
+				ihs[4].addAll(v.ihs[4]);
+				ihs[5].addAll(v.ihs[5]);
 			}
 
-			if (rmin > maxmindis) {
-				maxmindis = rmin;
-				for (int j = 0; j < 6; j++) ijs[j].clear();
-				ijs[0].add(rx);
-				ijs[1].add(ry);
-				ijs[2].add(rz);
-				ijs[3].add(rxmin);
-				ijs[4].add(rymin);
-				ijs[5].add(rzmin);
-			} else if (rmin == maxmindis) {
-				ijs[0].add(rx);
-				ijs[1].add(ry);
-				ijs[2].add(rz);
-				ijs[3].add(rxmin);
-				ijs[4].add(rymin);
-				ijs[5].add(rzmin);
+			if (v.maxmindis > maxmindis) {
+				maxmindis = v.maxmindis;
+				ijs = v.ijs;
+			} else if (v.maxmindis == maxmindis) {
+				ijs[0].addAll(v.ijs[0]);
+				ijs[1].addAll(v.ijs[1]);
+				ijs[2].addAll(v.ijs[2]);
+				ijs[3].addAll(v.ijs[3]);
+				ijs[4].addAll(v.ijs[4]);
+				ijs[5].addAll(v.ijs[5]);
 			}
 
-			if (ravg < minavgdis) {
-				minavgdis = ravg;
-				for (int j = 0; j < 3; j++) ics[j].clear();
-				ics[0].add(rx);
-				ics[1].add(ry);
-				ics[2].add(rz);
-			} else if (ravg == minavgdis) {
-				ics[0].add(rx);
-				ics[1].add(ry);
-				ics[2].add(rz);
+			if (v.minavgdis < minavgdis) {
+				minavgdis = v.minavgdis;
+				ics = v.ics;
+			} else if (v.minavgdis == minavgdis) {
+				ics[0].addAll(v.ics[0]);
+				ics[1].addAll(v.ics[1]);
+				ics[2].addAll(v.ics[2]);
 			}
 
+		}
+
+		twork = 0;
+		for (int i = 0; i < theaters.size(); i++) {
+			long theatertime = 0;
+			for (j = i; j < nw; j += theaters.size()) theatertime += ((Result)results[j]).time;
+			if (theatertime > twork) twork = theatertime;
 		}
 
 		token cndedup = dedupPair(cn);
@@ -389,7 +406,8 @@ behavior Analyzer {
 			standardOutput<-println("minimal average distance: "+minavgdis)@
 			outputVector(ics)@
 			standardOutput<-println(token)@
-			endTimer();
+			endTimer(startTime)@
+			standardOutput<-println("estimated total time: "+(tsend+twork+taggr)+" ms");
 	}
 
 	Vector[] dedupPair(Vector[] pairs) {
@@ -441,5 +459,6 @@ behavior Analyzer {
 		}
 		return ret;
 	}
+
 }
 
