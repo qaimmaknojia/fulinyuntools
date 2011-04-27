@@ -1,9 +1,28 @@
+Authors: Linyun Fu and Yanning Chen
+
+* Submitted items
+ - pa3.pdf: the description of star calculating algorithms;
+ - Worker.salsa and Analyzer.salsa in the sky directory: the salsa source code;
+ - Result.java in the sky directory: the java class used for data transmission between actors;
+ - theatersFile.txt: a file listing all the theaters;
+ - test.txt: the default star file containing coordinates.
 
 * How to run the program
- - Make sure you include the salsa<version>.jar file in the classpath environment variable.
+ - Make sure you include the salsa<version>.jar file in the classpath environment variable
  - Compile source files: java salsac.SalsaCompiler sky/*.salsa
  - Compile java files: javac sky/*.java 
  - Start naming server: java wwc.naming.WWCNamingServer
  - Start theaters claimed in theatersFile.txt: java wwc.messaging.Theater <port_number>
  - Start the analyzer: java sky.Analyzer
+ - To test the concurrent calculation: java sky.Analyzer -c
+ - To designate a star file and the work load for each worker: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker>
+ - To perform fault-tolerant computation: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker> <#copies>  this will cause a certain number of copies of each star coordinate being sent out to different workers
+ - Complete command line format: java sky.Analyzer [<starsFile>] [<#stars-assigned-to-each-worker>] [<#copies>] [<name-server>] [<theater-list-file>] [-c|--concurrent]
 
+* Features of our solution
+ - Data transmissions are spread across actors, not only the main actor (Analyzer) sends data and receives results, but the workers communicate with each other to finish their tasks.
+ - An analysis of sequential vs. parallel execution performance and scalability is included in pa3.pdf.
+ - Our solution includes a fault-tolerant extension.
+
+* Known bugs
+ - 
