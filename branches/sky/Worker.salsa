@@ -1,7 +1,6 @@
 module sky;
 import java.io.*;
 import java.util.*;
-import sky.util.*;
 
 /* Worker.salsa -- 
  *   Worker for Parallel star calculation
