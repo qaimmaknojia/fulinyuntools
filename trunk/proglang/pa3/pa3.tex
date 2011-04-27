@@ -4,7 +4,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
-\author{Linyun Fu}
+\author{Linyun Fu\and Yanning Chen}
 \title{CSCI.4430/6969 Programming Languages Spring 2011\\
 Programming Assignment \#3 -- Sky Analyzer}
 \begin{document}
@@ -21,7 +21,7 @@ You are to analyze three-dimensional data from the Sloan Digital Sky Survey, in 
 \item \textbf{Ideal capital stars} Compute the set of stars which minimize the average distance to all other stars. 
 \end{itemize}
 
-You are given a stars text file with the first line giving the total number of stars in the file followed by one line per star representing each star's three dimensions $<x,y,z>$ as X Y Z. Please remove duplicate entries in your program. Your output should look as follows:\\
+You are given a stars text file with the first line giving the total number of stars in the file followed by one line per star representing each star's three dimensions $\left<x,y,z\right>$ as X Y Z. Please remove duplicate entries in your program. Your output should look as follows:\\
 \\
 $d_1$  // minimal pairwise distance\\
 $s_{11}$ $s_{12}$\\
@@ -34,13 +34,13 @@ $s_{23}$ $s_{24}$\\
 ...\\
 \\
 $d_3$ // minimum maximal distance\\
-$s_{31}$\\
-$s_{32}$\\
+$s_{31}$ $s_{32}$\\
+$s_{33}$ $s_{34}$\\
 ...\\
 \\
 $d_4$ // maximum minimal distance\\
-$s_{41}$\\
-$s_{42}$\\
+$s_{41}$ $s_{42}$\\
+$s_{43}$ $s_{44}$\\
 ... \\
 \\
 $d_5$ // minimal average distance\\
@@ -61,13 +61,56 @@ Write an extension of your distributed space colonization solution so that actor
 
 \section*{Other Possible Extensions}
 \begin{itemize}
-\item Provide an analysis of sequential vs parallel execution performance.
+\item Provide an analysis of sequential vs.~parallel execution performance.
 \item Provide an analysis of scalability.
 \item Develop a fault-tolerant distributed solution.
 \end{itemize}
 
 \part*{Answer}
+\section*{Part 1 -- Concurrent Solution}
+Our solution works in the following way. 
+\begin{itemize}
+\item The Analyzer actor sends each Worker actor the coordinates of $n$ stars, where $n$ can be designated by the user. 
+\item Each Worker actor calculates the pair-wise distances among stars that he knows.
+\item Each Worker actor asks the other Worker actors for their coordinate data and calculate each distance between one of his stars and one of the stars not sent to him by the Analyzer actor.
+\item Each Worker actor sends back his calculation results to the Analyzer actor, who aggregates them and print the final result.
+\end{itemize}
 
+\section*{Part 2 -- Distributed Solution}
+The distributed solution works in the same way as the concurrent solution, except that the Worker actors migrate to different theaters at the beginning.
 
+\section*{Extra Credit -- Mobile Actors Solution}
+When a Worker actor finishes his job, he will send a message containing his theater information to the Analyzer actor, who keeps counting the number of active Worker actors at each theater and migrates Worker actors to balance load among theaters.
+
+\section*{Extensions}
+\subsection*{Analysis of sequential vs.~parallel execution performance}
+Since we experiment on one machine and use different port numbers to simulate theaters on different machines, we estimate the performance of parallel execution in the following way.
+\begin{itemize}
+\item We count the time spent on the Analyzer actor sending data to each Worker actors, which is denoted as $t_{\textrm{send}}$;
+\item We count the time spent on the Worker actor that finishes his job last, which is denoted as $t_{\textrm{work}}$;
+\item We count the time spent on the Analyzer actor aggregating results from Worker actors, which is denoted as $t_{\rm aggr}$;
+\item Adding the above three items together, we get the estimated parallel execution time $t_{\rm para} = t_{\textrm{send}}+t_{\textrm{work}}+t_{\rm aggr}$.
+\end{itemize}
+
+Table~1 shows the computing times with different numbers of workers on dataset \texttt{stars\_21\_xyz.txt}, which contains  stars. Sequential execution is when there is only one worker. All the experiments are performed on an Acer Aspire 5741Z-5433 laptop with an Intel P6000 processor (1.86GHz$\times$2, 3MB L3 cache) and 4GB DDR3 memory.
+
+\begin{table}
+\begin{center}
+\caption{Computing time with different numbers of workers}
+\begin{tabular}{l|r|r|r|r}
+\#workers & 1 & 10 & 100 & 1000\\
+\hline
+\#stars per worker & & & &\\
+\hline
+computing time (ms) & & & &
+\end{tabular}
+\end{center}
+\end{table}
+
+\subsection*{Analysis of scalability}
+Since the number of stars assigned to each Worker actor can be flexibly tuned, our solution is very scalable and can make good use of any feasible number of machines.
+
+\subsection*{Fault-tolerant distributed solution}
+This can be easily implemented by sending the coordinates of one star to multiple Worker actors at different theaters, so that if some but not all of these actors fail, we can still get the computing result about this star.
 \end{document}
 
