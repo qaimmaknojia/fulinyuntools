@@ -1,7 +1,6 @@
 module sky;
 import java.io.*;
 import java.util.*;
-import sky.util.*;
 
 /* Worker.salsa -- 
  *   Worker for Parallel star calculation
@@ -9,61 +8,224 @@ import sky.util.*;
 
 behavior Worker {
 
-	double x = 0.0;
-	double y = 0.0;
-	double z = 0.0;
+	//	double x = 0.0;
+	//	double y = 0.0;
+	//	double z = 0.0;
 	double[][] stardata;
-	//int start;
-	//int end;
 
-	int X = 0, Y = 1, Z = 2, MIN = 3, MAX = 4, XMIN = 5, YMIN = 6, ZMIN = 7, XMAX = 8, YMAX = 9, ZMAX = 10, AVG = 11, /*START = 12, END = 13, */RESULTSIZE = 12; // used to encode the result of one worker with an array of doubles
-
-	void getData(double[][] data/*, int start, int end*/) {
+	void getData(double[][] data) {
 		stardata = new double[data.length][3];
 		for (int i = 0; i < data.length; i++) for (int j = 0; j < 3; j++) stardata[i][j] = data[i][j];
-		//this.start = start;
-		//this.end = end;
 	}
 
 	double[][] sendData() {
 		return stardata;
 	}
 
-	void getDataFromColleague(Worker w) {
-		w<-sendData()@getData(token);
-	}
+	/*
+		 void getDataFromColleague(Worker w) {
+		 w<-sendData()@getData(token);
+		 }
+		 */
 
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
-	Vector calc(double x, double y, double z) {
-		
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		getMinMax(stardata/*, start, end*/)@currentContinuation;
+	Result calc(Worker[] workers) {
+		join {
+			for (int i = 0; i < stardata.length; i++) {
+				getResultlet(stardata[i], workers);
+			}
+		}@combine(token)@currentContinuation;
 	}
 
-	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
-	Vector getMinMax(double[][] values/*, int start, int end*/) {
-		double[] r = new double[RESULTSIZE];
-		//r[START] = new Integer(start);
-		//r[END] = new Integer(end);
-		r[X] = r[XMIN] = r[XMAX] = x;
-		r[Y] = r[YMIN] = r[YMAX] = y;
-		r[Z] = r[ZMIN] = r[ZMAX] = z;
-		r[MIN] = Double.MAX_VALUE;
-		r[MAX] = 0.0;
-		r[AVG] = 0.0;
-		reset(r, values)@convert2vector(token)@currentContinuation;
+	Resultlet getResultlet(double[] star, Worker[] workers) {
+		join {
+			for (int j = 0; j < workers.length; j++) workers[j]<-sendData()@getMinMax(stardata[j], token);
+		}@combine1(token)@currentContinuation;
 	}
 
-	Vector convert2vector(double[] a) {
-		Vector r = new Vector();
-		for (int i = 0; i < a.length; i++) r.add(a[i]);
+	Resultlet combine1(Object[] snippets) {
+		Resultlet r = new Resultlet();
+		r.min = Double.MAX_VALUE;
+		r.max = 0.0;
+		r.avg = 0.0;
+		for (int i = 0; i < snippets.length; i++) {
+			Resultlet rl = (Resultlet)snippets[i];
+			if (rl.min < r.min) {
+				r.min = rl.min;
+				r.minstar = rl.minstar;
+			}	else if (rl.min == r.min) {
+				double[][] minstar = new double[rl.minstar.length+r.minstar.length][3];
+				for (int j = 0; j < rl.minstar.length; j++) for (int k = 0; k < 3; k++) minstar[j][k] = rl.minstar[j][k];
+				for (int j = 0, jj = rl.minstar.length; j < r.minstar.length; j++, jj++) for (int k = 0; k < 3; k++) minstar[jj][k] = r.minstar[j][k];
+				r.minstar = minstar;
+			}
+
+			if (rl.max > r.max) {
+				r.max = rl.max;
+				r.maxstar = rl.maxstar;
+			} else if (rl.max == r.max) {
+				double[][] maxstar = new double[rl.maxstar.length+r.maxstar.length][3];
+				for (int j = 0; j < rl.maxstar.length; j++) for (int k = 0; k < 3; k++) maxstar[j][k] = rl.maxstar[j][k];
+				for (int j = 0, jj = rl.maxstar.length; j < r.maxstar.length; j++, jj++) for (int k = 0; k < 3; k++) maxstar[jj][k] = r.maxstar[j][k];
+				r.maxstar = maxstar;
+			}
+
+			r.avg += rl.avg;
+		}
+		r.x = ((Resultlet)snippets[0]).x;
+		r.y = ((Resultlet)snippets[0]).y;
+		r.z = ((Resultlet)snippets[0]).z;
+
 		return r;
 	}
 
+	Result combine(Object[] results) {
+		Result ret = new Result();
+		ret.cndis = Double.MAX_VALUE; // closest neighbour distance
+		ret.cn = new Vector[6]; // closest neighbour pairs
+		for (int i = 0; i < 6; i++) ret.cn[i] = new Vector();
+		ret.fndis = 0.0; // farthest neighbour distance
+		ret.fn = new Vector[6]; // farthest neighbour pairs
+		for (int i = 0; i < 6; i++) ret.fn[i] = new Vector();
+		ret.minmaxdis = Double.MAX_VALUE; // minimum max distance
+		ret.ihs = new Vector[6]; // ideal hub stars
+		for (int i = 0; i < 6; i++) ret.ihs[i] = new Vector();
+		ret.maxmindis = 0.0; // maximum min distance
+		ret.ijs = new Vector[6]; // ideal jail stars
+		for (int i = 0; i < 6; i++) ret.ijs[i] = new Vector();
+		ret.minavgdis = Double.MAX_VALUE; // minimum average distance
+		ret.ics = new Vector[3]; // ideal capital stars
+		for (int i = 0; i < 3; i++) ret.ics[i] = new Vector();
+
+		for (int i = 0; i < results.length; i++){
+			Resultlet v = (Resultlet)results[i];
+
+			if (v.min < ret.cndis) {
+				ret.cndis = v.min;
+				for (int j = 0; j < 6; j++) ret.cn[j].clear();
+				for (int j = 0; j < v.minstar.length; j++) {
+					ret.cn[0].add(v.x);
+					ret.cn[1].add(v.y);
+					ret.cn[2].add(v.z);
+					ret.cn[3].add(v.minstar[j][0]);
+					ret.cn[4].add(v.minstar[j][1]);
+					ret.cn[5].add(v.minstar[j][2]);
+				}
+			} else if (v.min == ret.cndis) {
+				for (int j = 0; j < v.minstar.length; j++) {
+					ret.cn[0].add(v.x);
+					ret.cn[1].add(v.y);
+					ret.cn[2].add(v.z);
+					ret.cn[3].add(v.minstar[j][0]);
+					ret.cn[4].add(v.minstar[j][1]);
+					ret.cn[5].add(v.minstar[j][2]);
+				}
+			}
+
+			if (v.max > ret.fndis) {
+				for (int j = 0; j < 6; j++) ret.fn[j].clear();
+				for (int j = 0; j < v.maxstar.length; j++) {
+					ret.fn[0].add(v.x);
+					ret.fn[1].add(v.y);
+					ret.fn[2].add(v.z);
+					ret.fn[3].add(v.maxstar[j][0]);
+					ret.fn[4].add(v.maxstar[j][1]);
+					ret.fn[5].add(v.maxstar[j][2]);
+				}
+			} else if (v.max == ret.fndis) {
+				for (int j = 0; j < v.maxstar.length; j++) {
+					ret.fn[0].add(v.x);
+					ret.fn[1].add(v.y);
+					ret.fn[2].add(v.z);
+					ret.fn[3].add(v.maxstar[j][0]);
+					ret.fn[4].add(v.maxstar[j][1]);
+					ret.fn[5].add(v.maxstar[j][2]);
+				}
+			}
+
+			if (v.max < ret.minmaxdis) {
+				ret.minmaxdis = v.max;
+				for (int j = 0; j < 6; j++) ret.ihs[j].clear();
+				for (int j = 0; j < v.maxstar.length; j++) {
+					ret.ihs[0].add(v.x);
+					ret.ihs[1].add(v.y);
+					ret.ihs[2].add(v.z);
+					ret.ihs[3].add(v.maxstar[j][0]);
+					ret.ihs[4].add(v.maxstar[j][1]);
+					ret.ihs[5].add(v.maxstar[j][2]);
+				}
+			} else if (v.max == ret.minmaxdis) {
+				for (int j = 0; j < v.maxstar.length; j++) {
+					ret.ihs[0].add(v.x);
+					ret.ihs[1].add(v.y);
+					ret.ihs[2].add(v.z);
+					ret.ihs[3].add(v.maxstar[j][0]);
+					ret.ihs[4].add(v.maxstar[j][1]);
+					ret.ihs[5].add(v.maxstar[j][2]);
+				}
+			}
+
+			if (v.min > ret.maxmindis) {
+				ret.maxmindis = v.min;
+				for (int j = 0; j < 6; j++) ret.ijs[j].clear();
+				for (int j = 0; j < v.minstar.length; j++) {
+					ret.ijs[0].add(v.x);
+					ret.ijs[1].add(v.y);
+					ret.ijs[2].add(v.z);
+					ret.ijs[3].add(v.minstar[j][0]);
+					ret.ijs[4].add(v.minstar[j][1]);
+					ret.ijs[5].add(v.minstar[j][2]);
+				}
+			} else if (v.min == ret.maxmindis) {
+				for (int j = 0; j < v.minstar.length; j++) {
+					ret.ijs[0].add(v.x);
+					ret.ijs[1].add(v.y);
+					ret.ijs[2].add(v.z);
+					ret.ijs[3].add(v.minstar[j][0]);
+					ret.ijs[4].add(v.minstar[j][1]);
+					ret.ijs[5].add(v.minstar[j][2]);
+				}
+			}
+
+			if (v.avg < ret.minavgdis) {
+				ret.minavgdis = v.avg;
+				for (int j = 0; j < 6; j++) ret.ics[j].clear();
+				ret.ics[0].add(v.x);
+				ret.ics[1].add(v.y);
+				ret.ics[2].add(v.z);
+			} else if (v.avg == ret.minavgdis) {
+				ret.ics[0].add(v.x);
+				ret.ics[1].add(v.y);
+				ret.ics[2].add(v.z);
+			}
+		}
+
+		return ret;
+	}
+
+	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
+	Resultlet getMinMax(double[] star, double[][] values) {
+		Resultlet r = new Resultlet();
+		r.x = star[0];
+		r.y = star[1];
+		r.z = star[2];
+		r.min = Double.MAX_VALUE;
+		r.max = 0.0;
+		r.avg = 0.0;
+
+		reset(r, values)@currentContinuation;
+	}
+
+	/*
+		 Vector convert2vector(double[] a) {
+		 Vector r = new Vector();
+		 for (int i = 0; i < a.length; i++) r.add(a[i]);
+		 return r;
+		 }
+		 */
+
 	/** get the Result object containing the minimum and the maximum distances */
-	double[] reset(double[] r, double[][] values) {
+	Resultlet reset(Resultlet r, double[][] values) {
 
 		token rr = reset1(r, values[0]);
 
@@ -76,34 +238,42 @@ behavior Worker {
 	}
 
 	/** identity function */
-	double[] iden(double[] r) {
+	Resultlet iden(Resultlet r) {
 		return r;
 	}
 
 	/** change the records for minimum and maximum distances for a Result object */
-	double[] reset1(double[] r, double[] star) {
+	Resultlet reset1(Resultlet r, double[] star) {
 
-		double dx = x-star[0];
-		double dy = y-star[1];
-		double dz = z-star[2];
+		double dx = r.x-star[0];
+		double dy = r.y-star[1];
+		double dz = r.z-star[2];
 		if (dx != 0.0 || dy != 0.0 || dz != 0.0) {
 			double dis = Math.sqrt(dx*dx+dy*dy+dz*dz);
 
-			if (dis < r[MIN]) {
-				r[MIN] = dis;
-				r[XMIN] = star[0];
-				r[YMIN] = star[1];
-				r[ZMIN] = star[2];
+			if (dis < r.min) {
+				r.min = dis;
+				r.minstar = new double[1][3];
+				for (int i = 0; i < 3; i++) r.minstar[0][i] = star[i];
+			} else if (dis == r.min) {
+				double[][] t = new double[r.minstar.length+1][3];
+				for (int i = 0; i < r.minstar.length; i++) for (int j = 0; j < 3; j++) t[i][j] = r.minstar[i][j];
+				for (int j = 0; j < 3; j++) t[r.minstar.length][j] = star[j];
+				r.minstar = t;
 			}
 
-			if (dis > r[MAX]) {
-				r[MAX] = dis;
-				r[XMAX] = star[0];
-				r[YMAX] = star[1];
-				r[ZMAX] = star[2];
+			if (dis > r.max) {
+				r.max = dis;
+				r.maxstar = new double[1][3];
+				for (int i = 0; i < 3; i++) r.maxstar[0][i] = star[i];
+			} else if (dis == r.max) {
+				double[][] t = new double[r.maxstar.length+1][3];
+				for (int i = 0; i < r.maxstar.length; i++) for (int j = 0; j < 3; j++) t[i][j] = r.maxstar[i][j];
+				for (int j = 0; j < 3; j++) t[r.maxstar.length][j] = star[j];
+				r.maxstar = t;
 			}
 
-			r[AVG] += dis;
+			r.avg += dis;
 		}
 		return r;
 
@@ -111,33 +281,84 @@ behavior Worker {
 
 	/** for unit test */
 	void act(String args[]) {
-		double[][] stardata = {{0.0, 0.0, 0.0},{0.0, 1.0, 0.0},{0.0, 1.0, 5.0},{0.0, 0.0, 5.0}};
-		double[][] stardata1 = {{0.0, 0.0, 0.0},{0.0, 1.0, 0.0}};
-		double[][] stardata2 = {{0.0, 1.0, 0.0},{0.0, 1.0, 5.0},{0.0, 0.0, 5.0}};
-		getData(stardata1)@calc(0.0, 0.0, 0.0)@displayResult(token)@
-			getData(stardata2)@calc(0.0, 1.0, 0.0)@displayResult(token);
+		double[][] stardata = new double[9][3];
+		for (int i = 0; i < 9; i++) stardata[i][0] = 0.0;
+		for (int i = 0; i < 9; i++) stardata[i][1] = i/3+0.0;
+		for (int i = 0; i < 9; i++) stardata[i][2] = i%3+0.0;
+		double[][] stardata1 = new double[3][3];
+		for (int i = 0; i < 3; i++) for (int j = 0; j < 3; j++) stardata1[i][j] = stardata[i][j];
+		double[][] stardata2 = new double[3][3];
+		for (int i = 0, k = 3; i < 3; i++, k++) for (int j = 0; j < 3; j++) stardata2[i][j] = stardata[k][j];
+		double[][] stardata3 = new double[3][3];
+		for (int i = 0, k = 6; i < 3; i++, k++) for (int j = 0; j < 3; j++) stardata3[i][j] = stardata[k][j];
+
+		Worker worker1 = new Worker();
+		Worker worker2 = new Worker();
+		Worker worker3 = new Worker();
+		worker1<-getData(stardata1);
+		worker2<-getData(stardata2);
+		worker3<-getData(stardata3);
+
+		worker1<-sendData()@getData(token)@calc(new Worker[]{worker1, worker2, worker3})@displayResult(token)@standardOutput<-println(token);
+		//@
+			//getData(stardata)@calc()@displayResult(token)@standardOutput<-println(token)@
+			//getData(stardata)@calc()@displayResult(token)@standardOutput<-println(token);
 	}
 
 	/** display the content of a Result object */
-	Vector displayResult(Vector r) {
-		double rmin = (Double)r.get(MIN);
-		double rmax = (Double)r.get(MAX);
-		double ravg = (Double)r.get(AVG);
-		double rx = (Double)r.get(X);
-		double ry = (Double)r.get(Y);
-		double rz = (Double)r.get(Z);
-		double rxmin = (Double)r.get(XMIN);
-		double rymin = (Double)r.get(YMIN);
-		double rzmin = (Double)r.get(ZMIN);
-		double rxmax = (Double)r.get(XMAX);
-		double rymax = (Double)r.get(YMAX);
-		double rzmax = (Double)r.get(ZMAX);
-		//int start = (Integer)r.get(START);
-		//int end = (Integer)r.get(END);
-		standardOutput<-println("\nThe final result for "+rx+" "+ry+" "+rz+" is\nmin distance: "+rmin+"\nfrom "+rxmin+" "+rymin+" "+rzmin+"\nmax distance: "+rmax+"\nfrom "+rxmax+" "+rymax+" "+rzmax+"\ntotal distance: "+ravg);
-
-		return r;
+	String displayResult(Result r) {
+		String ret = "";
+		ret += "\nmin distance: "+r.cndis;
+		ret += "\n";
+		ret += outputVector(r.cn);
+		ret += "\nmax distance: "+r.fndis;
+		ret += "\n";
+		ret += outputVector(r.fn);
+		ret += "\nminmax distance: "+r.minmaxdis;
+		ret += "\n";
+		ret += outputVector(r.ihs);
+		ret += "\nmaxmin distance: "+r.maxmindis;
+		ret += "\n";
+		ret += outputVector(r.ijs);
+		ret += "\nminavg distance: "+r.minavgdis;
+		ret += "\n";
+		ret += outputVector(r.ics);
+		return ret;
 	}
+
+	String outputVector(Vector[] list) {
+		join {
+			for (int i = 0; i < list[0].size(); i++) outputColumn(list, i);
+		}@concat(token)@currentContinuation;
+	}
+
+	String concat(Object[] strings) {
+		String ret = "";
+		for (int i = 0; i < strings.length; i++) ret += (String)strings[i]+"\n";
+		return ret;
+	}
+
+	String outputColumn(Vector[] list, int col) {
+		String ret = "<";
+		for (int i = 0; i < list.length; i++) {
+			ret += list[i].get(col);
+			if (i == list.length-1) ret += ">";
+			else if (i%3 == 2) ret += "> <";
+			else ret += ",";
+		}
+		return ret;
+	}
+
+	/*
+	String outputVector(double[][] stars) {
+		String ret = "";
+		for (int i = 0; i < stars.length; i++) {
+			for (int j = 0; j < 3; j++) ret += " "+stars[i][j];
+			ret += "\n";
+		}
+		return ret;
+	}
+	*/
 
 }
 
