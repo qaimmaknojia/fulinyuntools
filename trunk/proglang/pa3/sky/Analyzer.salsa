@@ -312,6 +312,8 @@ behavior Analyzer {
 				for (int j = i; j < results.length; j += theaters.size()) theatertime += ((Result)results[j]).time;
 				if (theatertime > twork) twork = theatertime;
 			}
+		} else {
+			for (int i = 0; i < results.length; i++) if (((Result)results[i]).time > twork) twork = ((Result)results[i]).time;
 		}
 		//standardOutput<-println("!!!start dedup cn and fn!!!");
 		token cndedup = dedupPair(cn);
