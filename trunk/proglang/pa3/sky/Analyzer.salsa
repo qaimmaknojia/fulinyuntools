@@ -225,178 +225,29 @@ behavior Analyzer {
 	}
 
 	void summarize(Object[] results) {
-		if (results == null) {
-			standardOutput<-println("!!!summarize() received null!!!");
-			return;
-		}
-		//standardOutput<-println("begin summarize()");
+		//if (results == null) standardOutput<-println("\n!!!results==null!!!\n");
 		long startTime = System.currentTimeMillis();
-		double cndis = Double.MAX_VALUE; // closest neighbour distance
-		Vector[] cn = new Vector[6]; // closest neighbour pairs
-		for (int i = 0; i < 6; i++) cn[i] = new Vector();
-		double fndis = 0.0; // farthest neighbour distance
-		Vector[] fn = new Vector[6]; // farthest neighbour pairs
-		for (int i = 0; i < 6; i++) fn[i] = new Vector();
-		double minmaxdis = Double.MAX_VALUE; // minimum max distance
-		Vector[] ihs = new Vector[6]; // ideal hub stars
-		for (int i = 0; i < 6; i++) ihs[i] = new Vector();
-		double maxmindis = 0.0; // maximum min distance
-		Vector[] ijs = new Vector[6]; // ideal jail stars
-		for (int i = 0; i < 6; i++) ijs[i] = new Vector();
-		double minavgdis = Double.MAX_VALUE; // minimum average distance
-		Vector[] ics = new Vector[3]; // ideal capital stars
-		for (int i = 0; i < 3; i++) ics[i] = new Vector();
-
-		//standardOutput<-println("\n\n!!!begin results!!!\n\n");
+		//standardOutput<-println("\n!!!\n"+startTime+"\n!!!\n");
+		Result[] rs = new Result[results.length];
+		//standardOutput<-println("!!!start loop!!!");
 		for (int i = 0; i < results.length; i++) {
-			Result v = (Result)results[i];
-
-			if (v.cndis < cndis) {
-				cndis = v.cndis;
-				cn = v.cn;
-			} else if (v.cndis == cndis) {
-				cn[0].addAll(v.cn[0]);
-				cn[1].addAll(v.cn[1]);
-				cn[2].addAll(v.cn[2]);
-				cn[3].addAll(v.cn[3]);
-				cn[4].addAll(v.cn[4]);
-				cn[5].addAll(v.cn[5]);
-			}
-
-			if (v.fndis > fndis) {
-				fndis = v.fndis;
-				fn = v.fn;
-			} else if (v.fndis == fndis) {
-				fn[0].addAll(v.fn[0]);
-				fn[1].addAll(v.fn[1]);
-				fn[2].addAll(v.fn[2]);
-				fn[3].addAll(v.fn[3]);
-				fn[4].addAll(v.fn[4]);
-				fn[5].addAll(v.fn[5]);
-			}
-
-			if (v.minmaxdis < minmaxdis) {
-				minmaxdis = v.minmaxdis;
-				ihs = v.ihs;
-			} else if (v.minmaxdis == minmaxdis) {
-				ihs[0].addAll(v.ihs[0]);
-				ihs[1].addAll(v.ihs[1]);
-				ihs[2].addAll(v.ihs[2]);
-				ihs[3].addAll(v.ihs[3]);
-				ihs[4].addAll(v.ihs[4]);
-				ihs[5].addAll(v.ihs[5]);
-			}
-
-			if (v.maxmindis > maxmindis) {
-				maxmindis = v.maxmindis;
-				ijs = v.ijs;
-			} else if (v.maxmindis == maxmindis) {
-				ijs[0].addAll(v.ijs[0]);
-				ijs[1].addAll(v.ijs[1]);
-				ijs[2].addAll(v.ijs[2]);
-				ijs[3].addAll(v.ijs[3]);
-				ijs[4].addAll(v.ijs[4]);
-				ijs[5].addAll(v.ijs[5]);
-			}
-
-			if (v.minavgdis < minavgdis) {
-				minavgdis = v.minavgdis;
-				ics = v.ics;
-			} else if (v.minavgdis == minavgdis) {
-				ics[0].addAll(v.ics[0]);
-				ics[1].addAll(v.ics[1]);
-				ics[2].addAll(v.ics[2]);
-			}
-
+			rs[i] = (Result)results[i];
+			//standardOutput<-println("!!!"+i+"!!!");
 		}
-
-		//standardOutput<-println("!!!start calc twork!!!");
-		twork = 0;
-		if (theaters != null) {
-			for (int i = 0; i < theaters.size(); i++) {
-				long theatertime = 0;
-				for (int j = i; j < results.length; j += theaters.size()) theatertime += ((Result)results[j]).time;
-				if (theatertime > twork) twork = theatertime;
-			}
-		} else {
-			for (int i = 0; i < results.length; i++) if (((Result)results[i]).time > twork) twork = ((Result)results[i]).time;
-		}
-		//standardOutput<-println("!!!start dedup cn and fn!!!");
-		token cndedup = dedupPair(cn);
-		token fndedup = dedupPair(fn);
-
-		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\n\nminimal pairwise distance: "+cndis)@
-			outputVector(cndedup)@
-			standardOutput<-println(token)@
-			standardOutput<-println("maximal pairwise distance: "+fndis)@
-			outputVector(fndedup)@
-			standardOutput<-println(token)@
-			standardOutput<-println("minimum maximal distance: "+minmaxdis)@
-			outputVector(ihs)@
-			standardOutput<-println(token)@
-			standardOutput<-println("maximum minimal distance: "+maxmindis)@
-			outputVector(ijs)@
-			standardOutput<-println(token)@
-			standardOutput<-println("minimal average distance: "+minavgdis/(nstar-1))@
-			outputVector(ics)@
-			standardOutput<-println(token)@
+		int sumsize;
+		if (theaters == null) sumsize = results.length;
+		else sumsize = theaters.size();
+		Result r = ResultAggregator.summarize(rs, sumsize);
+		
+		standardOutput<-println("Stars file: "+starsFile+"\nnumber of stars: "+nstar+"\n")@
+			standardOutput<-println(r.toString(nstar))@
 			getTaggr(startTime)@
-			standardOutput<-println("estimated total time: "+(tsend+twork+taggr)+" ms");
+			standardOutput<-println("estimated total time: "+(tsend+r.time+taggr)+" ms");
 	}
 
 	void getTaggr(long start) {
 		long finalTime = System.currentTimeMillis();
 		taggr = finalTime - start;
-	}
-
-	Vector[] dedupPair(Vector[] pairs) {
-		for (int i = 1; i < pairs[0].size(); ) {
-			boolean removed = false;
-			for (int j = 0; j < i; j++) {
-				double i0 = (Double)pairs[0].get(i);
-				double i1 = (Double)pairs[1].get(i);
-				double i2 = (Double)pairs[2].get(i);
-				double i3 = (Double)pairs[3].get(i);
-				double i4 = (Double)pairs[4].get(i);
-				double i5 = (Double)pairs[5].get(i);
-				double j0 = (Double)pairs[0].get(j);
-				double j1 = (Double)pairs[1].get(j);
-				double j2 = (Double)pairs[2].get(j);
-				double j3 = (Double)pairs[3].get(j);
-				double j4 = (Double)pairs[4].get(j);
-				double j5 = (Double)pairs[5].get(j);
-				if (i0 == j3 && i1 == j4 && i2 == j5 && i3 == j0 && i4 == j1 && i5 == j2) {
-					for (int k = 0; k < 6; k++) pairs[k].remove(i);
-					removed = true;
-					break;
-				}
-			}
-			if (!removed) i++;
-		}
-		return pairs;
-	}
-
-	String outputVector(Vector[] list) {
-		join {
-			for (int i = 0; i < list[0].size(); i++) outputColumn(list, i);
-		}@concat(token)@currentContinuation;
-	}
-
-	String concat(Object[] strings) {
-		String ret = "";
-		for (int i = 0; i < strings.length; i++) ret += (String)strings[i]+"\n";
-		return ret;
-	}
-
-	String outputColumn(Vector[] list, int col) {
-		String ret = "<";
-		for (int i = 0; i < list.length; i++) {
-			ret += list[i].get(col);
-			if (i == list.length-1) ret += ">";
-			else if (i%3 == 2) ret += "> <";
-			else ret += ",";
-		}
-		return ret;
 	}
 
 	void loadBalance(int w) {
@@ -467,3 +318,63 @@ behavior Analyzer {
  }
 
 */
+
+	/*
+	Vector[] dedupPair(Vector[] pairs) {
+		for (int i = 1; i < pairs[0].size(); ) {
+			boolean removed = false;
+			for (int j = 0; j < i; j++) {
+				double i0 = (Double)pairs[0].get(i);
+				double i1 = (Double)pairs[1].get(i);
+				double i2 = (Double)pairs[2].get(i);
+				double i3 = (Double)pairs[3].get(i);
+				double i4 = (Double)pairs[4].get(i);
+				double i5 = (Double)pairs[5].get(i);
+				double j0 = (Double)pairs[0].get(j);
+				double j1 = (Double)pairs[1].get(j);
+				double j2 = (Double)pairs[2].get(j);
+				double j3 = (Double)pairs[3].get(j);
+				double j4 = (Double)pairs[4].get(j);
+				double j5 = (Double)pairs[5].get(j);
+				if (i0 == j3 && i1 == j4 && i2 == j5 && i3 == j0 && i4 == j1 && i5 == j2) {
+					for (int k = 0; k < 6; k++) pairs[k].remove(i);
+					removed = true;
+					break;
+				}
+			}
+			if (!removed) i++;
+		}
+		return pairs;
+	}
+	*/
+
+	/*
+	String outputVector(Vector[] list) {
+		join {
+			for (int i = 0; i < list[0].size(); i++) outputColumn(list, i);
+		}@concat(token)@currentContinuation;
+	}
+	*/
+
+	/*
+	String concat(Object[] strings) {
+		String ret = "";
+		for (int i = 0; i < strings.length; i++) ret += (String)strings[i]+"\n";
+		return ret;
+	}
+	*/
+
+	/*
+	String outputColumn(Vector[] list, int col) {
+		String ret = "<";
+		for (int i = 0; i < list.length; i++) {
+			ret += list[i].get(col);
+			if (i == list.length-1) ret += ">";
+			else if (i%3 == 2) ret += "> <";
+			else ret += ",";
+		}
+		return ret;
+	}
+	*/
+
+
