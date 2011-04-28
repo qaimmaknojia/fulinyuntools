@@ -19,7 +19,7 @@ Authors: Linyun Fu and Yu Chen
  - To designate a star file and the work load for each worker: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker>
  - To perform fault-tolerant computation: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker> <#copies>  this will cause a certain number of copies of each star coordinate being sent out to different workers
  - Complete command line format: java sky.Analyzer [<starsFile>] [<#stars-assigned-to-each-worker>] [<#copies>] [<name-server>] [<theater-list-file>] [-c|--concurrent]   
-  + e.g.: java sky.Analyzer s840.txt 120 2   (work on star file s840.txt, each worker gets 120 stars, make 2 copies of the star coordinates for fault-tolerance, so there are 14 workers in all, with default name server localhost:3030 and theaters in theatersFile.txt)
+  + e.g.: java sky.Analyzer s840.txt 120 2   (work on star file s840.txt, each worker gets 120 stars, make 2 copies of the star coordinates for fault-tolerance, so there are 840*2/120 = 14 workers in all, with default name server localhost:3030 and theaters in theatersFile.txt)
   + e.g.: java sky.Analyzer -c   (test the concurrent calcualtion)
 
 * Features of our solution
@@ -28,5 +28,7 @@ Authors: Linyun Fu and Yu Chen
  - Our solution includes a fault-tolerant extension.
 
 * Known bugs
- - When more than one workers are at the same theater and each of them has more than 100 stars to work on, the result does not come out for a long time, which means there may be a deadlock.
+ - When more than one workers are at the same theater and each of them has more than 100 stars to work on, the result does not come out for a long time, which means they may be interfering with each other. This bug does not show up when each worker has less stars (e.g. 32 stars).
+ - When working in a distributed manner, the program doesn't stop after the result is printed.
+ - Load balancing may cause the program freeze for a long time.
 
