@@ -92,7 +92,7 @@ Since we experiment on one machine and use different port numbers to simulate th
 \item Adding the above three items together, we get the estimated parallel execution time $t_{\rm para} = t_{\textrm{send}}+t_{\textrm{work}}+t_{\rm aggr}$.
 \end{itemize}
 
-Table~1 shows the computing times with different numbers of theaters on dataset \texttt{s840.txt}, which contains the first 840 stars coordinates from \texttt{stars_21_xyz.txt}. Sequential execution is when there is only one worker. Work load is spread evenly among theaters. All the experiments are performed on an Acer Aspire 5741Z-5433 laptop with an Intel P6000 processor (1.86GHz$\times$2, 3MB L3 cache) and 4GB DDR3 memory.
+Table~1 shows the computing times with different numbers of theaters on dataset \texttt{s840.txt}, which contains the first 840 stars coordinates from \texttt{stars\_21\_xyz.txt}. Sequential execution is when there is only one worker. Work load is spread evenly among theaters. All the experiments are performed on an Acer Aspire 5741Z-5433 laptop with an Intel P6000 processor (1.86GHz$\times$2, 3MB L3 cache) and 4GB DDR3 memory.
 
 \begin{table}
 \begin{center}
@@ -100,17 +100,18 @@ Table~1 shows the computing times with different numbers of theaters on dataset 
 \begin{tabular}{r|r}
 \#theater & time(ms)\\
 \hline
-1 & \\
-2 & \\
-3 & \\
-4 & \\
-5 & \\
-6 & \\
-7 & \\
-8 & \\
+1 & 141851\\
+2 & 69425\\
+3 & 77482\\
+4 & 83419\\
+%5 & \\
+%6 & \\
+%7 & \\
+%8 & \\
 \end{tabular}
 \end{center}
 \end{table}
+From Table~1 we can see that as the number of theaters increases, the performance increases at first, but then decreases a little because of the overhead of cross-theater communication.
 
 \subsection*{Analysis of scalability}
 Since the number of stars assigned to each worker can be flexibly tuned, our solution is very scalable and can make good use of any feasible number of machines.
