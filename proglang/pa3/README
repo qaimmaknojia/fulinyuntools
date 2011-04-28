@@ -1,11 +1,12 @@
-Authors: Linyun Fu and Yanning Chen
+Authors: Linyun Fu and Yu Chen
 
 * Submitted items
  - pa3.pdf: the description of star calculating algorithms;
- - Worker.salsa and Analyzer.salsa in the sky directory: the salsa source code;
- - Result.java in the sky directory: the java class used for data transmission between actors;
+ - Analyzer.salsa and Worker.salsa in the sky directory: the salsa source code;
+ - Result.java and Resultlet.java in the sky directory: the java classes used for data transmission between actors;
  - theatersFile.txt: a file listing all the theaters;
- - test.txt: the default star file containing coordinates.
+ - test.txt: the default star file containing coordinates of 9 stars;
+ - s840.txt: a larger star file containing the first 840 star coordinates from stars_21_xyz.txt.
 
 * How to run the program
  - Make sure you include the salsa<version>.jar file in the classpath environment variable
@@ -17,7 +18,9 @@ Authors: Linyun Fu and Yanning Chen
  - To test the concurrent calculation: java sky.Analyzer -c
  - To designate a star file and the work load for each worker: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker>
  - To perform fault-tolerant computation: java sky.Analyzer <starsFile> <#stars-assigned-to-each-worker> <#copies>  this will cause a certain number of copies of each star coordinate being sent out to different workers
- - Complete command line format: java sky.Analyzer [<starsFile>] [<#stars-assigned-to-each-worker>] [<#copies>] [<name-server>] [<theater-list-file>] [-c|--concurrent]
+ - Complete command line format: java sky.Analyzer [<starsFile>] [<#stars-assigned-to-each-worker>] [<#copies>] [<name-server>] [<theater-list-file>] [-c|--concurrent]   
+  + e.g.: java sky.Analyzer s840.txt 120 2   (work on star file s840.txt, each worker gets 120 stars, make 2 copies of the star coordinates for fault-tolerance, so there are 14 workers in all, with default name server localhost:3030 and theaters in theatersFile.txt)
+  + e.g.: java sky.Analyzer -c   (test the concurrent calcualtion)
 
 * Features of our solution
  - Data transmissions are spread across actors, not only the main actor (Analyzer) sends data and receives results, but the workers communicate with each other to finish their tasks.
@@ -25,4 +28,5 @@ Authors: Linyun Fu and Yanning Chen
  - Our solution includes a fault-tolerant extension.
 
 * Known bugs
- - 
+ - When more than one workers are at the same theater and each of them has more than 100 stars to work on, the result does not come out for a long time, which means there may be a deadlock.
+
