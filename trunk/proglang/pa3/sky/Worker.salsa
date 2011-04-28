@@ -3,7 +3,7 @@ import java.io.*;
 import java.util.*;
 
 /* Worker.salsa -- 
- *   Worker for Parallel star calculation
+ *   Worker for parallel space colonization calculation
  */
 
 behavior Worker {
@@ -12,10 +12,15 @@ behavior Worker {
 	//	double y = 0.0;
 	//	double z = 0.0;
 	double[][] stardata;
+	long initialTime;
+	int id;
+	Analyzer ana;
 
-	void getData(double[][] data) {
+	void getData(double[][] data, int id, Analyzer ana) {
 		stardata = new double[data.length][3];
 		for (int i = 0; i < data.length; i++) for (int j = 0; j < 3; j++) stardata[i][j] = data[i][j];
+		this.id = id;
+		this.ana = ana;
 	}
 
 	double[][] sendData() {
@@ -30,6 +35,7 @@ behavior Worker {
 
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
 	Result calc(Worker[] workers) {
+		initialTime = System.currentTimeMillis();
 		join {
 			for (int i = 0; i < stardata.length; i++) {
 				getResultlet(stardata[i], workers);
@@ -39,7 +45,7 @@ behavior Worker {
 
 	Resultlet getResultlet(double[] star, Worker[] workers) {
 		join {
-			for (int j = 0; j < workers.length; j++) workers[j]<-sendData()@getMinMax(stardata[j], token);
+			for (int j = 0; j < workers.length; j++) workers[j]<-sendData()@getMinMax(star, token);
 		}@combine1(token)@currentContinuation;
 	}
 
@@ -123,6 +129,7 @@ behavior Worker {
 			}
 
 			if (v.max > ret.fndis) {
+				ret.fndis = v.max;
 				for (int j = 0; j < 6; j++) ret.fn[j].clear();
 				for (int j = 0; j < v.maxstar.length; j++) {
 					ret.fn[0].add(v.x);
@@ -189,7 +196,7 @@ behavior Worker {
 
 			if (v.avg < ret.minavgdis) {
 				ret.minavgdis = v.avg;
-				for (int j = 0; j < 6; j++) ret.ics[j].clear();
+				for (int j = 0; j < 3; j++) ret.ics[j].clear();
 				ret.ics[0].add(v.x);
 				ret.ics[1].add(v.y);
 				ret.ics[2].add(v.z);
@@ -200,6 +207,8 @@ behavior Worker {
 			}
 		}
 
+		ret.time = System.currentTimeMillis()-initialTime;
+		//ana<-loadBalance(id); // comment this line when doing unit test or evaluating performance with different #worker and #theater
 		return ret;
 	}
 
@@ -295,35 +304,102 @@ behavior Worker {
 		Worker worker1 = new Worker();
 		Worker worker2 = new Worker();
 		Worker worker3 = new Worker();
+		Worker[] workers = new Worker[]{worker1, worker2, worker3};
+		join {
+		worker1<-getData(stardata1, 1, null);
+		worker2<-getData(stardata2, 2, null);
+		worker3<-getData(stardata3, 3, null);
+		}@join {
+			for (int i = 0; i < workers.length; i++) workers[i]<-calc(workers);
+		}@displayResults(token);
+		// @worker2<-calc(workers)@displayResult(token)
+		// @worker3<-calc(workers)@displayResult(token);
+		/*
+		}@join {
+			getMinMax(stardata[0], stardata1);
+			getMinMax(stardata[0], stardata2);
+			getMinMax(stardata[0], stardata3);
+		}@combine1(token)@showResultlet(token)@standardOutput<-println(token)
+		*/
+	/*
+	@getResultlet(stardata[0], workers)@showResultlet(token)@standardOutput<-println(token)
+		@getResultlet(stardata[1], workers)@showResultlet(token)@standardOutput<-println(token)
+		@getResultlet(stardata[2], workers)@showResultlet(token)@standardOutput<-println(token)
+		*/
+	/*
+	@join {
+			getResultlet(stardata[0], workers);
+			getResultlet(stardata[1], workers);
+			getResultlet(stardata[2], workers);			
+		}@combine(token)@displayResult(token);
+		*/
+
+		/*
+		join {
 		worker1<-getData(stardata1);
 		worker2<-getData(stardata2);
 		worker3<-getData(stardata3);
+		}@getResultlet(stardata[0], new Worker[]{worker1, worker2, worker3})@showResultlet(token)@standardOutput<-println(token);
+		*/
 
-		worker1<-sendData()@getData(token)@calc(new Worker[]{worker1, worker2, worker3})@displayResult(token)@standardOutput<-println(token);
-		//@
+		/*
+		getResultlet(stardata[0], stardata1)@showResultlet(token)@standardOutput<-println(token)@
+		getResultlet(stardata[0], stardata2)@showResultlet(token)@standardOutput<-println(token)@
+		getResultlet(stardata[0], stardata3)@showResultlet(token)@standardOutput<-println(token);
+		*/
+
+		/*
+		join {
+			getResultlet(stardata[0], stardata1);
+			getResultlet(stardata[0], stardata2);
+			getResultlet(stardata[0], stardata3);
+		}@combine1(token)@showResultlet(token)@standardOutput<-println(token);
+		*/
+
+		//worker1<-sendData()@getData(token)@calc(new Worker[]{worker1, worker2, worker3})@displayResult(token)@standardOutput<-println(token);
 			//getData(stardata)@calc()@displayResult(token)@standardOutput<-println(token)@
 			//getData(stardata)@calc()@displayResult(token)@standardOutput<-println(token);
+
+	}
+
+	String showResultlet(Resultlet r) {
+		String ret = r.x+" "+r.y+" "+r.z+"\n";
+		ret += "min="+r.min+"\n";
+		for (int i = 0; i < r.minstar.length; i++) {
+			for (int j = 0; j < 3; j++) ret += " "+r.minstar[i][j];
+			ret += "\n";
+		}
+		ret += "max="+r.max+"\n";
+		for (int i = 0; i < r.maxstar.length; i++) {
+			for (int j = 0; j < 3; j++) ret += " "+r.maxstar[i][j];
+			ret += "\n";
+		}
+		ret += "total="+r.avg+"\n";
+		return ret;
 	}
 
 	/** display the content of a Result object */
-	String displayResult(Result r) {
-		String ret = "";
-		ret += "\nmin distance: "+r.cndis;
-		ret += "\n";
-		ret += outputVector(r.cn);
-		ret += "\nmax distance: "+r.fndis;
-		ret += "\n";
-		ret += outputVector(r.fn);
-		ret += "\nminmax distance: "+r.minmaxdis;
-		ret += "\n";
-		ret += outputVector(r.ihs);
-		ret += "\nmaxmin distance: "+r.maxmindis;
-		ret += "\n";
-		ret += outputVector(r.ijs);
-		ret += "\nminavg distance: "+r.minavgdis;
-		ret += "\n";
-		ret += outputVector(r.ics);
-		return ret;
+	void displayResult(Result r) {
+		token t1 = outputVector(r.cn);
+		token t2 = outputVector(r.fn);
+		token t3 = outputVector(r.ihs);
+		token t4 = outputVector(r.ijs);
+		token t5 = outputVector(r.ics);
+		standardOutput<-println("\nmin distance: "+r.cndis)
+		@standardOutput<-println(t1)
+		@standardOutput<-println("max distance: "+r.fndis)
+		@standardOutput<-println(t2)
+		@standardOutput<-println("minmax distance: "+r.minmaxdis)
+		@standardOutput<-println(t3)
+		@standardOutput<-println("maxmin distance: "+r.maxmindis)
+		@standardOutput<-println(t4)
+		@standardOutput<-println("minavg distance: "+r.minavgdis)
+		@standardOutput<-println(t5);
+	}
+
+	void displayResults(Object[] rs) {
+		token t = displayResult((Result)rs[0]);
+		for (int i = 1; i < rs.length; i++) t = displayResult((Result)rs[i]):waitfor(t);
 	}
 
 	String outputVector(Vector[] list) {
