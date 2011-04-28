@@ -14,9 +14,9 @@ behavior Worker {
 	double[][] stardata;
 	long initialTime;
 	int id;
-	Analyzer ana;
+	String ana;
 
-	void getData(double[][] data, int id, Analyzer ana) {
+	void getData(double[][] data, int id, String ana) {
 		stardata = new double[data.length][3];
 		for (int i = 0; i < data.length; i++) for (int j = 0; j < 3; j++) stardata[i][j] = data[i][j];
 		this.id = id;
@@ -34,18 +34,18 @@ behavior Worker {
 		 */
 
 	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
-	Result calc(Worker[] workers) {
+	Result calc(String[] wnames) {
 		initialTime = System.currentTimeMillis();
 		join {
 			for (int i = 0; i < stardata.length; i++) {
-				getResultlet(stardata[i], workers);
+				getResultlet(stardata[i], wnames);
 			}
 		}@combine(token)@currentContinuation;
 	}
 
-	Resultlet getResultlet(double[] star, Worker[] workers) {
+	Resultlet getResultlet(double[] star, String[] wnames) {
 		join {
-			for (int j = 0; j < workers.length; j++) workers[j]<-sendData()@getMinMax(star, token);
+			for (int j = 0; j < wnames.length; j++) getReferenceByName(wnames[j])<-sendData()@getMinMax(star, token);
 		}@combine1(token)@currentContinuation;
 	}
 
@@ -208,7 +208,7 @@ behavior Worker {
 		}
 
 		ret.time = System.currentTimeMillis()-initialTime;
-		//ana<-loadBalance(id); // comment this line when doing unit test or evaluating performance with different #worker and #theater
+		//getReferenceByName(ana)<-loadBalance(id); // comment this line when doing unit test or evaluating performance with different #worker and #theater
 		return ret;
 	}
 
@@ -301,16 +301,16 @@ behavior Worker {
 		double[][] stardata3 = new double[3][3];
 		for (int i = 0, k = 6; i < 3; i++, k++) for (int j = 0; j < 3; j++) stardata3[i][j] = stardata[k][j];
 
-		Worker worker1 = new Worker();
-		Worker worker2 = new Worker();
-		Worker worker3 = new Worker();
-		Worker[] workers = new Worker[]{worker1, worker2, worker3};
+		Worker worker1 = new Worker() at (new UAN("uan://localhost:3030/a1"));
+		Worker worker2 = new Worker() at (new UAN("uan://localhost:3030/a2"));
+		Worker worker3 = new Worker() at (new UAN("uan://localhost:3030/a3"));
+		String[] wnames = new String[]{"uan://localhost:3030/a1", "uan://localhost:3030/a2", "uan://localhost:3030/a3"};
 		join {
 		worker1<-getData(stardata1, 1, null);
 		worker2<-getData(stardata2, 2, null);
 		worker3<-getData(stardata3, 3, null);
 		}@join {
-			for (int i = 0; i < workers.length; i++) workers[i]<-calc(workers);
+			for (int i = 0; i < workers.length; i++) workers[i]<-calc(wnames);
 		}@displayResults(token);
 		// @worker2<-calc(workers)@displayResult(token)
 		// @worker3<-calc(workers)@displayResult(token);

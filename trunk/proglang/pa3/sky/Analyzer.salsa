@@ -153,6 +153,7 @@ behavior Analyzer {
 		for (int i = 0; i < nworker.length; i++) nworker[i] = 0;
 
 		// migrate actors to theaters
+		String[] wnames = new String[nw];
 		for (int i = 0; i < nw; i++) {
 			standardOutput<-println("Sending actor "+
 					"uan://"+nameServer+":3030/a"+i+" to "+
@@ -163,6 +164,7 @@ behavior Analyzer {
 				 new UAL("rmsp://"+theaters.get(i%theaters.size())+"/a"+i)
 				);
 			nworker[i%theaters.size()]+=1; // keep the numbers of workers at each theater
+			wnames[i] = workers[i].getUAN().toString();
 		}
 
 		//start computation
@@ -175,11 +177,11 @@ behavior Analyzer {
 				}	
 				double[][] data = new double[size][3];
 				for (int j = i*load, jj = 0; j < i*load+load && j < nstar; j++, jj++) for (int k = 0; k < 3; k++) data[jj][k] = coords[j%nstar][k];
-				workers[i]<-getData(data, i, self);
+				workers[i]<-getData(data, i, getUAN().toString());
 			}
 		}@getTsend()@join {
 			for (int i = 0; i < nw; i++) {
-				workers[i]<-calc(workers);
+				workers[i]<-calc(wnames);
 			}
 		}@summarize(token);
 
@@ -191,7 +193,11 @@ behavior Analyzer {
 		int nw = nstar*ncopy/load;
 		if (nstar*ncopy%load != 0) nw++;
 		workers = new Worker[nw];
-		for (int i = 0; i < nw; i++) workers[i] = new Worker();
+		String[] wnames = new String[nw];
+		for (int i = 0; i < nw; i++) {
+			workers[i] = new Worker() at (new UAN("uan://localhost:3030/a"+i));
+			wnames[i] = workers[i].getUAN().toString();
+		}
 
 		//start computation
 		standardOutput<-println(">>>>>>Starting the computation");
@@ -204,11 +210,11 @@ behavior Analyzer {
 		}
 		join {
 			for (int i = 0; i < nw; i++) {
-				workers[i]<-getData(data[i], i, self);
+				workers[i]<-getData(data[i], i, getUAN().toString());
 			}
 		}@getTsend()@join {
 			for (int i = 0; i < nw; i++) {
-				workers[i]<-calc(workers);
+				workers[i]<-calc(wnames);
 			}
 		}@summarize(token);
 
