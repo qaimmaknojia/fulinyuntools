@@ -5,8 +5,7 @@ Authors: Linyun Fu and Yu Chen
  - Analyzer.salsa and Worker.salsa in the sky directory: the salsa source code;
  - Result.java and Resultlet.java in the sky directory: the java classes used for data transmission between actors;
  - theatersFile.txt: a file listing all the theaters;
- - test.txt: the default star file containing coordinates of 9 stars;
- - s840.txt: a larger star file containing the first 840 star coordinates from stars_21_xyz.txt.
+ - test.txt: the default star file containing coordinates of 27 stars;
 
 * How to run the program
  - Make sure you include the salsa<version>.jar file in the classpath environment variable
@@ -14,13 +13,15 @@ Authors: Linyun Fu and Yu Chen
  - Compile java files: javac sky/*.java 
  - Start naming server: java wwc.naming.WWCNamingServer
  - Start theaters claimed in theatersFile.txt: java wwc.messaging.Theater <port_number>
- - Start the analyzer: java -Duan=uan://localhost:3030/ana sky.Analyzer
+ - Start the analyzer: java -Duan=uan://localhost:3030/ana sky.Analyzer   note that you must assign a UAN for the initial actor
  - To test the concurrent calculation: java -Duan=uan://localhost:3030/ana sky.Analyzer -c
  - To designate a star file and the work load for each worker: java -Duan=uah://localhost:3030/ana sky.Analyzer <starsFile> <#stars-assigned-to-each-worker>
  - To perform fault-tolerant computation: java -Duan=uah://localhost:3030/ana sky.Analyzer <starsFile> <#stars-assigned-to-each-worker> <#copies>  this will cause a certain number of copies of each star coordinate being sent out to different workers
  - Complete command line format: java -Duan=uah://localhost:3030/ana sky.Analyzer [<starsFile>] [<#stars-assigned-to-each-worker>] [<#copies>] [<name-server>] [<theater-list-file>] [-c|--concurrent]   
-  + e.g.: java -Duan=uah://localhost:3030/ana sky.Analyzer s840.txt 120 2   (work on star file s840.txt, each worker gets 120 stars, make 2 copies of the star coordinates for fault-tolerance, so there are 840*2/120 = 14 workers in all, with default name server localhost:3030 and theaters in theatersFile.txt)
   + e.g.: java -Duan=uah://localhost:3030/ana sky.Analyzer -c   (test the concurrent calcualtion)
+  + e.g.: java -Duan=uah://localhost:3030/ana sky.Analyzer      (test the distributed calculation)
+  + e.g.: java -Duan=uah://localhost:3030/ana sky.Analyzer test.txt 27 4   (work on star file test.txt, each worker gets 27 stars, make 4 copies of the star coordinates for fault-tolerance, so there are 27*4/27 = 4 workers in all, with default name server localhost:3030 and theaters in theatersFile.txt)
+ - When the results are printed out, mannually close the program (press ctrl-c in console window)
 
 * Features of our solution
  - Data transmissions are spread across actors, not only the main actor (Analyzer) sends data and receives results, but the workers communicate with each other to finish their tasks.
@@ -28,8 +29,6 @@ Authors: Linyun Fu and Yu Chen
  - Our solution includes a fault-tolerant extension.
 
 * Known bugs
- - When more than one workers are at the same theater and each of them has more than 100 stars to work on, the result does not come out for a long time, which means they may be interfering with each other. This bug does not show up when each worker has less stars (e.g. 32 stars).
- - When working in a distributed manner, the program doesn't stop after the result is printed.
  - Load balancing may cause the program freeze for a long time.
- - When working in concurrent mode, sometimes the program meets Inverse List errors: try to remove a non-existent inverse reference entry.
+ - Manual shutdown needed after calculation, because Worker implements ActorService.
 
