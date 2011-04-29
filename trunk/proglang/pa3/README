@@ -3,7 +3,7 @@ Authors: Linyun Fu and Yu Chen
 * Submitted items
  - pa3.pdf: the description of star calculating algorithms;
  - Analyzer.salsa and Worker.salsa in the sky directory: the salsa source code;
- - Result.java and Resultlet.java in the sky directory: the java classes used for data transmission between actors;
+ - Result.java, Resultlet.java and ResultAggregator.java in the sky directory: the java classes used for data transmission between actors and sequential processing of data;
  - theatersFile.txt: a file listing all the theaters;
  - test.txt: the default star file containing coordinates of 27 stars;
 
