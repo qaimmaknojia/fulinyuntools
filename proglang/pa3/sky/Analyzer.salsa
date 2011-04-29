@@ -41,7 +41,7 @@ behavior Analyzer {
 	long taggr; // time spent on the aggregation
 	String nameServer = "localhost";        // Name Server
 	String theatersFile = "theatersFile.txt";    // File containing the theaters          
-	String dedupFile = "dedup.txt";
+	String dedupFile = "dedup.txt"; // deduplicated stars are written to this file
 	int nstar; // number of different stars
 	int load = 3; // number of stars for each worker
 	int ncopy = 1; // number of copies of the star file to send out to the workers
@@ -87,7 +87,7 @@ behavior Analyzer {
 		dedup()@distributeWork();
 	}
 
-	/** Deduplicate the stars file, return the name of the deduplicated file */
+	/** Deduplicate the stars file, write the result to dedup.txt */
 	void dedup() {
 		HashSet lineset = new HashSet();
 		try {
@@ -167,7 +167,7 @@ behavior Analyzer {
 			wnames[i] = workers[i].getUAN().toString();
 		}
 
-		//start computation
+		// start computation
 		standardOutput<-println(">>>>>>Starting the computation");
 		join {
 			for (int i = 0; i < nw; i++) {
@@ -187,9 +187,9 @@ behavior Analyzer {
 
 	}
 
-	/** Distribute to the actors based on the deduplicated stars file for concurrent computation*/
+	/** Distribute to the actors based on the deduplicated stars file for concurrent computation */
 	void distributeWorkC() {
-		//create actors and assign data
+		// create actors
 		int nw = nstar*ncopy/load;
 		if (nstar*ncopy%load != 0) nw++;
 		workers = new Worker[nw];
@@ -199,7 +199,7 @@ behavior Analyzer {
 			wnames[i] = workers[i].getUAN().toString();
 		}
 
-		//start computation
+		// start computation
 		standardOutput<-println(">>>>>>Starting the computation");
 		double data[][][] = new double[nw][][];
 		for (int i = 0; i < nw; i++) {
@@ -220,10 +220,12 @@ behavior Analyzer {
 
 	}
 
+	/** get the time spent on sending data to actors */
 	void getTsend() {
 		tsend = System.currentTimeMillis()-initialTime;
 	}
 
+	/** sum up the results returned by the workers */
 	void summarize(Object[] results) {
 		long startTime = System.currentTimeMillis();
 		Result[] rs = new Result[results.length];
@@ -241,11 +243,13 @@ behavior Analyzer {
 			standardOutput<-println("estimated total time: "+(tsend+r.time+taggr)+" ms");
 	}
 
+	/** get the time spent on final aggregation */
 	void getTaggr(long start) {
 		long finalTime = System.currentTimeMillis();
 		taggr = finalTime - start;
 	}
 
+	/** perform load balancing */
 	void loadBalance(int w) {
 		active[w] = false;
 		nworker[w%theaters.size()]-=1;
@@ -257,120 +261,5 @@ behavior Analyzer {
 			}
 		}
 	}
-
 }
-
-/*
- * 	Vector sumcolumn(Object[] snippets) {
-
- double min = Double.MAX_VALUE;
- double max = 0.0;
- double avg = 0.0;
- double xmin;
- double ymin;
- double zmin;
- double xmax;
- double ymax;
- double zmax;
-
- for (int i = 0; i < snippets.length; i++) {
- Vector v = (Vector)snippets[i];
- if (v.get(MIN) < min) {
- min = v.get(MIN);
- xmin = v.get(XMIN);
- ymin = v.get(YMIN);
- zmin = v.get(ZMIN);
- }
- if (v.get(MAX) > max) {
- max = v.get(MAX);
- xmax = v.get(XMAX);
- ymax = v.get(YMAX);
- zmax = v.get(ZMAX);
- }
- avg += v.get(AVG);
- }
-
- double[] ret = new double[RESULTSIZE];
- Vector v = (Vector)snippets[0];
- ret[X] = v.get(X);
- ret[Y] = v.get(Y);
- ret[Z] = v.get(Z);
- ret[MIN] = min;
- ret[MAX] = max;
- ret[AVG] = avg;
- ret[XMIN] = xmin;
- ret[YMIN] = ymin;
- ret[ZMIN] = zmin;
- ret[XMAX] = xmax;
- ret[YMAX] = ymax;
- ret[ZMAX] = zmax;
- convert2vector(ret)@currentContinuation;
- }
-
- Vector convert2vector(double[] a) {
- Vector r = new Vector();
- for (int i = 0; i < a.length; i++) r.add(a[i]);
- return r;
- }
-
-*/
-
-	/*
-	Vector[] dedupPair(Vector[] pairs) {
-		for (int i = 1; i < pairs[0].size(); ) {
-			boolean removed = false;
-			for (int j = 0; j < i; j++) {
-				double i0 = (Double)pairs[0].get(i);
-				double i1 = (Double)pairs[1].get(i);
-				double i2 = (Double)pairs[2].get(i);
-				double i3 = (Double)pairs[3].get(i);
-				double i4 = (Double)pairs[4].get(i);
-				double i5 = (Double)pairs[5].get(i);
-				double j0 = (Double)pairs[0].get(j);
-				double j1 = (Double)pairs[1].get(j);
-				double j2 = (Double)pairs[2].get(j);
-				double j3 = (Double)pairs[3].get(j);
-				double j4 = (Double)pairs[4].get(j);
-				double j5 = (Double)pairs[5].get(j);
-				if (i0 == j3 && i1 == j4 && i2 == j5 && i3 == j0 && i4 == j1 && i5 == j2) {
-					for (int k = 0; k < 6; k++) pairs[k].remove(i);
-					removed = true;
-					break;
-				}
-			}
-			if (!removed) i++;
-		}
-		return pairs;
-	}
-	*/
-
-	/*
-	String outputVector(Vector[] list) {
-		join {
-			for (int i = 0; i < list[0].size(); i++) outputColumn(list, i);
-		}@concat(token)@currentContinuation;
-	}
-	*/
-
-	/*
-	String concat(Object[] strings) {
-		String ret = "";
-		for (int i = 0; i < strings.length; i++) ret += (String)strings[i]+"\n";
-		return ret;
-	}
-	*/
-
-	/*
-	String outputColumn(Vector[] list, int col) {
-		String ret = "<";
-		for (int i = 0; i < list.length; i++) {
-			ret += list[i].get(col);
-			if (i == list.length-1) ret += ">";
-			else if (i%3 == 2) ret += "> <";
-			else ret += ",";
-		}
-		return ret;
-	}
-	*/
-
 

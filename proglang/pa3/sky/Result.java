@@ -3,6 +3,7 @@ package sky;
 import java.util.*;
 import java.io.*;
 
+/** a result is the closest neighbors, the farthest neighbors, the ideal hubs, jails and capitals calculated by a worker, who receives just part of the star coordinates */
 public class Result implements Serializable {
 	double cndis; // closest neighbor distance
 	Vector[] cn; // closest neighbor pairs
@@ -16,6 +17,7 @@ public class Result implements Serializable {
 	Vector[] ics; // ideal capital stars
 	long time; // time spent by the worker to get this result
 
+	/** returns a string describing the result */
 	public String toString(int nstar) {
 		String ret = "minimal pairwise distance: "+cndis+"\n";
 		ret += outputVector(cn);

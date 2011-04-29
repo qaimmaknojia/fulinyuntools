@@ -2,20 +2,18 @@ package sky;
 
 import java.io.*;
 
-/* Result.java --
- *   Store results for one star (min-dist, max-dist, avg-dist)
- */
-
+/** a resultlet stores the closest and the farthest stars to one particular star, and the total distance from this star to some other stars */
 public class Resultlet implements Serializable {
-	public double min;
-	public double x;
-	public double y;
-	public double z;
-	public double[][] minstar;
-	public double max;
-	public double[][] maxstar;
-	public double avg;
+	public double min; // minimum distance
+	public double x; // x coordinate of this star
+	public double y; // y coordinate of this star
+	public double z; // z coordinate of this star
+	public double[][] minstar; // closest star coordinates
+	public double max; // maximum distance
+	public double[][] maxstar; // farthest star coordinates
+	public double avg; // total distance, actually
 
+	/** returns a string describing the resultlet */
 	public String toString() {
 		String ret = "";
 		ret += "x"+x;
