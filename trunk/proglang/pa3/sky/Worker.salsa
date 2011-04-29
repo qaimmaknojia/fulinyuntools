@@ -6,11 +6,8 @@ import java.util.*;
  *   Worker for parallel space colonization calculation
  */
 
-behavior Worker {
+behavior Worker implements ActorService {
 
-	//	double x = 0.0;
-	//	double y = 0.0;
-	//	double z = 0.0;
 	double[][] stardata;
 	long initialTime;
 	int id;
@@ -31,36 +28,36 @@ behavior Worker {
 	Result calc(String[] wnames) {
 		initialTime = System.currentTimeMillis();
 		join {
-			for (int i = 0; i < stardata.length; i++) {
-				getResultlet(stardata[i], wnames);
+			for (int j = 0; j < wnames.length; j++) {
+				for (int i = 0; i < stardata.length; i++) {
+					calcPart(wnames[j], i);
+				}
 			}
-		}@combine(token)
-		//@getReferenceByName(ana)<-loadBalance(id); // comment this line when doing unit test or evaluating performance with different #worker and #theater
-		@currentContinuation;
+		}@token t = combine(token);
+		//@getReferenceByName(ana)<-loadBalance(id):waitfor(t); // comment this line when doing unit test or evaluating performance with different #worker and #theater
+		iden(t)@currentContinuation;
 	}
 
-	Resultlet getResultlet(double[] star, String[] wnames) {
-		join {
-			for (int j = 0; j < wnames.length; j++) getReferenceByName(wnames[j])<-sendData()@getMinMax(star, token);
-		}@combine1(token)@currentContinuation;
+	Resultlet calcPart(String name, int i) {
+			getReferenceByName(name)<-sendData()@getMinMax(stardata[i], token)@currentContinuation;
 	}
 
-	Resultlet combine1(Object[] snippets) {
-		Resultlet[] ss = new Resultlet[snippets.length];
-		for (int i = 0; i < snippets.length; i++) ss[i] = (Resultlet)snippets[i];
-		return ResultAggregator.combine1(ss);
+	Result iden(Result t) {
+		return t;
 	}
 
 	Result combine(Object[] results) {
 		Resultlet[] rls = new Resultlet[results.length];
 		for (int i = 0; i < results.length; i++) rls[i] = (Resultlet)results[i];
-		return ResultAggregator.combine(rls, initialTime);
+		return ResultAggregator.combine(rls, initialTime, stardata.length);
 	}
 
 	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
 	Resultlet getMinMax(double[] star, double[][] values) {
 		return ResultAggregator.getMinMax(star, values);
 	}
+
+
 
 	/** for unit test */
 	void act(String args[]) {

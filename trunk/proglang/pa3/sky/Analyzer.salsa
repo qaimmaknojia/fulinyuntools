@@ -225,14 +225,10 @@ behavior Analyzer {
 	}
 
 	void summarize(Object[] results) {
-		//if (results == null) standardOutput<-println("\n!!!results==null!!!\n");
 		long startTime = System.currentTimeMillis();
-		//standardOutput<-println("\n!!!\n"+startTime+"\n!!!\n");
 		Result[] rs = new Result[results.length];
-		//standardOutput<-println("!!!start loop!!!");
 		for (int i = 0; i < results.length; i++) {
 			rs[i] = (Result)results[i];
-			//standardOutput<-println("!!!"+i+"!!!");
 		}
 		int sumsize;
 		if (theaters == null) sumsize = results.length;
