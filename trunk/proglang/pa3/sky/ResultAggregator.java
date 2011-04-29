@@ -3,8 +3,10 @@ package sky;
 import java.io.*;
 import java.util.*;
 
+/** the result aggregator takes care of the sequential processing of calculation results */
 public class ResultAggregator implements Serializable {
 
+	/** combines the results returned by workers into one final result */
 	public static Result summarize(Result[] results, int ntheater) {
 		double cndis = Double.MAX_VALUE; // closest neighbour distance
 		Vector[] cn = new Vector[6]; // closest neighbour pairs
@@ -206,6 +208,7 @@ public class ResultAggregator implements Serializable {
 		return pairs;
 	}
 
+	/** get the resultlet associated with one particular star and some other stars */
 	public static Resultlet getMinMax(double[] star, double[][] values) {
 		Resultlet r = new Resultlet();
 		r.x = star[0];
@@ -258,6 +261,7 @@ public class ResultAggregator implements Serializable {
 		return r;
 	}
 
+	/** combines one-star resultlets into a result that will be returned by a worker */
 	public static Result combine(Resultlet[] results, long initialTime,
 			int interleave) {
 		// for (int i = 0; i < results.length; i++) {
@@ -445,44 +449,5 @@ public class ResultAggregator implements Serializable {
 		return ret;
 	}
 
-	// public static Resultlet combine1(Resultlet[] snippets) {
-	// Resultlet r = new Resultlet();
-	// r.min = Double.MAX_VALUE;
-	// r.max = 0.0;
-	// r.avg = 0.0;
-	// for (int i = 0; i < snippets.length; i++) {
-	// Resultlet rl = snippets[i];
-	// if (rl.min < r.min) {
-	// r.min = rl.min;
-	// r.minstar = rl.minstar;
-	// } else if (rl.min == r.min) {
-	// double[][] minstar = new double[rl.minstar.length+r.minstar.length][3];
-	// for (int j = 0; j < rl.minstar.length; j++) for (int k = 0; k < 3; k++)
-	// minstar[j][k] = rl.minstar[j][k];
-	// for (int j = 0, jj = rl.minstar.length; j < r.minstar.length; j++, jj++)
-	// for (int k = 0; k < 3; k++) minstar[jj][k] = r.minstar[j][k];
-	// r.minstar = minstar;
-	// }
-	//
-	// if (rl.max > r.max) {
-	// r.max = rl.max;
-	// r.maxstar = rl.maxstar;
-	// } else if (rl.max == r.max) {
-	// double[][] maxstar = new double[rl.maxstar.length+r.maxstar.length][3];
-	// for (int j = 0; j < rl.maxstar.length; j++) for (int k = 0; k < 3; k++)
-	// maxstar[j][k] = rl.maxstar[j][k];
-	// for (int j = 0, jj = rl.maxstar.length; j < r.maxstar.length; j++, jj++)
-	// for (int k = 0; k < 3; k++) maxstar[jj][k] = r.maxstar[j][k];
-	// r.maxstar = maxstar;
-	// }
-	//
-	// r.avg += rl.avg;
-	// }
-	// r.x = snippets[0].x;
-	// r.y = snippets[0].y;
-	// r.z = snippets[0].z;
-	//
-	// return r;
-	// }
-
 }
+

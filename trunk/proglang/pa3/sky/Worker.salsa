@@ -8,11 +8,12 @@ import java.util.*;
 
 behavior Worker implements ActorService {
 
-	double[][] stardata;
-	long initialTime;
-	int id;
-	String ana;
+	double[][] stardata; // the coordinates of stars assigned to the worker
+	long initialTime; // for time keeping
+	int id; // used to identify the worker
+	String ana; // the UAN of the analyzer
 
+	/** receive data sent by the analyzer */
 	void getData(double[][] data, int id, String ana) {
 		stardata = new double[data.length][3];
 		for (int i = 0; i < data.length; i++) for (int j = 0; j < 3; j++) stardata[i][j] = data[i][j];
@@ -20,11 +21,12 @@ behavior Worker implements ActorService {
 		this.ana = ana;
 	}
 
+	/** send data to other workers */
 	double[][] sendData() {
 		return stardata;
 	}
 
-	/** calculate the distances from this star (n-th line, counting from 0) to all the other stars, there are totally nstar lines */
+	/** calculate the distances from the stars the worker knows to all the other stars, given the UANs of all the workers */
 	Result calc(String[] wnames) {
 		initialTime = System.currentTimeMillis();
 		join {
@@ -38,21 +40,24 @@ behavior Worker implements ActorService {
 		iden(t)@currentContinuation;
 	}
 
+	/** calculate a resultlet associated with one particular star and all the stars assigned to another worker */
 	Resultlet calcPart(String name, int i) {
 			getReferenceByName(name)<-sendData()@getMinMax(stardata[i], token)@currentContinuation;
 	}
 
+	/** used to return a token */
 	Result iden(Result t) {
 		return t;
 	}
 
+	/** combine one-star resultlets together */
 	Result combine(Object[] results) {
 		Resultlet[] rls = new Resultlet[results.length];
 		for (int i = 0; i < results.length; i++) rls[i] = (Resultlet)results[i];
 		return ResultAggregator.combine(rls, initialTime, stardata.length);
 	}
 
-	/** get the minimum distance and the maximum distance and the average distance from the n-th star to all the other stars */
+	/** get the minimum distance and the maximum distance and the total distance from a particular star to some other stars */
 	Resultlet getMinMax(double[] star, double[][] values) {
 		return ResultAggregator.getMinMax(star, values);
 	}
