@@ -39,7 +39,7 @@ and a distance $d$, we'd like to know whether there exists a satisfying
 assignment $\Phi'$ such that the distance from $\Phi$ to $\Phi'$ is at most $d$.
 Consider the following algorithm, {\tt Explore}($\Phi, d$), that attempts to
 answer this question.
-%\vspace{-2ex}
+\vspace{-2ex}
 \begin{table}[h!]
 \texttt{
 \begin{tabular}{l}
@@ -68,7 +68,7 @@ Explore($\Phi, d$)\\
 \end{table}
 
 Prove that {\tt Explore}($\Phi, d$) returns ``yes'' if and only if there exists
-a satisfying assignment $\Phi'$ such that the distance from $\Phi$ to $\Phi$ is at
+a satisfying assignment $\Phi'$ such that the distance from $\Phi$ to $\Phi'$ is at
 most $d$. Also, give an analysis of the running time of {\tt Explore}($\Phi, d$)
 as a function of $n$ and $d$.
 
@@ -85,9 +85,38 @@ the instance of 3-SAT in a running time of only $O(p(n)\cdot(\sqrt{3})^n)$.
 \end{itemize}
 
 \section*{Answer}
+\subsection*{Answer to subproblem (a)}
+We use mathematical induction on $d$.
+
+For $d = 0$, if {\tt Explore}($\Phi, 0$) returns ``yes'' then $\Phi$ must be a satisfying assignment, and vice versa. Since $\Phi$ is an assignment with distance 0 from itself, the result holds for $d=0$.
+
+Suppose the result holds for $d = k\ge 0$, i.e., {\tt Explore}($\Phi, k$) returns ``yes'' if and only if there exists
+a satisfying assignment $\Phi'$ such that the distance from $\Phi$ to $\Phi'$ is at
+most $k$. When $d=k+1$, {\tt Explore}($\Phi, k+1$) returns ``yes'' if and only if $\Phi$ is a satisfying assignment, or any of {\tt Explore}($\Phi_1, k$), {\tt Explore}($\Phi_2, k$) and {\tt Explore}($\Phi_3, k$) returns ``yes'', which is equivalent to say there exists a satisfying assignment of distance 0 from $\Phi$ or within distance $k$ from $\Phi_1$, $\Phi_2$ or $\Phi_3$, which is equivalent to say there exists a satisfying assignment within distance $k+1$ from $\Phi$. So the results holds for $d=k+1$.
+
+The running time for {\tt Explore}($\Phi, d$), denoted as $T(n, d)$, includes the time spent on checking whether $\Phi$ is a satisfying assignment ($O(p(n))$), and the time spent on recursively calling {\tt Explore}($\Phi_1, d-1$), {\tt Explore}($\Phi_2, d-1$) and {\tt Explore}($\Phi_3, d-1$), which contains only $n-1$ variables to assign each. So we have the following equation.
+\begin{align}
+T(n,d) = O(p(n)+3T(n-1, d-1))
+\end{align}
+Since $d\le n$, we have
+\begin{align}
+\nonumber T(n,d) & = O(p(n)+3p(n-1)+\dots+3^{d-1}p(n-d)+3^dT(n-d, 0))\\
+& =O(p(n)\cdot3^d)
+\end{align}
+
+\subsection*{Answer to subproblem (b)}
+Let $\Phi_0$ be the assignment where all the variables from $\{x_1, x_2, \dots, x_n\}$ are assigned with 0, and $\Phi_1$ the assignment where all the variables are assigned 1. Then there exists a satisfying assignment if and only if any one of {\tt Explore}($\Phi_0,\lceil n/2 \rceil$) and {\tt Explore}($\Phi_1,\lceil n/2 \rceil$) returns ``yes''. Because any assignment must be within distance $\lceil n/2 \rceil$ from either $\Phi_0$ or $\Phi_1$.
+
+This gives us the running time of $O(3^{\lceil n/2\rceil}p(n))$ = $O(p(n)\cdot(\sqrt{3})^n)$.
 
 \section*{Chapter 11, Problem 10}
 Suppose you are given an $n \times n$ {\em grid graph} $G$, as in Figure~1.
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=0.5\textwidth]{11.10.eps}
+\caption{A grid graph}
+\end{center}
+\end{figure}
 
 Associated with each node $v$ is a {\em weight} $w(v)$, which is a nonnegative
 integer. You may assume that the weights of all nodes are distinct. Your goal is to choose an independent set $S$ of nodes of the grid, so that the
@@ -114,7 +143,7 @@ The ``heaviest-first'' greedy algorithm:\\
 \begin{itemize}
 \item[(a)] Let $S$ be the independent set returned by the ``heaviest-first'' greedy
 algorithm, and let $T$ be any other independent set in $G$. Show that, for
-each node $v \in T$, either $v \in S$, or there is a node $v' \in? S$ so that $w(v) \le w(v')$
+each node $v \in T$, either $v \in S$, or there is a node $v'\in S$ so that $w(v) \le w(v')$
 and $(v, v')$ is an edge of $G$.
 \item[(b)] Show that the ``heaviest-first'' greedy algorithm returns an independent
 set of total weight at least 1/4 times the maximum total weight of
@@ -122,6 +151,19 @@ any independent set in the grid graph $G$.
 \end{itemize}
 
 \section*{Answer}
+\subsection*{Answer to subproblem (a)}
+We prove by contradiction. Suppose there exists $v\in T$ such that $v\notin S$ and $v$ has no neighbor $v' \in S$ such that $w(v) \le w(v')$. Then we know that at least one of $v$'s neighbors must be in $S$, since at least one of $v$ and its adjacent nodes must be in $S$. Suppose $v'\in S$ is $v$'s neighbor, then at the time $v'$ is added to $S$, $v$ must still remains, because $v$ has no neighbor with a greater weight and $v\notin S$, but according to the algorithm, $v'$ cannot be added to $S$ at this time, because it is not the heaviest weight remaining node ($w(v)>w(v')$). This is a contradiction. So for
+each node $v \in T$, either $v \in S$, or there is a node $v'\in S$ so that $w(v) \le w(v')$
+and $(v, v')$ is an edge of $G$.
 
+\subsection*{Answer to subproblem (b)}
+We know that any node $v$ in $G$ has at most 4 neighbors. So for any independent set $T$, up to 4 nodes from $T-S$ can share one node from $S-T$ as their common neighbor, according to the result proven in subproblem (a), we have
+\begin{align}
+\nonumber\sum_{v\in T}w(v) & =\sum_{v\in T\cap S}w(v)+\sum_{v\in T-S}w(v)\\
+& \le \sum_{v'\in S\cap T}w(v')+4\sum_{v'\in S-T}w(v')\le 4\sum_{v'\in S}w(v')
+\end{align}
+Therefore the ``heaviest-first'' greedy algorithm returns an independent
+set of total weight at least 1/4 times the maximum total weight of
+any independent set in the grid graph $G$.
 \end{document}
 
