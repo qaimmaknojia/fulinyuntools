@@ -5,16 +5,30 @@
 #include <libxml/parser.h>
 #include <libdap/DataDDS.h>
 #include <libdap/Array.h>
+#include <libdap/BaseType.h>
 #include <libdap/Float32.h>
 #include <libdap/Float64.h>
+#include <libdap/Grid.h>
+//#include <bes/BESResponseObject.h>
+//#include <bes/BESDataHandlerInterface.h>
 
 #include <cerrno>
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <vector>
 #include <cstring>
 #include <map>
+
+using libdap::BaseType;
+using libdap::Float32;
+using libdap::Float64;
+using libdap::DataDDS;
+using libdap::Grid;
+using libdap::Array;
+using libdap::maps;
+using libdap::array;
 
 using namespace std;
 
@@ -34,6 +48,9 @@ void build_header_args(const string &tempjnl_filename,
 	args.push_back(output_filename);
 }
 
+/**
+ * execute a journal file (XXX.jnl) to get a header file (header.xml)
+ */
 void run_header(const string &jnl_filename, const string &resp_filename,
 		string &type) {
 	type = "nc";
@@ -48,8 +65,8 @@ void run_header(const string &jnl_filename, const string &resp_filename,
 	r = pipe(pip_stderr);
 	if (r == -1) {
 		cerr << "Failed to create pipe for ferret execution" << endl;
-//		string err = (string)"Failed to create pipe for ferret execution" ;
-//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		//		string err = (string)"Failed to create pipe for ferret execution" ;
+		//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 
 	pid = fork();
@@ -87,137 +104,215 @@ void run_header(const string &jnl_filename, const string &resp_filename,
 		if (errno != 0) {
 			// handle error
 			char *err_info = strerror(errno);
-			string err = (string)"Failed to execute the ferret request: " ;
-			if (err_info) err += err_info;
-			else err += "unknown reason";
+			string err = (string) "Failed to execute the ferret request: ";
+			if (err_info)
+				err += err_info;
+			else
+				err += "unknown reason";
 		}
 		if (!ferret_err.empty()) {
 			// handle ferret error
 			cerr << "ferret error string: " << ferret_err << endl;
-//			FerretUtils::handle_ferret_error( ferret_err ) ;
+			//			FerretUtils::handle_ferret_error( ferret_err ) ;
 		}
 	} else { // fork failed
 		cerr << "fork failed" << endl;
-//		string err = (string)"Failed to execute ferret" ;
-//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+		//		string err = (string)"Failed to execute ferret" ;
+		//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
 	}
 
 }
 
+/**
+ * find the first child node of a node
+ */
 xmlNode * find_first_child(xmlNode *parent) {
 	xmlNode *child = parent->children;
 	while (child) {
 		if (child->type == XML_ELEMENT_NODE)
 			return child;
-		else child = child->next;
+		else
+			child = child->next;
 	}
 	return child;
 }
 
+/**
+ * find the first child node of a node with a particular name
+ */
 xmlNode * find_first_child(xmlNode *parent, const char* name) {
 	xmlNode *child = parent->children;
 	while (child) {
-		if (child->type == XML_ELEMENT_NODE && strcmp((const char *)(child->name), name) == 0)
+		if (child->type == XML_ELEMENT_NODE && strcmp(
+				(const char *) (child->name), name) == 0)
 			return child;
-		else child = child->next;
+		else
+			child = child->next;
 	}
 	return child;
 }
 
+/**
+ * find the next node at the same level
+ */
 xmlNode * find_next_child(xmlNode *cur) {
 	xmlNode *next = cur->next;
 	while (next) {
 		if (next->type == XML_ELEMENT_NODE)
 			return next;
-		else next = next->next;
+		else
+			next = next->next;
 	}
 	return next;
 }
 
+/**
+ * find the next node with a particular name at the same level
+ */
 xmlNode * find_next_child(xmlNode *cur, const char* name) {
 	xmlNode *next = cur->next;
 	while (next) {
-		if (next->type == XML_ELEMENT_NODE && strcmp((const char *)(next->name), name) == 0)
+		if (next->type == XML_ELEMENT_NODE && strcmp(
+				(const char *) (next->name), name) == 0)
 			return next;
-		else next = next->next;
+		else
+			next = next->next;
 	}
 	return next;
 }
 
+/**
+ * find the value of a property of a node given the name of the property
+ * e.g., given the following node:
+ * <node name="sst">
+ *   ...
+ * </node>
+ * find_prop_value(node, "name") will return "sst"
+ */
 const char * find_prop_value(xmlNode *node, const char* pname) {
 	xmlAttr *propIter = node->properties;
 	for (; propIter; propIter = propIter->next) {
-		if (strcmp((const char *)(propIter->name), pname) == 0)
-			return (const char *)(propIter->children->content);
+		if (strcmp((const char *) (propIter->name), pname) == 0)
+			return (const char *) (propIter->children->content);
 	}
 	return 0;
 }
 
-char * find_att_value(xmlNode* node, const char *name) {
+/**
+ * find the "value" value corresponding to a particular "name" value in an attribute tag in a node
+ * e.g., given the following node:
+ * <node>
+ *   <attribute name="text" value="5" />
+ * </node>
+ * find_att_value(node, "text") will return "5"
+ */
+const char * find_att_value(xmlNode* node, const char *name) {
 	xmlNode *attIter = find_first_child(node, "attribute");
 	for (; attIter; attIter = find_next_child(attIter, "attribute")) {
 		if (strcmp(find_prop_value(attIter, "name"), name) == 0)
-				return find_prop_value(attIter, "value");
+			return find_prop_value(attIter, "value");
 	}
-	return null;
+	return 0;
 }
 
+//void getDatatype(const char *name, const char *datatype, BaseType * ret) {
+//	if (strcmp(datatype, "DOUBLE") == 0) {
+//		ret = new Float64(name);
+//	} else if (strcmp(datatype, "FLOAT") == 0) {
+//		ret = new Float32(name);
+//	}
+//}
+
+/**
+ * parse the header file (header.xml) to get DataDDS structures and print them with DataDDS::dump()
+ */
 void parse_header(const char *header_filename) {
 	xmlDoc *doc = xmlReadFile(header_filename, NULL, 0);
 	xmlNode *root_element = xmlDocGetRootElement(doc); // <data>
 
 	vector<DataDDS *> ddses;
-	// First build a hash that maps the axes names to the axes.
-	map<string, Array*> axes;
+	// First build a hash that maps the axes names to the axes,
+	// and a hash that maps the names to the lengths
+	map<string, Array*> name_axis;
+	map<string, int> axis_length;
 	xmlNode *axisIter = find_first_child(
-			find_first_child(root_element, "axes"),
-			"axis"); // <data> -> <axes> -> <axis>
+			find_first_child(root_element, "axes"), "axis"); // <data> -> <axes> -> <axis>
 	for (; axisIter; axisIter = find_next_child(axisIter, "axis")) {
-		char *name = find_prop_value(axisIter, "name");
-		char *datatype = find_att_value(axisIter, "infile_datatype");
+		const char *name = find_prop_value(axisIter, "name");
+		const char *datatype = find_att_value(axisIter, "infile_datatype");
 		int length = atoi(find_att_value(axisIter, "length"));
 
+		BaseType* bt;
 		if (strcmp(datatype, "DOUBLE") == 0) {
-			Float64 bt(name);
-			Array a(name, &bt);
-			a.append_dim(length, name);
-			axes[name]=&a;
+			bt = new Float64((const string)name);
 		} else if (strcmp(datatype, "FLOAT") == 0) {
-			Float32 bt(name);
-			Array a(name, &bt);
-			a.append_dim(length, name);
-			axes[name]=&a;
-		}
+			bt = new Float32(name);
+		} // TODO correct the code and add more datatypes
+		Array a(name, bt);
+		a.append_dim(length, name);
+		name_axis[name] = &a;
+		axis_length[name] = length;
 	}
 
 	// Find Grid, Array and Dimensions
 	xmlNode *datasetIter = find_first_child(
-			find_first_child(root_element, "datasets"),
-			"dataset"); // <data> -> <datasets> -> <dataset>
+			find_first_child(root_element, "datasets"), "dataset"); // <data> -> <datasets> -> <dataset>
 	for (; datasetIter; datasetIter = find_next_child(datasetIter, "dataset")) {
-		char * name = find_prop_value(datasetIter, "name");
-		DataDDS *dds = new DataDDS( NULL, name ) ;
+		const char * name = find_prop_value(datasetIter, "name");
+		DataDDS *dds = new DataDDS(NULL, name);
 
 		xmlNode *varIter = find_first_child(datasetIter, "var");
 		for (; varIter; varIter = find_next_child(varIter, "var")) {
-			char * name = find_prop_value(varIter, "name");
+			const char * name = find_prop_value(varIter, "name");
 			Grid var(name);
-			xmlNode *axisIter = find_first_child(
+			const char * datatype = find_prop_value(varIter, "infile_datatype");
+			BaseType *bt;
+			if (strcmp(datatype, "DOUBLE") == 0) {
+				bt = &Float64(name);
+			} else if (strcmp(datatype, "FLOAT") == 0) {
+				bt = &Float32(name);
+			} // TODO correct the code and add more datatypes
+			Array a(name, bt);
+			xmlNode *axisIter =
 					find_first_child(
-							find_first_child(varIter, "grid"),
-							"axes")); // <var> -> <grid> -> <axes> -> <[x|y|z|t]axis>
+							find_first_child(find_first_child(varIter, "grid"),
+									"axes")); // <var> -> <grid> -> <axes> -> <[x|y|z|t]axis>
 			for (; axisIter; axisIter = find_next_child(axisIter)) {
-				axis_datasets[(const char *)(axisIter->children->content)]
-				              = find_prop_value(datasetIter, "name");
+				char * axisName = (char *) axisIter->children->content;
+				var.add_var(name_axis[axisName], maps);
+				a.append_dim(axis_length[axisName], axisName);
 			}
+			var.add_var(&a, array);
+			var.set_read_p(true);
+			dds->add_var(&var);
 		}
 		ddses.push_back(dds);
 	}
+	// transform the DataDDS into a netcdf file. The dhi only needs the
+	// output stream and the post constraint. Test no constraints and
+	// then some different constraints (1 var, 2 var)
 
+	// The resulting netcdf file is streamed back. Write this file to a
+	// test file locally
+	for (int i = 0; i < ddses.size(); i++) {
+		DataDDS dds = *ddses[i];
+		ofstream fstrm("./header.nc");
+		dds.dump(fstrm);
+		//		BESResponseObject *obj = new BESDataDDSResponse( dds ) ;
+		//		::BESDataHandlerInterface dhi ;
+		//		dhi.set_output_stream( &fstrm ) ;
+		//		dhi.data[POST_CONSTRAINT] = "" ;
+		//		FONcTransmitter ft ;
+		//		FONcTransmitter::send_data( obj, dhi ) ;
+		//		fstrm.close() ;
+		//
+		//		// deleting the response object deletes the DataDDS
+		//		delete obj ;
+	}
 
-//	for (map<string, string>::iterator it = axis_datasets.begin(); it != axis_datasets.end(); it++) {
-//		cout << it->first << " : " << it->second << endl;
-//	}
+	//	for (map<string, string>::iterator it = axis_datasets.begin(); it != axis_datasets.end(); it++) {
+	//		cout << it->first << " : " << it->second << endl;
+	//	}
 
 	/*free the document */
 	xmlFreeDoc(doc);
@@ -229,32 +324,45 @@ void parse_header(const char *header_filename) {
 	xmlCleanupParser();
 }
 
+/**
+ * called by march_through_xml()
+ */
 void print_element(xmlNode *anode, int level) {
 	for (xmlNode *node = anode; node; node = node->next) {
-//		cout << "node: " << node << endl;
-//		cout << "children: " << node->children << endl;
-		for (int i = 0; i < level; i++) cout << "  ";
+		//		cout << "node: " << node << endl;
+		//		cout << "children: " << node->children << endl;
+		for (int i = 0; i < level; i++)
+			cout << "  ";
 		cout << "name: " << node->name << endl;
-		for (int i = 0; i < level; i++) cout << "  ";
+		for (int i = 0; i < level; i++)
+			cout << "  ";
 		cout << "properties: " << endl;
 		for (xmlAttr *prop = node->properties; prop; prop = prop->next) {
-			for (int i = 0; i < level; i++) cout << "  ";
-			cout << "  " << prop->name << " : " << prop->children->content << endl;
+			for (int i = 0; i < level; i++)
+				cout << "  ";
+			cout << "  " << prop->name << " : " << prop->children->content
+					<< endl;
 		}
-//		cout << "children: " << node->children << endl;
+		//		cout << "children: " << node->children << endl;
 
 		if (node->content) {
-			for (int i = 0; i < level; i++) cout << "  ";
+			for (int i = 0; i < level; i++)
+				cout << "  ";
 			cout << "content: " << node->content << endl;
 		} else {
-			for (int i = 0; i < level; i++) cout << "  ";
+			for (int i = 0; i < level; i++)
+				cout << "  ";
 			cout << "no content" << endl;
 		}
 
-		print_element(node->children, level+1);
+		print_element(node->children, level + 1);
 	}
 }
 
+/**
+ * print everything in an xml file in a hierarchical manner, used to help get familiar with the libxml2
+ * library
+ */
 void march_through_xml(const char *xmlfilename) {
 	xmlDoc *doc = xmlReadFile(xmlfilename, NULL, 0);
 	xmlNode *root_element = xmlDocGetRootElement(doc);
@@ -271,9 +379,13 @@ void march_through_xml(const char *xmlfilename) {
 
 }
 
+/**
+ * driver function, the code cannot run now due to a bunch of link error such as
+ * undefined reference to `libdap::Grid::Grid(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+ */
 int main() {
-//	string type = "nc";
-//	run_header("dods_demo.jnl", "header.xml", type);
-//	march_through_xml("header.xml");
+	string type = "nc";
+	run_header("dods_demo.jnl", "header.xml", type);
+	//	march_through_xml("header.xml");
 	parse_header("header.xml");
 }
