@@ -1,0 +1,10 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace "*";
+
+mx|Text {
+	color: blue;
+	text-decoration: underline;
+	font-size: 20;
+}
+
