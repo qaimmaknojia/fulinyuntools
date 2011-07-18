@@ -1,0 +1,11 @@
+
+\cancel mode verify
+
+cancel data/all
+cancel region
+
+set mode verify
+
+set data "fnoc1.nc"
+show data
+
