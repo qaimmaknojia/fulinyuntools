@@ -1,17 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-////////////////////////////////////////////////////////////////////////////////
-//
-// Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
-// All Rights Reserved.
-// The following is Sample Code and is subject to all restrictions on such code
-// as contained in the End User License Agreement accompanying this product.
-// If you have received this file from a source other than Adobe,
-// then your use, modification, or distribution of it requires
-// the prior written permission of Adobe.
-//
-////////////////////////////////////////////////////////////////////////////////
--->
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
@@ -25,7 +12,7 @@
 			import flash.events.TextEvent;
 
 			[Bindable]
-			private var dataurl:String;
+			private var dataurl:String = "http://localhost/sdpg/data/fnoc1.nc";
 			
 		]]>
 	</fx:Script>
@@ -34,11 +21,11 @@
 <!--		<mx:HTTPService id="srv" url="data/test.txt" result="readInfo(event)" fault="Alert.show(event.fault.faultString), 'Error'" /> -->
 	</fx:Declarations>
 
-	<fx:Style source="main.css" />	
+	<fx:Style source="main.css" />
 
 	<mx:Grid>
 		<mx:GridRow>
-			<mx:GridItem horizontalAlign="right" verticalAlign="middle">
+			<mx:GridItem horizontalAlign="right" >
 				<mx:Text>
 					<mx:htmlText>
 						<![CDATA[<a href="http://www.opendap.org/online_help_files/opendap_form_help.html">Action:</a>]]>
@@ -46,38 +33,38 @@
 				</mx:Text>
 			</mx:GridItem>
 
-			<mx:GridItem verticalAlign="middle">
+			<mx:GridItem >
 				<s:HGroup>
-					<s:Button label="Get ASCII" />
-					<s:Button label="Get as NetCDF" />
-					<s:Button label="Binary (DAP) Object" />
+					<s:Button label="Get ASCII" click="navigateToURL(new URLRequest('http://test.opendap.org/opendap/data/nc/fnoc1.nc.ascii?'));"/>
+					<s:Button label="Get as NetCDF" click="navigateToURL(new URLRequest('http://test.opendap.org/opendap/data/nc/fnoc1.nc'));"/>
+					<s:Button label="Binary (DAP) Object" click="navigateToURL(new URLRequest('http://test.opendap.org/opendap/data/nc/fnoc1.nc.dods'));"/>
 					<s:Button label="Show Help" click="navigateToURL(new URLRequest('http://www.opendap.org/online_help_files/opendap_form_help.html'));"/>
 				</s:HGroup>
 			</mx:GridItem>
 		</mx:GridRow>
 
 		<mx:GridRow>
-			<mx:GridItem horizontalAlign="right" verticalAlign="middle">
+			<mx:GridItem horizontalAlign="right" >
 				<mx:Text>
 					<mx:htmlText>
 						<![CDATA[<a href="http://www.opendap.org/online_help_files/opendap_form_help.html">Data URL:</a>]]>
 					</mx:htmlText>
 				</mx:Text>
 			</mx:GridItem>
-			<mx:GridItem verticalAlign="middle">
+			<mx:GridItem >
 				<s:TextInput text="{dataurl}" width="100%"/>
 			</mx:GridItem>
 		</mx:GridRow>
 
 		<mx:GridRow>
-			<mx:GridItem horizontalAlign="right">
+			<mx:GridItem horizontalAlign="right" >
 				<mx:Text>
 					<mx:htmlText>
 						<![CDATA[<a href="http://www.opendap.org/online_help_files/opendap_form_help.html">Global Attribute(s):</a>]]>
 					</mx:htmlText>
 				</mx:Text>
 			</mx:GridItem>
-			<mx:GridItem>
+			<mx:GridItem >
 				<s:TextArea width="100%"/>
 			</mx:GridItem>
 		</mx:GridRow>
@@ -94,7 +81,7 @@
 			<mx:GridItem>
 				<s:VGroup width="100%">
 					<s:CheckBox label="val: Array of Bytes [lat = 0..511] [lon = 0..511]" />
-					<s:HGroup verticalAlign="middle" width="100%">
+					<s:HGroup width="100%">
 						<s:Label text="lat:" />
 						<s:TextInput width="50%"/>
 						<s:Label text="lon:" />

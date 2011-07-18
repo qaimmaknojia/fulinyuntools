@@ -2,9 +2,31 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 @namespace "*";
 
+global {
+	fontSize: 12;
+	fontFamily: Tahoma;
+}
+
 mx|Text {
 	color: blue;
 	text-decoration: underline;
-	font-size: 20;
+	fontWeight: bold;
+	fontSize: 20;
+}
+
+s|Button {
+	fontFamily: Arial;
+}
+
+s|TextInput {
+	fontFamily: Times;
+}
+
+s|CheckBox {
+	fontFamily: Times;
+}
+
+s|Label {
+	fontFamily: Times;
 }
 
