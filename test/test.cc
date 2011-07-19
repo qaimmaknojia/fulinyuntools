@@ -22,6 +22,10 @@
 #include <map>
 
 using namespace libdap;
+using std::cout;
+using std::vector;
+using std::string;
+using std::endl;
 
 // ferret -memsize 16 -gif -server -script header.jnl /media/Acer/eclipseWorkspace/ferret721/resources/iosp/temp/C1A77896AA1BE2A945A01665C47FE2A1/ferret_operation_1308332358527.jnl resources/iosp/temp/C1A77896AA1BE2A945A01665C47FE2A1/header.xml
 void build_header_args(const string &tempjnl_filename,
@@ -247,9 +251,9 @@ void parse_header(const char *header_filename) {
 			at.append_attr(find_prop_value(attIter, "name"), "String",
 					find_prop_value(attIter, "value"));
 		}
-		Array a(name, bt);
-		a.append_dim(length, name);
-		name_axis[name] = &a;
+		Array* a = new Array(name, bt);
+		a->append_dim(length, name);
+		name_axis[name] = a;
 		axis_length[name] = length;
 	}
 
@@ -263,7 +267,7 @@ void parse_header(const char *header_filename) {
 		xmlNode *varIter = find_first_child(datasetIter, "var");
 		for (; varIter; varIter = find_next_child(varIter, "var")) {
 			const char * name = find_prop_value(varIter, "name");
-			Grid var(name);
+			Grid *var = new Grid(name);
 			const char * datatype = find_att_value(varIter, "infile_datatype");
 			BaseType *bt;
 			if (strcmp(datatype, "DOUBLE") == 0) {
@@ -279,7 +283,7 @@ void parse_header(const char *header_filename) {
 				at.append_attr(find_prop_value(attIter, "name"), "String",
 						find_prop_value(attIter, "value"));
 			}
-			Array a(name, bt);
+			Array *a = new Array(name, bt);
 			string direction = "";
 			xmlNode *axisIter =
 					find_first_child(
@@ -291,94 +295,99 @@ void parse_header(const char *header_filename) {
 				else if (strcmp((char *)axisIter->name, "zaxis")==0) direction += "K";
 				else if (strcmp((char *)axisIter->name, "taxis")==0) direction += "L";
 				char * axisName = (char *) axisIter->children->content;
-				var.add_var(name_axis[axisName], maps);
-				a.append_dim(axis_length[axisName], axisName);
+				var->add_var(name_axis[axisName], maps);
+				a->append_dim(axis_length[axisName], axisName);
 			}
 			at.append_attr("direction", "String", direction);
 			at.append_attr("dataset", "String", dsname);
-			var.add_var(&a, array);
-			var.set_read_p(true);
-			dds->add_var(&var);
+			var->add_var(a, array);
+			var->set_read_p(true);
+			dds->add_var(var);
 		}
 		ddses.push_back(dds);
+//		freopen("dump.txt", "a", stdout);
+//		cout << "******" << endl;
+//		dds->dump(cout);
+//		fclose(stdout);
 	}
 
 	// Find global data
 	xmlNode *global = find_first_child(root_element, "global"); // <data> -> <global>
-	DataDDS *dds = new DataDDS(NULL, "global"); // I name this dataset "global"
-	xmlNode *varIter = find_first_child(global, "var");
-	for (; varIter; varIter = find_next_child(varIter, "var")) {
-		const char * name = find_prop_value(varIter, "name");
-		char *t = new char[strlen(name)];
-		strcpy(t, name);
-		char *c = t;
-		for (; *c != 0 && *c != ']'; c++);
-		*c = 0;
-		c = t;
-		for (; *c != 0 && *c != ','; c++);
-		*c = 0;
-		c = t;
-		char * dsname = 0;
-		for (; *c != 0 && *(c+1) != 0 && *(c+2) != 0; c++) {
-			if (strncmp(c, "[D=", 3) == 0 || strncmp(c, "[d=", 3) == 0) {
-				dsname = new char[strlen(c+3)];
-				strcpy(dsname, c+3);
-				break;
+	if (global) {
+		DataDDS *dds = new DataDDS(NULL, "global"); // I name this dataset "global"
+		xmlNode *varIter = find_first_child(global, "var");
+		for (; varIter; varIter = find_next_child(varIter, "var")) {
+			const char * name = find_prop_value(varIter, "name");
+			char *t = new char[strlen(name)];
+			strcpy(t, name);
+			char *c = t;
+			for (; *c != 0 && *c != ']'; c++);
+			*c = 0;
+			c = t;
+			for (; *c != 0 && *c != ','; c++);
+			*c = 0;
+			c = t;
+			char * dsname = 0;
+			for (; *c != 0 && *(c+1) != 0 && *(c+2) != 0; c++) {
+				if (strncmp(c, "[D=", 3) == 0 || strncmp(c, "[d=", 3) == 0) {
+					dsname = new char[strlen(c+3)];
+					strcpy(dsname, c+3);
+					break;
+				}
 			}
-		}
-		if (dsname == 0) {
-			dsname = new char[2];
-			*dsname = '1';
-			dsname[1] = 0;
-		}
-
-		// get rid of [d="dataset"] in the variable name
-		strcpy(t, name);
-		for (c = t; *c != 0 && *(c+1) != 0 && *(c+2) != 0; c++) {
-			if (strncmp(c, "[D=", 3) == 0 || strncmp(c, "[d=", 3) == 0) {
-				*c = 0;
-				break;
+			if (dsname == 0) {
+				dsname = new char[2];
+				*dsname = '1';
+				dsname[1] = 0;
 			}
-		}
-		Grid var((string)t);
-		const char * datatype = find_att_value(varIter, "infile_datatype");
-		BaseType *bt;
-		if (strcmp(datatype, "DOUBLE") == 0) {
-			bt = new Float64(name);
-		} else if (strcmp(datatype, "FLOAT") == 0) {
-			bt = new Float32(name);
-		} // TODO correct the code and add more datatypes
 
-		// fill out the attribute table
-		AttrTable &at = bt->get_attr_table();
-		at.append_attr("dataset", "String", dsname);
-		xmlNode *attIter = find_first_child(varIter, "attribute");
-		for (; attIter; attIter = find_next_child(attIter, "attribute")) {
-			at.append_attr(find_prop_value(attIter, "name"), "String",
-					find_prop_value(attIter, "value"));
+			// get rid of [d="dataset"] in the variable name
+			strcpy(t, name);
+			for (c = t; *c != 0 && *(c+1) != 0 && *(c+2) != 0; c++) {
+				if (strncmp(c, "[D=", 3) == 0 || strncmp(c, "[d=", 3) == 0) {
+					*c = 0;
+					break;
+				}
+			}
+			Grid *var = new Grid((string)t);
+			const char * datatype = find_att_value(varIter, "infile_datatype");
+			BaseType *bt;
+			if (strcmp(datatype, "DOUBLE") == 0) {
+				bt = new Float64(name);
+			} else if (strcmp(datatype, "FLOAT") == 0) {
+				bt = new Float32(name);
+			} // TODO correct the code and add more datatypes
+
+			// fill out the attribute table
+			AttrTable &at = bt->get_attr_table();
+			at.append_attr("dataset", "String", dsname);
+			xmlNode *attIter = find_first_child(varIter, "attribute");
+			for (; attIter; attIter = find_next_child(attIter, "attribute")) {
+				at.append_attr(find_prop_value(attIter, "name"), "String",
+						find_prop_value(attIter, "value"));
+			}
+			Array *a = new Array(name, bt);
+			string direction = "";
+			xmlNode *axisIter =
+					find_first_child(
+							find_first_child(find_first_child(varIter, "grid"),
+									"axes")); // <var> -> <grid> -> <axes> -> <[x|y|z|t]axis>
+			for (; axisIter; axisIter = find_next_child(axisIter)) {
+				if (strcmp((char *)axisIter->name, "xaxis")==0) direction += "I";
+				else if (strcmp((char *)axisIter->name, "yaxis")==0) direction += "J";
+				else if (strcmp((char *)axisIter->name, "zaxis")==0) direction += "K";
+				else if (strcmp((char *)axisIter->name, "taxis")==0) direction += "L";
+				char * axisName = (char *) axisIter->children->content;
+				var->add_var(name_axis[axisName], maps);
+				a->append_dim(axis_length[axisName], axisName);
+			}
+			at.append_attr("direction", "String", direction);
+			var->add_var(a, array);
+			var->set_read_p(true);
+			dds->add_var(var);
 		}
-		Array a(name, bt);
-		string direction = "";
-		xmlNode *axisIter =
-				find_first_child(
-						find_first_child(find_first_child(varIter, "grid"),
-								"axes")); // <var> -> <grid> -> <axes> -> <[x|y|z|t]axis>
-		for (; axisIter; axisIter = find_next_child(axisIter)) {
-			if (strcmp((char *)axisIter->name, "xaxis")==0) direction += "I";
-			else if (strcmp((char *)axisIter->name, "yaxis")==0) direction += "J";
-			else if (strcmp((char *)axisIter->name, "zaxis")==0) direction += "K";
-			else if (strcmp((char *)axisIter->name, "taxis")==0) direction += "L";
-			char * axisName = (char *) axisIter->children->content;
-			var.add_var(name_axis[axisName], maps);
-			a.append_dim(axis_length[axisName], axisName);
-		}
-		at.append_attr("direction", "String", direction);
-		var.add_var(&a, array);
-		var.set_read_p(true);
-		dds->add_var(&var);
+		ddses.push_back(dds);
 	}
-	ddses.push_back(dds);
-
 	// transform the DataDDS into a netcdf file. The dhi only needs the
 	// output stream and the post constraint. Test no constraints and
 	// then some different constraints (1 var, 2 var)
