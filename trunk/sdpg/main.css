@@ -1,32 +1,6 @@
-@namespace s "library://ns.adobe.com/flex/spark";
-@namespace mx "library://ns.adobe.com/flex/mx";
-@namespace "*";
-
 global {
-	fontSize: 12;
-	fontFamily: Tahoma;
-}
-
-mx|Text {
-	color: blue;
-	text-decoration: underline;
-	fontWeight: bold;
-	fontSize: 20;
-}
-
-s|Button {
+	fontSize: 16;
 	fontFamily: Arial;
 }
 
-s|TextInput {
-	fontFamily: Times;
-}
-
-s|CheckBox {
-	fontFamily: Times;
-}
-
-s|Label {
-	fontFamily: Times;
-}
 
