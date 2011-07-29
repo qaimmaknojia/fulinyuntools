@@ -1,11 +1,13 @@
 #include <cstdio>
 #include <cstring>
 #include <cctype>
+#include <cstdlib>
 
 #include <string>
 #include <vector>
 #include <map>
 #include <iostream>
+#include <sstream>
 
 #include <libxml/encoding.h>
 #include <libxml/tree.h>
@@ -116,6 +118,7 @@ typedef struct {
 	string name;
 	int length;
 	map<string, string> attTable;
+	int id;
 } Axis;
 
 typedef struct {
@@ -123,6 +126,7 @@ typedef struct {
 	string name;
 	map<string, string> attTable;
 	vector<Axis*> axes;
+	int id;
 } Variable;
 
 typedef struct {
@@ -137,14 +141,17 @@ typedef struct {
 void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 	xmlDoc *doc = xmlReadFile(header_filename, NULL, 0);
 	xmlNode *root_element = xmlDocGetRootElement(doc); // <data>
+	int id = 0;
 
 	// First build a hash that maps the axes names to the axes,
 	// and a hash that maps the names to the lengths
 	map<string, Axis*> name_axis;
+	vector<Axis*> axes;
 	xmlNode *axisIter = find_first_child(
 			find_first_child(root_element, "axes"), "axis"); // <data> -> <axes> -> <axis>
 	for (; axisIter; axisIter = find_next_child(axisIter, "axis")) {
 		Axis *axis = new Axis;
+		axis->id = id++;
 		axis->name = find_prop_value(axisIter, "name");
 		axis->datatype = find_att_value(axisIter, "infile_datatype");
 		axis->length = atoi(find_att_value(axisIter, "length").c_str());
@@ -155,7 +162,9 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 			axis->attTable[find_prop_value(attIter, "name")] = find_prop_value(attIter, "value");
 		}
 		name_axis[axis->name] = axis;
+		axes.push_back(axis);
 	}
+
 	// Find non-coordinate data
 	xmlNode *datasetIter = find_first_child(
 			find_first_child(root_element, "datasets"), "dataset"); // <data> -> <datasets> -> <dataset>
@@ -163,10 +172,11 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 		string dsname = find_prop_value(datasetIter, "name");
 		Dataset *dds = new Dataset;
 		dds->name = dsname;
-
+		dds->axes = axes;
 		xmlNode *varIter = find_first_child(datasetIter, "var");
 		for (; varIter; varIter = find_next_child(varIter, "var")) {
 			Variable *var = new Variable;
+			var->id = id++;
 			var->name = find_prop_value(varIter, "name");
 			var->datatype = find_att_value(varIter, "infile_datatype");
 
@@ -187,7 +197,6 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 				else if (strcmp((char *)axisIter->name, "taxis")==0) direction += "L";
 				char * axisName = (char *) axisIter->children->content;
 				var->axes.push_back(name_axis[axisName]);
-				dds->axes.push_back(name_axis[axisName]);
 			}
 			var->attTable["direction"] = direction;
 			var->attTable["dataset"] = dsname;
@@ -237,6 +246,7 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 				}
 			}
 			Variable* var = new Variable;
+			var->id = id++;
 			var->name = t;
 			var->datatype = find_att_value(varIter, "infile_datatype");
 
@@ -258,7 +268,6 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 				else if (strcmp((char *)axisIter->name, "taxis")==0) direction += "L";
 				char * axisName = (char *) axisIter->children->content;
 				var->axes.push_back(name_axis[axisName]);
-				dds->axes.push_back(name_axis[axisName]);
 			}
 			var->attTable["direction"] = direction;
 			dds->vars.push_back(var);
@@ -269,13 +278,17 @@ void parse_header(const char *header_filename, vector<Dataset*> &datasets) {
 	/*free the document */
 	xmlFreeDoc(doc);
 
-	/*
-	 *Free the global variables that may
-	 *have been allocated by the parser.
-	 */
+	/*Free the global variables that may have been allocated by the parser. */
 	xmlCleanupParser();
 }
-
+/*
+string toLowercase(string s) {
+	char * ret = new char[s.length()+1];
+	for (int i = 0; i < s.length(); i++) ret[i] = tolower(s[i]);
+	ret[s.length()] = 0;
+	return (string)ret;
+}
+*/
 int main(int argc, char * args[]) { // args[0] is ./preprocess
 
 	// check argument
@@ -319,10 +332,97 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 
 	// write <fx:Script> opening tag
 	cout << "<fx:Script><![CDATA[" << endl;
+
+/*
+private var baseurl:String = "http://test.opendap.org/opendap/data/nc/fnoc1.nc";
+private var exturl:String = "";
+
+[Bindable]
+private var dataurl:String = baseurl+exturl;
+
+private function init(): void {}
+*/
+	cout << "\tprivate var baseurl:String = \"" << datasets[0]->name << "\";" << endl;
+	cout << "\tprivate var exturl:String = \"\";" << endl;
 	cout << "\t[Bindable]" << endl;
-	cout << "\tprivate var dataurl:String = \"" << datasets[0]->name << "\";" << endl;
+	cout << "\tprivate var dataurl:String = baseurl+exturl;" << endl;
 	cout << "\tprivate function init(): void {}" << endl;
-	// TODO: fill in scripts according to info fetched from the description file
+/*
+private function updateDataurl(): void {
+	exturl = "";
+	var first:Boolean = true;
+	if (id0.selected) {
+		if (first) {
+			exturl += "?";
+			first = false;
+		} else exturl += ",";
+		exturl += "u"+"["+id0_2.text+"]"+"["+id0_1.text+"]"+"["+id0_0.text+"]";
+	}
+	dataurl = baseurl+exturl;
+}
+*/
+	cout << "\tprivate function updateDataurl(): void {" << endl;
+	cout << "\t\texturl = \"\";" << endl;
+	cout << "\t\tvar first:Boolean = true;" << endl;
+	vector<Variable*>::iterator it = datasets[0]->vars.begin();
+	for (; it != datasets[0]->vars.end(); it++) {
+		cout << "\t\tif (id" << (*it)->id << ".selected) {" << endl;
+		cout << "\t\t\tif (first) {" << endl;
+		cout << "\t\t\t\texturl += \"?\";" << endl;
+		cout << "\t\t\t\tfirst = false;" << endl;
+		cout << "\t\t\t} else exturl += \",\";" << endl;
+		cout << "\t\t\texturl += \"" << (*it)->name << "\"";
+		for (int i = (*it)->axes.size()-1; i >= 0; i--)
+			cout << "+\"[\"+id" << (*it)->id << "_" << i << ".text+\"]\"";
+		cout << ";" << endl;
+		cout << "\t\t}" << endl;
+	}
+	vector<Axis*>::iterator ita = datasets[0]->axes.begin();
+	for (; ita != datasets[0]->axes.end(); ita++) {
+		cout << "\t\tif (id" << (*ita)->id << ".selected) {" << endl;
+		cout << "\t\t\t if (first) {" << endl;
+		cout << "\t\t\t\texturl += \"?\";" << endl;
+		cout << "\t\t\t\tfirst = false;" << endl;
+		cout << "\t\t\t} else exturl += \",\";" << endl;
+		cout << "\t\t\t\texturl += \"" << (*ita)->name << "\"";
+		cout << "+\"[\"+id" << (*ita)->id << "_0.text+\"]\";" << endl;
+		cout << "\t\t}" << endl;
+	}
+	cout << "\t\tdataurl = baseurl+exturl;" << endl;
+	cout << "\t}" << endl;
+
+/*
+private function getAscii(): void {
+	var url:String = baseurl+".ascii"+exturl;
+	navigateToURL(new URLRequest(url));
+}
+*/
+	cout << "\tprivate function getAscii(): void {" << endl;
+	cout << "\t\tvar url:String = baseurl+\".ascii\"+exturl;" << endl;
+	cout << "\t\tnavigateToURL(new URLRequest(url));" << endl;
+	cout << "\t}" << endl;
+
+/*
+private function getNc(): void {
+	var url:String = baseurl+exturl;
+	navigateToURL(new URLRequest(url));
+}
+*/
+	cout << "\tprivate function getNc(): void {" << endl;
+	cout << "\t\tvar url:String = baseurl+exturl;" << endl;
+	cout << "\t\tnavigateToURL(new URLRequest(url));" << endl;
+	cout << "\t}" << endl;
+
+/*
+private function getDap(): void {
+	var url:String = baseurl+".dods"+exturl;
+	navigateToURL(new URLRequest(url));
+}
+*/
+	cout << "\tprivate function getDap(): void {" << endl;
+	cout << "\t\tvar url:String = baseurl+\".dods\"+exturl;" << endl;
+	cout << "\t\tnavigateToURL(new URLRequest(url));" << endl;
+	cout << "\t}" << endl;
 
 	// write <fx:Script> closing tag
 	cout << "]]></fx:Script>" << endl;
@@ -339,6 +439,13 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 	// actions
 	cout << "\t<mx:GridRow>" << endl;
 	cout << "\t\t<mx:GridItem horizontalAlign=\"right\" >" << endl;
+/*
+			<mx:Text fontSize="20" color="blue" fontWeight="bold">
+				<mx:htmlText>
+					<![CDATA[<a href="http://www.opendap.org/online_help_files/opendap_form_help.html">Action:</a>]]>
+				</mx:htmlText>
+			</mx:Text>
+*/
 	cout << "\t\t\t<mx:Text fontSize=\"20\" color=\"blue\" fontWeight=\"bold\">" << endl;
 	cout << "\t\t\t\t<mx:htmlText>" << endl;
 	cout << "\t\t\t\t\t<![CDATA[<a href=\"" << helpPage << "\">Action:</a>]]>" << endl;
@@ -348,16 +455,18 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 
 	cout << "\t\t<mx:GridItem>" << endl;
 	cout << "\t\t\t<s:HGroup>" << endl;
+//	<s:Button label="Get ASCII" click="getAscii();" />
 	cout << "\t\t\t\t<s:Button label=\"Get ASCII\" "
-			"click=\"navigateToURL(new URLRequest('"
-			<< (datasets[0]->name) << ".ascii" << "'));\"/>" << endl;
+			"click=\"getAscii();\" />" << endl;
+//	<s:Button label="Get as NetCDF" click="getNc();" />
 	cout << "\t\t\t\t<s:Button label=\"Get as NetCDF\" "
-			"click=\"navigateToURL(new URLRequest('" << (datasets[0]->name) << "'));\"/>" << endl;
+			"click=\"getNc();\" />" << endl;
+//	<s:Button label="Binary (DAP) Object" click="getDap();" />
 	cout << "\t\t\t\t<s:Button label=\"Binary (DAP) Object\" "
-			"click=\"navigateToURL(new URLRequest('"
-			<< (datasets[0]->name) << ".dods" << "'));\"/>" << endl;
+			"click=\"getDap();\" />" << endl;
+//	<s:Button label="Show Help" click="navigateToURL(new URLRequest('http://www.opendap.org/online_help_files/opendap_form_help.html'));" />
 	cout << "\t\t\t\t<s:Button label=\"Show Help\" "
-			"click=\"navigateToURL(new URLRequest('" << helpPage << "'));\"/>" << endl;
+			"click=\"navigateToURL(new URLRequest('" << helpPage << "'));\" />" << endl;
 	cout << "\t\t\t</s:HGroup>" << endl;
 	cout << "\t\t</mx:GridItem>" << endl;
 	cout << "\t</mx:GridRow>" << endl;
@@ -402,10 +511,10 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 
 	cout << "\t\t<mx:GridItem>" << endl;
 	cout << "\t\t\t<s:VGroup width=\"100\%\">" << endl;
-	vector<Variable *>::iterator it;
 	for (it = datasets[0]->vars.begin(); it != datasets[0]->vars.end(); it++) {
-		// <s:CheckBox label="val: Array of Bytes [lat = 0..511] [lon = 0..511]" />
-		cout << "\t\t\t\t<s:CheckBox label=\"" << ((*it)->name) << ": Array of " << ((*it)->datatype);
+		// <s:CheckBox click="updateDataurl();" id="idX" label="val: Array of Bytes [lat = 0..511] [lon = 0..511]" />
+		cout << "\t\t\t\t<s:CheckBox click=\"updateDataurl();\" id=\"id" << (*it)->id
+				<< "\" label=\"" << ((*it)->name) << ": Array of " << ((*it)->datatype);
 		vector<Axis *>::iterator ita;
 		for (ita = (*it)->axes.begin(); ita != (*it)->axes.end(); ita++) {
 			// [lat = 0..511]
@@ -413,11 +522,14 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 		}
 		cout << "\" />" << endl;
 		cout << "\t\t\t\t<s:HGroup width=\"100\%\">" << endl;
+		int count = 0;
 		for (ita = (*it)->axes.begin(); ita != (*it)->axes.end(); ita++) {
 			// <s:Label text="lat:" />
-			// <s:TextInput width="50%"/>
+			// <s:TextInput width="50%" text="{id0.selected ? '0:1:20' : ''}" change="updateDataurl();" id="id0_1"/>
 			cout << "\t\t\t\t\t<s:Label text=\"" << ((*ita)->name) << ":\" />" << endl;
-			cout << "\t\t\t\t\t<s:TextInput width=\"" << (100/((*it)->axes.size())) << "\%\" />" << endl;
+			cout << "\t\t\t\t\t<s:TextInput width=\"" << (100/((*it)->axes.size()))
+					<< "\%\" text=\"{id" << (*it)->id << ".selected ? '0:1:" << ((*ita)->length-1)
+					<< "' : ''}\" change=\"updateDataurl();\" id=\"id" << (*it)->id << "_" << (count++) << "\" />" << endl;
 		}
 		cout << "\t\t\t\t</s:HGroup>" << endl;
 		string attString = "";
@@ -448,18 +560,19 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 
 	cout << "\t\t<mx:GridItem>" << endl;
 	cout << "\t\t\t<s:VGroup width=\"100\%\">" << endl;
-	vector<Axis *>::iterator ita;
 	for (ita = datasets[0]->axes.begin(); ita != datasets[0]->axes.end(); ita++) {
-		// <s:CheckBox label="val: Array of Bytes [lat = 0..511] [lon = 0..511]" />
-		cout << "\t\t\t\t<s:CheckBox label=\"" << ((*ita)->name) << ": Array of " << ((*ita)->datatype);
+		// <s:CheckBox click="updateDataurl();" id="id0" label="val: Array of Bytes [lat = 0..511] [lon = 0..511]" />
+		cout << "\t\t\t\t<s:CheckBox click=\"updateDataurl();\" id=\"id" << (*ita)->id << "\" label=\""
+				<< ((*ita)->name) << ": Array of " << ((*ita)->datatype);
 		// [lat = 0..511]
 		cout << " [" << ((*ita)->name) << " = 0.." << ((*ita)->length-1) << "]";
 		cout << "\" />" << endl;
 		cout << "\t\t\t\t<s:HGroup width=\"100\%\">" << endl;
 		// <s:Label text="lat:" />
-		// <s:TextInput width="50%"/>
+		// <s:TextInput id="id0_0" width="100%" text="{id0.selected ? '0:1:10' : ''}" change="updateDataurl();" />
 		cout << "\t\t\t\t\t<s:Label text=\"" << ((*ita)->name) << ":\" />" << endl;
-		cout << "\t\t\t\t\t<s:TextInput width=\"100\%\" />" << endl;
+		cout << "\t\t\t\t\t<s:TextInput id=\"id" << (*ita)->id << "_0\" width=\"100\%\" text=\"{id" << (*ita)->id << ".selected ? '0:1:"
+				<< ((*ita)->length-1) << "' : ''}\" change=\"updateDataurl();\" />" << endl;
 		cout << "\t\t\t\t</s:HGroup>" << endl;
 
 		string attString = "";
@@ -472,7 +585,7 @@ int main(int argc, char * args[]) { // args[0] is ./preprocess
 			for (int i = 0; i < value.length(); i++) attString += (value[i] == '\"' ? '\0' : value[i]);
 			attString += "{'\\n'}";
 		}
-		cout << "\t\t\t\t<mx:Text width=\"100\%\" text=\"" << attString << "\"/>" << endl;
+		cout << "\t\t\t\t<mx:Text width=\"100\%\" text=\"" << attString << "\" />" << endl;
 	}
 	cout << "\t\t\t</s:VGroup>" << endl;
 	cout << "\t\t</mx:GridItem>" << endl;
