@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstdio>
 #include <cstdlib>
 #include <vector>
 #include <cstring>
@@ -479,13 +480,101 @@ void march_through_xml(const char *xmlfilename) {
 
 }
 
+void read_data(string dataurl, string vars, string output) {
+	freopen("savedata.jnl", "w", stdout);
+	cout << "use \"" << dataurl << "\"" << endl;
+	cout << "save/clobber/file=" << output << " " << vars << endl;
+	fclose(stdout);
+
+	// - want to redirect stderr so that we can get any error messages
+	int pip_stderr[2];
+	// - response variable
+	int r;
+	// - fork response
+	int pid;
+
+	r = pipe(pip_stderr);
+	if (r == -1) {
+		cerr << "Failed to create pipe for ferret execution" << endl;
+		//		string err = (string)"Failed to create pipe for ferret execution" ;
+		//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
+
+	pid = fork();
+	if (pid == 0) { // child process
+		r = close(pip_stderr[0]);
+		if (r == -1) {
+			exit(-1);
+		}
+		r = dup2(pip_stderr[1], STDERR_FILENO);
+		if (r == -1) {
+			exit(-1);
+		}
+		close(pip_stderr[1]);
+		vector<string> args;
+		string FerretCommand = "ferret";
+		string FerretMemsize = "16";
+		args.push_back(FerretCommand);
+		args.push_back("-memsize");
+		args.push_back(FerretMemsize);
+		args.push_back("-server");
+		args.push_back("-gif");
+		args.push_back("-script");
+		args.push_back("savedata.jnl"); // may change to something like resources/iosp/scripts/header.jnl
+
+		char **cargs = new char*[args.size() + 1];
+		int i = 0;
+		for (i = 0; i < args.size(); i++) {
+			cargs[i] = (char *) args[i].c_str();
+		}
+		cargs[i] = 0;
+		execvp(args[0].c_str(), cargs);
+
+	} else if (pid != -1) { // parent process
+		r = close(pip_stderr[1]);
+		char readbuffer[1024];
+		string ferret_err;
+		int nbytes = 0;
+		while ((nbytes = read(pip_stderr[0], readbuffer, sizeof(readbuffer)))) {
+			ferret_err += readbuffer;
+		}
+
+		r = waitpid(pid, 0, 0);
+		if (errno != 0) {
+			// handle error
+			char *err_info = strerror(errno);
+			string err = (string) "Failed to execute the ferret request: ";
+			if (err_info)
+				err += err_info;
+			else
+				err += "unknown reason";
+		}
+		if (!ferret_err.empty()) {
+			// handle ferret error
+			cerr << "ferret error string: " << ferret_err << endl;
+			//			FerretUtils::handle_ferret_error( ferret_err ) ;
+		}
+	} else { // fork failed
+		cerr << "fork failed" << endl;
+		//		string err = (string)"Failed to execute ferret" ;
+		//		throw BESInternalError( err, __FILE__, __LINE__ ) ;
+	}
+
+}
+
 /**
  * driver function, the code cannot run now due to a bunch of link error such as
  * undefined reference to `libdap::Grid::Grid(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
  */
 int main() {
+	read_data("http://www.ferret.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc", "SST,AIRT", "result.nc");
+	return 0;
+}
+
+int main1() {
 	string type = "nc";
 	run_header("dods_demo.jnl", "header.xml", type);
 	//	march_through_xml("header.xml");
 	parse_header("header.xml");
+	return 0;
 }
