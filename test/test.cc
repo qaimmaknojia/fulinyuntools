@@ -3,6 +3,7 @@
 #include <libxml/encoding.h>
 #include <libxml/tree.h>
 #include <libxml/parser.h>
+#include <libdap/DDS.h>
 #include <libdap/DataDDS.h>
 #include <libdap/Array.h>
 #include <libdap/BaseType.h>
@@ -21,6 +22,7 @@
 #include <vector>
 #include <cstring>
 #include <map>
+#include <sstream>
 
 using namespace libdap;
 using std::cout;
@@ -222,11 +224,10 @@ const char * find_att_value(xmlNode* node, const char *name) {
 /**
  * parse the header file (header.xml) to get DataDDS structures and print them with DataDDS::dump()
  */
-void parse_header(const char *header_filename) {
+void parse_header(const char *header_filename, vector<DataDDS*>& ddses) {
 	xmlDoc *doc = xmlReadFile(header_filename, NULL, 0);
 	xmlNode *root_element = xmlDocGetRootElement(doc); // <data>
 
-	vector<DataDDS *> ddses;
 	// First build a hash that maps the axes names to the axes,
 	// and a hash that maps the names to the lengths
 	map<string, Array*> name_axis;
@@ -395,25 +396,13 @@ void parse_header(const char *header_filename) {
 
 	// The resulting netcdf file is streamed back. Write this file to a
 	// test file locally
+	/*
 	for (int i = 0; i < ddses.size(); i++) {
 		DataDDS dds = *ddses[i];
 		ofstream fstrm("./header.nc");
 		dds.dump(fstrm);
-		//		BESResponseObject *obj = new BESDataDDSResponse( dds ) ;
-		//		::BESDataHandlerInterface dhi ;
-		//		dhi.set_output_stream( &fstrm ) ;
-		//		dhi.data[POST_CONSTRAINT] = "" ;
-		//		FONcTransmitter ft ;
-		//		FONcTransmitter::send_data( obj, dhi ) ;
-		//		fstrm.close() ;
-		//
-		//		// deleting the response object deletes the DataDDS
-		//		delete obj ;
 	}
-
-	//	for (map<string, string>::iterator it = axis_datasets.begin(); it != axis_datasets.end(); it++) {
-	//		cout << it->first << " : " << it->second << endl;
-	//	}
+	*/
 
 	/*free the document */
 	xmlFreeDoc(doc);
@@ -563,18 +552,26 @@ void read_data(string dataurl, string vars, string output) {
 }
 
 /**
- * driver function, the code cannot run now due to a bunch of link error such as
- * undefined reference to `libdap::Grid::Grid(std::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)'
+ * driver function, generate and parse header (header.xml), and read data into result_x.nc
  */
 int main() {
-	read_data("http://www.ferret.noaa.gov/thredds/dodsC/data/PMEL/coads_climatology.nc", "SST,AIRT", "result.nc");
+	string type = "nc";
+	run_header("dods_demo.jnl", "header.xml", type);
+	vector<DataDDS*> ddses;
+	parse_header("header.xml", ddses);
+	for (int i = 0; i < ddses.size(); i++) {
+		string name = ddses[i]->get_dataset_name();
+		string vars = "";
+		bool first = true;
+		for (std::vector<BaseType *>::iterator it = ddses[i]->var_begin(); it != ddses[i]->var_end(); it++) {
+			if (first) first = false;
+			else vars += ",";
+			vars += (*it)->name();
+		}
+		stringstream ss;
+		ss << "result_" << i << ".nc";
+		read_data(name, vars, ss.str());
+	}
 	return 0;
 }
 
-int main1() {
-	string type = "nc";
-	run_header("dods_demo.jnl", "header.xml", type);
-	//	march_through_xml("header.xml");
-	parse_header("header.xml");
-	return 0;
-}
