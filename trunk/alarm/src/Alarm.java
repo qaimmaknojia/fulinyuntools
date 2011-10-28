@@ -1,4 +1,6 @@
+import java.awt.Color;
 import java.awt.Dialog;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Label;
 import java.awt.Point;
@@ -7,6 +9,10 @@ import java.awt.event.WindowEvent;
 import java.io.FileInputStream;
 import java.util.Calendar;
 import java.util.Date;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import sun.audio.AudioPlayer;
 import sun.audio.AudioStream;
@@ -23,9 +29,42 @@ public class Alarm {
 //		everyDay(10, 0, 0, "netyi");
 //		setAfterAlarm(0, 6, 0, "5ips");
 //		setAfterAlarm(0, 20, 0, "TOEFL writing");
-		setAfterAlarm(0, 0, 10, "test");
+//		setAfterAlarm(0, 0, 10, "test");
+		examClock(100, 3);
 	}
 
+	public static void examClock(int nMin, int lastMin) throws Exception {
+		Calendar c = Calendar.getInstance();
+		final JDialog d = new JDialog((JFrame)null, "Please print your name on each sheet    Good luck!");
+		JLabel l = new JLabel(String.format("%5d minutes left", nMin));
+		l.setFont(new Font("SansSerif", Font.PLAIN, 108));
+		d.add(l);
+		d.setLocation(new Point(50, 200));
+		d.setSize(900, 400);
+		d.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		d.setAlwaysOnTop(true);
+		d.setVisible(true);
+		while (nMin > lastMin) {
+			Thread.currentThread().sleep(60*1000);
+			nMin--;
+			l.setText(String.format("%5d minutes left", nMin));
+		}
+		int sec = lastMin*60;
+		l.setForeground(Color.RED);
+		while (sec > 0) {
+			Thread.currentThread().sleep(1000);
+			sec--;
+			l.setText(String.format("%5d:%02d", sec/60, sec%60));			
+		}
+		l.setText("<html><p>&nbsp;&nbsp;&nbsp;&nbsp;Please return all your exam papers</p><p>&nbsp;&nbsp;&nbsp;&nbsp;Thank you!</p></html>");
+		l.setFont(new Font("SansSerif", Font.PLAIN, 48));
+		
+	}
+	
 	public static void everyDay(int h, int m, int s, String message) throws Exception {
 		setTime(h, m, s);
 		System.out.println(alarmTime.get(Calendar.HOUR_OF_DAY) + ":" + alarmTime.get(Calendar.MINUTE) + 
@@ -73,9 +112,9 @@ public class Alarm {
 				});
 				d.setAlwaysOnTop(true);
 				d.setVisible(true);
-				FileInputStream notice = new FileInputStream("media/notice.wav");
-				AudioStream as = new AudioStream(notice);
-				AudioPlayer.player.start(as);
+//				FileInputStream notice = new FileInputStream("media/notice.wav");
+//				AudioStream as = new AudioStream(notice);
+//				AudioPlayer.player.start(as);
 //				as.close();
 				break;
 			}
@@ -101,9 +140,9 @@ public class Alarm {
 				});
 				d.setAlwaysOnTop(true);
 				d.setVisible(true);
-				FileInputStream notice = new FileInputStream("media/notice.wav");
-				AudioStream as = new AudioStream(notice);
-				AudioPlayer.player.start(as);
+//				FileInputStream notice = new FileInputStream("media/notice.wav");
+//				AudioStream as = new AudioStream(notice);
+//				AudioPlayer.player.start(as);
 //				as.close();
 				break;
 			}
